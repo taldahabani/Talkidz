@@ -33,12 +33,11 @@
         elevenlabs-convai {
             position: fixed;
             bottom: 0;
-            left: 120px;
+            left: 50px;
             width: auto;
             z-index: 1;
-            padding-bottom: env(safe-area-inset-bottom); /* For devices with bottom bars */
+            padding-bottom: env(safe-area-inset-bottom);
         }
-        /* Additional mobile optimizations */
         @media screen and (max-width: 768px) {
             .background-image {
                 object-position: center center;
@@ -47,35 +46,57 @@
     </style>
 </head>
 <body>
-    <!-- Background Container -->
     <div class="background-container">
         <img class="background-image" src="./emma.png" alt="Emma Background">
     </div>
 
-    <!-- Audio Element -->
-    <audio id="welcomeAudio" style="display: none;">
+    <!-- Preload audio for faster loading -->
+    <audio id="welcomeAudio" preload="auto">
         <source src="hey.mp3" type="audio/mpeg">
-        Your browser does not support the audio element.
     </audio>
 
-    <!-- ElevenLabs Convai Widget -->
     <elevenlabs-convai agent-id="UFCiWykxf7I8pgANcBuJ"></elevenlabs-convai>
 
-    <!-- Scripts -->
-    <script src="https://elevenlabs.io/convai-widget/index.js" async type="text/javascript"></script>
+    <script src="https://elevenlabs.io/convai-widget/index.js" async></script>
+    
     <script>
-        // Play welcome audio when page loads
-        window.addEventListener('load', function() {
+        // Function to play audio
+        function playWelcomeAudio() {
             const audio = document.getElementById('welcomeAudio');
-            // Some browsers require user interaction before playing audio
-            try {
-                audio.play().catch(function(error) {
-                    console.log("Audio playback failed:", error);
+            
+            // Reset audio to beginning
+            audio.currentTime = 0;
+            
+            // Set volume
+            audio.volume = 1.0;
+            
+            // Promise-based play with retry
+            const playAttempt = audio.play();
+            
+            if (playAttempt !== undefined) {
+                playAttempt.catch(error => {
+                    console.log('Auto-play failed:', error);
+                    // Add click event listener if autoplay fails
+                    document.addEventListener('click', function playOnClick() {
+                        audio.play();
+                        document.removeEventListener('click', playOnClick);
+                    }, { once: true });
                 });
-            } catch (error) {
-                console.log("Audio playback failed:", error);
             }
-        });
+        }
+
+        // Try to play when page loads
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', playWelcomeAudio);
+        } else {
+            playWelcomeAudio();
+        }
+
+        // Backup: also try to play when window loads
+        window.addEventListener('load', playWelcomeAudio);
+
+        // Additional attempt after a short delay
+        setTimeout(playWelcomeAudio, 1000);
     </script>
 </body>
 </html>
