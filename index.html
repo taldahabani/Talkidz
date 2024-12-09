@@ -3,210 +3,60 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TalkingAI Emma</title>
+    <title>Emma AI Assistant</title>
     <style>
-        * {
+        body, html {
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-        }
-
-        body, html {
             height: 100%;
             width: 100%;
             overflow: hidden;
             position: fixed;
         }
-
-        .video-container {
+        .background-container {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            height: 100vh;
+            height: 100%;
             z-index: -1;
-            overflow: hidden;
-            background: url('emma.png') center center no-repeat;
-            background-size: auto 100%;
+            background-color: #000;
         }
-
-        video {
-            position: absolute;
-            height: 100vh;
-            width: auto;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            object-fit: contain;
+        .background-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            max-width: 100vw;
+            max-height: 100vh;
         }
-
-        /* Ensure minimum width coverage */
-        @media (aspect-ratio < 16/9) {
-            video {
-                width: 100%;
-                height: auto;
-            }
-        }
-
-        .widget-container {
+        elevenlabs-convai {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
             z-index: 1;
-            padding-bottom: env(safe-area-inset-bottom);
+            padding-bottom: env(safe-area-inset-bottom); /* For devices with bottom bars /
         }
-
-        /* Ensure widget stays in view on mobile */
-        @media (max-height: 600px) {
-            .widget-container {
-                padding-bottom: 0px;
+        / Additional mobile optimizations */
+        @media screen and (max-width: 768px) {
+            .background-image {
+                object-position: center center;
             }
         }
     </style>
 </head>
 <body>
-    <div class="video-container" id="videoContainer">
-        <video 
-            id="backgroundVideo"
-            autoplay 
-            muted 
-            playsinline>
-            <source id="videoSource" src="hello.mp4" type="video/mp4">
-            Your browser does not support the video tag.
-        </video>
+    <!-- Background Container -->
+    <div class="background-container">
+        <img class="background-image" src="./emma.png" alt="Emma Background">
     </div>
+    <!-- ElevenLabs Convai Widget -->
+    <elevenlabs-convai agent-id="UFCiWykxf7I8pgANcBuJ"></elevenlabs-convai>
 
-    <div class="widget-container">
-        <elevenlabs-convai 
-            id="convai-widget" 
-            agent-id="UFCiWykxf7I8pgANcBuJ">
-        </elevenlabs-convai>
-    </div>
-    
+    <!-- ElevenLabs Convai Widget Script -->
     <script src="https://elevenlabs.io/convai-widget/index.js" async type="text/javascript"></script>
-    <script>
-        let audioContext = null;
-        let isAudioInitialized = false;
-
-        function setupInitialVideo() {
-            const backgroundVideo = document.getElementById('backgroundVideo');
-            const videoContainer = document.getElementById('videoContainer');
-            
-            // Play hello.mp4 once
-            backgroundVideo.play().catch(error => {
-                console.warn('Video playback error:', error);
-            });
-
-            // Listen for video end
-            backgroundVideo.addEventListener('ended', () => {
-                backgroundVideo.style.display = 'none';
-                videoContainer.style.backgroundImage = 'url("emma.png")';
-            });
-        }
-
-        function switchVideoSource(newSource) {
-            const videoSource = document.getElementById('videoSource');
-            const backgroundVideo = document.getElementById('backgroundVideo');
-            const videoContainer = document.getElementById('videoContainer');
-            
-            // Show video and remove background image
-            backgroundVideo.style.display = 'block';
-            videoContainer.style.backgroundImage = 'none';
-            
-            const currentSrc = videoSource.src.split('/').pop();
-            if (currentSrc !== newSource) {
-                videoSource.src = newSource;
-                backgroundVideo.load();
-                backgroundVideo.play().catch(error => {
-                    console.warn('Video playback error:', error);
-                });
-            }
-        }
-
-        function initializeAudioContext() {
-            if (isAudioInitialized) return;
-            
-            try {
-                audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                isAudioInitialized = true;
-                setupAudioDetection();
-            } catch (error) {
-                console.error('Failed to initialize AudioContext:', error);
-            }
-        }
-
-        function setupAudioDetection() {
-            if (!audioContext) return;
-
-            try {
-                const analyser = audioContext.createAnalyser();
-                analyser.fftSize = 256;
-                const dataArray = new Uint8Array(analyser.frequencyBinCount);
-
-                function checkForAudio() {
-                    const convaiWidget = document.getElementById('convai-widget');
-                    if (!convaiWidget || !convaiWidget.shadowRoot) {
-                        setTimeout(checkForAudio, 500);
-                        return;
-                    }
-
-                    const widgetAudio = convaiWidget.shadowRoot.querySelector('audio');
-                    if (!widgetAudio) {
-                        setTimeout(checkForAudio, 500);
-                        return;
-                    }
-
-                    const source = audioContext.createMediaElementSource(widgetAudio);
-                    source.connect(analyser);
-                    analyser.connect(audioContext.destination);
-
-                    let isSpeaking = false;
-
-                    function detectAudio() {
-                        analyser.getByteFrequencyData(dataArray);
-                        const audioLevel = dataArray.reduce((sum, value) => sum + value, 0);
-                        
-                        if (audioLevel > 10) {
-                            if (!isSpeaking) {
-                                isSpeaking = true;
-                                switchVideoSource('speaking.mp4');
-                            }
-                        } else {
-                            if (isSpeaking) {
-                                isSpeaking = false;
-                                switchVideoSource('hello.mp4');
-                            }
-                        }
-                        requestAnimationFrame(detectAudio);
-                    }
-
-                    detectAudio();
-                }
-
-                checkForAudio();
-            } catch (error) {
-                console.error('Error in audio detection setup:', error);
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            setupInitialVideo();
-            document.addEventListener('click', initializeAudioContext, { once: true });
-            document.addEventListener('touchstart', initializeAudioContext, { once: true });
-        });
-
-        document.addEventListener('visibilitychange', () => {
-            if (document.hidden) {
-                if (audioContext) {
-                    audioContext.suspend();
-                }
-            } else {
-                if (audioContext) {
-                    audioContext.resume();
-                }
-            }
-        });
-    </script>
 </body>
 </html>
+
+
