@@ -52,11 +52,9 @@
             position: fixed;
             bottom: 0;
             left: 0;
-            right: 0;
-            display: flex;
-            justify-content: center;
-            padding-bottom: 0px;
-            z-index: 1000;
+            width: 100%;
+            z-index: 1;
+            padding-bottom: env(safe-area-inset-bottom);
         }
 
         /* Ensure widget stays in view on mobile */
