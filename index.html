@@ -38,15 +38,6 @@
             z-index: 1;
             padding-bottom: env(safe-area-inset-bottom);
         }
-        #audioTrigger {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            cursor: default;
-        }
         @media screen and (max-width: 768px) {
             .background-image {
                 object-position: center center;
@@ -58,38 +49,43 @@
     <div class="background-container">
         <img class="background-image" src="./emma.png" alt="Emma Background">
     </div>
-    
-    <button id="audioTrigger"></button>
+    <!-- Preload audio for faster loading -->
     <audio id="welcomeAudio" preload="auto">
         <source src="hey.mp3" type="audio/mpeg">
     </audio>
-
     <elevenlabs-convai agent-id="UFCiWykxf7I8pgANcBuJ"></elevenlabs-convai>
     <script src="https://elevenlabs.io/convai-widget/index.js" async></script>
     <script>
-        function initAudio() {
+        // Function to play audio
+        function playWelcomeAudio() {
             const audio = document.getElementById('welcomeAudio');
-            const trigger = document.getElementById('audioTrigger');
-            
-            // Function to simulate click and play
-            function simulateClickAndPlay() {
-                trigger.click();
-                audio.play().catch(() => {
-                    setTimeout(simulateClickAndPlay, 100);
+            // Reset audio to beginning
+            audio.currentTime = 0;
+            // Set volume
+            audio.volume = 1.0;
+            // Promise-based play with retry
+            const playAttempt = audio.play();
+            if (playAttempt !== undefined) {
+                playAttempt.catch(error => {
+                    console.log('Auto-play failed:', error);
+                    // Add click event listener if autoplay fails
+                    document.addEventListener('click', function playOnClick() {
+                        audio.play();
+                        document.removeEventListener('click', playOnClick);
+                    }, { once: true });
                 });
             }
-
-            // Try multiple times with different events and timings
-            window.addEventListener('load', simulateClickAndPlay);
-            document.addEventListener('DOMContentLoaded', simulateClickAndPlay);
-            setTimeout(simulateClickAndPlay, 500);
-            setTimeout(simulateClickAndPlay, 1000);
-            
-            // Also try when user interacts
-            trigger.addEventListener('click', () => audio.play());
         }
-
-        initAudio();
+        // Try to play when page loads
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', playWelcomeAudio);
+        } else {
+            playWelcomeAudio();
+        }
+        // Backup: also try to play when window loads
+        window.addEventListener('load', playWelcomeAudio);
+        // Additional attempt after a short delay
+        setTimeout(playWelcomeAudio, 1000);
     </script>
 </body>
 </html>
