@@ -27,53 +27,42 @@
             z-index: -1;
             overflow: hidden;
             background: url('emma.png') center center no-repeat;
-            /* Force height-based scaling for background image */
-            background-size: contain;
-            background-position: center;
+            background-size: auto 100%;
         }
 
         video {
             position: absolute;
-            height: 100vh; /* Force height-based scaling */
+            height: 100vh;
             width: auto;
-            left: 50%;
             top: 50%;
+            left: 50%;
             transform: translate(-50%, -50%);
             object-fit: contain;
         }
 
-        /* Ensure minimum width coverage while maintaining height-based scaling */
+        /* Ensure minimum width coverage */
         @media (aspect-ratio < 16/9) {
-            .video-container {
-                background-size: contain;
-            }
             video {
-                height: 100vh;
-                width: auto;
-                max-width: none;
+                width: 100%;
+                height: auto;
             }
         }
 
         .widget-container {
             position: fixed;
-            bottom: 5px; /* Moved down */
+            bottom: 0;
             left: 0;
             right: 0;
             display: flex;
             justify-content: center;
-            align-items: center;
+            padding-bottom: 20px;
             z-index: 1000;
-        }
-
-        /* Adjust widget position */
-        elevenlabs-convai {
-            transform: translateX(-20px); /* Move slightly left */
         }
 
         /* Ensure widget stays in view on mobile */
         @media (max-height: 600px) {
             .widget-container {
-                bottom: 2px;
+                padding-bottom: 10px;
             }
         }
     </style>
@@ -99,7 +88,127 @@
     
     <script src="https://elevenlabs.io/convai-widget/index.js" async type="text/javascript"></script>
     <script>
-        // [Rest of the JavaScript code remains exactly the same as in the previous version]
+        let audioContext = null;
+        let isAudioInitialized = false;
+
+        function setupInitialVideo() {
+            const backgroundVideo = document.getElementById('backgroundVideo');
+            const videoContainer = document.getElementById('videoContainer');
+            
+            // Play hello.mp4 once
+            backgroundVideo.play().catch(error => {
+                console.warn('Video playback error:', error);
+            });
+
+            // Listen for video end
+            backgroundVideo.addEventListener('ended', () => {
+                backgroundVideo.style.display = 'none';
+                videoContainer.style.backgroundImage = 'url("emma.png")';
+            });
+        }
+
+        function switchVideoSource(newSource) {
+            const videoSource = document.getElementById('videoSource');
+            const backgroundVideo = document.getElementById('backgroundVideo');
+            const videoContainer = document.getElementById('videoContainer');
+            
+            // Show video and remove background image
+            backgroundVideo.style.display = 'block';
+            videoContainer.style.backgroundImage = 'none';
+            
+            const currentSrc = videoSource.src.split('/').pop();
+            if (currentSrc !== newSource) {
+                videoSource.src = newSource;
+                backgroundVideo.load();
+                backgroundVideo.play().catch(error => {
+                    console.warn('Video playback error:', error);
+                });
+            }
+        }
+
+        function initializeAudioContext() {
+            if (isAudioInitialized) return;
+            
+            try {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                isAudioInitialized = true;
+                setupAudioDetection();
+            } catch (error) {
+                console.error('Failed to initialize AudioContext:', error);
+            }
+        }
+
+        function setupAudioDetection() {
+            if (!audioContext) return;
+
+            try {
+                const analyser = audioContext.createAnalyser();
+                analyser.fftSize = 256;
+                const dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+                function checkForAudio() {
+                    const convaiWidget = document.getElementById('convai-widget');
+                    if (!convaiWidget || !convaiWidget.shadowRoot) {
+                        setTimeout(checkForAudio, 500);
+                        return;
+                    }
+
+                    const widgetAudio = convaiWidget.shadowRoot.querySelector('audio');
+                    if (!widgetAudio) {
+                        setTimeout(checkForAudio, 500);
+                        return;
+                    }
+
+                    const source = audioContext.createMediaElementSource(widgetAudio);
+                    source.connect(analyser);
+                    analyser.connect(audioContext.destination);
+
+                    let isSpeaking = false;
+
+                    function detectAudio() {
+                        analyser.getByteFrequencyData(dataArray);
+                        const audioLevel = dataArray.reduce((sum, value) => sum + value, 0);
+                        
+                        if (audioLevel > 10) {
+                            if (!isSpeaking) {
+                                isSpeaking = true;
+                                switchVideoSource('speaking.mp4');
+                            }
+                        } else {
+                            if (isSpeaking) {
+                                isSpeaking = false;
+                                switchVideoSource('hello.mp4');
+                            }
+                        }
+                        requestAnimationFrame(detectAudio);
+                    }
+
+                    detectAudio();
+                }
+
+                checkForAudio();
+            } catch (error) {
+                console.error('Error in audio detection setup:', error);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setupInitialVideo();
+            document.addEventListener('click', initializeAudioContext, { once: true });
+            document.addEventListener('touchstart', initializeAudioContext, { once: true });
+        });
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                if (audioContext) {
+                    audioContext.suspend();
+                }
+            } else {
+                if (audioContext) {
+                    audioContext.resume();
+                }
+            }
+        });
     </script>
 </body>
 </html>
