@@ -5,235 +5,194 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TalkingAI Emma</title>
     <style>
-        /* Reset defaults */
-        *, *::before, *::after {
+        * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
-        /* Base styles */
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            width: 100%;
-            overflow: hidden;
-            position: fixed;
-            background-color: #000; /* Prevents white flashing */
-        }
-
-        /* Background container styles */
-        .background-container {
+        .video-container {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             z-index: -1;
-            transition: opacity 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             overflow: hidden;
         }
 
-        /* Image styles */
-        .background-image {
-            height: 100vh; /* Use viewport height */
-            width: auto; /* Maintain aspect ratio */
-            object-fit: contain; /* Ensure no cropping */
-            max-width: none; /* Override max-width constraints */
+        video {
             position: absolute;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%); /* Center the image */
+            transform: translate(-50%, -50%);
+            object-fit: cover;
         }
 
-        /* Video styles */
-        .background-video {
-            height: 100vh; /* Use viewport height */
-            width: auto; /* Maintain aspect ratio */
-            object-fit: contain; /* Ensure no cropping */
-            max-width: none; /* Override max-width constraints */
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%); /* Center the video */
-        }
-
-        /* Hide elements when needed */
-        .hidden {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        /* Widget styles */
-        elevenlabs-convai {
+        .widget-container {
             position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            z-index: 1;
-            padding-bottom: env(safe-area-inset-bottom); /* For devices with bottom bars */
-        }
-
-        /* Media queries for different aspect ratios */
-        @media (max-aspect-ratio: 16/9) {
-            .background-image,
-            .background-video {
-                height: 100vh;
-                width: auto;
-            }
-        }
-
-        @media (min-aspect-ratio: 16/9) {
-            .background-image,
-            .background-video {
-                width: 100vw;
-                height: auto;
-            }
-        }
-
-        /* Mobile optimization */
-        @media screen and (max-width: 768px) {
-            .background-container {
-                align-items: center; /* Center vertically on mobile */
-            }
-            
-            .background-image,
-            .background-video {
-                height: 100vh;
-                width: auto;
-                max-width: none;
-            }
-        }
-
-        /* Portrait mode optimization */
-        @media screen and (orientation: portrait) {
-            .background-image,
-            .background-video {
-                height: 100vh;
-                width: auto;
-            }
-        }
-
-        /* Landscape mode optimization */
-        @media screen and (orientation: landscape) {
-            .background-image,
-            .background-video {
-                width: 100vw;
-                height: auto;
-                min-height: 100vh;
-            }
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
         }
     </style>
 </head>
 <body>
-    <!-- Default background container -->
-    <div class="background-container" id="defaultBg">
-        <img class="background-image" src="emma.png" alt="Emma Background">
-    </div>
-
-    <!-- Speaking background container -->
-    <div class="background-container hidden" id="speakingBg">
-        <video class="background-video" id="speakingVideo" autoplay loop muted playsinline>
-            <source src="speaking.mp4" type="video/mp4">
+    <div class="video-container">
+        <video 
+            id="backgroundVideo"
+            autoplay 
+            muted 
+            playsinline
+            poster="emma.png">
+            <source id="videoSource" src="hello.mp4" type="video/mp4">
             Your browser does not support the video tag.
         </video>
     </div>
 
-    <!-- ElevenLabs widget -->
-    <elevenlabs-convai 
-        id="convai-widget" 
-        agent-id="UFCiWykxf7I8pgANcBuJ">
-    </elevenlabs-convai>
-
-    <!-- Scripts -->
-    <script src="https://elevenlabs.io/convai-widget/index.js"></script>
-
+    <div class="widget-container">
+        <elevenlabs-convai 
+            id="convai-widget" 
+            agent-id="UFCiWykxf7I8pgANcBuJ">
+        </elevenlabs-convai>
+    </div>
+    
+    <script src="https://elevenlabs.io/convai-widget/index.js" async type="text/javascript"></script>
     <script>
-        // Get DOM elements
-        const defaultBg = document.getElementById('defaultBg');
-        const speakingBg = document.getElementById('speakingBg');
-        const convaiWidget = document.getElementById('convai-widget');
-        const speakingVideo = document.getElementById('speakingVideo');
+        let audioContext = null;
+        let isAudioInitialized = false;
 
-        // Function to switch background
-        function switchBackground(isSpeaking) {
-            console.log('Switching background:', isSpeaking ? 'speaking' : 'not speaking');
+        // Function to handle initial video and background setup
+        function setupInitialVideo() {
+            const backgroundVideo = document.getElementById('backgroundVideo');
             
-            if (isSpeaking) {
-                defaultBg.classList.add('hidden');
-                speakingBg.classList.remove('hidden');
-                speakingVideo.play().catch(error => {
-                    console.error('Error playing video:', error);
+            // Play hello.mp4 once
+            backgroundVideo.play().catch(error => {
+                console.warn('Video playback error:', error);
+            });
+
+            // After video ends (5.6 seconds), show emma.png
+            setTimeout(() => {
+                backgroundVideo.style.display = 'none';  // Hide video
+                // The poster (emma.png) will show automatically
+            }, 5600); // 5.6 seconds
+        }
+
+        // Function to switch video source for chat responses
+        function switchVideoSource(newSource) {
+            const videoSource = document.getElementById('videoSource');
+            const backgroundVideo = document.getElementById('backgroundVideo');
+            
+            // Show video element if it was hidden
+            backgroundVideo.style.display = 'block';
+            
+            const currentSrc = videoSource.src.split('/').pop();
+            if (currentSrc !== newSource) {
+                videoSource.src = newSource;
+                backgroundVideo.load();
+                backgroundVideo.play().catch(error => {
+                    console.warn('Video playback error:', error);
                 });
-            } else {
-                defaultBg.classList.remove('hidden');
-                speakingBg.classList.add('hidden');
-                speakingVideo.pause();
             }
         }
 
-        // Initialize when document is loaded
-        document.addEventListener('DOMContentLoaded', () => {
-            console.log('DOM Content Loaded, initializing...');
-
-            // Wait for the widget to be ready
-            convaiWidget.addEventListener('ready', (event) => {
-                console.log('Widget ready event received');
-                
-                // Set up client tools
-                if (event.detail?.signedUrl) {
-                    window.clientTools = {
-                        switchBackground: async (parameters) => {
-                            console.log('switchBackground called with parameters:', parameters);
-                            switchBackground(parameters.speaking);
-                            return { success: true };
-                        }
-                    };
-                }
-            });
-
-            // Audio event listeners
-            convaiWidget.addEventListener('audiostart', () => {
-                console.log('Audio started');
-                switchBackground(true);
-            });
-
-            convaiWidget.addEventListener('audioend', () => {
-                console.log('Audio ended');
-                switchBackground(false);
-            });
-
-            // Debug event listeners
-            ['message', 'error', 'statechange', 'conversationstart', 'conversationend'].forEach(eventName => {
-                convaiWidget.addEventListener(eventName, (event) => {
-                    console.log(`Event ${eventName}:`, event.detail);
-                });
-            });
-        });
-
-        // Video event listeners
-        speakingVideo.addEventListener('loadeddata', () => {
-            console.log('Video loaded and ready');
-        });
-
-        speakingVideo.addEventListener('error', (e) => {
-            console.error('Video error:', e);
-        });
-
-        // Handle window resize
-        window.addEventListener('resize', () => {
-            // Force layout recalculation
-            defaultBg.style.display = 'none';
-            defaultBg.offsetHeight; // Trigger reflow
-            defaultBg.style.display = '';
+        // Function to initialize audio context after user interaction
+        function initializeAudioContext() {
+            if (isAudioInitialized) return;
             
-            speakingBg.style.display = 'none';
-            speakingBg.offsetHeight; // Trigger reflow
-            speakingBg.style.display = '';
+            try {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                isAudioInitialized = true;
+                setupAudioDetection();
+            } catch (error) {
+                console.error('Failed to initialize AudioContext:', error);
+            }
+        }
+
+        // Modified audio detection setup
+        function setupAudioDetection() {
+            if (!audioContext) return;
+
+            try {
+                const analyser = audioContext.createAnalyser();
+                analyser.fftSize = 256;
+                const dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+                // Wait for the widget to be fully loaded
+                function checkForAudio() {
+                    const convaiWidget = document.getElementById('convai-widget');
+                    if (!convaiWidget || !convaiWidget.shadowRoot) {
+                        setTimeout(checkForAudio, 500);
+                        return;
+                    }
+
+                    const widgetAudio = convaiWidget.shadowRoot.querySelector('audio');
+                    if (!widgetAudio) {
+                        setTimeout(checkForAudio, 500);
+                        return;
+                    }
+
+                    const source = audioContext.createMediaElementSource(widgetAudio);
+                    source.connect(analyser);
+                    analyser.connect(audioContext.destination);
+
+                    let isSpeaking = false;
+
+                    function detectAudio() {
+                        analyser.getByteFrequencyData(dataArray);
+                        const audioLevel = dataArray.reduce((sum, value) => sum + value, 0);
+                        
+                        if (audioLevel > 10) {
+                            if (!isSpeaking) {
+                                isSpeaking = true;
+                                switchVideoSource('speaking.mp4');
+                            }
+                        } else {
+                            if (isSpeaking) {
+                                isSpeaking = false;
+                                switchVideoSource('hello.mp4');
+                            }
+                        }
+                        requestAnimationFrame(detectAudio);
+                    }
+
+                    detectAudio();
+                }
+
+                checkForAudio();
+            } catch (error) {
+                console.error('Error in audio detection setup:', error);
+            }
+        }
+
+        // Initialize when the page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set up initial video behavior
+            setupInitialVideo();
+            
+            // Add click listener to initialize audio context
+            document.addEventListener('click', initializeAudioContext, { once: true });
+            
+            // Add touch listener for mobile devices
+            document.addEventListener('touchstart', initializeAudioContext, { once: true });
+        });
+
+        // Handle visibility changes
+        document.addEventListener('visibilitychange', () => {
+            if (document.hidden) {
+                if (audioContext) {
+                    audioContext.suspend();
+                }
+            } else {
+                if (audioContext) {
+                    audioContext.resume();
+                }
+            }
         });
     </script>
 </body>
