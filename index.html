@@ -13,7 +13,6 @@
             overflow: hidden;
             position: fixed;
         }
-
         .background-container {
             position: fixed;
             top: 0;
@@ -23,7 +22,6 @@
             z-index: -1;
             background-color: #000;
         }
-
         .background-image {
             width: 100%;
             height: 100%;
@@ -32,7 +30,6 @@
             max-width: 100vw;
             max-height: 100vh;
         }
-
         elevenlabs-convai {
             position: fixed;
             bottom: 0;
@@ -41,7 +38,19 @@
             z-index: 1;
             padding-bottom: env(safe-area-inset-bottom);
         }
-
+        #autoplayMessage {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            z-index: 1000;
+            display: none;
+        }
         @media screen and (max-width: 768px) {
             .background-image {
                 object-position: center center;
@@ -53,49 +62,48 @@
     <div class="background-container">
         <img class="background-image" src="./emma.png" alt="Emma Background">
     </div>
-
-    <!-- Preload audio for faster loading -->
-    <audio id="welcomeAudio" preload="auto">
+    <div id="autoplayMessage">Click anywhere to start</div>
+    <audio id="welcomeAudio" preload="auto" muted="muted">
         <source src="hey.mp3" type="audio/mpeg">
     </audio>
-
     <elevenlabs-convai agent-id="UFCiWykxf7I8pgANcBuJ"></elevenlabs-convai>
     <script src="https://elevenlabs.io/convai-widget/index.js" async></script>
-
     <script>
-        // Function to play audio
-        function playWelcomeAudio() {
-            const audio = document.getElementById('welcomeAudio');
-            // Reset audio to beginning
-            audio.currentTime = 0;
-            // Set volume
-            audio.volume = 1.0;
-            // Promise-based play with retry
-            const playAttempt = audio.play();
-            if (playAttempt !== undefined) {
-                playAttempt.catch(error => {
-                    console.log('Auto-play failed:', error);
-                    // Add click event listener if autoplay fails
-                    document.addEventListener('click', function playOnClick() {
-                        audio.play();
-                        document.removeEventListener('click', playOnClick);
-                    }, { once: true });
-                });
+        const audio = document.getElementById('welcomeAudio');
+        const autoplayMessage = document.getElementById('autoplayMessage');
+        
+        async function attemptAutoplay() {
+            try {
+                audio.muted = false;
+                await audio.play();
+                autoplayMessage.style.display = 'none';
+            } catch (error) {
+                console.log('Autoplay failed:', error);
+                // Show message if autoplay fails
+                autoplayMessage.style.display = 'block';
+                // Setup click handler for user interaction
+                document.addEventListener('click', async () => {
+                    try {
+                        audio.muted = false;
+                        await audio.play();
+                        autoplayMessage.style.display = 'none';
+                    } catch (e) {
+                        console.error('Play failed even with user interaction:', e);
+                    }
+                }, { once: true });
             }
         }
 
-        // Try to play when page loads
+        // Try to play as soon as possible
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', playWelcomeAudio);
+            document.addEventListener('DOMContentLoaded', attemptAutoplay);
         } else {
-            playWelcomeAudio();
+            attemptAutoplay();
         }
 
-        // Backup: also try to play when window loads
-        window.addEventListener('load', playWelcomeAudio);
-
-        // Additional attempt after a short delay
-        setTimeout(playWelcomeAudio, 1000);
+        // Backup attempts
+        window.addEventListener('load', attemptAutoplay);
+        document.addEventListener('touchstart', attemptAutoplay, { once: true });
     </script>
 </body>
 </html>
