@@ -33,12 +33,12 @@
         elevenlabs-convai {
             position: fixed;
             bottom: 0;
-            left: 120;
+            left: 120px;
             width: auto;
             z-index: 1;
-            padding-bottom: env(safe-area-inset-bottom); /* For devices with bottom bars /
+            padding-bottom: env(safe-area-inset-bottom); /* For devices with bottom bars */
         }
-        / Additional mobile optimizations */
+        /* Additional mobile optimizations */
         @media screen and (max-width: 768px) {
             .background-image {
                 object-position: center center;
@@ -51,12 +51,31 @@
     <div class="background-container">
         <img class="background-image" src="./emma.png" alt="Emma Background">
     </div>
+
+    <!-- Audio Element -->
+    <audio id="welcomeAudio" style="display: none;">
+        <source src="hey.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
     <!-- ElevenLabs Convai Widget -->
     <elevenlabs-convai agent-id="UFCiWykxf7I8pgANcBuJ"></elevenlabs-convai>
 
-    <!-- ElevenLabs Convai Widget Script -->
+    <!-- Scripts -->
     <script src="https://elevenlabs.io/convai-widget/index.js" async type="text/javascript"></script>
+    <script>
+        // Play welcome audio when page loads
+        window.addEventListener('load', function() {
+            const audio = document.getElementById('welcomeAudio');
+            // Some browsers require user interaction before playing audio
+            try {
+                audio.play().catch(function(error) {
+                    console.log("Audio playback failed:", error);
+                });
+            } catch (error) {
+                console.log("Audio playback failed:", error);
+            }
+        });
+    </script>
 </body>
 </html>
-
-
