@@ -33,7 +33,7 @@
         elevenlabs-convai {
             position: fixed;
             bottom: 0;
-            left: -40px;
+            left: -80px;
             width: 100%;
             z-index: 1;
             padding-bottom: env(safe-area-inset-bottom);
@@ -49,48 +49,61 @@
     <div class="background-container">
         <img class="background-image" src="./emma.png" alt="Emma Background">
     </div>
-    <!-- Preload audio for faster loading -->
-    <audio id="welcomeAudio" preload="auto">
+    
+    <audio id="welcomeAudio">
         <source src="hey.mp3" type="audio/mpeg">
     </audio>
+    
     <elevenlabs-convai agent-id="UFCiWykxf7I8pgANcBuJ"></elevenlabs-convai>
+    
     <script src="https://elevenlabs.io/convai-widget/index.js" async></script>
-
     <script>
-        // Function to play audio
+        let hasPlayed = false;
+
         function playWelcomeAudio() {
+            if (hasPlayed) return;
+            
             const audio = document.getElementById('welcomeAudio');
+            
+            // Create a user interaction promise
+            const userInteraction = new Promise((resolve) => {
+                document.addEventListener('click', resolve, { once: true });
+                document.addEventListener('touchstart', resolve, { once: true });
+            });
 
-            // Reset audio to beginning
-            audio.currentTime = 0;
+            // Function to attempt playback
+            const attemptPlay = async () => {
+                try {
+                    await audio.play();
+                    hasPlayed = true;
+                    console.log('Audio played successfully');
+                } catch (error) {
+                    console.log('Autoplay failed, waiting for user interaction:', error);
+                    await userInteraction;
+                    await audio.play();
+                    hasPlayed = true;
+                }
+            };
 
+            // Load the audio file
+            audio.load();
+            
             // Set volume
             audio.volume = 1.0;
-
-            // Promise-based play with retry
-            const playAttempt = audio.play();
-
-            if (playAttempt !== undefined) {
-                playAttempt.catch(error => {
-                    console.log('Auto-play failed:', error);
-                    // Add click event listener if autoplay fails
-                    document.addEventListener('click', function playOnClick() {
-                        audio.play();
-                        document.removeEventListener('click', playOnClick);
-                    }, { once: true });
-                });
-            }
+            
+            // Attempt to play
+            attemptPlay();
         }
-        // Try to play when page loads
+
+        // Try to play as soon as possible
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', playWelcomeAudio);
         } else {
             playWelcomeAudio();
         }
-        // Backup: also try to play when window loads
+
+        // Backup attempt
         window.addEventListener('load', playWelcomeAudio);
-        // Additional attempt after a short delay
-        setTimeout(playWelcomeAudio, 1000);
     </script>
 </body>
 </html>
