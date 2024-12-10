@@ -44,25 +44,9 @@
             width: 100%;
             z-index: 1;
         }
-        #chatContainer {
-            background-color: rgba(0, 0, 0, 0.7);
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
-            width: 80%;
-            max-width: 400px;
-            margin: 60px auto 10px auto;
-            height: 200px;
-            overflow-y: auto;
-            z-index: 2;
-            position: relative;
-        }
-        .message {
-            margin: 10px 0;
-        }
         #startButton {
             display: block;
-            margin: 10px auto;
+            margin: 60px auto 10px auto;
             padding: 10px 20px;
             font-size: 16px;
             cursor: pointer;
@@ -93,7 +77,6 @@
         </video>
     </div>
     <div id="agentStatus">Status: Idle</div>
-    <div id="chatContainer"></div>
     <button id="startButton">Start Conversation</button>
     <elevenlabs-convai agent-id="UFCiWykxf7I8pgANcBuJ"></elevenlabs-convai>
     <script src="https://elevenlabs.io/convai-widget/index.js" async></script>
@@ -101,18 +84,9 @@
         import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
 
         document.getElementById('startButton').addEventListener('click', async () => {
-            const chatContainer = document.getElementById('chatContainer');
             const backgroundImage = document.getElementById('backgroundImage');
             const backgroundVideo = document.getElementById('backgroundVideo');
             const agentStatus = document.getElementById('agentStatus');
-
-            const appendMessage = (text) => {
-                const messageElement = document.createElement('p');
-                messageElement.classList.add('message');
-                messageElement.textContent = text;
-                chatContainer.appendChild(messageElement);
-                chatContainer.scrollTop = chatContainer.scrollHeight;
-            };
 
             try {
                 await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -126,7 +100,7 @@
                             backgroundVideo.currentTime = 0;
                             backgroundVideo.play();
                             agentStatus.textContent = 'Status: Speaking';
-                        } else {
+                        } else if (mode === 'listening') {
                             backgroundVideo.pause();
                             backgroundVideo.style.display = 'none';
                             backgroundImage.style.display = 'block';
@@ -134,24 +108,20 @@
                         }
                     },
                     onConnect: () => {
-                        appendMessage('Connected to the agent.');
-                        agentStatus.textContent = 'Status: Listening';
+                        agentStatus.textContent = 'Status: Connected';
                     },
                     onDisconnect: () => {
-                        appendMessage('Disconnected from the agent.');
                         agentStatus.textContent = 'Status: Disconnected';
                     },
                     onError: (error) => {
-                        appendMessage(`Error: ${error.message}`);
-                        agentStatus.textContent = 'Status: Error';
+                        agentStatus.textContent = `Status: Error - ${error.message}`;
                     },
                 });
 
                 // Optional: End the session after a certain condition
                 // await conversation.endSession();
             } catch (error) {
-                appendMessage(`Failed to start conversation: ${error.message}`);
-                agentStatus.textContent = 'Status: Error';
+                agentStatus.textContent = `Status: Error - ${error.message}`;
             }
         });
     </script>
