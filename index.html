@@ -83,15 +83,18 @@
     <script type="module">
         import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
 
-        document.getElementById('startButton').addEventListener('click', async () => {
+        let conversation = null;
+
+        const startConversation = async () => {
             const backgroundImage = document.getElementById('backgroundImage');
             const backgroundVideo = document.getElementById('backgroundVideo');
             const agentStatus = document.getElementById('agentStatus');
+            const startButton = document.getElementById('startButton');
 
             try {
                 await navigator.mediaDevices.getUserMedia({ audio: true });
 
-                const conversation = await Conversation.startSession({
+                conversation = await Conversation.startSession({
                     agentId: 'UFCiWykxf7I8pgANcBuJ',
                     onModeChange: (mode) => {
                         if (mode === 'speaking') {
@@ -109,19 +112,33 @@
                     },
                     onConnect: () => {
                         agentStatus.textContent = 'Status: Connected';
+                        startButton.textContent = 'Bye';
                     },
                     onDisconnect: () => {
                         agentStatus.textContent = 'Status: Disconnected';
+                        startButton.textContent = 'Start Conversation';
                     },
                     onError: (error) => {
                         agentStatus.textContent = `Status: Error - ${error.message}`;
                     },
                 });
-
-                // Optional: End the session after a certain condition
-                // await conversation.endSession();
             } catch (error) {
                 agentStatus.textContent = `Status: Error - ${error.message}`;
+            }
+        };
+
+        const endConversation = async () => {
+            if (conversation) {
+                await conversation.endSession();
+                conversation = null;
+            }
+        };
+
+        document.getElementById('startButton').addEventListener('click', async () => {
+            if (conversation) {
+                await endConversation();
+            } else {
+                await startConversation();
             }
         });
     </script>
