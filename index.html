@@ -68,45 +68,52 @@
     <button id="startButton">Start Conversation</button>
     <elevenlabs-convai agent-id="UFCiWykxf7I8pgANcBuJ"></elevenlabs-convai>
     <script src="https://elevenlabs.io/convai-widget/index.js" async></script>
-    <script type="module">
-        import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
+<script type="module">
+  import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
 
-        document.getElementById('startButton').addEventListener('click', async () => {
-            const chatContainer = document.getElementById('chatContainer');
+  document.getElementById('startButton').addEventListener('click', async () => {
+    const chatContainer = document.getElementById('chatContainer');
 
-            const appendMessage = (text) => {
-                const messageElement = document.createElement('p');
-                messageElement.classList.add('message');
-                messageElement.textContent = text;
-                chatContainer.appendChild(messageElement);
-                chatContainer.scrollTop = chatContainer.scrollHeight;
-            };
+    const appendMessage = (text) => {
+      const messageElement = document.createElement('p');
+      messageElement.classList.add('message');
+      messageElement.textContent = text;
+      chatContainer.appendChild(messageElement);
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+    };
 
-            try {
-                await navigator.mediaDevices.getUserMedia({ audio: true });
+    try {
+      await navigator.mediaDevices.getUserMedia({ audio: true });
 
-                const conversation = await Conversation.startSession({
-                    agentId: 'UFCiWykxf7I8pgANcBuJ',
-                    onMessage: (message) => {
-                        appendMessage(`Agent: ${message}`);
-                    },
-                    onConnect: () => {
-                        appendMessage('Connected to the agent.');
-                    },
-                    onDisconnect: () => {
-                        appendMessage('Disconnected from the agent.');
-                    },
-                    onError: (error) => {
-                        appendMessage(`Error: ${error.message}`);
-                    },
-                });
+      const conversation = await Conversation.startSession({
+        agentId: 'UFCiWykxf7I8pgANcBuJ',
+        onMessage: (message) => {
+          // Check if the message object has a 'text' property
+          if (message && message.text) {
+            appendMessage(`Agent: ${message.text}`);
+          } else {
+            appendMessage('Agent sent a message without text content.');
+          }
+        },
+        onConnect: () => {
+          appendMessage('Connected to the agent.');
+        },
+        onDisconnect: () => {
+          appendMessage('Disconnected from the agent.');
+        },
+        onError: (error) => {
+          appendMessage(`Error: ${error.message}`);
+        },
+      });
 
-                // Optional: End the session after a certain condition
-                // await conversation.endSession();
-            } catch (error) {
-                appendMessage(`Failed to start conversation: ${error.message}`);
-            }
-        });
+      // Optional: End the session after a certain condition
+      // await conversation.endSession();
+    } catch (error) {
+      appendMessage(`Failed to start conversation: ${error.message}`);
+    }
+  });
+</script>
+
 
         // Function to play audio
         function playWelcomeAudio() {
