@@ -76,7 +76,7 @@
 <body>
     <div class="background-container">
         <img class="background-image" id="backgroundImage" src="./emma.png" alt="Emma Background">
-        <video class="background-video" id="backgroundVideo" playsinline muted>
+        <video class="background-video" id="backgroundVideo" playsinline muted loop>
             <source src="./emma.mp4" type="video/mp4">
             Your browser does not support the video tag.
         </video>
@@ -91,34 +91,42 @@
         let conversation = null;
         let currentMode = 'idle';
 
-        const updateStatus = (mode) => {
+        const updateMode = (mode) => {
+            console.log('Mode changed to:', mode); // Debug log
             const backgroundImage = document.getElementById('backgroundImage');
             const backgroundVideo = document.getElementById('backgroundVideo');
             const agentStatus = document.getElementById('agentStatus');
 
-            if (mode === currentMode) return;
             currentMode = mode;
 
-            if (mode === 'speaking') {
-                backgroundImage.style.display = 'none';
-                backgroundVideo.style.display = 'block';
-                backgroundVideo.currentTime = 0;
-                backgroundVideo.play().catch(console.error);
-                agentStatus.textContent = 'Status: Speaking';
-            } else if (mode === 'listening') {
-                if (backgroundVideo.played.length > 0) {
+            switch (mode) {
+                case 'speaking':
+                    console.log('Switching to speaking mode'); // Debug log
+                    backgroundImage.style.display = 'none';
+                    backgroundVideo.style.display = 'block';
+                    backgroundVideo.play().catch(e => console.error('Video play error:', e));
+                    agentStatus.textContent = 'Status: Speaking';
+                    break;
+                    
+                case 'listening':
+                    console.log('Switching to listening mode'); // Debug log
                     backgroundVideo.pause();
-                }
-                backgroundVideo.style.display = 'none';
-                backgroundImage.style.display = 'block';
-                agentStatus.textContent = 'Status: Listening';
-            } else if (mode === 'idle') {
-                if (backgroundVideo.played.length > 0) {
+                    backgroundVideo.style.display = 'none';
+                    backgroundImage.style.display = 'block';
+                    agentStatus.textContent = 'Status: Listening';
+                    break;
+                    
+                case 'idle':
+                    console.log('Switching to idle mode'); // Debug log
                     backgroundVideo.pause();
-                }
-                backgroundVideo.style.display = 'none';
-                backgroundImage.style.display = 'block';
-                agentStatus.textContent = 'Status: Idle';
+                    backgroundVideo.style.display = 'none';
+                    backgroundImage.style.display = 'block';
+                    agentStatus.textContent = 'Status: Idle';
+                    break;
+                    
+                default:
+                    console.log('Unknown mode:', mode); // Debug log
+                    break;
             }
         };
 
@@ -126,43 +134,56 @@
             const startButton = document.getElementById('startButton');
             
             try {
-                await navigator.mediaDevices.getUserMedia({ audio: true });
+                // Request microphone access
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                console.log('Microphone access granted'); // Debug log
 
+                // Initialize the conversation
                 conversation = await Conversation.startSession({
                     agentId: 'UFCiWykxf7I8pgANcBuJ',
                     onModeChange: (mode) => {
-                        updateStatus(mode);
+                        console.log('onModeChange called with mode:', mode); // Debug log
+                        updateMode(mode);
                     },
                     onConnect: () => {
-                        updateStatus('listening');
+                        console.log('Connected to conversation'); // Debug log
+                        updateMode('listening');
                         startButton.textContent = 'End Conversation';
                     },
                     onDisconnect: () => {
-                        updateStatus('idle');
+                        console.log('Disconnected from conversation'); // Debug log
+                        updateMode('idle');
                         startButton.textContent = 'Start Conversation';
+                    },
+                    onMessage: (message) => {
+                        console.log('Received message:', message); // Debug log
                     },
                     onError: (error) => {
                         console.error('Conversation error:', error);
-                        updateStatus('idle');
-                        agentStatus.textContent = `Status: Error - ${error.message}`;
+                        updateMode('idle');
+                        document.getElementById('agentStatus').textContent = `Status: Error - ${error.message}`;
                     }
                 });
+
+                console.log('Conversation session started successfully'); // Debug log
             } catch (error) {
-                console.error('Setup error:', error);
-                updateStatus('idle');
-                agentStatus.textContent = `Status: Error - ${error.message}`;
+                console.error('Failed to start conversation:', error);
+                updateMode('idle');
+                document.getElementById('agentStatus').textContent = `Status: Error - ${error.message}`;
             }
         };
 
         const endConversation = async () => {
             if (conversation) {
                 try {
+                    console.log('Ending conversation'); // Debug log
                     await conversation.endSession();
+                    console.log('Conversation ended successfully'); // Debug log
                 } catch (error) {
-                    console.error('End session error:', error);
+                    console.error('Error ending conversation:', error);
                 } finally {
                     conversation = null;
-                    updateStatus('idle');
+                    updateMode('idle');
                 }
             }
         };
@@ -175,8 +196,14 @@
             }
         });
 
-        // Initial status
-        updateStatus('idle');
+        // Set initial status
+        updateMode('idle');
+
+        // Add debugging for video events
+        const video = document.getElementById('backgroundVideo');
+        video.addEventListener('play', () => console.log('Video started playing'));
+        video.addEventListener('pause', () => console.log('Video paused'));
+        video.addEventListener('error', (e) => console.error('Video error:', e));
     </script>
 </body>
 </html>
