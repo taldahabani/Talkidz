@@ -30,6 +30,21 @@
             max-width: 100vw;
             max-height: 100vh;
         }
+        #chatContainer {
+            background-color: black;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            width: 90%;
+            max-width: 600px;
+            margin: 20px auto;
+            height: 400px;
+            overflow-y: auto;
+            font-family: Arial, sans-serif;
+        }
+        .message {
+            margin: 10px 0;
+        }
         elevenlabs-convai {
             position: fixed;
             bottom: 0;
@@ -49,26 +64,59 @@
     <div class="background-container">
         <img class="background-image" src="./emma.png" alt="Emma Background">
     </div>
-    <!-- Preload audio for faster loading -->
-    <audio id="welcomeAudio" preload="auto">
-        <source src="hey.mp3" type="audio/mpeg">
-    </audio>
+    <div id="chatContainer"></div>
+    <button id="startButton">Start Conversation</button>
     <elevenlabs-convai agent-id="UFCiWykxf7I8pgANcBuJ"></elevenlabs-convai>
     <script src="https://elevenlabs.io/convai-widget/index.js" async></script>
-    <script>
+    <script type="module">
+        import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
+
+        document.getElementById('startButton').addEventListener('click', async () => {
+            const chatContainer = document.getElementById('chatContainer');
+
+            const appendMessage = (text) => {
+                const messageElement = document.createElement('p');
+                messageElement.classList.add('message');
+                messageElement.textContent = text;
+                chatContainer.appendChild(messageElement);
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            };
+
+            try {
+                await navigator.mediaDevices.getUserMedia({ audio: true });
+
+                const conversation = await Conversation.startSession({
+                    agentId: 'UFCiWykxf7I8pgANcBuJ',
+                    onMessage: (message) => {
+                        appendMessage(`Agent: ${message}`);
+                    },
+                    onConnect: () => {
+                        appendMessage('Connected to the agent.');
+                    },
+                    onDisconnect: () => {
+                        appendMessage('Disconnected from the agent.');
+                    },
+                    onError: (error) => {
+                        appendMessage(`Error: ${error.message}`);
+                    },
+                });
+
+                // Optional: End the session after a certain condition
+                // await conversation.endSession();
+            } catch (error) {
+                appendMessage(`Failed to start conversation: ${error.message}`);
+            }
+        });
+
         // Function to play audio
         function playWelcomeAudio() {
             const audio = document.getElementById('welcomeAudio');
-            // Reset audio to beginning
             audio.currentTime = 0;
-            // Set volume
             audio.volume = 1.0;
-            // Promise-based play with retry
             const playAttempt = audio.play();
             if (playAttempt !== undefined) {
                 playAttempt.catch(error => {
                     console.log('Auto-play failed:', error);
-                    // Add click event listener if autoplay fails
                     document.addEventListener('click', function playOnClick() {
                         audio.play();
                         document.removeEventListener('click', playOnClick);
@@ -76,15 +124,14 @@
                 });
             }
         }
-        // Try to play when page loads
+
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', playWelcomeAudio);
         } else {
             playWelcomeAudio();
         }
-        // Backup: also try to play when window loads
+
         window.addEventListener('load', playWelcomeAudio);
-        // Additional attempt after a short delay
         setTimeout(playWelcomeAudio, 1000);
     </script>
 </body>
