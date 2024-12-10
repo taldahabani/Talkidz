@@ -91,34 +91,35 @@
         let conversation = null;
         let currentMode = 'idle';
 
-        const updateStatus = (mode) => {
+        const updateStatus = (mode, message = null) => {
             const backgroundImage = document.getElementById('backgroundImage');
             const backgroundVideo = document.getElementById('backgroundVideo');
             const agentStatus = document.getElementById('agentStatus');
 
-            if (mode === currentMode) return;
-            currentMode = mode;
+            if (mode !== currentMode || message) {
+                currentMode = mode;
 
-            if (mode === 'speaking') {
-                backgroundImage.style.display = 'none';
-                backgroundVideo.style.display = 'block';
-                backgroundVideo.currentTime = 0;
-                backgroundVideo.play().catch(console.error);
-                agentStatus.textContent = 'Status: Speaking';
-            } else if (mode === 'listening') {
-                if (backgroundVideo.played.length > 0) {
-                    backgroundVideo.pause();
+                if (mode === 'speaking') {
+                    backgroundImage.style.display = 'none';
+                    backgroundVideo.style.display = 'block';
+                    backgroundVideo.currentTime = 0;
+                    backgroundVideo.play().catch(console.error);
+                    agentStatus.textContent = message ? `Speaking: ${message}` : 'Status: Speaking';
+                } else if (mode === 'listening') {
+                    if (backgroundVideo.played.length > 0) {
+                        backgroundVideo.pause();
+                    }
+                    backgroundVideo.style.display = 'none';
+                    backgroundImage.style.display = 'block';
+                    agentStatus.textContent = message ? `Listening: ${message}` : 'Status: Listening';
+                } else if (mode === 'idle') {
+                    if (backgroundVideo.played.length > 0) {
+                        backgroundVideo.pause();
+                    }
+                    backgroundVideo.style.display = 'none';
+                    backgroundImage.style.display = 'block';
+                    agentStatus.textContent = message ? `Idle: ${message}` : 'Status: Idle';
                 }
-                backgroundVideo.style.display = 'none';
-                backgroundImage.style.display = 'block';
-                agentStatus.textContent = 'Status: Listening';
-            } else if (mode === 'idle') {
-                if (backgroundVideo.played.length > 0) {
-                    backgroundVideo.pause();
-                }
-                backgroundVideo.style.display = 'none';
-                backgroundImage.style.display = 'block';
-                agentStatus.textContent = 'Status: Idle';
             }
         };
 
@@ -133,6 +134,10 @@
                     onModeChange: (mode) => {
                         updateStatus(mode);
                     },
+                    onMessage: (message) => {
+                        console.log('Received message:', message);
+                        updateStatus(currentMode, message);
+                    },
                     onConnect: () => {
                         updateStatus('listening');
                         startButton.textContent = 'End Conversation';
@@ -143,14 +148,12 @@
                     },
                     onError: (error) => {
                         console.error('Conversation error:', error);
-                        updateStatus('idle');
-                        agentStatus.textContent = `Status: Error - ${error.message}`;
+                        updateStatus('idle', `Error: ${error.message}`);
                     }
                 });
             } catch (error) {
                 console.error('Setup error:', error);
-                updateStatus('idle');
-                agentStatus.textContent = `Status: Error - ${error.message}`;
+                updateStatus('idle', `Error: ${error.message}`);
             }
         };
 
