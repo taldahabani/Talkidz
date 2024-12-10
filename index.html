@@ -1,91 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Emma AI Assistant</title>
-    <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            width: 100%;
-            overflow: hidden;
-            position: fixed;
-        }
-        .background-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            background-color: #000;
-        }
-        .background-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center;
-            max-width: 100vw;
-            max-height: 100vh;
-        }
-        elevenlabs-convai {
-            position: fixed;
-            bottom: 0;
-            left: -70px;
-            width: 100%;
-            z-index: 1;
-            padding-bottom: env(safe-area-inset-bottom);
-        }
-        @media screen and (max-width: 768px) {
-            .background-image {
-                object-position: center center;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ElevenLabs Agent Chat</title>
+  <style>
+    /* Style for the chat messages */
+    #chatContainer {
+      background-color: black;
+      color: white;
+      padding: 10px;
+      border-radius: 5px;
+      width: 90%;
+      max-width: 600px;
+      margin: 20px auto;
+      height: 400px;
+      overflow-y: auto;
+      font-family: Arial, sans-serif;
+    }
+
+    /* Style for individual messages */
+    .message {
+      margin: 10px 0;
+    }
+
+    /* Button style */
+    #startButton {
+      display: block;
+      margin: 20px auto;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-    <div class="background-container">
-        <img class="background-image" src="./emma.png" alt="Emma Background">
-    </div>
-    <!-- Preload audio for faster loading -->
-    <audio id="welcomeAudio" preload="auto">
-        <source src="hey.mp3" type="audio/mpeg">
-    </audio>
-    <elevenlabs-convai agent-id="UFCiWykxf7I8pgANcBuJ"></elevenlabs-convai>
-    <script src="https://elevenlabs.io/convai-widget/index.js" async></script>
-    <script>
-        // Function to play audio
-        function playWelcomeAudio() {
-            const audio = document.getElementById('welcomeAudio');
-            // Reset audio to beginning
-            audio.currentTime = 0;
-            // Set volume
-            audio.volume = 1.0;
-            // Promise-based play with retry
-            const playAttempt = audio.play();
-            if (playAttempt !== undefined) {
-                playAttempt.catch(error => {
-                    console.log('Auto-play failed:', error);
-                    // Add click event listener if autoplay fails
-                    document.addEventListener('click', function playOnClick() {
-                        audio.play();
-                        document.removeEventListener('click', playOnClick);
-                    }, { once: true });
-                });
-            }
-        }
-        // Try to play when page loads
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', playWelcomeAudio);
-        } else {
-            playWelcomeAudio();
-        }
-        // Backup: also try to play when window loads
-        window.addEventListener('load', playWelcomeAudio);
-        // Additional attempt after a short delay
-        setTimeout(playWelcomeAudio, 1000);
-    </script>
+  <h1 style="text-align: center;">Chat with ElevenLabs Agent</h1>
+
+  <!-- Chat container to display messages -->
+  <div id="chatContainer"></div>
+
+  <!-- Widget for ElevenLabs -->
+  <elevenlabs-convai agent-id="UFCiWykxf7I8pgANcBuJ"></elevenlabs-convai>
+  <script src="https://elevenlabs.io/convai-widget/index.js" async type="text/javascript"></script>
+
+  <!-- Script -->
+  <script src="script.js"></script>
 </body>
 </html>
