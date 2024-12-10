@@ -12,6 +12,7 @@
             width: 100%;
             overflow: hidden;
             position: fixed;
+            font-family: Arial, sans-serif;
         }
         .background-container {
             position: fixed;
@@ -40,10 +41,16 @@
             margin: 20px auto;
             height: 400px;
             overflow-y: auto;
-            font-family: Arial, sans-serif;
         }
         .message {
             margin: 10px 0;
+        }
+        #startButton {
+            display: block;
+            margin: 10px auto;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
         }
         elevenlabs-convai {
             position: fixed;
@@ -68,52 +75,49 @@
     <button id="startButton">Start Conversation</button>
     <elevenlabs-convai agent-id="UFCiWykxf7I8pgANcBuJ"></elevenlabs-convai>
     <script src="https://elevenlabs.io/convai-widget/index.js" async></script>
-<script type="module">
-  import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
+    <script type="module">
+        import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
 
-  document.getElementById('startButton').addEventListener('click', async () => {
-    const chatContainer = document.getElementById('chatContainer');
+        document.getElementById('startButton').addEventListener('click', async () => {
+            const chatContainer = document.getElementById('chatContainer');
 
-    const appendMessage = (text) => {
-      const messageElement = document.createElement('p');
-      messageElement.classList.add('message');
-      messageElement.textContent = text;
-      chatContainer.appendChild(messageElement);
-      chatContainer.scrollTop = chatContainer.scrollHeight;
-    };
+            const appendMessage = (text) => {
+                const messageElement = document.createElement('p');
+                messageElement.classList.add('message');
+                messageElement.textContent = text;
+                chatContainer.appendChild(messageElement);
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            };
 
-    try {
-      await navigator.mediaDevices.getUserMedia({ audio: true });
+            try {
+                await navigator.mediaDevices.getUserMedia({ audio: true });
 
-      const conversation = await Conversation.startSession({
-        agentId: 'UFCiWykxf7I8pgANcBuJ',
-        onMessage: (message) => {
-          // Check if the message object has a 'text' property
-          if (message && message.text) {
-            appendMessage(`Agent: ${message.text}`);
-          } else {
-            appendMessage('Agent sent a message without text content.');
-          }
-        },
-        onConnect: () => {
-          appendMessage('Connected to the agent.');
-        },
-        onDisconnect: () => {
-          appendMessage('Disconnected from the agent.');
-        },
-        onError: (error) => {
-          appendMessage(`Error: ${error.message}`);
-        },
-      });
+                const conversation = await Conversation.startSession({
+                    agentId: 'UFCiWykxf7I8pgANcBuJ',
+                    onMessage: (message) => {
+                        if (message && message.text) {
+                            appendMessage(`Agent: ${message.text}`);
+                        } else {
+                            appendMessage('Received a message without text content.');
+                        }
+                    },
+                    onConnect: () => {
+                        appendMessage('Connected to the agent.');
+                    },
+                    onDisconnect: () => {
+                        appendMessage('Disconnected from the agent.');
+                    },
+                    onError: (error) => {
+                        appendMessage(`Error: ${error.message}`);
+                    },
+                });
 
-      // Optional: End the session after a certain condition
-      // await conversation.endSession();
-    } catch (error) {
-      appendMessage(`Failed to start conversation: ${error.message}`);
-    }
-  });
-</script>
-
+                // Optional: End the session after a certain condition
+                // await conversation.endSession();
+            } catch (error) {
+                appendMessage(`Failed to start conversation: ${error.message}`);
+            }
+        });
 
         // Function to play audio
         function playWelcomeAudio() {
