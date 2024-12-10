@@ -85,26 +85,23 @@
     <div class="button-container">
         <button id="startButton">Start Conversation</button>
     </div>
-    
-    <!-- First, add the ElevenLabs client script -->
-    <script src="https://cdn.jsdelivr.net/npm/@11labs/client/dist/index.umd.js"></script>
-    
-    <script>
+    <script type="module">
+        import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
+
         let conversation = null;
         let currentMode = 'idle';
 
         const updateMode = (mode) => {
-            console.log('Mode changed to:', mode);
+            console.log('Mode changed to:', mode); // Debug log
             const backgroundImage = document.getElementById('backgroundImage');
             const backgroundVideo = document.getElementById('backgroundVideo');
             const agentStatus = document.getElementById('agentStatus');
 
-            if (currentMode === mode) return;
             currentMode = mode;
 
             switch (mode) {
                 case 'speaking':
-                    console.log('Agent is speaking now');
+                    console.log('Switching to speaking mode'); // Debug log
                     backgroundImage.style.display = 'none';
                     backgroundVideo.style.display = 'block';
                     backgroundVideo.play().catch(e => console.error('Video play error:', e));
@@ -112,7 +109,7 @@
                     break;
                     
                 case 'listening':
-                    console.log('Agent is listening now');
+                    console.log('Switching to listening mode'); // Debug log
                     backgroundVideo.pause();
                     backgroundVideo.style.display = 'none';
                     backgroundImage.style.display = 'block';
@@ -120,49 +117,55 @@
                     break;
                     
                 case 'idle':
-                    console.log('Agent is idle');
+                    console.log('Switching to idle mode'); // Debug log
                     backgroundVideo.pause();
                     backgroundVideo.style.display = 'none';
                     backgroundImage.style.display = 'block';
                     agentStatus.textContent = 'Status: Idle';
                     break;
+                    
+                default:
+                    console.log('Unknown mode:', mode); // Debug log
+                    break;
             }
         };
 
         const startConversation = async () => {
+            const startButton = document.getElementById('startButton');
+            
             try {
-                // First, request microphone access
-                await navigator.mediaDevices.getUserMedia({ audio: true });
-                console.log('Microphone access granted');
+                // Request microphone access
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                console.log('Microphone access granted'); // Debug log
 
-                // Initialize the conversation using the global ElevenLabs client
-                conversation = await window.ElevenLabs.Conversation.startSession({
+                // Initialize the conversation
+                conversation = await Conversation.startSession({
                     agentId: 'UFCiWykxf7I8pgANcBuJ',
+                    onModeChange: (mode) => {
+                        console.log('onModeChange called with mode:', mode); // Debug log
+                        updateMode(mode);
+                    },
                     onConnect: () => {
-                        console.log('Connected to conversation');
-                        updateMode('listening');
-                        document.getElementById('startButton').textContent = 'End Conversation';
+                        console.log('Connected to conversation'); // Debug log
+                        // No forced updateMode here; rely on onModeChange for state
+                        startButton.textContent = 'End Conversation';
                     },
                     onDisconnect: () => {
-                        console.log('Disconnected from conversation');
+                        console.log('Disconnected from conversation'); // Debug log
                         updateMode('idle');
-                        document.getElementById('startButton').textContent = 'Start Conversation';
+                        startButton.textContent = 'Start Conversation';
+                    },
+                    onMessage: (message) => {
+                        console.log('Received message:', message); // Debug log
                     },
                     onError: (error) => {
                         console.error('Conversation error:', error);
                         updateMode('idle');
                         document.getElementById('agentStatus').textContent = `Status: Error - ${error.message}`;
-                    },
-                    onModeChange: (mode) => {
-                        console.log('Mode change event received:', mode);
-                        updateMode(mode);
-                    },
-                    onMessage: (message) => {
-                        console.log('Message received:', message);
                     }
                 });
 
-                console.log('Conversation started successfully');
+                console.log('Conversation session started successfully'); // Debug log
             } catch (error) {
                 console.error('Failed to start conversation:', error);
                 updateMode('idle');
@@ -173,8 +176,9 @@
         const endConversation = async () => {
             if (conversation) {
                 try {
+                    console.log('Ending conversation'); // Debug log
                     await conversation.endSession();
-                    console.log('Conversation ended successfully');
+                    console.log('Conversation ended successfully'); // Debug log
                 } catch (error) {
                     console.error('Error ending conversation:', error);
                 } finally {
@@ -194,6 +198,12 @@
 
         // Set initial status
         updateMode('idle');
+
+        // Add debugging for video events
+        const video = document.getElementById('backgroundVideo');
+        video.addEventListener('play', () => console.log('Video started playing'));
+        video.addEventListener('pause', () => console.log('Video paused'));
+        video.addEventListener('error', (e) => console.error('Video error:', e));
     </script>
 </body>
 </html>
