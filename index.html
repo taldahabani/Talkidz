@@ -11,35 +11,39 @@
             height: 100%;
             width: 100%;
             overflow: hidden;
-            position: fixed;
+            position: relative;
             font-family: Arial, sans-serif;
+            background-color: #000;
         }
         .background-container {
-            position: fixed;
+            position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
             z-index: -1;
-            background-color: #000;
         }
-        .background-image {
+        .background-image, .background-video {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
             object-fit: cover;
             object-position: center;
-            max-width: 100vw;
-            max-height: 100vh;
+        }
+        .background-video {
+            display: none;
         }
         #chatContainer {
             background-color: black;
             color: white;
             padding: 10px;
             border-radius: 5px;
-            width: 90%;
-            max-width: 600px;
-            margin: 20px auto;
-            height: 400px;
+            width: 80%;
+            max-width: 400px;
+            margin: 10px auto;
+            height: 200px;
             overflow-y: auto;
         }
         .message {
@@ -61,7 +65,7 @@
             padding-bottom: env(safe-area-inset-bottom);
         }
         @media screen and (max-width: 768px) {
-            .background-image {
+            .background-image, .background-video {
                 object-position: center center;
             }
         }
@@ -70,6 +74,10 @@
 <body>
     <div class="background-container">
         <img class="background-image" src="./emma.png" alt="Emma Background">
+        <video class="background-video" id="backgroundVideo" muted>
+            <source src="./emma.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
     </div>
     <div id="chatContainer"></div>
     <button id="startButton">Start Conversation</button>
@@ -80,6 +88,8 @@
 
         document.getElementById('startButton').addEventListener('click', async () => {
             const chatContainer = document.getElementById('chatContainer');
+            const backgroundImage = document.querySelector('.background-image');
+            const backgroundVideo = document.getElementById('backgroundVideo');
 
             const appendMessage = (text) => {
                 const messageElement = document.createElement('p');
@@ -89,6 +99,19 @@
                 chatContainer.scrollTop = chatContainer.scrollHeight;
             };
 
+            const playBackgroundVideo = () => {
+                backgroundImage.style.display = 'none';
+                backgroundVideo.style.display = 'block';
+                backgroundVideo.play();
+            };
+
+            const showBackgroundImage = () => {
+                backgroundVideo.style.display = 'none';
+                backgroundImage.style.display = 'block';
+            };
+
+            backgroundVideo.addEventListener('ended', showBackgroundImage);
+
             try {
                 await navigator.mediaDevices.getUserMedia({ audio: true });
 
@@ -97,6 +120,7 @@
                     onMessage: (message) => {
                         if (message && message.text) {
                             appendMessage(`Agent: ${message.text}`);
+                            playBackgroundVideo();
                         } else {
                             appendMessage('Received a message without text content.');
                         }
@@ -118,32 +142,6 @@
                 appendMessage(`Failed to start conversation: ${error.message}`);
             }
         });
-
-        // Function to play audio
-        function playWelcomeAudio() {
-            const audio = document.getElementById('welcomeAudio');
-            audio.currentTime = 0;
-            audio.volume = 1.0;
-            const playAttempt = audio.play();
-            if (playAttempt !== undefined) {
-                playAttempt.catch(error => {
-                    console.log('Auto-play failed:', error);
-                    document.addEventListener('click', function playOnClick() {
-                        audio.play();
-                        document.removeEventListener('click', playOnClick);
-                    }, { once: true });
-                });
-            }
-        }
-
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', playWelcomeAudio);
-        } else {
-            playWelcomeAudio();
-        }
-
-        window.addEventListener('load', playWelcomeAudio);
-        setTimeout(playWelcomeAudio, 1000);
     </script>
 </body>
 </html>
