@@ -53,14 +53,6 @@
             z-index: 2;
             position: relative;
         }
-        elevenlabs-convai {
-            position: fixed;
-            bottom: 0;
-            left: -70px;
-            width: 100%;
-            z-index: 1;
-            padding-bottom: env(safe-area-inset-bottom);
-        }
         @media screen and (max-width: 768px) {
             .background-image, .background-video {
                 object-position: center center;
@@ -78,8 +70,6 @@
     </div>
     <div id="agentStatus">Status: Idle</div>
     <button id="startButton">Start Conversation</button>
-    <elevenlabs-convai agent-id="UFCiWykxf7I8pgANcBuJ"></elevenlabs-convai>
-    <script src="https://elevenlabs.io/convai-widget/index.js" async></script>
     <script type="module">
         import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
 
@@ -111,7 +101,7 @@
                         }
                     },
                     onConnect: () => {
-                        agentStatus.textContent = 'Status: Connected';
+                        agentStatus.textContent = 'Status: Listening';
                         startButton.textContent = 'Bye';
                     },
                     onDisconnect: () => {
