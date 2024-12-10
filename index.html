@@ -44,14 +44,27 @@
             width: 100%;
             z-index: 1;
         }
+        .button-container {
+            position: fixed;
+            bottom: 20px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            z-index: 2;
+        }
         #startButton {
-            display: block;
-            margin: 60px auto 10px auto;
-            padding: 10px 20px;
+            background-color: #FF69B4;
+            color: white;
+            border: none;
+            padding: 15px 30px;
             font-size: 16px;
             cursor: pointer;
-            z-index: 2;
-            position: relative;
+            border-radius: 25px;
+            transition: background-color 0.3s ease;
+        }
+        #startButton:hover {
+            background-color: #FF1493;
         }
         @media screen and (max-width: 768px) {
             .background-image, .background-video {
@@ -69,58 +82,88 @@
         </video>
     </div>
     <div id="agentStatus">Status: Idle</div>
-    <button id="startButton">Start Conversation</button>
+    <div class="button-container">
+        <button id="startButton">Start Conversation</button>
+    </div>
     <script type="module">
         import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
 
         let conversation = null;
+        let currentMode = 'idle';
 
-        const startConversation = async () => {
+        const updateStatus = (mode) => {
             const backgroundImage = document.getElementById('backgroundImage');
             const backgroundVideo = document.getElementById('backgroundVideo');
             const agentStatus = document.getElementById('agentStatus');
-            const startButton = document.getElementById('startButton');
 
+            if (mode === currentMode) return;
+            currentMode = mode;
+
+            if (mode === 'speaking') {
+                backgroundImage.style.display = 'none';
+                backgroundVideo.style.display = 'block';
+                backgroundVideo.currentTime = 0;
+                backgroundVideo.play().catch(console.error);
+                agentStatus.textContent = 'Status: Speaking';
+            } else if (mode === 'listening') {
+                if (backgroundVideo.played.length > 0) {
+                    backgroundVideo.pause();
+                }
+                backgroundVideo.style.display = 'none';
+                backgroundImage.style.display = 'block';
+                agentStatus.textContent = 'Status: Listening';
+            } else if (mode === 'idle') {
+                if (backgroundVideo.played.length > 0) {
+                    backgroundVideo.pause();
+                }
+                backgroundVideo.style.display = 'none';
+                backgroundImage.style.display = 'block';
+                agentStatus.textContent = 'Status: Idle';
+            }
+        };
+
+        const startConversation = async () => {
+            const startButton = document.getElementById('startButton');
+            
             try {
                 await navigator.mediaDevices.getUserMedia({ audio: true });
 
                 conversation = await Conversation.startSession({
                     agentId: 'UFCiWykxf7I8pgANcBuJ',
                     onModeChange: (mode) => {
-                        if (mode === 'speaking') {
-                            backgroundImage.style.display = 'none';
-                            backgroundVideo.style.display = 'block';
-                            backgroundVideo.currentTime = 0;
-                            backgroundVideo.play();
-                            agentStatus.textContent = 'Status: Speaking';
-                        } else if (mode === 'listening') {
-                            backgroundVideo.pause();
-                            backgroundVideo.style.display = 'none';
-                            backgroundImage.style.display = 'block';
-                            agentStatus.textContent = 'Status: Listening';
-                        }
+                        updateStatus(mode);
                     },
                     onConnect: () => {
-                        agentStatus.textContent = 'Status: Listening';
-                        startButton.textContent = 'Bye';
+                        updateStatus('listening');
+                        startButton.textContent = 'End Conversation';
                     },
                     onDisconnect: () => {
-                        agentStatus.textContent = 'Status: Disconnected';
+                        updateStatus('idle');
                         startButton.textContent = 'Start Conversation';
                     },
                     onError: (error) => {
+                        console.error('Conversation error:', error);
+                        updateStatus('idle');
                         agentStatus.textContent = `Status: Error - ${error.message}`;
-                    },
+                    }
                 });
             } catch (error) {
+                console.error('Setup error:', error);
+                updateStatus('idle');
                 agentStatus.textContent = `Status: Error - ${error.message}`;
             }
         };
 
         const endConversation = async () => {
             if (conversation) {
-                await conversation.endSession();
-                conversation = null;
+                try {
+                    await conversation.endSession();
+                } catch (error) {
+                    console.error('End session error:', error);
+                } finally {
+                    conversation = null;
+                    updateStatus('idle');
+                }
             }
         };
 
@@ -131,6 +174,9 @@
                 await startConversation();
             }
         });
+
+        // Initial status
+        updateStatus('idle');
     </script>
 </body>
 </html>
