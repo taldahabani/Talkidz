@@ -43,6 +43,7 @@
             top: 0;
             width: 100%;
             z-index: 1;
+            font-size: 16px;
         }
         .button-container {
             position: fixed;
@@ -91,10 +92,11 @@
         let conversation = null;
         let currentMode = 'idle';
 
+        const agentStatus = document.getElementById('agentStatus');
+
         const updateStatus = (mode) => {
             const backgroundImage = document.getElementById('backgroundImage');
             const backgroundVideo = document.getElementById('backgroundVideo');
-            const agentStatus = document.getElementById('agentStatus');
 
             if (mode === currentMode) return;
             currentMode = mode;
@@ -133,6 +135,13 @@
                     onDisconnect: () => {
                         updateStatus('idle');
                         startButton.textContent = 'Start Conversation';
+                    },
+                    onMessage: (message) => {
+                        // Check if the message contains an agent_response
+                        if (message.agent_response) {
+                            // Display agent's response in the top bar
+                            agentStatus.textContent = `Agent: ${message.agent_response}`;
+                        }
                     },
                     onError: (error) => {
                         console.error('Conversation error:', error);
