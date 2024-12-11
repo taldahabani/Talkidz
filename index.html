@@ -3,172 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ElevenLabs AI Assistant</title>
+    <title>ElevenLabs Conversational AI</title>
     <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            width: 100%;
-            overflow: hidden;
+        body {
             font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
-            display: flex;
-            flex-direction: column;
-        }
-        .top-bar {
-            background-color: #007BFF;
-            color: white;
             text-align: center;
+            padding: 20px;
+        }
+        #chatHistory {
+            border: 1px solid #ccc;
             padding: 10px;
-            font-size: 18px;
-            position: relative;
-            z-index: 10;
+            height: 300px;
+            overflow-y: scroll;
+            margin-bottom: 20px;
         }
-        .chat-container {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            padding: 10px;
-            box-sizing: border-box;
-            max-width: 600px;
-            margin: auto;
-            width: 100%;
+        .user-message {
+            text-align: right;
+            color: blue;
         }
-        .chat-history {
-            flex-grow: 1;
-            background: white;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 10px;
-            overflow-y: auto;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        .chat-message {
-            margin: 5px 0;
-        }
-        .button-container {
-            text-align: center;
-            margin: 10px 0;
+        .agent-message {
+            text-align: left;
+            color: green;
         }
         button {
-            background-color: #28a745;
-            color: white;
-            border: none;
-            padding: 15px 30px;
+            padding: 10px 20px;
+            margin: 5px;
             font-size: 16px;
-            border-radius: 25px;
             cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        button:hover {
-            background-color: #218838;
-        }
-        button:disabled {
-            background-color: #6c757d;
-            cursor: not-allowed;
         }
     </style>
 </head>
 <body>
-    <div class="top-bar">
-        Status: <span id="connectionStatus">Idle</span> | Agent is <span id="agentStatus">Listening</span>
-    </div>
-    <div class="chat-container">
-        <div class="chat-history" id="chatHistory">
-            <!-- Chat messages will be appended here -->
-        </div>
-        <div class="button-container">
-            <button id="startButton">Start Conversation</button>
-        </div>
-    </div>
+    <h1>ElevenLabs Conversational AI</h1>
+    <div id="chatHistory"></div>
+    <button id="startButton" style="display: inline-block;">Start Conversation</button>
+    <button id="stopButton" style="display: inline-block;" disabled>Stop Conversation</button>
+    <p>Status: <span id="connectionStatus">Disconnected</span></p>
+    <p>Agent is <span id="agentStatus">listening</span></p>
 
     <script type="module">
-        import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
+        import { Conversation } from 'https://cdn.jsdelivr.net/npm/@11labs/client';
 
-        let conversation = null;
-        let currentMode = 'idle';
+        const startButton = document.getElementById('startButton');
+        const stopButton = document.getElementById('stopButton');
+        const connectionStatus = document.getElementById('connectionStatus');
+        const agentStatus = document.getElementById('agentStatus');
+        const chatHistory = document.getElementById('chatHistory');
 
-        const updateStatus = (mode) => {
-            const connectionStatus = document.getElementById('connectionStatus');
-            const agentStatus = document.getElementById('agentStatus');
+        let conversation;
 
-            if (mode === 'speaking') {
-                agentStatus.textContent = 'Speaking';
-            } else if (mode === 'listening') {
-                agentStatus.textContent = 'Listening';
-            } else {
-                agentStatus.textContent = 'Idle';
-            }
-        };
-
-        const appendMessage = (sender, message) => {
-            const chatHistory = document.getElementById('chatHistory');
+        function appendMessage(sender, text) {
             const messageElement = document.createElement('div');
-            messageElement.className = 'chat-message';
-            messageElement.innerHTML = `<strong>${sender}:</strong> ${message}`;
+            messageElement.className = sender === 'User' ? 'user-message' : 'agent-message';
+            messageElement.textContent = `${sender}: ${text}`;
             chatHistory.appendChild(messageElement);
             chatHistory.scrollTop = chatHistory.scrollHeight;
-        };
+        }
 
-        const startConversation = async () => {
-            const startButton = document.getElementById('startButton');
-
+        async function startConversation() {
             try {
+                // Request microphone permission
                 await navigator.mediaDevices.getUserMedia({ audio: true });
 
+                // Start the conversation
                 conversation = await Conversation.startSession({
-                    agentId: 'UFCiWykxf7I8pgANcBuJ',
-                    onModeChange: (mode) => {
-                        updateStatus(mode.mode);
-                    },
+                    agentId: 'UFCiWykxf7I8pgANcBuJ', // Replace with your agent ID
                     onConnect: () => {
-                        document.getElementById('connectionStatus').textContent = 'Connected';
-                        updateStatus('listening');
-                        startButton.textContent = 'End Conversation';
+                        connectionStatus.textContent = 'Connected';
+                        startButton.disabled = true;
+                        stopButton.disabled = false;
                     },
                     onDisconnect: () => {
-                        document.getElementById('connectionStatus').textContent = 'Disconnected';
-                        updateStatus('idle');
-                        startButton.textContent = 'Start Conversation';
+                        connectionStatus.textContent = 'Disconnected';
+                        startButton.disabled = false;
+                        stopButton.disabled = true;
                     },
                     onMessage: (message) => {
-                        if (message.type === 'agent_response') {
-                            appendMessage('Agent', message.agent_response_event.agent_response);
+                        try {
+                            if (message.type === 'user_transcript') {
+                                appendMessage('User', message.user_transcription_event.user_transcript);
+                            } else if (message.type === 'agent_response') {
+                                const agentResponse = message.agent_response_event.agent_response;
+                                appendMessage('Agent', agentResponse);
+                            }
+                        } catch (error) {
+                            console.error('Error handling message:', error);
                         }
                     },
                     onError: (error) => {
-                        console.error('Conversation error:', error);
-                        updateStatus('idle');
+                        console.error('Error:', error);
+                    },
+                    onModeChange: (mode) => {
+                        agentStatus.textContent = mode === 'speaking' ? 'speaking' : 'listening';
                     }
                 });
             } catch (error) {
-                console.error('Error starting conversation:', error);
-                updateStatus('idle');
+                console.error('Failed to start conversation:', error);
             }
-        };
+        }
 
-        const endConversation = async () => {
+        async function stopConversation() {
             if (conversation) {
-                try {
-                    await conversation.endSession();
-                } catch (error) {
-                    console.error('Error ending conversation:', error);
-                } finally {
-                    conversation = null;
-                    updateStatus('idle');
-                }
+                await conversation.endSession();
+                conversation = null;
             }
-        };
+        }
 
-        document.getElementById('startButton').addEventListener('click', async () => {
-            if (conversation) {
-                await endConversation();
-            } else {
-                await startConversation();
-            }
-        });
+        startButton.addEventListener('click', startConversation);
+        stopButton.addEventListener('click', stopConversation);
     </script>
 </body>
 </html>
