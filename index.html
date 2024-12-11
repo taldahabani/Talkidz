@@ -167,17 +167,21 @@
                         document.getElementById('agentStatus').textContent = `Status: Error - ${error.message}`;
                     },
                     onMessage: (message) => {
-                        const agentResponse = typeof message === 'string' ? message : message.content;
-                        updateChatHistory('Agent', agentResponse);
+                        if (message && message.content) {
+                            updateChatHistory('Agent', message.content);
+                        }
                     }
                 });
 
-                // Wait for actual user input (e.g., from a mic or input box) to send message
-                const userInput = prompt('Say something:');
-                if (userInput) {
-                    updateChatHistory('User', userInput);
-                    await conversation.sendMessage({ content: userInput });
-                }
+                navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+                    const mediaRecorder = new MediaRecorder(stream);
+                    mediaRecorder.ondataavailable = async (event) => {
+                        const userInput = event.data;
+                        updateChatHistory('User', "Audio input received"); // Placeholder for user message
+                        await conversation.sendMessage({ audio: userInput });
+                    };
+                    mediaRecorder.start();
+                });
 
             } catch (error) {
                 console.error('Setup error:', error);
