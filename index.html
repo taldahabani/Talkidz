@@ -99,6 +99,10 @@
             transform: scale(1.05);
         }
 
+        button.active {
+            background-color: #808080;
+        }
+
         button:disabled {
             background-color: #6c757d;
             cursor: not-allowed;
@@ -112,6 +116,15 @@
             height: 100%;
             pointer-events: none;
             z-index: 100;
+        }
+
+        .preload-container {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            opacity: 0;
+            pointer-events: none;
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
@@ -141,10 +154,32 @@
 
         let conversation = null;
         let currentMode = 'idle';
+        let videosLoaded = { idle: false, speaking: false };
 
         const backgroundImage = document.querySelector('.background.image');
         const idleVideo = document.getElementById('idleVideo');
         const speakingVideo = document.getElementById('speakingVideo');
+        const startButton = document.getElementById('startButton');
+
+        // Preload videos
+        const preloadVideos = () => {
+            // Preload idle video
+            idleVideo.load();
+            idleVideo.addEventListener('loadeddata', () => {
+                console.log('Idle video preloaded');
+                videosLoaded.idle = true;
+            });
+
+            // Preload speaking video
+            speakingVideo.load();
+            speakingVideo.addEventListener('loadeddata', () => {
+                console.log('Speaking video preloaded');
+                videosLoaded.speaking = true;
+            });
+        };
+
+        // Call preload immediately
+        preloadVideos();
 
         // Confetti function
         const triggerConfetti = () => {
@@ -211,10 +246,10 @@
             idleVideo.pause();
             speakingVideo.pause();
 
-            if (mode === 'speaking') {
+            if (mode === 'speaking' && videosLoaded.speaking) {
                 speakingVideo.style.display = 'block';
                 speakingVideo.play().catch(console.error);
-            } else if (mode === 'listening') {
+            } else if (mode === 'listening' && videosLoaded.idle) {
                 idleVideo.style.display = 'block';
                 idleVideo.play().catch(console.error);
             } else {
@@ -238,11 +273,10 @@
         };
 
         const startConversation = async () => {
-            const startButton = document.getElementById('startButton');
-
             try {
                 await navigator.mediaDevices.getUserMedia({ audio: true });
-                triggerConfetti(); // Trigger confetti when starting conversation
+                triggerConfetti();
+                startButton.classList.add('active'); // Add grey color class
 
                 conversation = await Conversation.startSession({
                     agentId: 'UFCiWykxf7I8pgANcBuJ',
@@ -258,6 +292,7 @@
                         document.getElementById('connectionStatus').textContent = 'Disconnected';
                         updateStatus('idle');
                         startButton.textContent = 'Start Conversation';
+                        startButton.classList.remove('active'); // Remove grey color class
                     },
                     onMessage: (message) => {
                         if (message.type === 'agent_response') {
@@ -267,11 +302,13 @@
                     onError: (error) => {
                         console.error('Conversation error:', error);
                         updateStatus('idle');
+                        startButton.classList.remove('active'); // Remove grey color class
                     }
                 });
             } catch (error) {
                 console.error('Error starting conversation:', error);
                 updateStatus('idle');
+                startButton.classList.remove('active'); // Remove grey color class
             }
         };
 
@@ -284,6 +321,7 @@
                 } finally {
                     conversation = null;
                     updateStatus('idle');
+                    startButton.classList.remove('active'); // Remove grey color class
                 }
             }
         };
