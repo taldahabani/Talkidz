@@ -4,10 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Emma AI Assistant</title>
-    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.22.20/babel.min.js"></script>
-    <script src="https://unpkg.com/@11labs/react@0.0.1/dist/index.js"></script>
     <style>
         body, html {
             margin: 0;
@@ -16,7 +12,6 @@
             width: 100%;
             overflow: hidden;
             position: fixed;
-            font-family: Arial, sans-serif;
         }
 
         .background-container {
@@ -38,56 +33,64 @@
             max-height: 100vh;
         }
 
-        .controls-container {
+        .chat-history {
             position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 2;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-            padding: 20px;
-            background: rgba(0, 0, 0, 0.7);
-            border-radius: 12px;
+            top: 20px;
+            right: 20px;
+            width: 300px;
+            max-height: 70vh;
+            background-color: rgba(0, 0, 0, 0.7);
+            border-radius: 10px;
             color: white;
+            padding: 15px;
+            overflow-y: auto;
+            font-family: Arial, sans-serif;
+            z-index: 1000;
         }
 
-        .button {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
-            transition: all 0.3s ease;
+        .chat-message {
+            margin-bottom: 10px;
+            padding: 8px;
+            border-radius: 8px;
+            word-wrap: break-word;
         }
 
-        .start-button {
-            background-color: #4CAF50;
-            color: white;
+        .user-message {
+            background-color: rgba(0, 123, 255, 0.3);
+            margin-left: 20px;
         }
 
-        .stop-button {
-            background-color: #f44336;
-            color: white;
+        .assistant-message {
+            background-color: rgba(255, 255, 255, 0.1);
+            margin-right: 20px;
         }
 
-        .button:disabled {
-            background-color: #cccccc;
-            cursor: not-allowed;
+        .timestamp {
+            font-size: 0.8em;
+            color: rgba(255, 255, 255, 0.6);
+            margin-bottom: 4px;
         }
 
-        .status-text {
-            font-size: 14px;
-            margin: 5px 0;
+        elevenlabs-convai {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1;
+            padding-bottom: env(safe-area-inset-bottom);
         }
 
         @media screen and (max-width: 768px) {
-            .controls-container {
+            .chat-history {
                 width: 80%;
-                bottom: 40px;
+                left: 50%;
+                transform: translateX(-50%);
+                top: 10px;
+                max-height: 50vh;
+            }
+
+            .background-image {
+                object-position: center center;
             }
         }
     </style>
@@ -96,70 +99,103 @@
     <div class="background-container">
         <img class="background-image" src="./emma.png" alt="Emma Background">
     </div>
-    
-    <div id="root"></div>
 
-    <script type="text/babel">
-        const { useConversation } = window['@11labs/react'];
+    <div id="chatHistory" class="chat-history"></div>
 
-        function ConversationControl() {
-            const conversation = useConversation({
-                onConnect: () => console.log('Connected'),
-                onDisconnect: () => console.log('Disconnected'),
-                onMessage: (message) => console.log('Message:', message),
-                onError: (error) => console.error('Error:', error)
-            });
+    <elevenlabs-convai 
+        agent-id="UFCiWykxf7I8pgANcBuJ"
+        style="--elevenlabs-convai-button-color: #4CAF50;"
+    ></elevenlabs-convai>
 
-            const startConversation = async () => {
-                try {
-                    await navigator.mediaDevices.getUserMedia({ audio: true });
-                    await conversation.startSession({
-                        agentId: 'UFCiWykxf7I8pgANcBuJ'
-                    });
-                } catch (error) {
-                    console.error('Failed to start conversation:', error);
-                    alert('Failed to start conversation. Please ensure microphone access is granted.');
-                }
-            };
+    <script>
+        // Initialize chat history from localStorage if available
+        let chatHistory = JSON.parse(localStorage.getItem('chatHistory')) || [];
+        const maxHistoryLength = 50; // Maximum number of messages to keep
 
-            const stopConversation = async () => {
-                try {
-                    await conversation.endSession();
-                } catch (error) {
-                    console.error('Failed to stop conversation:', error);
-                }
-            };
-
-            return (
-                <div className="controls-container">
-                    <div className="status-text">
-                        Status: {conversation.status}
-                    </div>
-                    <div className="status-text">
-                        Agent is {conversation.isSpeaking ? 'speaking' : 'listening'}
-                    </div>
-                    <div>
-                        <button
-                            className={`button start-button`}
-                            onClick={startConversation}
-                            disabled={conversation.status === 'connected'}
-                        >
-                            Start Conversation
-                        </button>
-                        <button
-                            className={`button stop-button`}
-                            onClick={stopConversation}
-                            disabled={conversation.status !== 'connected'}
-                        >
-                            Stop Conversation
-                        </button>
-                    </div>
-                </div>
-            );
+        // Function to format timestamp
+        function formatTimestamp(date) {
+            return new Date(date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         }
 
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<ConversationControl />);
+        // Function to add message to chat history
+        function addMessageToHistory(message, isUser) {
+            const newMessage = {
+                text: message,
+                timestamp: new Date().toISOString(),
+                isUser: isUser
+            };
+
+            chatHistory.push(newMessage);
+
+            // Limit history length
+            if (chatHistory.length > maxHistoryLength) {
+                chatHistory = chatHistory.slice(-maxHistoryLength);
+            }
+
+            // Save to localStorage
+            localStorage.setItem('chatHistory', JSON.stringify(chatHistory));
+
+            // Update UI
+            updateChatHistoryUI();
+        }
+
+        // Function to update chat history UI
+        function updateChatHistoryUI() {
+            const chatHistoryElement = document.getElementById('chatHistory');
+            chatHistoryElement.innerHTML = chatHistory.map(msg => `
+                <div class="chat-message ${msg.isUser ? 'user-message' : 'assistant-message'}">
+                    <div class="timestamp">${formatTimestamp(msg.timestamp)}</div>
+                    ${msg.text}
+                </div>
+            `).join('');
+
+            // Scroll to bottom
+            chatHistoryElement.scrollTop = chatHistoryElement.scrollHeight;
+        }
+
+        // Function to clear chat history
+        function clearChatHistory() {
+            chatHistory = [];
+            localStorage.removeItem('chatHistory');
+            updateChatHistoryUI();
+        }
+
+        // Initialize chat history UI
+        updateChatHistoryUI();
+
+        // Set up event listeners for the ElevenLabs widget
+        document.addEventListener('DOMContentLoaded', () => {
+            const widget = document.querySelector('elevenlabs-convai');
+            
+            if (widget) {
+                // Listen for user messages
+                widget.addEventListener('user-speech-ended', (event) => {
+                    const userMessage = event.detail?.text;
+                    if (userMessage) {
+                        addMessageToHistory(userMessage, true);
+                    }
+                });
+
+                // Listen for assistant responses
+                widget.addEventListener('agent-response', (event) => {
+                    const assistantMessage = event.detail?.text;
+                    if (assistantMessage) {
+                        addMessageToHistory(assistantMessage, false);
+                    }
+                });
+            }
+        });
+
+        // Optional: Add keyboard shortcut to clear history (Ctrl+Shift+C)
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.shiftKey && e.key === 'C') {
+                if (confirm('Are you sure you want to clear the chat history?')) {
+                    clearChatHistory();
+                }
+            }
+        });
     </script>
+
+    <script src="https://elevenlabs.io/convai-widget/index.js" async></script>
 </body>
 </html>
