@@ -45,6 +45,16 @@
             z-index: 1;
             font-size: 16px;
         }
+        #chatHistory {
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 50px 10px 10px 10px; /* Adjusted margin to fit below the status bar */
+            background-color: #f9f9f9;
+            z-index: 1;
+            position: relative;
+        }
         .button-container {
             position: fixed;
             bottom: 20px;
@@ -83,6 +93,7 @@
         </video>
     </div>
     <div id="agentStatus">Status: Idle</div>
+    <div id="chatHistory"></div>
     <div class="button-container">
         <button id="startButton">Start Conversation</button>
     </div>
@@ -117,68 +128,15 @@
             }
         };
 
+        const updateChatHistory = (speaker, message) => {
+            const chatHistory = document.getElementById('chatHistory');
+            const messageElement = document.createElement('p');
+            messageElement.innerHTML = `<strong>${speaker}:</strong> ${message}`;
+            chatHistory.appendChild(messageElement);
+            chatHistory.scrollTop = chatHistory.scrollHeight; // Auto-scroll to bottom
+        };
+
         const startConversation = async () => {
-            const startButton = document.getElementById('startButton');
-            
-            try {
-                await navigator.mediaDevices.getUserMedia({ audio: true });
-
-                conversation = await Conversation.startSession({
-                    agentId: 'UFCiWykxf7I8pgANcBuJ',
-                    onModeChange: (mode) => {
-                        updateStatus(mode);
-                    },
-                    onConnect: () => {
-                        updateStatus('listening');
-                        startButton.textContent = 'End Conversation';
-                    },
-                    onDisconnect: () => {
-                        updateStatus('idle');
-                        startButton.textContent = 'Start Conversation';
-                    },
-                    onMessage: (message) => {
-                        // Check if the message contains an agent_response
-                        if (message.agent_response) {
-                            // Display agent's response in the top bar
-                            agentStatus.textContent = `Agent: ${message.agent_response}`;
-                        }
-                    },
-                    onError: (error) => {
-                        console.error('Conversation error:', error);
-                        updateStatus('idle');
-                        agentStatus.textContent = `Status: Error - ${error.message}`;
-                    }
-                });
-            } catch (error) {
-                console.error('Setup error:', error);
-                updateStatus('idle');
-                agentStatus.textContent = `Status: Error - ${error.message}`;
-            }
-        };
-
-        const endConversation = async () => {
-            if (conversation) {
-                try {
-                    await conversation.endSession();
-                } catch (error) {
-                    console.error('End session error:', error);
-                } finally {
-                    conversation = null;
-                    updateStatus('idle');
-                }
-            }
-        };
-
-        document.getElementById('startButton').addEventListener('click', async () => {
-            if (conversation) {
-                await endConversation();
-            } else {
-                await startConversation();
-            }
-        });
-
-        // Initial status
-        updateStatus('idle');
-    </script>
-</body>
-</html>
+            const startButton = document
+::contentReference[oaicite:0]{index=0}
+ 
