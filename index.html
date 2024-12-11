@@ -156,7 +156,6 @@
                     onConnect: () => {
                         updateStatus('listening');
                         startButton.textContent = 'End Conversation';
-                        updateChatHistory('Agent', 'Hello! How can I assist you today?');
                     },
                     onDisconnect: () => {
                         updateStatus('idle');
@@ -168,14 +167,17 @@
                         document.getElementById('agentStatus').textContent = `Status: Error - ${error.message}`;
                     },
                     onMessage: (message) => {
-                        updateChatHistory('Agent', message);
+                        const agentResponse = typeof message === 'string' ? message : message.content;
+                        updateChatHistory('Agent', agentResponse);
                     }
                 });
 
-                // Example of sending user input to chat
-                const userMessage = 'Hi there!';
-                updateChatHistory('User', userMessage);
-                conversation.sendMessage(userMessage);
+                // Wait for actual user input (e.g., from a mic or input box) to send message
+                const userInput = prompt('Say something:');
+                if (userInput) {
+                    updateChatHistory('User', userInput);
+                    await conversation.sendMessage({ content: userInput });
+                }
 
             } catch (error) {
                 console.error('Setup error:', error);
