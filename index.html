@@ -3,85 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Emma AI Assistant</title>
+    <title>Emma AI Assistant Debug</title>
     <style>
         body, html {
             margin: 0;
             padding: 0;
             height: 100%;
-            width: 100%;
-            overflow: hidden;
-            position: fixed;
+            background: #000;
         }
 
-        .background-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            background-color: #000;
-        }
-
-        .background-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: center;
-            max-width: 100vw;
-            max-height: 100vh;
-        }
-
-        .chat-container {
+        #chatHistory {
             position: fixed;
             top: 20px;
             left: 50%;
             transform: translateX(-50%);
             width: 80%;
             max-width: 800px;
-            max-height: calc(100vh - 200px);
-            background-color: rgba(0, 0, 0, 0.7);
-            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
             padding: 20px;
-            overflow-y: auto;
-            z-index: 1;
+            color: white;
             font-family: Arial, sans-serif;
+            max-height: 70vh;
+            overflow-y: auto;
         }
 
         .message {
-            margin-bottom: 15px;
-            padding: 10px 15px;
-            border-radius: 10px;
-            max-width: 80%;
-            animation: fadeIn 0.3s ease-in;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .user {
+            background: rgba(0, 123, 255, 0.3);
         }
 
-        .user-message {
-            background-color: rgba(0, 132, 255, 0.3);
-            color: white;
-            margin-left: auto;
-        }
-
-        .assistant-message {
-            background-color: rgba(255, 255, 255, 0.1);
-            color: white;
-            margin-right: auto;
-        }
-
-        .message-header {
-            font-size: 0.8em;
-            margin-bottom: 5px;
-            opacity: 0.8;
-        }
-
-        .message-content {
-            word-break: break-word;
+        .agent {
+            background: rgba(255, 255, 255, 0.2);
         }
 
         elevenlabs-convai {
@@ -89,86 +47,69 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            z-index: 2;
-            padding-bottom: env(safe-area-inset-bottom);
-        }
-
-        @media screen and (max-width: 768px) {
-            .chat-container {
-                width: 90%;
-                top: 10px;
-                max-height: calc(100vh - 250px);
-            }
         }
     </style>
 </head>
 <body>
-    <div class="background-container">
-        <img class="background-image" src="./emma.png" alt="Emma Background">
-    </div>
-
-    <div class="chat-container" id="chatContainer"></div>
-
-    <elevenlabs-convai 
-        agent-id="UFCiWykxf7I8pgANcBuJ"
-        style="--elevenlabs-convai-button-color: #4CAF50;"
-    ></elevenlabs-convai>
+    <div id="chatHistory"></div>
+    
+    <elevenlabs-convai agent-id="UFCiWykxf7I8pgANcBuJ"></elevenlabs-convai>
 
     <script>
+        // Debug logging to see all events
+        function addMessage(text, type) {
+            const chatHistory = document.getElementById('chatHistory');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            messageDiv.textContent = `[${type}]: ${text}`;
+            chatHistory.appendChild(messageDiv);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+            
+            // Also log to console for debugging
+            console.log(`[${type}]:`, text);
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
-            const chatContainer = document.getElementById('chatContainer');
             const widget = document.querySelector('elevenlabs-convai');
-
-            function appendMessage(text, isUser = false) {
-                if (!text.trim()) return;
-
-                const messageDiv = document.createElement('div');
-                messageDiv.className = `message ${isUser ? 'user-message' : 'assistant-message'}`;
-                
-                const timestamp = new Date().toLocaleTimeString();
-                messageDiv.innerHTML = `
-                    <div class="message-header">${isUser ? 'You' : 'Emma'} • ${timestamp}</div>
-                    <div class="message-content">${text}</div>
-                `;
-
-                chatContainer.appendChild(messageDiv);
-                chatContainer.scrollTop = chatContainer.scrollHeight;
+            
+            if (!widget) {
+                console.error('Widget not found!');
+                return;
             }
 
-            if (widget) {
-                // Listen for tentative transcripts (real-time user speech)
-                widget.addEventListener('tentative-transcript', (event) => {
-                    // You could show these as "typing" indicators if desired
-                    console.log('Tentative:', event.detail?.text);
-                });
+            // Log when widget is loaded
+            console.log('Widget found in DOM');
 
-                // Listen for final user speech transcripts
-                widget.addEventListener('user-speech-ended', (event) => {
-                    const text = event.detail?.text;
-                    if (text) {
-                        appendMessage(text, true);
-                    }
-                });
+            // User speech ended (final transcript)
+            widget.addEventListener('user-speech-ended', (event) => {
+                if (event.detail?.text) {
+                    addMessage(event.detail.text, 'user');
+                }
+            });
 
-                // Listen for agent responses
-                widget.addEventListener('agent-response', (event) => {
-                    const text = event.detail?.text;
-                    if (text) {
-                        appendMessage(text, false);
-                    }
-                });
+            // Agent responses
+            widget.addEventListener('agent-response', (event) => {
+                if (event.detail?.text) {
+                    addMessage(event.detail.text, 'agent');
+                }
+            });
 
-                // Optional: Listen for errors
-                widget.addEventListener('error', (event) => {
-                    console.error('Error:', event.detail);
-                    appendMessage('Sorry, there was an error processing your request.', false);
-                });
+            // Debug: Log all events to see what's happening
+            const events = [
+                'error',
+                'connection-status',
+                'tentative-transcript',
+                'user-speech-ended',
+                'agent-response',
+                'conversation-started',
+                'conversation-ended'
+            ];
 
-                // Optional: Listen for connection status
-                widget.addEventListener('connection-status', (event) => {
-                    console.log('Connection status:', event.detail?.status);
+            events.forEach(eventName => {
+                widget.addEventListener(eventName, (event) => {
+                    console.log(`Event '${eventName}':`, event.detail);
                 });
-            }
+            });
         });
     </script>
 
