@@ -43,21 +43,10 @@
             top: 0;
             width: 100%;
             z-index: 1;
-            font-size: 16px;
-        }
-        #chatHistory {
-            height: 300px;
-            overflow-y: auto;
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin: 50px 10px 10px 10px; /* Adjusted margin to fit below the status bar */
-            background-color: #f9f9f9;
-            z-index: 1;
-            position: relative;
         }
         .button-container {
             position: fixed;
-            bottom: 20px;
+            bottom: 80px;
             left: 0;
             width: 100%;
             display: flex;
@@ -77,6 +66,24 @@
         #startButton:hover {
             background-color: #FF1493;
         }
+        #chatHistory {
+            position: fixed;
+            bottom: 10px;
+            left: 10px;
+            right: 10px;
+            height: 200px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            background: white;
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            font-size: 14px;
+            z-index: 3;
+        }
+        #chatHistory p {
+            margin: 5px 0;
+        }
         @media screen and (max-width: 768px) {
             .background-image, .background-video {
                 object-position: center center;
@@ -93,21 +100,20 @@
         </video>
     </div>
     <div id="agentStatus">Status: Idle</div>
-    <div id="chatHistory"></div>
     <div class="button-container">
         <button id="startButton">Start Conversation</button>
     </div>
+    <div id="chatHistory"></div>
     <script type="module">
         import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
 
         let conversation = null;
         let currentMode = 'idle';
 
-        const agentStatus = document.getElementById('agentStatus');
-
         const updateStatus = (mode) => {
             const backgroundImage = document.getElementById('backgroundImage');
             const backgroundVideo = document.getElementById('backgroundVideo');
+            const agentStatus = document.getElementById('agentStatus');
 
             if (mode === currentMode) return;
             currentMode = mode;
@@ -137,6 +143,70 @@
         };
 
         const startConversation = async () => {
-            const startButton = document
-::contentReference[oaicite:0]{index=0}
- 
+            const startButton = document.getElementById('startButton');
+
+            try {
+                await navigator.mediaDevices.getUserMedia({ audio: true });
+
+                conversation = await Conversation.startSession({
+                    agentId: 'UFCiWykxf7I8pgANcBuJ',
+                    onModeChange: (mode) => {
+                        updateStatus(mode);
+                    },
+                    onConnect: () => {
+                        updateStatus('listening');
+                        startButton.textContent = 'End Conversation';
+                        updateChatHistory('Agent', 'Hello! How can I assist you today?');
+                    },
+                    onDisconnect: () => {
+                        updateStatus('idle');
+                        startButton.textContent = 'Start Conversation';
+                    },
+                    onError: (error) => {
+                        console.error('Conversation error:', error);
+                        updateStatus('idle');
+                        document.getElementById('agentStatus').textContent = `Status: Error - ${error.message}`;
+                    },
+                    onMessage: (message) => {
+                        updateChatHistory('Agent', message);
+                    }
+                });
+
+                // Example of sending user input to chat
+                const userMessage = 'Hi there!';
+                updateChatHistory('User', userMessage);
+                conversation.sendMessage(userMessage);
+
+            } catch (error) {
+                console.error('Setup error:', error);
+                updateStatus('idle');
+                document.getElementById('agentStatus').textContent = `Status: Error - ${error.message}`;
+            }
+        };
+
+        const endConversation = async () => {
+            if (conversation) {
+                try {
+                    await conversation.endSession();
+                } catch (error) {
+                    console.error('End session error:', error);
+                } finally {
+                    conversation = null;
+                    updateStatus('idle');
+                }
+            }
+        };
+
+        document.getElementById('startButton').addEventListener('click', async () => {
+            if (conversation) {
+                await endConversation();
+            } else {
+                await startConversation();
+            }
+        });
+
+        // Initial status
+        updateStatus('idle');
+    </script>
+</body>
+</html>
