@@ -3,116 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Emma AI Assistant Debug</title>
+    <title>ElevenLabs Conversational AI</title>
+    <script src="https://cdn.jsdelivr.net/npm/@11labs/react/dist/index.min.js"></script>
     <style>
-        body, html {
+        body {
+            font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
-            height: 100%;
-            background: #000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 100vh;
+            background-color: #f9f9f9;
         }
-
-        #chatHistory {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80%;
-            max-width: 800px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            padding: 20px;
+        .top-bar {
+            background-color: #007BFF;
             color: white;
-            font-family: Arial, sans-serif;
-            max-height: 70vh;
-            overflow-y: auto;
-        }
-
-        .message {
-            margin: 10px 0;
-            padding: 10px;
-            border-radius: 5px;
-        }
-
-        .user {
-            background: rgba(0, 123, 255, 0.3);
-        }
-
-        .agent {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        elevenlabs-convai {
-            position: fixed;
-            bottom: 0;
-            left: 0;
             width: 100%;
+            padding: 10px;
+            text-align: center;
+        }
+        .chat-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 600px;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+        .chat-history {
+            flex-grow: 1;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+        }
+        .chat-message {
+            margin: 5px 0;
+        }
+        .button-container {
+            text-align: center;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .start-btn {
+            background-color: #28a745;
+            color: white;
+        }
+        .stop-btn {
+            background-color: #dc3545;
+            color: white;
+        }
+        .disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
         }
     </style>
 </head>
 <body>
-    <div id="chatHistory"></div>
-    
-    <elevenlabs-convai agent-id="UFCiWykxf7I8pgANcBuJ"></elevenlabs-convai>
+    <div class="top-bar">
+        Status: <span id="connectionStatus">Disconnected</span> | Agent is <span id="agentStatus">listening</span>
+    </div>
 
-    <script>
-        // Debug logging to see all events
-        function addMessage(text, type) {
-            const chatHistory = document.getElementById('chatHistory');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${type}`;
-            messageDiv.textContent = `[${type}]: ${text}`;
-            chatHistory.appendChild(messageDiv);
-            chatHistory.scrollTop = chatHistory.scrollHeight;
-            
-            // Also log to console for debugging
-            console.log(`[${type}]:`, text);
+    <div class="chat-container">
+        <div class="chat-history" id="chatHistory">
+            <!-- Chat messages will appear here -->
+        </div>
+        <div class="button-container">
+            <button id="startButton" class="start-btn">Start Conversation</button>
+            <button id="stopButton" class="stop-btn disabled" disabled>Stop Conversation</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { useConversation } from '@11labs/react';
+
+        let conversation;
+        const startButton = document.getElementById('startButton');
+        const stopButton = document.getElementById('stopButton');
+        const connectionStatus = document.getElementById('connectionStatus');
+        const agentStatus = document.getElementById('agentStatus');
+        const chatHistory = document.getElementById('chatHistory');
+
+        async function startConversation() {
+            try {
+                // Request microphone access
+                await navigator.mediaDevices.getUserMedia({ audio: true });
+
+                // Initialize and start conversation
+                conversation = useConversation({
+                    agentId: 'UFCiWykxf7I8pgANcBuJ',
+                    onConnect: () => {
+                        connectionStatus.textContent = 'Connected';
+                        startButton.classList.add('disabled');
+                        startButton.disabled = true;
+                        stopButton.classList.remove('disabled');
+                        stopButton.disabled = false;
+                    },
+                    onDisconnect: () => {
+                        connectionStatus.textContent = 'Disconnected';
+                        startButton.classList.remove('disabled');
+                        startButton.disabled = false;
+                        stopButton.classList.add('disabled');
+                        stopButton.disabled = true;
+                    },
+                    onMessage: (message) => {
+                        if (message.type === 'agent_response') {
+                            appendMessage('Agent', message.agent_response_event.agent_response);
+                        }
+                    },
+                    onModeChange: (mode) => {
+                        agentStatus.textContent = mode.isSpeaking ? 'speaking' : 'listening';
+                    },
+                    onError: (error) => console.error('Error:', error)
+                });
+
+                await conversation.startSession();
+            } catch (error) {
+                console.error('Error starting conversation:', error);
+            }
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const widget = document.querySelector('elevenlabs-convai');
-            
-            if (!widget) {
-                console.error('Widget not found!');
-                return;
+        async function stopConversation() {
+            if (conversation) {
+                await conversation.endSession();
+                conversation = null;
             }
+        }
 
-            // Log when widget is loaded
-            console.log('Widget found in DOM');
+        function appendMessage(sender, message) {
+            const messageElement = document.createElement('div');
+            messageElement.className = 'chat-message';
+            messageElement.innerHTML = `<strong>${sender}:</strong> ${message}`;
+            chatHistory.appendChild(messageElement);
+            chatHistory.scrollTop = chatHistory.scrollHeight;
+        }
 
-            // User speech ended (final transcript)
-            widget.addEventListener('user-speech-ended', (event) => {
-                if (event.detail?.text) {
-                    addMessage(event.detail.text, 'user');
-                }
-            });
-
-            // Agent responses
-            widget.addEventListener('agent-response', (event) => {
-                if (event.detail?.text) {
-                    addMessage(event.detail.text, 'agent');
-                }
-            });
-
-            // Debug: Log all events to see what's happening
-            const events = [
-                'error',
-                'connection-status',
-                'tentative-transcript',
-                'user-speech-ended',
-                'agent-response',
-                'conversation-started',
-                'conversation-ended'
-            ];
-
-            events.forEach(eventName => {
-                widget.addEventListener(eventName, (event) => {
-                    console.log(`Event '${eventName}':`, event.detail);
-                });
-            });
-        });
+        startButton.addEventListener('click', startConversation);
+        stopButton.addEventListener('click', stopConversation);
     </script>
-
-    <script src="https://elevenlabs.io/convai-widget/index.js" async></script>
 </body>
 </html>
