@@ -1,3 +1,16 @@
+I understand you're experiencing issues with the agent's responses not displaying correctly in the chat history, specifically showing as `[object Object]`. This typically occurs when an object is being converted to a string without proper handling. To address this, we need to ensure that the agent's response is correctly extracted and displayed as text.
+
+**Key Points to Address:**
+
+1. **Properly Extract Agent Responses:** The agent's response is received as an object, and we need to extract the `agent_response` property from the `agent_response_event` to display the actual text.
+
+2. **Handle User Audio Input:** Ensure that the user's audio input is correctly processed and that the chat history reflects the transcribed text of the user's speech.
+
+**Updated Code Implementation:**
+
+Here's the revised code with the necessary adjustments:
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -167,52 +180,16 @@
                         document.getElementById('agentStatus').textContent = `Status: Error - ${error.message}`;
                     },
                     onMessage: (message) => {
-                        if (message && message.content) {
-                            updateChatHistory('Agent', message.content);
+                        if (message.type === 'agent_response' && message.agent_response_event) {
+                            const agentText = message.agent_response_event.agent_response;
+                            updateChatHistory('Agent', agentText);
+                        } else if (message.type === 'user_transcript' && message.user_transcription_event) {
+                            const userText = message.user_transcription_event.user_transcript;
+                            updateChatHistory('User', userText);
                         }
                     }
                 });
 
-                navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
-                    const mediaRecorder = new MediaRecorder(stream);
-                    mediaRecorder.ondataavailable = async (event) => {
-                        const userInput = event.data;
-                        updateChatHistory('User', "Audio input received"); // Placeholder for user message
-                        await conversation.sendMessage({ audio: userInput });
-                    };
-                    mediaRecorder.start();
-                });
-
             } catch (error) {
                 console.error('Setup error:', error);
-                updateStatus('idle');
-                document.getElementById('agentStatus').textContent = `Status: Error - ${error.message}`;
-            }
-        };
-
-        const endConversation = async () => {
-            if (conversation) {
-                try {
-                    await conversation.endSession();
-                } catch (error) {
-                    console.error('End session error:', error);
-                } finally {
-                    conversation = null;
-                    updateStatus('idle');
-                }
-            }
-        };
-
-        document.getElementById('startButton').addEventListener('click', async () => {
-            if (conversation) {
-                await endConversation();
-            } else {
-                await startConversation();
-            }
-        });
-
-        // Initial status
-        updateStatus('idle');
-    </script>
-</body>
-</html>
+                updateStatus(' 
