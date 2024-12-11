@@ -170,13 +170,54 @@
                         if (message.type === 'agent_response' && message.agent_response_event) {
                             const agentText = message.agent_response_event.agent_response;
                             updateChatHistory('Agent', agentText);
-                        } else if (message.type === 'user_transcript' && message.user_transcription_event) {
+                        } else if (message.type === 'user_transcription' && message.user_transcription_event) {
                             const userText = message.user_transcription_event.user_transcript;
                             updateChatHistory('User', userText);
                         }
                     }
                 });
 
+                navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+                    const mediaRecorder = new MediaRecorder(stream);
+                    mediaRecorder.ondataavailable = async (event) => {
+                        const userInput = event.data;
+                        // Process audio data if transcription API is available
+                        updateChatHistory('User', "Audio input received"); // Placeholder for user message
+                        await conversation.sendMessage({ audio: userInput });
+                    };
+                    mediaRecorder.start();
+                });
+
             } catch (error) {
                 console.error('Setup error:', error);
-                updateStatus(' 
+                updateStatus('idle');
+                document.getElementById('agentStatus').textContent = `Status: Error - ${error.message}`;
+            }
+        };
+
+        const endConversation = async () => {
+            if (conversation) {
+                try {
+                    await conversation.endSession();
+                } catch (error) {
+                    console.error('End session error:', error);
+                } finally {
+                    conversation = null;
+                    updateStatus('idle');
+                }
+            }
+        };
+
+        document.getElementById('startButton').addEventListener('click', async () => {
+            if (conversation) {
+                await endConversation();
+            } else {
+                await startConversation();
+            }
+        });
+
+        // Initial status
+        updateStatus('idle');
+    </script>
+</body>
+</html>
