@@ -1,307 +1,385 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Talkidz</title>
-<style>
-  /* Basic Reset */
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talkidz - AI Friends to Chat With</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #FF4B6E;
+            --text-color: #1A1A1A;
+            --background-color: #FFFFFF;
+            --secondary-background: #F5F5F5;
+            --accent-color: #6C5CE7;
+            --shadow-color: rgba(0, 0, 0, 0.08);
+            --spacing-unit: 1rem;
+        }
 
-  body {
-    font-family: Arial, Helvetica, sans-serif;
-    background: #141414; /* Dark background, Netflix style */
-    color: #fff;
-    overflow-x: hidden;
-  }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-  header {
-    padding: 1rem;
-    text-align: center;
-    background: #141414;
-    position: sticky;
-    top: 0;
-    z-index: 999;
-  }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+                Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.5;
+        }
 
-  header h1 {
-    font-size: 2rem;
-    font-weight: bold;
-    margin-bottom: 0.5rem;
-  }
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            padding: var(--spacing-unit);
+            box-shadow: 0 2px 12px var(--shadow-color);
+        }
 
-  header p {
-    font-size: 1rem;
-    opacity: 0.8;
-    margin-bottom: 1rem;
-  }
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-unit);
+        }
 
-  nav {
-    display: flex;
-    justify-content: center;
-    gap: 1.5rem;
-    margin-bottom: 1rem;
-  }
+        .logo {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
 
-  nav .icon {
-    width: 1.5rem;
-    height: 1.5rem;
-    border: 2px solid #fff;
-    border-radius: 2px;
-    display: inline-block;
-    position: relative;
-    cursor: pointer;
-  }
+        .nav-icons {
+            display: flex;
+            gap: var(--spacing-unit);
+        }
 
-  /* Placeholder for a burger menu icon */
-  nav .menu-icon::before,
-  nav .menu-icon::after,
-  nav .menu-icon div {
-    content: "";
-    position: absolute;
-    left: 25%;
-    width: 50%;
-    height: 2px;
-    background: #fff;
-  }
+        .nav-icon {
+            width: 24px;
+            height: 24px;
+            color: var(--text-color);
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
 
-  nav .menu-icon::before {
-    top: 25%;
-  }
+        .nav-icon:hover {
+            color: var(--primary-color);
+        }
 
-  nav .menu-icon div {
-    top: 50%;
-  }
+        .tagline {
+            font-size: 1rem;
+            color: #666;
+            margin-bottom: var(--spacing-unit);
+        }
 
-  nav .menu-icon::after {
-    bottom: 25%;
-  }
+        .genre-section {
+            margin: calc(var(--spacing-unit) * 2) 0;
+            padding: 0 var(--spacing-unit);
+            position: relative;
+        }
 
-  /* Placeholder for a search icon (magnifying glass) */
-  nav .search-icon {
-    border-radius: 50%;
-  }
-  nav .search-icon::before {
-    content: "";
-    position: absolute;
-    top: 30%;
-    left: 30%;
-    width: 40%;
-    height: 40%;
-    border: 2px solid #fff;
-    border-radius: 50%;
-  }
-  nav .search-icon::after {
-    content: "";
-    position: absolute;
-    bottom: 15%;
-    right: 15%;
-    width: 2px;
-    height: 15%;
-    background: #fff;
-    transform: rotate(45deg);
-  }
+        .genre-title {
+            font-size: 1.25rem;
+            margin-bottom: var(--spacing-unit);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
 
-  main {
-    padding: 1rem;
-  }
+        .genre-title::after {
+            content: '';
+            height: 2px;
+            flex: 1;
+            background: linear-gradient(to right, var(--secondary-background), transparent);
+        }
 
-  section {
-    margin-bottom: 2rem;
-  }
+        .character-carousel {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            gap: 1.5rem;
+            padding: var(--spacing-unit) 0;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            position: relative;
+        }
 
-  section h2 {
-    font-size: 1.5rem;
-    margin-bottom: 1rem;
-    font-weight: bold;
-  }
+        .character-carousel::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 100%;
+            width: 40px;
+            background: linear-gradient(to left, var(--background-color), transparent);
+            pointer-events: none;
+        }
 
-  /* Horizontal scroll container */
-  .carousel {
-    display: flex;
-    gap: 1rem;
-    overflow-x: auto;
-    scroll-behavior: smooth;
-    padding-bottom: 0.5rem;
-  }
+        .character-carousel::-webkit-scrollbar {
+            display: none;
+        }
 
-  .carousel::-webkit-scrollbar {
-    height: 0.4rem;
-  }
+        .character-card {
+            flex: 0 0 auto;
+            width: 130px;
+            scroll-snap-align: start;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
 
-  .carousel::-webkit-scrollbar-track {
-    background: #333;
-  }
+        .character-card:hover {
+            transform: translateY(-5px);
+        }
 
-  .carousel::-webkit-scrollbar-thumb {
-    background: #555;
-    border-radius: 0.5rem;
-  }
+        .character-image {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, var(--secondary-background), #FFFFFF);
+            margin: 0 auto var(--spacing-unit);
+            transition: all 0.3s ease;
+            border: 3px solid white;
+            box-shadow: 0 4px 12px var(--shadow-color);
+            position: relative;
+            overflow: hidden;
+        }
 
-  /* Character card */
-  .character-card {
-    flex: 0 0 auto;
-    width: 5rem;
-    text-align: center;
-    color: #fff;
-  }
+        .character-card:hover .character-image {
+            box-shadow: 0 8px 24px var(--shadow-color);
+            border-color: var(--primary-color);
+        }
 
-  .character-card img, 
-  .character-card .character-image {
-    width: 5rem;
-    height: 5rem;
-    border-radius: 50%;
-    background: #555; /* Grey placeholder if no image is uploaded */
-    display: block;
-    margin: 0 auto;
-    object-fit: cover;
-  }
+        .character-image::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transform: rotate(45deg);
+            animation: shine 2s infinite;
+            pointer-events: none;
+        }
 
-  .character-name {
-    font-size: 0.9rem;
-    margin-top: 0.5rem;
-    font-weight: normal;
-    line-height: 1.2;
-  }
+        @keyframes shine {
+            0% {
+                transform: translateX(-100%) rotate(45deg);
+            }
+            100% {
+                transform: translateX(100%) rotate(45deg);
+            }
+        }
 
-  /* Optional hover/tap effects */
-  .character-card:hover .character-image {
-    transform: scale(1.05);
-    box-shadow: 0 0 10px rgba(255,255,255,0.2);
-  }
+        .character-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: var(--text-color);
+        }
 
-  /* Responsive adjustments */
-  @media (max-width: 600px) {
-    header h1 {
-      font-size: 1.5rem;
-    }
-    .character-card {
-      width: 4rem;
-    }
-    .character-card img, .character-card .character-image {
-      width: 4rem;
-      height: 4rem;
-    }
-    .character-name {
-      font-size: 0.8rem;
-    }
-  }
-</style>
+        .character-role {
+            font-size: 0.875rem;
+            color: #666;
+            transition: color 0.2s ease;
+        }
+
+        .character-card:hover .character-role {
+            color: var(--primary-color);
+        }
+
+        .category-pill {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            background: var(--secondary-background);
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #666;
+            margin-right: 0.5rem;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .category-pill:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            right: var(--spacing-unit);
+            top: 50%;
+            transform: translateY(-50%);
+            width: 32px;
+            height: 32px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px var(--shadow-color);
+            cursor: pointer;
+            opacity: 0.8;
+            transition: all 0.2s ease;
+        }
+
+        .scroll-indicator:hover {
+            opacity: 1;
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        @media (max-width: 480px) {
+            .character-card {
+                width: 110px;
+            }
+
+            .character-image {
+                width: 90px;
+                height: 90px;
+            }
+
+            .character-name {
+                font-size: 0.875rem;
+            }
+
+            .character-role {
+                font-size: 0.75rem;
+            }
+        }
+
+        .new-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--accent-color);
+            color: white;
+            font-size: 0.625rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 999px;
+            font-weight: 600;
+            transform: rotate(12deg);
+            box-shadow: 0 2px 4px rgba(108, 92, 231, 0.3);
+        }
+    </style>
 </head>
 <body>
+    <header class="header">
+        <nav class="nav">
+            <a href="#" class="logo">Talkidz</a>
+            <div class="nav-icons">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"/>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="3" y1="12" x2="21" y2="12"/>
+                    <line x1="3" y1="6" x2="21" y2="6"/>
+                    <line x1="3" y1="18" x2="21" y2="18"/>
+                </svg>
+            </div>
+        </nav>
+        <p class="tagline">Explore AI Friends to Chat With</p>
+        <div class="categories">
+            <span class="category-pill">All</span>
+            <span class="category-pill">Popular</span>
+            <span class="category-pill">New</span>
+        </div>
+    </header>
 
-<header>
-  <h1>Talkidz</h1>
-  <p>Explore AI Friends to Chat With</p>
-  <nav>
-    <div class="icon menu-icon"><div></div></div>
-    <div class="icon search-icon"></div>
-  </nav>
-</header>
+    <main>
+        <section class="genre-section">
+            <h2 class="genre-title">Funny</h2>
+            <div class="character-carousel">
+                <article class="character-card">
+                    <div class="character-image"></div>
+                    <h3 class="character-name">Cupcake</h3>
+                    <p class="character-role">Comedy Chef</p>
+                    <span class="new-badge">New!</span>
+                </article>
+                <article class="character-card">
+                    <div class="character-image"></div>
+                    <h3 class="character-name">Giggles</h3>
+                    <p class="character-role">Joke Master</p>
+                </article>
+                <article class="character-card">
+                    <div class="character-image"></div>
+                    <h3 class="character-name">Mr. Silly</h3>
+                    <p class="character-role">Playful Friend</p>
+                </article>
+            </div>
+            <div class="scroll-indicator">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 18l6-6-6-6"/>
+                </svg>
+            </div>
+        </section>
 
-<main>
-  <!-- Funny Genre Section -->
-  <section>
-    <h2>Funny</h2>
-    <div class="carousel">
-      <!-- Example character with an uploaded image "emma.png" -->
-      <div class="character-card">
-        <img src="emma.png" alt="Emma">
-        <p class="character-name">Psychologist Emma</p>
-      </div>
-      <!-- Using grey placeholder if image not yet uploaded -->
-      <div class="character-card">
-        <div class="character-image"></div>
-        <p class="character-name">Cupcake</p>
-      </div>
-      <div class="character-card">
-        <img src="parrot.png" alt="Talking Parrot">
-        <p class="character-name">Talking Parrot</p>
-      </div>
-    </div>
-  </section>
+        <section class="genre-section">
+            <h2 class="genre-title">Education</h2>
+            <div class="character-carousel">
+                <article class="character-card">
+                    <div class="character-image"></div>
+                    <h3 class="character-name">Math Wizard Leo</h3>
+                    <p class="character-role">Math Tutor</p>
+                </article>
+                <article class="character-card">
+                    <div class="character-image"></div>
+                    <h3 class="character-name">Science Sam</h3>
+                    <p class="character-role">Science Expert</p>
+                    <span class="new-badge">New!</span>
+                </article>
+                <article class="character-card">
+                    <div class="character-image"></div>
+                    <h3 class="character-name">History Hannah</h3>
+                    <p class="character-role">History Guide</p>
+                </article>
+            </div>
+            <div class="scroll-indicator">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 18l6-6-6-6"/>
+                </svg>
+            </div>
+        </section>
 
-  <!-- Education Genre Section -->
-  <section>
-    <h2>Education</h2>
-    <div class="carousel">
-      <div class="character-card">
-        <div class="character-image"></div>
-        <p class="character-name">Johnny English Tutor</p>
-      </div>
-      <div class="character-card">
-        <div class="character-image"></div>
-        <p class="character-name">Math Wizard Leo</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Personal Growth Genre Section -->
-  <section>
-    <h2>Personal Growth</h2>
-    <div class="carousel">
-      <div class="character-card">
-        <div class="character-image"></div>
-        <p class="character-name">Philosopher Mia</p>
-      </div>
-      <div class="character-card">
-        <div class="character-image"></div>
-        <p class="character-name">Mindfulness Coach Ava</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Storytellers Genre Section -->
-  <section>
-    <h2>Storytellers</h2>
-    <div class="carousel">
-      <div class="character-card">
-        <div class="character-image"></div>
-        <p class="character-name">Narrator Hugo</p>
-      </div>
-      <div class="character-card">
-        <div class="character-image"></div>
-        <p class="character-name">Fairy Tale Luna</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Language Tutors Genre Section -->
-  <section>
-    <h2>Language Tutors</h2>
-    <div class="carousel">
-      <div class="character-card">
-        <div class="character-image"></div>
-        <p class="character-name">French Tutor Claire</p>
-      </div>
-      <div class="character-card">
-        <div class="character-image"></div>
-        <p class="character-name">Spanish Tutor Marco</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Imaginative Play Genre Section -->
-  <section>
-    <h2>Imaginative Play</h2>
-    <div class="carousel">
-      <div class="character-card">
-        <div class="character-image"></div>
-        <p class="character-name">Astronaut Alex</p>
-      </div>
-      <div class="character-card">
-        <div class="character-image"></div>
-        <p class="character-name">Dinosaur Dan</p>
-      </div>
-    </div>
-  </section>
-</main>
-
+        <section class="genre-section">
+            <h2 class="genre-title">Personal Growth</h2>
+            <div class="character-carousel">
+                <article class="character-card">
+                    <div class="character-image"></div>
+                    <h3 class="character-name">Psychologist Emma</h3>
+                    <p class="character-role">Mental Health</p>
+                </article>
+                <article class="character-card">
+                    <div class="character-image"></div>
+                    <h3 class="character-name">Coach Mike</h3>
+                    <p class="character-role">Life Coach</p>
+                </article>
+                <article class="character-card">
+                    <div class="character-image"></div>
+                    <h3 class="character-name">Mindful Maya</h3>
+                    <p class="character-role">Meditation Guide</p>
+                    <span class="new-badge">New!</span>
+                </article>
+            </div>
+            <div class="scroll-indicator">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 18l6-6-6-6"/>
+                </svg>
+            </div>
+        </section>
+    </main>
 </body>
 </html>
-```
