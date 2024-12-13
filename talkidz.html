@@ -1,0 +1,307 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Talkidz</title>
+<style>
+  /* Basic Reset */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: #141414; /* Dark background, Netflix style */
+    color: #fff;
+    overflow-x: hidden;
+  }
+
+  header {
+    padding: 1rem;
+    text-align: center;
+    background: #141414;
+    position: sticky;
+    top: 0;
+    z-index: 999;
+  }
+
+  header h1 {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+  }
+
+  header p {
+    font-size: 1rem;
+    opacity: 0.8;
+    margin-bottom: 1rem;
+  }
+
+  nav {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  nav .icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    border: 2px solid #fff;
+    border-radius: 2px;
+    display: inline-block;
+    position: relative;
+    cursor: pointer;
+  }
+
+  /* Placeholder for a burger menu icon */
+  nav .menu-icon::before,
+  nav .menu-icon::after,
+  nav .menu-icon div {
+    content: "";
+    position: absolute;
+    left: 25%;
+    width: 50%;
+    height: 2px;
+    background: #fff;
+  }
+
+  nav .menu-icon::before {
+    top: 25%;
+  }
+
+  nav .menu-icon div {
+    top: 50%;
+  }
+
+  nav .menu-icon::after {
+    bottom: 25%;
+  }
+
+  /* Placeholder for a search icon (magnifying glass) */
+  nav .search-icon {
+    border-radius: 50%;
+  }
+  nav .search-icon::before {
+    content: "";
+    position: absolute;
+    top: 30%;
+    left: 30%;
+    width: 40%;
+    height: 40%;
+    border: 2px solid #fff;
+    border-radius: 50%;
+  }
+  nav .search-icon::after {
+    content: "";
+    position: absolute;
+    bottom: 15%;
+    right: 15%;
+    width: 2px;
+    height: 15%;
+    background: #fff;
+    transform: rotate(45deg);
+  }
+
+  main {
+    padding: 1rem;
+  }
+
+  section {
+    margin-bottom: 2rem;
+  }
+
+  section h2 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    font-weight: bold;
+  }
+
+  /* Horizontal scroll container */
+  .carousel {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding-bottom: 0.5rem;
+  }
+
+  .carousel::-webkit-scrollbar {
+    height: 0.4rem;
+  }
+
+  .carousel::-webkit-scrollbar-track {
+    background: #333;
+  }
+
+  .carousel::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 0.5rem;
+  }
+
+  /* Character card */
+  .character-card {
+    flex: 0 0 auto;
+    width: 5rem;
+    text-align: center;
+    color: #fff;
+  }
+
+  .character-card img, 
+  .character-card .character-image {
+    width: 5rem;
+    height: 5rem;
+    border-radius: 50%;
+    background: #555; /* Grey placeholder if no image is uploaded */
+    display: block;
+    margin: 0 auto;
+    object-fit: cover;
+  }
+
+  .character-name {
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+    font-weight: normal;
+    line-height: 1.2;
+  }
+
+  /* Optional hover/tap effects */
+  .character-card:hover .character-image {
+    transform: scale(1.05);
+    box-shadow: 0 0 10px rgba(255,255,255,0.2);
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 600px) {
+    header h1 {
+      font-size: 1.5rem;
+    }
+    .character-card {
+      width: 4rem;
+    }
+    .character-card img, .character-card .character-image {
+      width: 4rem;
+      height: 4rem;
+    }
+    .character-name {
+      font-size: 0.8rem;
+    }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Talkidz</h1>
+  <p>Explore AI Friends to Chat With</p>
+  <nav>
+    <div class="icon menu-icon"><div></div></div>
+    <div class="icon search-icon"></div>
+  </nav>
+</header>
+
+<main>
+  <!-- Funny Genre Section -->
+  <section>
+    <h2>Funny</h2>
+    <div class="carousel">
+      <!-- Example character with an uploaded image "emma.png" -->
+      <div class="character-card">
+        <img src="emma.png" alt="Emma">
+        <p class="character-name">Psychologist Emma</p>
+      </div>
+      <!-- Using grey placeholder if image not yet uploaded -->
+      <div class="character-card">
+        <div class="character-image"></div>
+        <p class="character-name">Cupcake</p>
+      </div>
+      <div class="character-card">
+        <img src="parrot.png" alt="Talking Parrot">
+        <p class="character-name">Talking Parrot</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Education Genre Section -->
+  <section>
+    <h2>Education</h2>
+    <div class="carousel">
+      <div class="character-card">
+        <div class="character-image"></div>
+        <p class="character-name">Johnny English Tutor</p>
+      </div>
+      <div class="character-card">
+        <div class="character-image"></div>
+        <p class="character-name">Math Wizard Leo</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Personal Growth Genre Section -->
+  <section>
+    <h2>Personal Growth</h2>
+    <div class="carousel">
+      <div class="character-card">
+        <div class="character-image"></div>
+        <p class="character-name">Philosopher Mia</p>
+      </div>
+      <div class="character-card">
+        <div class="character-image"></div>
+        <p class="character-name">Mindfulness Coach Ava</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Storytellers Genre Section -->
+  <section>
+    <h2>Storytellers</h2>
+    <div class="carousel">
+      <div class="character-card">
+        <div class="character-image"></div>
+        <p class="character-name">Narrator Hugo</p>
+      </div>
+      <div class="character-card">
+        <div class="character-image"></div>
+        <p class="character-name">Fairy Tale Luna</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Language Tutors Genre Section -->
+  <section>
+    <h2>Language Tutors</h2>
+    <div class="carousel">
+      <div class="character-card">
+        <div class="character-image"></div>
+        <p class="character-name">French Tutor Claire</p>
+      </div>
+      <div class="character-card">
+        <div class="character-image"></div>
+        <p class="character-name">Spanish Tutor Marco</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Imaginative Play Genre Section -->
+  <section>
+    <h2>Imaginative Play</h2>
+    <div class="carousel">
+      <div class="character-card">
+        <div class="character-image"></div>
+        <p class="character-name">Astronaut Alex</p>
+      </div>
+      <div class="character-card">
+        <div class="character-image"></div>
+        <p class="character-name">Dinosaur Dan</p>
+      </div>
+    </div>
+  </section>
+</main>
+
+</body>
+</html>
+```
