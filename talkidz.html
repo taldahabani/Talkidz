@@ -6,6 +6,7 @@
     <title>Talkidz - AI Friends to Chat With</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" rel="stylesheet">
     <style>
+        /* All existing styles remain exactly the same until character-card */
         :root {
             --primary-color: #FF4B6E;
             --text-color: #1A1A1A;
@@ -75,6 +76,25 @@
             color: var(--primary-color);
         }
 
+        .share-button {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 999px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .share-button:hover {
+            transform: scale(1.05);
+            background: var(--primary-color);
+        }
+
         .tagline {
             font-size: 1rem;
             color: #666;
@@ -137,9 +157,12 @@
             transition: all 0.3s ease;
             cursor: pointer;
             position: relative;
+            text-decoration: none;
+            color: inherit;
         }
 
-        .character-card:hover {
+        .character-card:hover,
+        .character-card:active {
             transform: translateY(-5px);
         }
 
@@ -147,7 +170,8 @@
             width: 110px;
             height: 110px;
             border-radius: 50%;
-            background: linear-gradient(45deg, var(--secondary-background), #FFFFFF);
+            background-size: cover;
+            background-position: center;
             margin: 0 auto var(--spacing-unit);
             transition: all 0.3s ease;
             border: 3px solid white;
@@ -156,9 +180,11 @@
             overflow: hidden;
         }
 
-        .character-card:hover .character-image {
+        .character-card:hover .character-image,
+        .character-card:active .character-image {
             box-shadow: 0 8px 24px var(--shadow-color);
             border-color: var(--primary-color);
+            transform: scale(1.05);
         }
 
         .character-image::after {
@@ -175,12 +201,8 @@
         }
 
         @keyframes shine {
-            0% {
-                transform: translateX(-100%) rotate(45deg);
-            }
-            100% {
-                transform: translateX(100%) rotate(45deg);
-            }
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
         }
 
         .character-name {
@@ -218,29 +240,6 @@
             color: white;
         }
 
-        .scroll-indicator {
-            position: absolute;
-            right: var(--spacing-unit);
-            top: 50%;
-            transform: translateY(-50%);
-            width: 32px;
-            height: 32px;
-            background: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 2px 8px var(--shadow-color);
-            cursor: pointer;
-            opacity: 0.8;
-            transition: all 0.2s ease;
-        }
-
-        .scroll-indicator:hover {
-            opacity: 1;
-            transform: translateY(-50%) scale(1.1);
-        }
-
         @media (max-width: 480px) {
             .character-card {
                 width: 110px;
@@ -259,20 +258,6 @@
                 font-size: 0.75rem;
             }
         }
-
-        .new-badge {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background: var(--accent-color);
-            color: white;
-            font-size: 0.625rem;
-            padding: 0.25rem 0.5rem;
-            border-radius: 999px;
-            font-weight: 600;
-            transform: rotate(12deg);
-            box-shadow: 0 2px 4px rgba(108, 92, 231, 0.3);
-        }
     </style>
 </head>
 <body>
@@ -280,6 +265,14 @@
         <nav class="nav">
             <a href="#" class="logo">Talkidz</a>
             <div class="nav-icons">
+                <button class="share-button" onclick="shareApp()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                        <polyline points="16 6 12 2 8 6"></polyline>
+                        <line x1="12" y1="2" x2="12" y2="15"></line>
+                    </svg>
+                    Share
+                </button>
                 <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <circle cx="11" cy="11" r="8"/>
                     <line x1="21" y1="21" x2="16.65" y2="16.65"/>
@@ -303,114 +296,6 @@
         <section class="genre-section">
             <h2 class="genre-title">Funny</h2>
             <div class="character-carousel">
-                <article class="character-card">
-                    <div class="character-image"></div>
-                    <h3 class="character-name">Cupcake</h3>
-                    <p class="character-role">Comedy Chef</p>
-                    <span class="new-badge">New!</span>
-                </article>
-                <article class="character-card">
-                    <div class="character-image"></div>
-                    <h3 class="character-name">Giggles</h3>
-                    <p class="character-role">Joke Master</p>
-                </article>
-                <article class="character-card">
-                    <div class="character-image"></div>
-                    <h3 class="character-name">Mr. Silly</h3>
-                    <p class="character-role">Playful Friend</p>
-                </article>
-            </div>
-            <div class="scroll-indicator">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M9 18l6-6-6-6"/>
-                </svg>
-            </div>
-        </section>
-
-        <section class="genre-section">
-            <h2 class="genre-title">Education</h2>
-            <div class="character-carousel">
-                <article class="character-card">
-                    <div class="character-image"></div>
-                    <h3 class="character-name">Math Wizard Leo</h3>
-                    <p class="character-role">Math Tutor</p>
-                </article>
-                <article class="character-card">
-                    <div class="character-image"></div>
-                    <h3 class="character-name">Science Sam</h3>
-                    <p class="character-role">Science Expert</p>
-                    <span class="new-badge">New!</span>
-                </article>
-                <article class="character-card">
-                    <div class="character-image"></div>
-                    <h3 class="character-name">History Hannah</h3>
-                    <p class="character-role">History Guide</p>
-                </article>
-            </div>
-            <div class="scroll-indicator">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M9 18l6-6-6-6"/>
-                </svg>
-            </div>
-        </section>
-
-        <section class="genre-section">
-            <h2 class="genre-title">Personal Growth</h2>
-            <div class="character-carousel">
-                <article class="character-card">
-                    <div class="character-image"></div>
-                    <h3 class="character-name">Psychologist Emma</h3>
-                    <p class="character-role">Mental Health</p>
-                </article>
-                <article class="character-card">
-                    <div class="character-image"></div>
-                    <h3 class="character-name">Coach Mike</h3>
-                    <p class="character-role">Life Coach</p>
-                </article>
-                <article class="character-card">
-                    <div class="character-image"></div>
-                    <h3 class="character-name">Mindful Maya</h3>
-                    <p class="character-role">Meditation Guide</p>
-                    <span class="new-badge">New!</span>
-                </article>
-            </div>
-            <div class="scroll-indicator">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M9 18l6-6-6-6"/>
-                </svg>
-            </div>
-        </section>
-
-        <section class="genre-section">
-            <h2 class="genre-title">Funny</h2>
-            <div class="character-carousel">
-                <article class="character-card">
-                    <div class="character-image"></div>
-                    <h3 class="character-name">Cupcake</h3>
-                    <p class="character-role">Comedy Chef</p>
-                    <span class="new-badge">New!</span>
-                </article>
-                <article class="character-card">
-                    <div class="character-image"></div>
-                    <h3 class="character-name">Giggles</h3>
-                    <p class="character-role">Joke Master</p>
-                </article>
-                <article class="character-card">
-                    <div class="character-image"></div>
-                    <h3 class="character-name">Mr. Silly</h3>
-                    <p class="character-role">Playful Friend</p>
-                </article>
-            </div>
-            <div class="scroll-indicator">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M9 18l6-6-6-6"/>
-                </svg>
-            </div>
-        </section>
-
-        <section class="genre-section">
-            <h2 class="genre-title">Funny</h2>
-            <div class="character-carousel">
                 <a href="talkidz.com/funny-cat/en" class="character-card">
                     <div class="character-image" style="background-image: url('/funny-cat.png')"></div>
                     <h3 class="character-name">Funny Cat</h3>
@@ -428,6 +313,90 @@
                 </a>
             </div>
         </section>
+
+        <section class="genre-section">
+            <h2 class="genre-title">Education</h2>
+            <div class="character-carousel">
+                <a href="talkidz.com/robo/en" class="character-card">
+                    <div class="character-image" style="background-image: url('/robo.png')"></div>
+                    <h3 class="character-name">Robo the Robot</h3>
+                    <p class="character-role">Tech Teacher</p>
+                </a>
+                <a href="talkidz.com/panda/en" class="character-card">
+                    <div class="character-image" style="background-image: url('/panda.png')"></div>
+                    <h3 class="character-name">Panda</h3>
+                    <p class="character-role">Calm Educator</p>
+                </a>
+                <a href="talkidz.com/clever-fox/en" class="character-card">
+                    <div class="character-image" style="background-image: url('/clever-fox.png')"></div>
+                    <h3 class="character-name">Clever Fox</h3>
+                    <p class="character-role">Wise Instructor</p>
+                </a>
+            </div>
+        </section>
+
+        <section class="genre-section">
+            <h2 class="genre-title">Personal Growth</h2>
+            <div class="character-carousel">
+                <a href="talkidz.com/psychologist-woman/en" class="character-card">
+                    <div class="character-image" style="background-image: url('/psychologist-woman.png')"></div>
+                    <h3 class="character-name">Psychologist (Woman)</h3>
+                    <p class="character-role">Mental Health Guide</p>
+                </a>
+                <a href="talkidz.com/psychologist-man/en" class="character-card">
+                    <div class="character-image" style="background-image: url('/psychologist-man.png')"></div>
+                    <h3 class="character-name">Psychologist (Man)</h3>
+                    <p class="character-role">Wellness Mentor</p>
+                </a>
+                <a href="talkidz.com/emma/en" class="character-card">
+                    <div class="character-image" style="background-image: url('/emma.png')"></div>
+                    <h3 class="character-name">Emma (Blonde Girl)</h3>
+                    <p class="character-role">Encouraging Counselor</p>
+                </a>
+            </div>
+        </section>
+
+        <section class="genre-section">
+            <h2 class="genre-title">Storytellers</h2>
+            <div class="character-carousel">
+                <a href="talkidz.com/parrot/en" class="character-card">
+                    <div class="character-image" style="background-image: url('/parrot.png')"></div>
+                    <h3 class="character-name">Parrot</h3>
+                    <p class="character-role">Adventurous Narrator</p>
+                </a>
+                <a href="talkidz.com/purple-wizard/en" class="character-card">
+                    <div class="character-image" style="background-image: url('/purple-wizard.png')"></div>
+                    <h3 class="character-name">Purple Wizard</h3>
+                    <p class="character-role">Magical Story Spinner</p>
+                </a>
+                <a href="talkidz.com/lion/en" class="character-card">
+                    <div class="character-image" style="background-image: url('/lion.png')"></div>
+                    <h3 class="character-name">Lion</h3>
+                    <p class="character-role">Roaring Tale Teller</p>
+                </a>
+            </div>
+        </section>
+
+        <section class="genre-section">
+            <h2 class="genre-title">Language Tutors</h2>
+            <div class="character-carousel">
+                <a href="talkidz.com/parrot/en" class="character-card">
+                    <div class="character-image" style="background-image: url('/parrot.png')"></div>
+                    <h3 class="character-name">Parrot</h3>
+                    <p class="character-role">Adventurous Narrator</p>
+                </a>
+                <a href="talkidz.com/purple-wizard/en" class="character-card">
+                    <div class="character-image" style="background-image: url('/purple-wizard.png')"></div>
+                    <h3 class="character-name">Purple Wizard</h3>
+                    <p class="character-role">Magical Story Spinner</p>
+                </a>
+                <a href="talkidz.com/lion/en" class="character-card">
+                    <div class="character-image" style="background-image: url('/lion.png')"></div>
+                    <h3 class="character-name">Lion</h3>
+                    <p class="character-role">Roaring Tale Teller</p>
+                </a>
+            </div>
+        </section>  
     </main>
 </body>
 </html>
