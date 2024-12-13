@@ -418,4 +418,279 @@
         </section>  
     </main>
 </body>
+<style>
+    .talkidz-footer {
+        background: linear-gradient(180deg, 
+            rgba(255,255,255,0) 0%,
+            rgba(245,245,245,0.5) 20%,
+            var(--secondary-background) 100%);
+        padding: 4rem 1rem 2rem;
+        margin-top: 4rem;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .footer-waves {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 60px;
+        opacity: 0.1;
+    }
+
+    .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        text-align: center;
+        position: relative;
+    }
+
+    .footer-logo-container {
+        margin-bottom: 2rem;
+        position: relative;
+        display: inline-block;
+    }
+
+    .footer-logo {
+        font-size: 3.5rem;
+        font-weight: 800;
+        background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        text-decoration: none;
+        letter-spacing: -1px;
+        display: inline-block;
+        margin-bottom: 1rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .logo-shine {
+        position: absolute;
+        top: -20%;
+        left: -20%;
+        right: -20%;
+        bottom: -20%;
+        background: radial-gradient(circle at 50% 50%, 
+            rgba(255,255,255,0.8) 0%,
+            rgba(255,255,255,0) 70%);
+        opacity: 0;
+        animation: shine-effect 5s infinite;
+        pointer-events: none;
+    }
+
+    @keyframes shine-effect {
+        0%, 100% { opacity: 0; transform: scale(0.8); }
+        50% { opacity: 0.5; transform: scale(1); }
+    }
+
+    .footer-slogan {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin: 2rem 0;
+        padding: 0 1rem;
+        position: relative;
+        display: inline-block;
+    }
+
+    .slogan-primary {
+        background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .slogan-secondary {
+        font-size: 1.8rem;
+        color: #666;
+        display: block;
+        margin-top: 0.5rem;
+    }
+
+    .footer-decoration {
+        position: absolute;
+        width: 140%;
+        height: 140%;
+        top: -20%;
+        left: -20%;
+        background: radial-gradient(circle at center,
+            rgba(108, 92, 231, 0.1) 0%,
+            rgba(255, 75, 110, 0.1) 50%,
+            transparent 70%);
+        border-radius: 50%;
+        animation: rotate 20s linear infinite;
+        pointer-events: none;
+    }
+
+    @keyframes rotate {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+
+    .footer-navigation {
+        display: flex;
+        justify-content: center;
+        gap: 3rem;
+        flex-wrap: wrap;
+        margin: 3rem 0;
+    }
+
+    .footer-nav-item {
+        color: #666;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        position: relative;
+        padding: 0.5rem 1rem;
+    }
+
+    .footer-nav-item::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+    }
+
+    .footer-nav-item:hover {
+        color: var(--primary-color);
+    }
+
+    .footer-nav-item:hover::after {
+        transform: scaleX(1);
+    }
+
+    .footer-bottom {
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 1px solid rgba(0,0,0,0.1);
+        color: #666;
+        font-size: 0.9rem;
+        text-align: center;
+    }
+
+    .footer-social {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+        margin: 2rem 0;
+    }
+
+    .social-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px var(--shadow-color);
+    }
+
+    .social-icon:hover {
+        transform: translateY(-5px) scale(1.1);
+        box-shadow: 0 8px 24px var(--shadow-color);
+        background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+    }
+
+    .social-icon svg {
+        width: 24px;
+        height: 24px;
+        color: #666;
+        transition: color 0.3s ease;
+    }
+
+    .social-icon:hover svg {
+        color: white;
+    }
+
+    @media (max-width: 768px) {
+        .footer-logo {
+            font-size: 2.5rem;
+        }
+
+        .footer-slogan {
+            font-size: 2rem;
+        }
+
+        .slogan-secondary {
+            font-size: 1.4rem;
+        }
+
+        .footer-navigation {
+            gap: 1.5rem;
+        }
+
+        .social-icon {
+            width: 40px;
+            height: 40px;
+        }
+
+        .social-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+    }
+</style>
+
+<footer class="talkidz-footer">
+    <svg class="footer-waves" viewBox="0 0 1440 320" xmlns="http://www.w3.org/2000/svg">
+        <path fill="currentColor" d="M0,96L48,106.7C96,117,192,139,288,154.7C384,171,480,181,576,165.3C672,149,768,107,864,90.7C960,75,1056,85,1152,90.7C1248,96,1344,96,1392,96L1440,96L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+    </svg>
+    
+    <div class="footer-content">
+        <div class="footer-logo-container">
+            <a href="#" class="footer-logo">Talkidz</a>
+            <div class="logo-shine"></div>
+        </div>
+
+        <div class="footer-slogan">
+            <span class="slogan-primary">AI-Powered Playtime</span>
+            <span class="slogan-secondary">Endless discovery</span>
+        </div>
+
+        <div class="footer-decoration"></div>
+
+        <nav class="footer-navigation">
+            <a href="#" class="footer-nav-item">About</a>
+            <a href="#" class="footer-nav-item">Safety</a>
+            <a href="#" class="footer-nav-item">Parents Guide</a>
+            <a href="#" class="footer-nav-item">Support</a>
+            <a href="#" class="footer-nav-item">Privacy</a>
+        </nav>
+
+        <div class="footer-social">
+            <a href="#" class="social-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                </svg>
+            </a>
+            <a href="#" class="social-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                </svg>
+            </a>
+            <a href="#" class="social-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+                </svg>
+            </a>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2024 Talkidz. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
 </html>
