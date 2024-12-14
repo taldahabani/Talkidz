@@ -381,6 +381,23 @@
             transform: rotate(12deg);
             box-shadow: 0 2px 4px rgba(108, 92, 231, 0.3);
         }
+        @keyframes confettiDrop {
+    0% {
+        transform: translateY(-10px) rotateZ(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh) rotateZ(720deg);
+        opacity: 0;
+    }
+}
+
+.confetti {
+    position: fixed;
+    pointer-events: none;
+    z-index: 9999;
+    animation: confettiDrop 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
     </style>
 </head>
 <body>
@@ -390,7 +407,7 @@
                 <a href="#" class="logo">Talkidz</a>
                 <span class="logo-byline">by Playbox</span>
             </div>
-                <button class="share-button" onclick="shareApp()">
+                <button class="share-button" onclick="shareApp(event)">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
                         <polyline points="16 6 12 2 8 6"></polyline>
@@ -805,17 +822,74 @@
         });
     });
 
-    // Handle share button
-    function shareApp() {
-        if (navigator.share) {
-            navigator.share({
-                title: 'Talkidz - AI Friends to Chat With',
-                text: 'Check out Talkidz, where you can chat with AI friends!',
-                url: window.location.href
-            })
-            .catch(console.error);
+function createConfetti(x, y) {
+    const colors = ['#FF4B6E', '#6C5CE7', '#FFC107', '#2ECE9F', '#FF69B4'];
+    const shapes = ['circle', 'square', 'triangle'];
+    
+    for (let i = 0; i < 50; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        
+        // Random size between 5-10px
+        const size = Math.random() * 5 + 5;
+        confetti.style.width = `${size}px`;
+        confetti.style.height = `${size}px`;
+        
+        // Random position around click
+        const startX = x + (Math.random() - 0.5) * 100;
+        const startY = y - 10;
+        confetti.style.left = `${startX}px`;
+        confetti.style.top = `${startY}px`;
+        
+        // Random color
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        confetti.style.backgroundColor = color;
+        
+        // Random shape
+        const shape = shapes[Math.floor(Math.random() * shapes.length)];
+        if (shape === 'circle') {
+            confetti.style.borderRadius = '50%';
+        } else if (shape === 'triangle') {
+            confetti.style.width = '0';
+            confetti.style.height = '0';
+            confetti.style.backgroundColor = 'transparent';
+            confetti.style.borderLeft = `${size}px solid transparent`;
+            confetti.style.borderRight = `${size}px solid transparent`;
+            confetti.style.borderBottom = `${size}px solid ${color}`;
         }
+        
+        // Random rotation
+        confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+        
+        // Add to body
+        document.body.appendChild(confetti);
+        
+        // Remove after animation
+        confetti.addEventListener('animationend', () => {
+            confetti.remove();
+        });
     }
+}
+
+function shareApp(event) {
+    // Create confetti at button location
+    if (event) {
+        const rect = event.target.getBoundingClientRect();
+        const x = rect.left + (rect.width / 2);
+        const y = rect.top + (rect.height / 2);
+        createConfetti(x, y);
+    }
+
+    // Share functionality
+    if (navigator.share) {
+        navigator.share({
+            title: 'Talkidz - AI Friends to Chat With',
+            text: 'Check out Talkidz, where you can chat with AI friends!',
+            url: window.location.href
+        })
+        .catch(console.error);
+    }
+}
 
     // Particle creation code
     function createParticles() {
