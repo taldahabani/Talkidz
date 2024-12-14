@@ -1,1 +1,172 @@
-vdfcdf
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meet Funny Cupcake - Your Comedy Companion | Talkidz</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #FF4B6E;
+            --accent-color: #6C5CE7;
+            --background-color: #FFFFFF;
+            --secondary-background: #F5F5F5;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            margin: 0;
+            background: linear-gradient(180deg, #FFF5F7 0%, #FFFFFF 100%);
+            min-height: 100vh;
+        }
+
+        .hero {
+            text-align: center;
+            padding: 2rem 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .character-container {
+            position: relative;
+            margin: 2rem auto;
+            width: 280px;
+            height: 280px;
+            border-radius: 50%;
+            background: white;
+            box-shadow: 0 8px 32px rgba(255, 75, 110, 0.15);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .character-image {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .sparkle {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: white;
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+            animation: twinkle 2s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0; transform: scale(0.5); }
+            50% { opacity: 1; transform: scale(1); }
+        }
+
+        .title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin: 1rem 0;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        .traits {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin: 2rem 0;
+        }
+
+        .trait {
+            background: white;
+            padding: 1rem 1.5rem;
+            border-radius: 999px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            font-weight: 500;
+            color: #666;
+            transition: all 0.3s ease;
+        }
+
+        .trait:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(108, 92, 231, 0.2);
+            color: var(--primary-color);
+        }
+
+        .cta-button {
+            background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
+            margin: 2rem 0;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 6px 24px rgba(108, 92, 231, 0.3);
+        }
+
+        .fun-fact {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 16px;
+            max-width: 400px;
+            margin: 2rem auto;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .fun-fact-title {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <div class="character-container">
+            <img src="/cupcake.jpg" alt="Funny Cupcake Character" class="character-image">
+            <div class="sparkle" style="top: 10%; left: 80%;"></div>
+            <div class="sparkle" style="top: 70%; left: 90%;"></div>
+            <div class="sparkle" style="top: 80%; left: 20%;"></div>
+        </div>
+        
+        <h1 class="title">Meet Funny Cupcake! 🧁✨</h1>
+        <p class="subtitle">Your sweet and silly friend who's ready to brighten your day with laughter and fun!</p>
+
+        <div class="traits">
+            <span class="trait">🎭 Comedy Expert</span>
+            <span class="trait">🌈 Always Cheerful</span>
+            <span class="trait">🎈 Playful Friend</span>
+            <span class="trait">🎪 Fun Activities</span>
+        </div>
+
+            <a href="https://www.talkidz.com/cupcakes" class="cta-button">
+                Start Chatting with Cupcake!
+            </a>
+
+        <div class="fun-fact">
+            <div class="fun-fact-title">Did you know? 🌟</div>
+            <p>Cupcake knows over 1,000 jokes and can even help you create your own funny stories! Ready to share some laughs?</p>
+        </div>
+    </div>
+</body>
+</html>
