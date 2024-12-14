@@ -13,25 +13,38 @@
             --secondary-background: #F5F5F5;
         }
 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             margin: 0;
             background: linear-gradient(180deg, #FFF5F7 0%, #FFFFFF 100%);
             min-height: 100vh;
+            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
         }
 
         .hero {
             text-align: center;
-            padding: 2rem 1rem;
+            padding: clamp(1rem, 5vh, 3rem) 1rem;
             position: relative;
             overflow: hidden;
         }
 
         .character-container {
             position: relative;
-            margin: 2rem auto;
-            width: 280px;
-            height: 280px;
+            margin: clamp(1rem, 4vh, 2rem) auto;
+            width: min(280px, 80vw);
+            height: min(280px, 80vw);
             border-radius: 50%;
             background: white;
             box-shadow: 0 8px 32px rgba(255, 75, 110, 0.15);
@@ -53,8 +66,8 @@
 
         .sparkle {
             position: absolute;
-            width: 20px;
-            height: 20px;
+            width: clamp(15px, 4vw, 20px);
+            height: clamp(15px, 4vw, 20px);
             background: white;
             clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
             animation: twinkle 2s infinite;
@@ -66,37 +79,46 @@
         }
 
         .title {
-            font-size: 2.5rem;
+            font-size: clamp(1.8rem, 5vw, 2.5rem);
             font-weight: 800;
-            margin: 1rem 0;
+            margin: clamp(0.5rem, 2vh, 1rem) 0;
             background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            padding: 0 1rem;
+            line-height: 1.2;
         }
 
         .subtitle {
-            font-size: 1.2rem;
+            font-size: clamp(1rem, 3vw, 1.2rem);
             color: #666;
-            margin-bottom: 2rem;
+            margin-bottom: clamp(1rem, 4vh, 2rem);
+            padding: 0 1rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.5;
         }
 
         .traits {
             display: flex;
             justify-content: center;
-            gap: 1rem;
+            gap: clamp(0.5rem, 2vw, 1rem);
             flex-wrap: wrap;
-            margin: 2rem 0;
+            margin: clamp(1rem, 4vh, 2rem) 0;
+            padding: 0 1rem;
         }
 
         .trait {
             background: white;
-            padding: 1rem 1.5rem;
+            padding: 0.8rem 1.2rem;
             border-radius: 999px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             font-weight: 500;
             color: #666;
             transition: all 0.3s ease;
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
         }
 
         .trait:hover {
@@ -108,15 +130,17 @@
         .cta-button {
             background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
             color: white;
+            text-decoration: none;
             border: none;
-            padding: 1rem 2rem;
-            font-size: 1.2rem;
+            padding: clamp(0.8rem, 3vh, 1rem) clamp(1.5rem, 4vw, 2rem);
+            font-size: clamp(1rem, 3vw, 1.2rem);
             font-weight: 600;
             border-radius: 999px;
             cursor: pointer;
             transition: all 0.3s ease;
             box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
-            margin: 2rem 0;
+            margin: clamp(1rem, 4vh, 2rem) 0;
+            display: inline-block;
         }
 
         .cta-button:hover {
@@ -126,10 +150,10 @@
 
         .fun-fact {
             background: white;
-            padding: 1.5rem;
+            padding: clamp(1rem, 4vh, 1.5rem);
             border-radius: 16px;
-            max-width: 400px;
-            margin: 2rem auto;
+            max-width: min(400px, 90vw);
+            margin: clamp(1rem, 4vh, 2rem) auto;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
@@ -137,35 +161,88 @@
             color: var(--primary-color);
             font-weight: 600;
             margin-bottom: 0.5rem;
+            font-size: clamp(1rem, 2.5vw, 1.1rem);
+        }
+
+        .fun-fact p {
+            font-size: clamp(0.9rem, 2.5vw, 1rem);
+            line-height: 1.5;
+        }
+
+        /* Responsiveness for larger screens */
+        @media (min-width: 1200px) {
+            .hero {
+                padding-top: 4rem;
+                padding-bottom: 4rem;
+            }
+
+            .character-container {
+                margin: 3rem auto;
+            }
+
+            .traits {
+                gap: 1.5rem;
+            }
+        }
+
+        /* Responsiveness for small screens */
+        @media (max-width: 480px) {
+            .hero {
+                padding-top: 2rem;
+            }
+
+            .traits {
+                gap: 0.5rem;
+                padding: 0 0.5rem;
+            }
+
+            .trait {
+                padding: 0.6rem 1rem;
+            }
+
+            .fun-fact {
+                margin: 1.5rem 1rem;
+            }
+        }
+
+        /* Handle notch/safe areas for mobile devices */
+        @supports (padding: max(0px)) {
+            .hero {
+                padding-left: max(1rem, env(safe-area-inset-left));
+                padding-right: max(1rem, env(safe-area-inset-right));
+                padding-top: max(2rem, env(safe-area-inset-top));
+            }
         }
     </style>
 </head>
 <body>
-    <div class="hero">
-        <div class="character-container">
-            <img src="/cupcake.jpg" alt="Funny Cupcake Character" class="character-image">
-            <div class="sparkle" style="top: 10%; left: 80%;"></div>
-            <div class="sparkle" style="top: 70%; left: 90%;"></div>
-            <div class="sparkle" style="top: 80%; left: 20%;"></div>
-        </div>
-        
-        <h1 class="title">Meet Funny Cupcake! 🧁✨</h1>
-        <p class="subtitle">Your sweet and silly friend who's ready to brighten your day with laughter and fun!</p>
+    <div class="container">
+        <div class="hero">
+            <div class="character-container">
+                <img src="https://www.talkidz.com/cupcake.jpg" alt="Funny Cupcake Character" class="character-image">
+                <div class="sparkle" style="top: 10%; left: 80%;"></div>
+                <div class="sparkle" style="top: 70%; left: 90%;"></div>
+                <div class="sparkle" style="top: 80%; left: 20%;"></div>
+            </div>
+            
+            <h1 class="title">Meet Funny Cupcake! 🧁✨</h1>
+            <p class="subtitle">Your sweet and silly friend who's ready to brighten your day with laughter and fun!</p>
 
-        <div class="traits">
-            <span class="trait">🎭 Comedy Expert</span>
-            <span class="trait">🌈 Always Cheerful</span>
-            <span class="trait">🎈 Playful Friend</span>
-            <span class="trait">🎪 Fun Activities</span>
-        </div>
+            <div class="traits">
+                <span class="trait">🎭 Comedy Expert</span>
+                <span class="trait">🌈 Always Cheerful</span>
+                <span class="trait">🎈 Playful Friend</span>
+                <span class="trait">🎪 Fun Activities</span>
+            </div>
 
-        <button class="cta-button">
-            Start Chatting with Cupcake!
-        </button>
+            <a href="https://www.talkidz.com/cupcakes" class="cta-button">
+                Start Chatting with Cupcake!
+            </a>
 
-        <div class="fun-fact">
-            <div class="fun-fact-title">Did you know? 🌟</div>
-            <p>Cupcake knows over 1,000 jokes and can even help you create your own funny stories! Ready to share some laughs?</p>
+            <div class="fun-fact">
+                <div class="fun-fact-title">Did you know? 🌟</div>
+                <p>Cupcake knows over 1,000 jokes and can even help you create your own funny stories! Ready to share some laughs?</p>
+            </div>
         </div>
     </div>
 </body>
