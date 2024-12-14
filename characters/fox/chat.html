@@ -1,1 +1,342 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ElevenLabs AI Assistant</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            position: relative;
+        }
+
+        .background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            pointer-events: none;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .background.image {
+            background-image: url('emma.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .background.video {
+            display: none;
+            pointer-events: none;
+        }
+
+        video::-webkit-media-controls {
+            display: none !important;
+        }
+
+        video::-webkit-media-controls-enclosure {
+            display: none !important;
+        }
+
+        video::-webkit-media-controls-panel {
+            display: none !important;
+        }
+
+        .bottom-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            background: linear-gradient(to top, rgba(0,0,0,0.5), transparent);
+        }
+
+        .status-bar {
+            color: white;
+            text-align: center;
+            font-size: 18px;
+            width: 100%;
+            padding: 10px;
+        }
+
+        button {
+            background-color: #FF69B4;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        button:hover {
+            background-color: #FF1493;
+            transform: scale(1.05);
+        }
+
+        button.active {
+            background-color: #808080;
+        }
+
+        button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        .preload-container {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            overflow: hidden;
+            opacity: 0;
+            pointer-events: none;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+    <div class="background-container">
+        <div class="background image"></div>
+        <video class="background video" id="idleVideo" loop muted playsinline disablePictureInPicture>
+            <source src="idle.mp4" type="video/mp4">
+        </video>
+        <video class="background video" id="speakingVideo" loop muted playsinline disablePictureInPicture>
+            <source src="speaking.mp4" type="video/mp4">
+        </video>
+    </div>
+
+    <canvas id="confetti-canvas"></canvas>
+
+    <div class="bottom-container">
+        <button id="startButton">Start Conversation</button>
+        <div class="status-bar">
+            Status: <span id="connectionStatus">Idle</span> | Agent is <span id="agentStatus">Listening</span>
+        </div>
+    </div>
+
+    <script type="module">
+        import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
+
+        let conversation = null;
+        let currentMode = 'idle';
+        let videosLoaded = { idle: false, speaking: false };
+
+        const backgroundImage = document.querySelector('.background.image');
+        const idleVideo = document.getElementById('idleVideo');
+        const speakingVideo = document.getElementById('speakingVideo');
+        const startButton = document.getElementById('startButton');
+
+        // Preload videos
+        const preloadVideos = () => {
+            // Preload idle video
+            idleVideo.load();
+            idleVideo.addEventListener('loadeddata', () => {
+                console.log('Idle video preloaded');
+                videosLoaded.idle = true;
+            });
+
+            // Preload speaking video
+            speakingVideo.load();
+            speakingVideo.addEventListener('loadeddata', () => {
+                console.log('Speaking video preloaded');
+                videosLoaded.speaking = true;
+            });
+        };
+
+        // Call preload immediately
+        preloadVideos();
+
+        // Confetti function
+        const triggerConfetti = () => {
+            const count = 200;
+            const defaults = {
+                origin: { y: 0.7 }
+            };
+
+            function fire(particleRatio, opts) {
+                confetti({
+                    ...defaults,
+                    ...opts,
+                    particleCount: Math.floor(count * particleRatio)
+                });
+            }
+
+            fire(0.25, {
+                spread: 26,
+                startVelocity: 55,
+            });
+
+            fire(0.2, {
+                spread: 60,
+            });
+
+            fire(0.35, {
+                spread: 100,
+                decay: 0.91,
+                scalar: 0.8
+            });
+
+            fire(0.1, {
+                spread: 120,
+                startVelocity: 25,
+                decay: 0.92,
+                scalar: 1.2
+            });
+
+            fire(0.1, {
+                spread: 120,
+                startVelocity: 45,
+            });
+        };
+
+        // Prevent right-click on videos
+        document.addEventListener('contextmenu', (e) => {
+            if (e.target.tagName === 'VIDEO') {
+                e.preventDefault();
+            }
+        });
+
+        // Prevent videos from being dragged
+        document.addEventListener('dragstart', (e) => {
+            if (e.target.tagName === 'VIDEO') {
+                e.preventDefault();
+            }
+        });
+
+        const updateBackground = (mode) => {
+            backgroundImage.style.display = 'none';
+            idleVideo.style.display = 'none';
+            speakingVideo.style.display = 'none';
+            
+            idleVideo.pause();
+            speakingVideo.pause();
+
+            if (mode === 'speaking' && videosLoaded.speaking) {
+                speakingVideo.style.display = 'block';
+                speakingVideo.play().catch(console.error);
+            } else if (mode === 'listening' && videosLoaded.idle) {
+                idleVideo.style.display = 'block';
+                idleVideo.play().catch(console.error);
+            } else {
+                backgroundImage.style.display = 'block';
+            }
+        };
+
+        const updateStatus = (mode) => {
+            const connectionStatus = document.getElementById('connectionStatus');
+            const agentStatus = document.getElementById('agentStatus');
+
+            if (mode === 'speaking') {
+                agentStatus.textContent = 'Speaking';
+            } else if (mode === 'listening') {
+                agentStatus.textContent = 'Listening';
+            } else {
+                agentStatus.textContent = 'Idle';
+            }
+
+            updateBackground(mode);
+        };
+
+        const startConversation = async () => {
+            try {
+                await navigator.mediaDevices.getUserMedia({ audio: true });
+                triggerConfetti();
+                startButton.classList.add('active'); // Add grey color class
+
+                conversation = await Conversation.startSession({
+                    agentId: 'UFCiWykxf7I8pgANcBuJ',
+                    onModeChange: (mode) => {
+                        updateStatus(mode.mode);
+                    },
+                    onConnect: () => {
+                        document.getElementById('connectionStatus').textContent = 'Connected';
+                        updateStatus('listening');
+                        startButton.textContent = 'End Conversation';
+                    },
+                    onDisconnect: () => {
+                        document.getElementById('connectionStatus').textContent = 'Disconnected';
+                        updateStatus('idle');
+                        startButton.textContent = 'Start Conversation';
+                        startButton.classList.remove('active'); // Remove grey color class
+                    },
+                    onMessage: (message) => {
+                        if (message.type === 'agent_response') {
+                            console.log('Agent response:', message.agent_response_event.agent_response);
+                        }
+                    },
+                    onError: (error) => {
+                        console.error('Conversation error:', error);
+                        updateStatus('idle');
+                        startButton.classList.remove('active'); // Remove grey color class
+                    }
+                });
+            } catch (error) {
+                console.error('Error starting conversation:', error);
+                updateStatus('idle');
+                startButton.classList.remove('active'); // Remove grey color class
+            }
+        };
+
+        const endConversation = async () => {
+            if (conversation) {
+                try {
+                    await conversation.endSession();
+                } catch (error) {
+                    console.error('Error ending conversation:', error);
+                } finally {
+                    conversation = null;
+                    updateStatus('idle');
+                    startButton.classList.remove('active'); // Remove grey color class
+                }
+            }
+        };
+
+        document.getElementById('startButton').addEventListener('click', async () => {
+            if (conversation) {
+                await endConversation();
+            } else {
+                await startConversation();
+            }
+        });
+
+        // Initialize with idle state
+        updateStatus('idle');
+    </script>
+</body>
+</html>
