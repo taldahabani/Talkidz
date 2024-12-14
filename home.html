@@ -805,17 +805,39 @@
         });
     });
 
-    // Handle share button
-    function shareApp() {
-        if (navigator.share) {
-            navigator.share({
-                title: 'Talkidz - AI Friends to Chat With',
-                text: 'Check out Talkidz, where you can chat with AI friends!',
-                url: 'www.talkidz.com'
-            })
-            .catch(console.error);
-        }
+function shareApp() {
+    const shareData = {
+        title: 'Talkidz - AI Friends to Chat With',
+        text: 'Check out Talkidz, where you can chat with AI friends!',
+        url: 'https://www.talkidz.com'
+    };
+
+    // Check if Web Share API is supported
+    if (navigator.share) {
+        navigator.share(shareData)
+            .then(() => console.log('Successfully shared'))
+            .catch((error) => {
+                console.error('Error sharing:', error);
+                fallbackShare();
+            });
+    } else {
+        fallbackShare();
     }
+}
+
+// Fallback function for browsers that don't support Web Share API
+function fallbackShare() {
+    // Create a temporary input to copy the URL
+    const dummy = document.createElement('input');
+    document.body.appendChild(dummy);
+    dummy.value = 'https://www.talkidz.com';
+    dummy.select();
+    document.execCommand('copy');
+    document.body.removeChild(dummy);
+    
+    // Alert the user
+    alert('Link copied to clipboard! Share it with your friends.');
+}
 
     // Particle creation code
     function createParticles() {
