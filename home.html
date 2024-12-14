@@ -421,16 +421,16 @@
         <section class="genre-section">
             <h2 class="genre-title">Funny</h2>
             <div class="character-carousel">
-                <a href="talkidz.com/cupcake" class="character-card">
+                <a href="/cat" class="character-card">
+                    <div class="character-image" style="background-image: url('/cat.jpg')"></div>
+                    <h3 class="character-name">Funny Cat</h3>
+                    <p class="character-role">Comedy Companion</p>
+                </a>
+                <a href="/cupcake" class="character-card">
                     <div class="character-image" style="background-image: url('/cupcake.jpg')"></div>
                     <h3 class="character-name">Funny Cupcake</h3>
                     <p class="character-role">Comedy Companion</p>
                     <span class="new-badge">New!</span>
-                </a>
-                <a href="talkidz.com/cat" class="character-card">
-                    <div class="character-image" style="background-image: url('/cat.jpg')"></div>
-                    <h3 class="character-name">Funny Cat</h3>
-                    <p class="character-role">Joke Master</p>
                 </a>
                 <a href="talkidz.com/monkey" class="character-card">
                     <div class="character-image" style="background-image: url('/monkey.jpg')"></div>
@@ -443,6 +443,12 @@
         <section class="genre-section">
             <h2 class="genre-title">Education</h2>
             <div class="character-carousel">
+                <a href="/fox" class="character-card">
+                    <div class="character-image" style="background-image: url('/fox.jpg')"></div>
+                    <h3 class="character-name">Clever Fox</h3>
+                    <p class="character-role">Wise Instructor</p>
+                    <span class="new-badge">New!</span>
+                </a>
                 <a href="talkidz.com/robo/en" class="character-card">
                     <div class="character-image" style="background-image: url('/robot.jpg')"></div>
                     <h3 class="character-name">Robo the Robot</h3>
@@ -453,24 +459,12 @@
                     <h3 class="character-name">Panda</h3>
                     <p class="character-role">Calm Educator</p>
                 </a>
-                <a href="talkidz.com/clever-fox/en" class="character-card">
-                    <div class="character-image" style="background-image: url('/fox.jpg')"></div>
-                    <h3 class="character-name">Clever Fox</h3>
-                    <p class="character-role">Wise Instructor</p>
-                    <span class="new-badge">New!</span>
-                </a>
             </div>
         </section>
 
         <section class="genre-section">
             <h2 class="genre-title">Personal Growth</h2>
             <div class="character-carousel">
-                <a href="/emma" class="character-card">
-                    <div class="character-image" style="background-image: url('/emmma.jpg')"></div>
-                    <h3 class="character-name">Emma (Emotional Friend)</h3>
-                    <p class="character-role">Encouraging Counselor</p>
-                    <span class="new-badge">New!</span>
-                </a>
                 <a href="talkidz.com/psychologist-woman/en" class="character-card">
                     <div class="character-image" style="background-image: url('/duck.jpg')"></div>
                     <h3 class="character-name">Mentalist Duck</h3>
@@ -480,6 +474,12 @@
                     <div class="character-image" style="background-image: url('/panda.jpg')"></div>
                     <h3 class="character-name">Psychologist (Man)</h3>
                     <p class="character-role">Wellness Mentor</p>
+                </a>
+                <a href="/emma" class="character-card">
+                    <div class="character-image" style="background-image: url('/emmma.jpg')"></div>
+                    <h3 class="character-name">Emma (Emotional Friend)</h3>
+                    <p class="character-role">Encouraging Counselor</p>
+                    <span class="new-badge">New!</span>
                 </a>
             </div>
         </section>
@@ -811,7 +811,7 @@
             navigator.share({
                 title: 'Talkidz - AI Friends to Chat With',
                 text: 'Check out Talkidz, where you can chat with AI friends!',
-                url: 'www.talkidz.com'
+                url: window.location.href
             })
             .catch(console.error);
         }
