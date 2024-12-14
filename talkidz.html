@@ -836,6 +836,10 @@
     z-index: 100;
 }
 
+.character.active {
+    animation: floatUp 4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
 @keyframes floatUp {
     0% {
         opacity: 0;
@@ -862,6 +866,7 @@
         <div class="geometric-pattern"></div>
     </div>
 </div>
+    
     <div class="footer-content">
         <div class="footer-logo-container">
             <a href="#" class="footer-logo">Talkidz</a>
