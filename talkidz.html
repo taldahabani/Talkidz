@@ -381,13 +381,20 @@
             transform: rotate(12deg);
             box-shadow: 0 2px 4px rgba(108, 92, 231, 0.3);
         }
-        @keyframes confettiDrop {
+@keyframes confettiDrop {
     0% {
-        transform: translateY(-10px) rotateZ(0deg);
+        transform: translateY(0) rotateZ(0deg);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    35% {
+        transform: translateY(var(--final-y)) rotateZ(var(--rotation));
         opacity: 1;
     }
     100% {
-        transform: translateY(100vh) rotateZ(720deg);
+        transform: translateY(calc(var(--final-y) + 100px)) rotateZ(var(--rotation));
         opacity: 0;
     }
 }
@@ -396,7 +403,9 @@
     position: fixed;
     pointer-events: none;
     z-index: 9999;
-    animation: confettiDrop 1.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    animation: confettiDrop 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    transform-origin: center center;
+    will-change: transform;
 }
     </style>
 </head>
@@ -823,27 +832,32 @@
     });
 
 function createConfetti(x, y) {
-    const colors = ['#FF4B6E', '#6C5CE7', '#FFC107', '#2ECE9F', '#FF69B4'];
+    const colors = ['#FF4B6E', '#6C5CE7', '#FFC107', '#2ECE9F', '#FF69B4', '#FF6B6B', '#4ECDC4'];
     const shapes = ['circle', 'square', 'triangle'];
     
-    for (let i = 0; i < 50; i++) {
+    for (let i = 0; i < 80; i++) {
         const confetti = document.createElement('div');
         confetti.className = 'confetti';
         
-        // Random size between 5-10px
-        const size = Math.random() * 5 + 5;
+        // Random size between 8-12px
+        const size = Math.random() * 4 + 8;
         confetti.style.width = `${size}px`;
         confetti.style.height = `${size}px`;
         
-        // Random position around click
-        const startX = x + (Math.random() - 0.5) * 100;
-        const startY = y - 10;
-        confetti.style.left = `${startX}px`;
-        confetti.style.top = `${startY}px`;
+        // Calculate spread and distance based on angle
+        const angle = (Math.random() * 360) * (Math.PI / 180);
+        const velocity = Math.random() * 50 + 50;
+        const finalX = Math.cos(angle) * velocity;
+        const finalY = Math.sin(angle) * velocity - 100;
+        
+        // Set initial position at button center
+        confetti.style.left = `${x}px`;
+        confetti.style.top = `${y}px`;
         
         // Random color
         const color = colors[Math.floor(Math.random() * colors.length)];
         confetti.style.backgroundColor = color;
+        confetti.style.boxShadow = `0 3px 6px rgba(0,0,0,0.16)`;
         
         // Random shape
         const shape = shapes[Math.floor(Math.random() * shapes.length)];
@@ -858,10 +872,13 @@ function createConfetti(x, y) {
             confetti.style.borderBottom = `${size}px solid ${color}`;
         }
         
-        // Random rotation
-        confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+        // Set CSS variables for the animation
+        confetti.style.setProperty('--final-y', `${finalY}px`);
+        confetti.style.setProperty('--rotation', `${Math.random() * 720 - 360}deg`);
         
-        // Add to body
+        // Add scale animation
+        confetti.style.transform = `scale(${Math.random() * 0.4 + 0.8})`;
+        
         document.body.appendChild(confetti);
         
         // Remove after animation
@@ -871,16 +888,21 @@ function createConfetti(x, y) {
     }
 }
 
+// Update the shareApp function to handle the button's children
 function shareApp(event) {
-    // Create confetti at button location
-    if (event) {
-        const rect = event.target.getBoundingClientRect();
+    let target = event.target;
+    // If clicked on the SVG or path, find the button parent
+    while (target && !target.classList.contains('share-button')) {
+        target = target.parentElement;
+    }
+    
+    if (target) {
+        const rect = target.getBoundingClientRect();
         const x = rect.left + (rect.width / 2);
         const y = rect.top + (rect.height / 2);
         createConfetti(x, y);
     }
 
-    // Share functionality
     if (navigator.share) {
         navigator.share({
             title: 'Talkidz - AI Friends to Chat With',
