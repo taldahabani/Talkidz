@@ -381,50 +381,6 @@
             transform: rotate(12deg);
             box-shadow: 0 2px 4px rgba(108, 92, 231, 0.3);
         }
-
-        .user-profile {
-    background: var(--secondary-background);
-    padding: 0.5rem 1rem;
-    border-radius: 999px;
-    display: flex;
-    align-items: center;
-    transition: all 0.3s ease;
-}
-
-.user-profile:hover {
-    background: white;
-    box-shadow: 0 4px 12px var(--shadow-color);
-    transform: translateY(-2px);
-}
-
-.hidden {
-    display: none !important;
-}
-
-/* Auth button variations */
-.auth-login, .auth-logout {
-    gap: 0.5rem;
-}
-
-.auth-logout {
-    background: var(--secondary-background);
-    color: #666 !important;
-}
-
-.auth-logout:hover {
-    background: #ffefef;
-    color: var(--primary-color) !important;
-}
-
-.auth-logout svg {
-    color: #666 !important;
-    stroke: #666 !important;
-}
-
-.auth-logout:hover svg {
-    color: var(--primary-color) !important;
-    stroke: var(--primary-color) !important;
-}
     </style>
 </head>
 <body>
@@ -442,21 +398,15 @@
                     </svg>
                     Share
                 </button>
-         <button onclick="login()" class="auth-login share-button">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M16 7C16 9.20914 14.2091 11 12 11C9.79086 11 8 9.20914 8 7C8 4.79086 9.79086 3 12 3C14.2091 3 16 4.79086 16 7Z"/>
-                <path d="M12 14C8.13401 14 5 17.134 5 21H19C19 17.134 15.866 14 12 14Z"/>
-            </svg>
-            Log In
-        </button>
-        <button onclick="logout()" class="auth-logout share-button hidden">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-                <polyline points="16 17 21 12 16 7"/>
-                <line x1="21" y1="12" x2="9" y2="12"/>
-            </svg>
-            Log Out
-        </button>
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"/>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="3" y1="12" x2="21" y2="12"/>
+                    <line x1="3" y1="6" x2="21" y2="6"/>
+                    <line x1="3" y1="18" x2="21" y2="18"/>
+                </svg>
             </div>
         </nav>
         <p class="tagline">Explore AI Friends to Chat With</p>
@@ -578,8 +528,6 @@
             </div>
         </section>  
     </main>
-    <script src="https://cdn.auth0.com/js/auth0-spa-js/2.0/auth0-spa-js.production.js"></script>
-<script src="/js/auth.js"></script>
 </body>
 <style>
     .talkidz-footer {
