@@ -150,7 +150,6 @@
             gap: 1.5rem;
             z-index: 10;
             backdrop-filter: blur(8px);
-            padding-bottom: 7rem;
         }
 
         .controls-wrapper {
@@ -165,46 +164,26 @@
             align-items: center;
             justify-content: center;
             gap: 1rem;
-            margin-bottom: 0;
         }
 
-        .progress-container {
-            width: 100%;
-            height: 4px;
-            background: rgba(108, 92, 231, 0.1);
-            border-radius: 999px;
-            margin: 1rem 0 2rem 0;
-            overflow: hidden;
-        }
-
-        .progress-bar {
-            width: 0%;
-            height: 100%;
-            background: linear-gradient(to right, var(--accent-color), var(--primary-color));
-            transition: width 1s linear;
-            border-radius: 999px;
-            box-shadow: 0 0 10px rgba(108, 92, 231, 0.2);
-        }
-
-        .controls-divider {
-            width: 100%;
-            height: 1px;
-            background: linear-gradient(to right,
-                transparent,
-                rgba(108, 92, 231, 0.15),
-                transparent);
-            margin-top: 1rem;
+        .bottom-status-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1rem 1.5rem;
+            background: white;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            border-top: 1px solid rgba(108, 92, 231, 0.1);
+            z-index: 12;
         }
 
         .logo-container {
-            position: fixed;
-            left: 1.5rem;
-            bottom: 1.5rem;
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            padding: 0.5rem;
-            z-index: 11;
         }
 
         .logo {
@@ -223,6 +202,23 @@
             color: #666;
             margin-top: -0.25rem;
             margin-left: 0.25rem;
+        }
+
+        .progress-container {
+            flex: 1;
+            height: 4px;
+            background: rgba(108, 92, 231, 0.1);
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(to right, var(--accent-color), var(--primary-color));
+            transition: width 1s linear;
+            border-radius: 999px;
+            box-shadow: 0 0 10px rgba(108, 92, 231, 0.2);
         }
 
         .main-button {
@@ -275,6 +271,15 @@
             background: #808080;
             transform: translateY(1px);
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .main-button.active svg {
+            width: 24px;
+            height: 24px;
+            stroke: white;
         }
 
         .share-button {
@@ -298,12 +303,12 @@
         }
 
         @media (max-width: 768px) {
-            .bottom-container {
-                padding-bottom: 8rem;
+            .bottom-status-container {
+                padding-bottom: calc(env(safe-area-inset-bottom) + 1rem);
             }
             
-            .controls-wrapper {
-                margin-bottom: 1rem;
+            .bottom-container {
+                padding-bottom: calc(env(safe-area-inset-bottom) + 5rem);
             }
 
             .main-button {
@@ -349,14 +354,16 @@
                     </svg>
                 </button>
             </div>
-            <div class="progress-container">
-                <div id="progressBar" class="progress-bar"></div>
-            </div>
-            <div class="controls-divider"></div>
         </div>
+    </div>
+
+    <div class="bottom-status-container">
         <div class="logo-container">
             <a href="/" class="logo">Talkidz</a>
             <span class="logo-byline">by Playbox</span>
+        </div>
+        <div class="progress-container">
+            <div id="progressBar" class="progress-bar"></div>
         </div>
     </div>
 
@@ -413,52 +420,6 @@
             currentProgress = 0;
         };
 
-        // Create floating particles
-        const createParticles = () => {
-            const container = document.querySelector('.main-container');
-            for (let i = 0; i < 20; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.width = Math.random() * 10 + 'px';
-                particle.style.height = particle.style.width;
-                particle.style.background = `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.5)`;
-                particle.style.borderRadius = '50%';
-                particle.style.position = 'absolute';
-                restartParticle(particle);
-                container.appendChild(particle);
-            }
-        };
-
-        const restartParticle = (particle) => {
-            const startX = Math.random() * window.innerWidth;
-            const startY = window.innerHeight + 10;
-            const endX = startX + (Math.random() - 0.5) * 200;
-            const endY = -10;
-            
-            particle.style.left = startX + 'px';
-            particle.style.top = startY + 'px';
-            particle.style.setProperty('--tx', (endX - startX) + 'px');
-            particle.style.setProperty('--ty', (endY - startY) + 'px');
-            
-            particle.style.animation = 'none';
-            particle.offsetHeight; // Force reflow
-            particle.style.animation = `float ${Math.random() * 2 + 3}s linear infinite`;
-        };
-
-        // Add sparkle effect
-        const addSparkleEffect = (element) => {
-            const sparkle = document.createElement('div');
-            sparkle.className = 'sparkle';
-            sparkle.style.width = Math.random() * 10 + 5 + 'px';
-            sparkle.style.height = sparkle.style.width;
-            sparkle.style.left = Math.random() * 100 + '%';
-            sparkle.style.top = Math.random() * 100 + '%';
-            element.appendChild(sparkle);
-
-            sparkle.style.animation = `sparkle ${Math.random() * 0.5 + 0.5}s ease-in-out`;
-            sparkle.addEventListener('animationend', () => sparkle.remove());
-        };
-
         const updateBackground = (mode) => {
             backgroundImage.style.display = 'none';
             idleVideo.style.display = 'none';
@@ -485,7 +446,8 @@
                 startButton.classList.add('active');
                 startButton.innerHTML = `
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-                        <path d="M6 18L18 6M6 6l12 12"/>
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
                     </svg>
                 `;
 
@@ -496,7 +458,6 @@
                     },
                     onConnect: () => {
                         updateBackground('listening');
-                        createParticles();
                         startProgress();
                     },
                     onDisconnect: () => {
@@ -513,15 +474,6 @@
                         resetProgress();
                     }
                 });
-
-                // Add sparkle effect to button periodically
-                const sparkleInterval = setInterval(() => {
-                    if (conversation) {
-                        addSparkleEffect(startButton);
-                    } else {
-                        clearInterval(sparkleInterval);
-                    }
-                }, 2000);
 
             } catch (error) {
                 console.error('Error starting conversation:', error);
