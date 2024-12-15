@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meet Funny Cupcake - Your Comedy Companion | Talkidz</title>
+    <title>Meet Whimsy the Clown - Your Comedy Companion | Talkidz</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #FF4B6E;
-            --accent-color: #6C5CE7;
+            --primary-color: #FF6B6B;
+            --accent-color: #4ECDC4;
             --background-color: #FFFFFF;
             --secondary-background: #F5F5F5;
         }
@@ -16,7 +16,7 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             margin: 0;
-            background: linear-gradient(180deg, #FFF5F7 0%, #FFFFFF 100%);
+            background: linear-gradient(180deg, #FFF0F0 0%, #FFFFFF 100%);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -43,7 +43,7 @@
 
         .back-button:hover {
             transform: translateX(-2px);
-            box-shadow: 0 6px 16px rgba(108, 92, 231, 0.2);
+            box-shadow: 0 6px 16px rgba(78, 205, 196, 0.2);
             color: var(--primary-color);
         }
 
@@ -66,13 +66,14 @@
             height: min(45vh, 250px);
             border-radius: 50%;
             background: white;
-            box-shadow: 0 8px 32px rgba(255, 75, 110, 0.15);
-            animation: float 6s ease-in-out infinite;
+            box-shadow: 0 8px 32px rgba(255, 107, 107, 0.15);
+            animation: bounce 6s ease-in-out infinite;
         }
 
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-15px) rotate(5deg); }
+            75% { transform: translateY(-10px) rotate(-5deg); }
         }
 
         .character-image {
@@ -84,11 +85,16 @@
 
         .sparkle {
             position: absolute;
-            width: 15px;
-            height: 15px;
-            background: white;
+            width: 20px;
+            height: 20px;
+            background: var(--accent-color);
             clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-            animation: twinkle 2s infinite;
+            animation: twinkle 3s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 1; transform: scale(1) rotate(0deg); }
+            50% { opacity: 0.5; transform: scale(1.2) rotate(180deg); }
         }
 
         .title {
@@ -127,6 +133,14 @@
             font-weight: 500;
             color: #666;
             font-size: 0.9rem;
+            transform-origin: center;
+            animation: wobble 10s infinite;
+        }
+
+        @keyframes wobble {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(2deg); }
+            75% { transform: rotate(-2deg); }
         }
 
         .cta-container {
@@ -144,10 +158,15 @@
             border-radius: 999px;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
+            box-shadow: 0 4px 12px rgba(78, 205, 196, 0.2);
             display: inline-block;
             text-decoration: none;
             margin-bottom: 1rem;
+        }
+
+        .cta-button:hover {
+            transform: scale(1.05) rotate(2deg);
+            box-shadow: 0 6px 20px rgba(78, 205, 196, 0.3);
         }
 
         .fun-fact {
@@ -157,6 +176,12 @@
             max-width: 360px;
             margin: 0 auto 1rem;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            animation: float 8s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
         }
 
         .fun-fact-title {
@@ -202,30 +227,30 @@
         </a>
         
         <div class="character-container">
-            <img src="assets/cupcake.jpg" alt="Funny Cupcake Character" class="character-image">
+            <img src="assets/whimsy.jpg" alt="Whimsy the Clown Character" class="character-image">
             <div class="sparkle" style="top: 10%; left: 80%;"></div>
             <div class="sparkle" style="top: 70%; left: 90%;"></div>
             <div class="sparkle" style="top: 80%; left: 20%;"></div>
         </div>
         
-        <h1 class="title">Meet Funny Cupcake! 🧁✨</h1>
-        <p class="subtitle">Your sweet and silly friend who's ready to brighten your day with laughter and fun!</p>
+        <h1 class="title">Meet Whimsy the Clown! 🤡✨</h1>
+        <p class="subtitle">Your silly, funny friend who's always ready to bring giggles and goofy fun to your day!</p>
 
         <div class="traits">
-            <span class="trait">🎭 Comedy Expert</span>
-            <span class="trait">🌈 Always Cheerful</span>
-            <span class="trait">🎈 Playful Friend</span>
-            <span class="trait">🎪 Fun Activities</span>
+            <span class="trait">🎈 Balloon Artist</span>
+            <span class="trait">🎭 Joke Master</span>
+            <span class="trait">🎨 Creative Genius</span>
+            <span class="trait">🌟 Playful Performer</span>
         </div>
 
         <div class="cta-container">
-            <a href="https://www.talkidz.com/characters/cupcake/chat" class="cta-button">
-                Start Chatting with Cupcake!
+            <a href="/characters/whimsy/chat" class="cta-button">
+                Start Laughing with Whimsy!
             </a>
 
             <div class="fun-fact">
                 <div class="fun-fact-title">Did you know? 🌟</div>
-                <p>Cupcake knows over 1,000 jokes and can even help you create your own funny stories! Ready to share some laughs?</p>
+                <p>Whimsy can juggle jokes, tell hilarious stories, and even teach you the silliest tricks to impress your friends! Ready for some clowning around?</p>
             </div>
         </div>
     </div>
