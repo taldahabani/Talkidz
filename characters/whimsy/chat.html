@@ -133,10 +133,10 @@
             background-position: center;
             background-repeat: no-repeat;
         }
-/* Continuing the style tag */
+
         .bottom-container {
             position: fixed;
-            bottom: 0;
+            bottom: 70px; /* Position above status container */
             left: 0;
             width: 100%;
             padding: 1.5rem;
@@ -156,7 +156,6 @@
             width: 100%;
             max-width: 600px;
             position: relative;
-            margin-bottom: 1rem;
         }
 
         .controls-container {
@@ -178,6 +177,7 @@
             gap: 1.5rem;
             border-top: 1px solid rgba(108, 92, 231, 0.1);
             z-index: 12;
+            height: 70px;
         }
 
         .logo-container {
@@ -276,6 +276,26 @@
             justify-content: center;
         }
 
+        .share-button {
+            background: var(--secondary-background);
+            border: none;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-color);
+        }
+
+        .share-button:hover {
+            transform: translateY(-2px);
+            background: white;
+            box-shadow: 0 4px 12px var(--shadow-color);
+        }
+
         .particle {
             position: absolute;
             pointer-events: none;
@@ -301,33 +321,14 @@
             50% { transform: scale(1) rotate(180deg); opacity: 1; }
         }
 
-        .share-button {
-            background: var(--secondary-background);
-            border: none;
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            color: var(--text-color);
-        }
-
-        .share-button:hover {
-            transform: translateY(-2px);
-            background: white;
-            box-shadow: 0 4px 12px var(--shadow-color);
-        }
-
         @media (max-width: 768px) {
             .bottom-status-container {
                 padding-bottom: calc(env(safe-area-inset-bottom) + 1rem);
             }
             
             .bottom-container {
-                padding-bottom: calc(env(safe-area-inset-bottom) + 5rem);
+                bottom: calc(70px + env(safe-area-inset-bottom));
+                padding-bottom: 1.5rem;
             }
 
             .main-button {
@@ -541,7 +542,6 @@
                     }
                 });
 
-                // Add sparkle effect to button periodically
                 const sparkleInterval = setInterval(() => {
                     if (conversation) {
                         addSparkleEffect(startButton);
@@ -630,8 +630,8 @@
         window.shareCharacter = () => {
             if (navigator.share) {
                 navigator.share({
-                    title: 'Chat with Funny Cupcake on Talkidz',
-                    text: 'Come chat with Funny Cupcake, your new AI friend!',
+                    title: 'Chat with Clumsy Whimsy on Talkidz',
+                    text: 'Come chat with Clumsy Whimsy, your new AI friend!',
                     url: window.location.href
                 }).catch(console.error);
             }
