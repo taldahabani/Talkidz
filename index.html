@@ -28,7 +28,7 @@
     justify-content: center;
     align-items: center;
     z-index: 9999;
-    animation: fadeOut 0.5s ease-in-out 3.5s forwards; /* Changed to 3.5s to match original */
+    animation: fadeOut 0.5s ease-in-out 3.5s forwards;
 }
 
         .splash-hidden {
@@ -533,8 +533,8 @@
             <div class="circle circle-2"></div>
             <div class="circle circle-3"></div>
         </div>
-<h1 class="logo-text">Talkidz</h1>
-<p class="byline">by Playbox</p>
+<h1 class="splash-logo-text">Talkidz</h1>
+<p class="splash-byline">by Playbox</p>
     </div>
 </div>
     <header class="header">
@@ -940,14 +940,6 @@
     </div>
 </footer>
 <script>
-        function hideSplashScreen() {
-            const splashScreen = document.getElementById('splashScreen');
-            splashScreen.classList.add('splash-hidden');
-        }
-
-        // Show content after a fixed delay (2 seconds)
-        setTimeout(hideSplashScreen, 2000);
-
 // Modify your particle creation code
 const particlesContainer = document.querySelector('.particles');
 for (let i = 0; i < 20; i++) {
