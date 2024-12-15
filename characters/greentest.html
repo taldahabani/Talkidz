@@ -21,15 +21,6 @@
             overflow: hidden;
         }
 
-        #finalCanvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 2;
-        }
-
         .background {
             position: absolute;
             top: 0;
@@ -37,126 +28,85 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            z-index: 1;
         }
 
-        #hiddenVideo {
+        canvas {
             position: absolute;
-            visibility: hidden;
-            z-index: -1;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+
+        video {
+            display: none;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <img src="background.jpg" class="background" alt="Background">
-        <canvas id="finalCanvas"></canvas>
+        <canvas id="canvas"></canvas>
         <video 
-            id="hiddenVideo" 
+            id="video"
+            muted 
             autoplay 
             loop 
-            muted 
             playsinline
-            width="450"
-            height="800"
+            webkit-playsinline
         >
             <source src="character.mp4" type="video/mp4">
         </video>
     </div>
 
     <script>
-        const video = document.getElementById('hiddenVideo');
-        const canvas = document.getElementById('finalCanvas');
-        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d', {
+            willReadFrequently: true
+        });
 
-        // Set canvas size
-        canvas.width = 450;
-        canvas.height = 800;
+        const WIDTH = 450;
+        const HEIGHT = 800;
+        canvas.width = WIDTH;
+        canvas.height = HEIGHT;
 
-        // Target green color (#009A65)
-        const targetR = 0;
-        const targetG = 154;
-        const targetB = 101;
-        const tolerance = 45;
+        const TARGET_COLOR = { r: 0, g: 154, b: 101 }; // Green hex: #009A65
+        const TOLERANCE = 60;
 
-        let animationId = null;
+        function processVideo() {
+            ctx.drawImage(video, 0, 0, WIDTH, HEIGHT);
+            const frame = ctx.getImageData(0, 0, WIDTH, HEIGHT);
+            const data = frame.data;
 
-        function processFrame() {
-            // Draw current video frame
-            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-            
-            // Get frame data
-            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-            const pixels = imageData.data;
+            for (let i = 0; i < data.length; i += 4) {
+                const r = data[i];
+                const g = data[i + 1];
+                const b = data[i + 2];
 
-            // Process each pixel
-            for (let i = 0; i < pixels.length; i += 4) {
-                const r = pixels[i];
-                const g = pixels[i + 1];
-                const b = pixels[i + 2];
+                // Euclidean distance to target green color
+                const dr = r - TARGET_COLOR.r;
+                const dg = g - TARGET_COLOR.g;
+                const db = b - TARGET_COLOR.b;
+                const distance = dr * dr + dg * dg + db * db;
 
-                // Calculate color distance using weighted components
-                const colorDiff = Math.sqrt(
-                    Math.pow(r - targetR, 2) + 
-                    Math.pow(g - targetG, 2) + 
-                    Math.pow(b - targetB, 2)
-                );
-
-                // If color is close to green, make it transparent
-                if (colorDiff < tolerance) {
-                    pixels[i + 3] = 0; // Set alpha to 0
+                if (distance < TOLERANCE * TOLERANCE) {
+                    data[i + 3] = 0; // Set pixel alpha to 0
                 }
             }
 
-            // Put processed pixels back
-            ctx.putImageData(imageData, 0, 0);
-            
-            // Continue processing frames
-            animationId = requestAnimationFrame(processFrame);
+            ctx.putImageData(frame, 0, 0);
+            requestAnimationFrame(processVideo);
         }
 
-        function startProcessing() {
-            if (animationId) {
-                cancelAnimationFrame(animationId);
-            }
-            processFrame();
-        }
-
-        // Event listeners
-        video.addEventListener('loadedmetadata', () => {
-            video.play();
-        });
-
+        // Start processing when video is loaded
         video.addEventListener('play', () => {
-            startProcessing();
+            requestAnimationFrame(processVideo);
         });
 
-        video.addEventListener('pause', () => {
-            if (animationId) {
-                cancelAnimationFrame(animationId);
-            }
-        });
-
-        // Force initial play
-        if (video.paused) {
-            video.play().catch(err => console.log('Video play error:', err));
-        }
-
-        // Ensure continuous processing
-        setInterval(() => {
-            if (video.paused) {
-                video.play().catch(err => console.log('Video play error:', err));
-            }
-            if (!animationId) {
-                startProcessing();
-            }
-        }, 100);
-
-        // Handle user interaction for mobile
-        document.addEventListener('click', () => {
-            if (video.paused) {
-                video.play().catch(err => console.log('Video play error:', err));
-            }
+        video.play().catch(err => {
+            console.error('Autoplay failed:', err);
         });
     </script>
 </body>
