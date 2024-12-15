@@ -500,6 +500,38 @@
             }
         };
 
+                    // Add sparkle effect to button periodically
+                const sparkleInterval = setInterval(() => {
+                    if (conversation) {
+                        addSparkleEffect(startButton);
+                    } else {
+                        clearInterval(sparkleInterval);
+                    }
+                }, 2000);
+
+            } catch (error) {
+                console.error('Error starting conversation:', error);
+                updateBackground('idle');
+                startButton.classList.remove('active');
+                startButton.textContent = 'Start Conversation';
+            }
+        };
+
+        const endConversation = async () => {
+            if (conversation) {
+                try {
+                    await conversation.endSession();
+                } catch (error) {
+                    console.error('Error ending conversation:', error);
+                } finally {
+                    conversation = null;
+                    updateBackground('idle');
+                    startButton.classList.remove('active');
+                    startButton.textContent = 'Start Conversation';
+                }
+            }
+        };
+
         // Confetti effect function
         const triggerConfetti = () => {
             const count = 200;
