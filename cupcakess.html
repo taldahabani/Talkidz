@@ -150,12 +150,14 @@
             gap: 1.5rem;
             z-index: 10;
             backdrop-filter: blur(8px);
+            padding-bottom: 7rem;
         }
 
         .controls-wrapper {
             width: 100%;
             max-width: 600px;
             position: relative;
+            margin-bottom: 1rem;
         }
 
         .controls-container {
@@ -163,7 +165,25 @@
             align-items: center;
             justify-content: center;
             gap: 1rem;
-            margin-bottom: 1rem;
+            margin-bottom: 0;
+        }
+
+        .progress-container {
+            width: 100%;
+            height: 4px;
+            background: rgba(108, 92, 231, 0.1);
+            border-radius: 999px;
+            margin: 1rem 0 2rem 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(to right, var(--accent-color), var(--primary-color));
+            transition: width 1s linear;
+            border-radius: 999px;
+            box-shadow: 0 0 10px rgba(108, 92, 231, 0.2);
         }
 
         .controls-divider {
@@ -174,7 +194,6 @@
                 rgba(108, 92, 231, 0.15),
                 transparent);
             margin-top: 1rem;
-            margin-bottom: 3rem;
         }
 
         .logo-container {
@@ -279,12 +298,12 @@
         }
 
         @media (max-width: 768px) {
-            .controls-divider {
-                margin-bottom: 4rem;
-            }
-
             .bottom-container {
-                padding-bottom: 5rem;
+                padding-bottom: 8rem;
+            }
+            
+            .controls-wrapper {
+                margin-bottom: 1rem;
             }
 
             .main-button {
@@ -330,6 +349,9 @@
                     </svg>
                 </button>
             </div>
+            <div class="progress-container">
+                <div id="progressBar" class="progress-bar"></div>
+            </div>
             <div class="controls-divider"></div>
         </div>
         <div class="logo-container">
@@ -338,12 +360,15 @@
         </div>
     </div>
 
-    <script type="module">
+<script type="module">
         import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
 
         let conversation = null;
         let currentMode = 'idle';
         let videosLoaded = { idle: false, speaking: false };
+        let progressInterval;
+        const CONVERSATION_TIME = 300; // 5 minutes in seconds
+        let currentProgress = 0;
 
         const backgroundImage = document.querySelector('.background.image');
         const idleVideo = document.getElementById('idleVideo');
@@ -363,7 +388,30 @@
             });
         };
 
-        preloadVideos();
+        // Progress bar functions
+        const startProgress = () => {
+            currentProgress = 0;
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = '0%';
+            
+            clearInterval(progressInterval);
+            progressInterval = setInterval(() => {
+                currentProgress += (100 / CONVERSATION_TIME);
+                if (currentProgress >= 100) {
+                    clearInterval(progressInterval);
+                    currentProgress = 100;
+                    endConversation();
+                }
+                progressBar.style.width = `${currentProgress}%`;
+            }, 1000);
+        };
+
+        const resetProgress = () => {
+            clearInterval(progressInterval);
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = '0%';
+            currentProgress = 0;
+        };
 
         // Create floating particles
         const createParticles = () => {
@@ -449,17 +497,20 @@
                     onConnect: () => {
                         updateBackground('listening');
                         createParticles();
+                        startProgress();
                     },
                     onDisconnect: () => {
                         updateBackground('idle');
                         startButton.classList.remove('active');
                         startButton.textContent = 'Start Conversation';
+                        resetProgress();
                     },
                     onError: (error) => {
                         console.error('Conversation error:', error);
                         updateBackground('idle');
                         startButton.classList.remove('active');
                         startButton.textContent = 'Start Conversation';
+                        resetProgress();
                     }
                 });
 
@@ -477,6 +528,7 @@
                 updateBackground('idle');
                 startButton.classList.remove('active');
                 startButton.textContent = 'Start Conversation';
+                resetProgress();
             }
         };
 
@@ -491,6 +543,7 @@
                     updateBackground('idle');
                     startButton.classList.remove('active');
                     startButton.textContent = 'Start Conversation';
+                    resetProgress();
                 }
             }
         };
@@ -558,6 +611,7 @@
         };
 
         // Initialize with idle state
+        preloadVideos();
         updateBackground('idle');
     </script>
 </body>
