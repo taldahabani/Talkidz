@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Green Screen Removal</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      background: url('background.jpg') center center / cover no-repeat; /* Your background image or color */
+    }
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+  </style>
+</head>
+<body>
+  <video id="video" src="character.mp4" autoplay muted playsinline loop style="display:none;"></video>
+  <canvas id="canvas"></canvas>
+
+  <script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
+    // Adjust canvas to match video dimensions when loaded
+    video.addEventListener('loadeddata', () => {
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      drawFrame();
+    });
+
+    function drawFrame() {
+      // Draw video frame onto canvas
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      // Extract image data
+      const frame = ctx.getImageData(0, 0, canvas.width, canvas.height);
+      const data = frame.data;
+
+      // Simple chroma key: remove "green-ish" pixels
+      // Adjust thresholds as needed
+      for (let i = 0; i < data.length; i += 4) {
+        const r = data[i];     // Red
+        const g = data[i + 1]; // Green
+        const b = data[i + 2]; // Blue
+
+        // If this pixel is "green enough," make it transparent
+        if (g > 100 && r < 100 && b < 100) {
+          data[i + 3] = 0; // Alpha = 0
+        }
+      }
+
+      // Put modified image data back to canvas
+      ctx.putImageData(frame, 0, 0);
+
+      // Request the next frame
+      requestAnimationFrame(drawFrame);
+    }
+  </script>
+</body>
+</html>
