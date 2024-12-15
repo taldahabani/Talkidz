@@ -25,23 +25,25 @@
             background: var(--background-color);
         }
 
-        .header {
+        .top-bar {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
-            padding: 1rem;
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(8px);
+            height: 60px;
+            padding: 0 1rem;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.3), transparent);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             z-index: 100;
-            box-shadow: 0 2px 12px var(--shadow-color);
         }
 
         .back-button {
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            color: var(--text-color);
+            color: white;
             text-decoration: none;
             font-weight: 500;
             padding: 0.5rem;
@@ -50,56 +52,76 @@
         }
 
         .back-button:hover {
-            background: var(--secondary-background);
             transform: translateX(-2px);
+            background: rgba(255, 255, 255, 0.1);
         }
 
-        .background-container {
+        .character-name {
+            color: white;
+            font-size: 1.25rem;
+            font-weight: 600;
+        }
+
+        .talkidz-logo {
+            height: 24px;
+            opacity: 0.8;
+        }
+
+        .main-container {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #000;
+        }
+
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
-        .background {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+        .background.video {
             position: absolute;
+            display: none;
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+        }
+
+        /* Mobile (portrait) */
+        @media (max-aspect-ratio: 1/1) {
+            .background.video {
+                width: 100%;
+                height: auto;
+            }
+        }
+
+        /* Desktop and Tablet */
+        @media (min-aspect-ratio: 1/1) {
+            .background.video {
+                height: 100%;
+                width: auto;
+            }
         }
 
         .background.image {
-            background-image: url('cupcake.jpg');
-            background-size: cover;
-            background-position: center;
-            filter: blur(50px);
-            opacity: 0.3;
-            transform: scale(1.1);
-        }
-
-        .video-container {
-            position: relative;
-            width: 90%;
-            max-width: 500px;
-            aspect-ratio: 1;
-            z-index: 2;
-        }
-
-        .background.video {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
             width: 100%;
             height: 100%;
             object-fit: contain;
-            display: none;
-            border-radius: 30px;
+            background-image: url('cupcake.jpg');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
         }
 
         .bottom-container {
@@ -107,30 +129,33 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            padding: 2rem;
-            background: linear-gradient(to top, 
-                rgba(255, 255, 255, 0.98) 60%,
-                rgba(255, 255, 255, 0) 100%);
+            padding: 1.5rem;
+            background: linear-gradient(to top, rgba(0,0,0,0.3), transparent);
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 1rem;
             z-index: 10;
-            backdrop-filter: blur(8px);
         }
 
         .status-bar {
-            color: var(--text-color);
+            color: white;
             text-align: center;
             font-size: 0.875rem;
             font-weight: 500;
             padding: 0.5rem 1rem;
-            background: var(--secondary-background);
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 999px;
-            opacity: 0.8;
+            backdrop-filter: blur(8px);
         }
 
-        button {
+        .controls-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .main-button {
             background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
             color: white;
             border: none;
@@ -140,18 +165,36 @@
             border-radius: 999px;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
 
-        button:hover {
+        .main-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(108, 92, 231, 0.3);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
         }
 
-        button.active {
+        .main-button.active {
             background: #808080;
             transform: translateY(1px);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .share-button {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(8px);
+        }
+
+        .share-button:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
         }
 
         #confetti-canvas {
@@ -164,33 +207,24 @@
             z-index: 100;
         }
 
-        @media (max-width: 768px) {
-            .video-container {
-                width: 100%;
-                max-width: none;
-            }
-
-            button {
-                padding: 0.875rem 1.75rem;
-                font-size: 0.875rem;
-            }
-        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 </head>
 <body>
-    <header class="header">
+    <div class="top-bar">
         <a href="/" class="back-button">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M19 12H5M12 19l-7-7 7-7"/>
             </svg>
-            Back to Characters
+            Back
         </a>
-    </header>
+        <div class="character-name">Funny Cupcake</div>
+        <img src="talkidz-logo-white.png" alt="Talkidz" class="talkidz-logo">
+    </div>
 
-    <div class="background-container">
-        <div class="background image"></div>
-        <div class="video-container">
+    <div class="main-container">
+        <div class="video-wrapper">
+            <div class="background image"></div>
             <video class="background video" id="idleVideo" loop muted playsinline disablePictureInPicture>
                 <source src="cupcake-blinking.mp4" type="video/mp4">
             </video>
@@ -203,9 +237,18 @@
     <canvas id="confetti-canvas"></canvas>
 
     <div class="bottom-container">
-        <button id="startButton">Start Conversation</button>
         <div class="status-bar">
             Status: <span id="connectionStatus">Idle</span> | Agent is <span id="agentStatus">Listening</span>
+        </div>
+        <div class="controls-container">
+            <button id="startButton" class="main-button">Start Conversation</button>
+            <button class="share-button" onclick="shareCharacter()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+                    <polyline points="16 6 12 2 8 6"/>
+                    <line x1="12" y1="2" x2="12" y2="15"/>
+                </svg>
+            </button>
         </div>
     </div>
 
@@ -221,16 +264,14 @@
         const speakingVideo = document.getElementById('speakingVideo');
         const startButton = document.getElementById('startButton');
 
- // Preload videos
+        // Preload videos
         const preloadVideos = () => {
-            // Preload idle video
             idleVideo.load();
             idleVideo.addEventListener('loadeddata', () => {
                 console.log('Idle video preloaded');
                 videosLoaded.idle = true;
             });
 
-            // Preload speaking video
             speakingVideo.load();
             speakingVideo.addEventListener('loadeddata', () => {
                 console.log('Speaking video preloaded');
@@ -238,7 +279,6 @@
             });
         };
 
-        // Call preload immediately
         preloadVideos();
 
         // Confetti function
@@ -396,6 +436,16 @@
 
         // Initialize with idle state
         updateStatus('idle');
+
+        window.shareCharacter = () => {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Chat with Funny Cupcake on Talkidz',
+                    text: 'Come chat with Funny Cupcake, your new AI friend!',
+                    url: window.location.href
+                }).catch(console.error);
+            }
+        };
     </script>
 </body>
 </html>
