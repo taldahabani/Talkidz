@@ -133,7 +133,7 @@
             background-position: center;
             background-repeat: no-repeat;
         }
-
+/* Continuing the style tag */
         .bottom-container {
             position: fixed;
             bottom: 0;
@@ -276,10 +276,29 @@
             justify-content: center;
         }
 
-        .main-button.active svg {
-            width: 24px;
-            height: 24px;
-            stroke: white;
+        .particle {
+            position: absolute;
+            pointer-events: none;
+            opacity: 0;
+        }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) rotate(0deg); opacity: 0; }
+            20% { opacity: 0.8; }
+            100% { transform: translate(var(--tx), var(--ty)) rotate(360deg); opacity: 0; }
+        }
+
+        .sparkle {
+            position: absolute;
+            pointer-events: none;
+            background: white;
+            border-radius: 50%;
+            mix-blend-mode: screen;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { transform: scale(0) rotate(0deg); opacity: 0; }
+            50% { transform: scale(1) rotate(180deg); opacity: 1; }
         }
 
         .share-button {
@@ -367,7 +386,7 @@
         </div>
     </div>
 
-<script type="module">
+    <script type="module">
         import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
 
         let conversation = null;
@@ -381,6 +400,52 @@
         const idleVideo = document.getElementById('idleVideo');
         const speakingVideo = document.getElementById('speakingVideo');
         const startButton = document.getElementById('startButton');
+
+        // Create floating particles
+        const createParticles = () => {
+            const container = document.querySelector('.main-container');
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.width = Math.random() * 10 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.background = `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.5)`;
+                particle.style.borderRadius = '50%';
+                particle.style.position = 'absolute';
+                restartParticle(particle);
+                container.appendChild(particle);
+            }
+        };
+
+        const restartParticle = (particle) => {
+            const startX = Math.random() * window.innerWidth;
+            const startY = window.innerHeight + 10;
+            const endX = startX + (Math.random() - 0.5) * 200;
+            const endY = -10;
+            
+            particle.style.left = startX + 'px';
+            particle.style.top = startY + 'px';
+            particle.style.setProperty('--tx', (endX - startX) + 'px');
+            particle.style.setProperty('--ty', (endY - startY) + 'px');
+            
+            particle.style.animation = 'none';
+            particle.offsetHeight; // Force reflow
+            particle.style.animation = `float ${Math.random() * 2 + 3}s linear infinite`;
+        };
+
+        // Add sparkle effect
+        const addSparkleEffect = (element) => {
+            const sparkle = document.createElement('div');
+            sparkle.className = 'sparkle';
+            sparkle.style.width = Math.random() * 10 + 5 + 'px';
+            sparkle.style.height = sparkle.style.width;
+            sparkle.style.left = Math.random() * 100 + '%';
+            sparkle.style.top = Math.random() * 100 + '%';
+            element.appendChild(sparkle);
+
+            sparkle.style.animation = `sparkle ${Math.random() * 0.5 + 0.5}s ease-in-out`;
+            sparkle.addEventListener('animationend', () => sparkle.remove());
+        };
 
         // Preload videos
         const preloadVideos = () => {
@@ -459,6 +524,7 @@
                     onConnect: () => {
                         updateBackground('listening');
                         startProgress();
+                        createParticles();
                     },
                     onDisconnect: () => {
                         updateBackground('idle');
@@ -474,6 +540,15 @@
                         resetProgress();
                     }
                 });
+
+                // Add sparkle effect to button periodically
+                const sparkleInterval = setInterval(() => {
+                    if (conversation) {
+                        addSparkleEffect(startButton);
+                    } else {
+                        clearInterval(sparkleInterval);
+                    }
+                }, 2000);
 
             } catch (error) {
                 console.error('Error starting conversation:', error);
