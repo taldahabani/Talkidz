@@ -176,11 +176,18 @@
             font-size: clamp(2rem, 6vw, 3rem);
             font-weight: 800;
             margin: calc(0.5rem / var(--golden-ratio)) 0;
-            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            background: linear-gradient(90deg, #6a0dad, #8a2be2, #6a0dad);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
             padding: 0 calc(1rem / var(--golden-ratio));
+            animation: gradientMove 5s linear infinite;
+        }
+
+        @keyframes gradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         /* Subtitle */
@@ -194,7 +201,9 @@
 
         /* CTA Button */
         .cta-button {
-            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            background: linear-gradient(45deg, #6a0dad, #8a2be2);
+            background-size: 200% 200%;
+            animation: gradientShiftButton 5s linear infinite;
             color: white;
             border: none;
             padding: 1.2rem 1.5rem;
@@ -208,6 +217,12 @@
             margin: 1rem auto; /* Centers the button */
             width: calc(300px * var(--golden-ratio)); /* Same width as .fun-fact */
             max-width: 80%;
+        }
+        
+        @keyframes gradientShiftButton {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
         
         .cta-button:hover {
@@ -272,6 +287,17 @@
         .fun-fact p {
             margin: 0;
             font-size: 0.9rem;
+        }
+
+        /* Highlight CTA Button */
+        .highlight-cta {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(106, 13, 173, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(106, 13, 173, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(106, 13, 173, 0); }
         }
 
     </style>
@@ -422,21 +448,6 @@
                     ctaButton.classList.remove('highlight-cta');
                 }, 3000);
             }
-
-            // CSS for highlighting CTA button
-            const style = document.createElement('style');
-            style.innerHTML = `
-                .highlight-cta {
-                    animation: pulse 2s infinite;
-                }
-
-                @keyframes pulse {
-                    0% { box-shadow: 0 0 0 0 rgba(106, 13, 173, 0.7); }
-                    70% { box-shadow: 0 0 0 20px rgba(106, 13, 173, 0); }
-                    100% { box-shadow: 0 0 0 0 rgba(106, 13, 173, 0); }
-                }
-            `;
-            document.head.appendChild(style);
         })();
     </script>
 </body>
