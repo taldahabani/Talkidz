@@ -11,7 +11,7 @@
             --accent-color: #4ECDC4;
             --background-color: #FFFFFF;
             --secondary-background: #F5F5F5;
-            --golden-ratio: 1.618; /* Used for proportional spacing */
+            --golden-ratio: 1.618;
         }
 
         body {
@@ -59,21 +59,21 @@
 
         .hero {
             text-align: center;
-            padding: 3rem 1rem;
+            padding: calc(2rem * var(--golden-ratio)) 1rem;
             position: relative;
             overflow: hidden;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
             box-sizing: border-box;
-            gap: calc(1rem * var(--golden-ratio));
+            gap: calc(1rem / var(--golden-ratio));
         }
 
         .character-container {
             position: relative;
             margin: 0 auto;
-            width: min(40vh, 220px);
-            height: min(40vh, 220px);
+            width: min(45vh, 220px);
+            height: min(45vh, 220px);
             border-radius: 50%;
             background: white;
             box-shadow: 0 8px 32px rgba(255, 107, 107, 0.15);
@@ -96,26 +96,27 @@
         .title {
             font-size: clamp(1.8rem, 5vw, 2.2rem);
             font-weight: 800;
-            margin: 0.5rem 0;
+            margin: calc(0.5rem / var(--golden-ratio)) 0;
             background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            padding: 0 1rem;
+            padding: 0 calc(1rem / var(--golden-ratio));
         }
 
         .subtitle {
             font-size: clamp(0.9rem, 4vw, 1rem);
             color: #666;
-            margin: 0 auto;
-            max-width: 600px;
+            margin: 0 auto calc(0.8rem / var(--golden-ratio));
+            padding: 0 calc(1rem / var(--golden-ratio));
+            max-width: 500px;
         }
 
         .cta-button {
             background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
             color: white;
             border: none;
-            padding: 0.8rem 0;
+            padding: 0.7rem 1.5rem;
             font-size: 1rem;
             font-weight: 600;
             border-radius: 999px;
@@ -124,9 +125,8 @@
             box-shadow: 0 4px 12px rgba(78, 205, 196, 0.2);
             text-decoration: none;
             margin: 0 auto;
-            width: 80%;
-            max-width: 400px;
-            min-width: 250px;
+            width: calc(320px * var(--golden-ratio));
+            max-width: 90%;
         }
 
         .cta-button:hover {
@@ -136,17 +136,18 @@
 
         .traits {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: calc(1rem / var(--golden-ratio));
             justify-content: center;
-            margin: 0 auto;
-            padding: 1rem;
-            max-width: 400px;
+            margin: calc(1rem / var(--golden-ratio)) auto;
+            padding: 0 calc(1rem / var(--golden-ratio));
+            width: calc(320px * var(--golden-ratio));
+            max-width: 90%;
         }
 
         .trait {
             background: white;
-            padding: 0.6rem 1rem;
+            padding: calc(0.6rem / var(--golden-ratio)) calc(1rem / var(--golden-ratio));
             border-radius: 999px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             font-weight: 500;
@@ -157,18 +158,18 @@
 
         .fun-fact {
             background: white;
-            padding: 0.8rem;
+            padding: calc(0.8rem / var(--golden-ratio));
             border-radius: 16px;
-            max-width: 400px;
-            margin: 1rem auto;
+            margin: calc(1rem / var(--golden-ratio)) auto;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            text-align: center;
+            width: calc(320px * var(--golden-ratio));
+            max-width: 90%;
         }
 
         .fun-fact-title {
             color: var(--primary-color);
             font-weight: 600;
-            margin-bottom: 0.5rem;
+            margin-bottom: calc(0.5rem / var(--golden-ratio));
         }
 
         .fun-fact p {
@@ -176,13 +177,27 @@
             font-size: 0.9rem;
         }
 
-        @media (max-width: 768px) {
-            .traits {
-                grid-template-columns: 1fr;
+        @media (max-width: 600px) {
+            .cta-button,
+            .traits,
+            .fun-fact {
+                width: 100%;
             }
+        }
 
-            .cta-button {
-                max-width: 90%;
+        @media (max-height: 700px) {
+            .hero {
+                padding-top: calc(2rem / var(--golden-ratio));
+                gap: calc(0.8rem / var(--golden-ratio));
+            }
+            .traits {
+                margin: calc(0.5rem / var(--golden-ratio)) auto;
+            }
+        }
+
+        @media (min-height: 800px) {
+            .hero {
+                justify-content: center;
             }
         }
     </style>
