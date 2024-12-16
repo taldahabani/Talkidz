@@ -11,31 +11,23 @@
     
     <style>
         :root {
-            --primary-color: #FF69B4; /* Hot Pink */
-            --accent-color: #FFD700; /* Gold */
-            --background-color: #FFF0F5; /* Lavender Blush */
-            --secondary-background: #E0FFFF; /* Light Cyan */
-            --star-color: #FF4500; /* Orange Red */
+            --primary-color: #FF4B6E; /* Updated Primary Color */
+            --accent-color: #6C5CE7; /* Updated Accent Color */
+            --background-color: #FFFFFF; /* Light Background */
+            --secondary-background: #F5F5F5; /* Secondary Light Background */
+            --star-color: #6C5CE7; /* Updated Star Color to match Accent */
             --golden-ratio: 1.618;
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             margin: 0;
-            background: linear-gradient(270deg, var(--background-color), var(--secondary-background));
-            background-size: 400% 400%;
-            animation: gradientShift 15s ease infinite;
+            background: linear-gradient(180deg, var(--background-color) 0%, var(--secondary-background) 100%);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             overflow-x: hidden;
             position: relative;
-        }
-
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
         }
 
         /* Particle Effects */
@@ -69,8 +61,8 @@
         }
 
         .back-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(255, 105, 180, 0.2);
+            transform: translateX(-2px);
+            box-shadow: 0 6px 16px rgba(108, 92, 231, 0.2); /* Updated Shadow Color */
             color: var(--primary-color);
         }
 
@@ -96,7 +88,7 @@
 
         .share-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(255, 105, 180, 0.2);
+            box-shadow: 0 6px 16px rgba(108, 92, 231, 0.2); /* Updated Shadow Color */
             color: var(--primary-color);
         }
 
@@ -122,7 +114,7 @@
             height: min(45vh, 220px);
             border-radius: 50%;
             background: white;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+            box-shadow: 0 8px 32px rgba(108, 92, 231, 0.15); /* Updated Shadow Color */
             animation: bounce 6s ease-in-out infinite;
         }
 
@@ -192,29 +184,6 @@
             max-width: 500px;
         }
 
-        /* CTA Button */
-        .cta-button {
-            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
-            color: white;
-            border: none;
-            padding: 1.2rem 1.5rem;
-            font-size: 1rem;
-            font-weight: 600;
-            border-radius: 999px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(255, 105, 180, 0.2);
-            text-decoration: none;
-            margin: 1rem auto; /* Centers the button */
-            width: calc(300px * var(--golden-ratio)); /* Same width as .fun-fact */
-            max-width: 80%;
-        }
-        
-        .cta-button:hover {
-            transform: scale(1.05) rotate(2deg);
-            box-shadow: 0 6px 20px rgba(255, 105, 180, 0.3);
-        }
-
         /* Traits Section */
         .traits {
             display: grid;
@@ -251,6 +220,31 @@
             color: white;
         }
 
+        /* CTA Button */
+        .cta-button {
+            background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
+            color: white;
+            border: none;
+            padding: 1.2rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2); /* Updated Shadow Color */
+            text-decoration: none;
+            margin: 1rem auto; /* Centers the button */
+            width: calc(300px * var(--golden-ratio)); /* Same width as .fun-fact */
+            max-width: 80%;
+            display: inline-block;
+            text-align: center;
+        }
+        
+        .cta-button:hover {
+            transform: scale(1.05) rotate(2deg);
+            box-shadow: 0 6px 20px rgba(108, 92, 231, 0.3); /* Updated Shadow Color */
+        }
+
         /* Fun Fact Section */
         .fun-fact {
             background: white;
@@ -274,6 +268,37 @@
             font-size: 0.9rem;
         }
 
+        /* Highlight CTA Button */
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(108, 92, 231, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(108, 92, 231, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(108, 92, 231, 0); }
+        }
+
+        /* Responsive Adjustments */
+        @media (max-height: 700px) {
+            .hero {
+                padding-top: 3.5rem;
+                gap: 0.5rem;
+            }
+            .character-container {
+                width: min(35vh, 200px);
+                height: min(35vh, 200px);
+                margin: 0.5rem auto;
+            }
+            .traits {
+                margin: 0.5rem 0;
+            }
+            .fun-fact {
+                padding: 0.8rem;
+            }
+        }
+
+        @media (min-height: 800px) {
+            .hero {
+                justify-content: center;
+            }
+        }
     </style>
 </head>
 <body>
@@ -294,9 +319,9 @@
         <!-- Character Container with Sparkles -->
         <div class="character-container" data-aos="fade-up">
             <img src="assets/whimsy.jpg" alt="Whimsy the Clown Character" class="character-image">
-            <div class="sparkle"></div>
-            <div class="sparkle"></div>
-            <div class="sparkle"></div>
+            <div class="sparkle" style="top: 20%; left: 80%;"></div>
+            <div class="sparkle" style="top: 70%; left: 90%;"></div>
+            <div class="sparkle" style="top: 80%; left: 10%;"></div>
         </div>
         
         <!-- Title and Subtitle -->
@@ -344,7 +369,7 @@
             "particles": {
                 "number": { "value": 50 },
                 "size": { "value": 3 },
-                "color": { "value": "#FF69B4" }, /* Changed to primary color */
+                "color": { "value": "#6C5CE7" }, /* Updated to accent color */
                 "shape": { "type": "circle" },
                 "opacity": {
                     "value": 0.5,
@@ -409,10 +434,11 @@
                 confetti({
                     particleCount: 100,
                     spread: 70,
-                    origin: { y: 0.6 }
+                    origin: { y: 0.6 },
+                    colors: ['#FF4B6E', '#6C5CE7', '#FFFFFF'] /* Matching color scheme */
                 });
 
-                // Optional: Highlight the CTA button
+                // Highlight the CTA button
                 const ctaButton = document.querySelector('.cta-button');
                 ctaButton.classList.add('highlight-cta');
 
@@ -430,9 +456,9 @@
                 }
 
                 @keyframes pulse {
-                    0% { box-shadow: 0 0 0 0 rgba(255, 105, 180, 0.7); }
-                    70% { box-shadow: 0 0 0 20px rgba(255, 105, 180, 0); }
-                    100% { box-shadow: 0 0 0 0 rgba(255, 105, 180, 0); }
+                    0% { box-shadow: 0 0 0 0 rgba(108, 92, 231, 0.7); }
+                    70% { box-shadow: 0 0 0 20px rgba(108, 92, 231, 0); }
+                    100% { box-shadow: 0 0 0 0 rgba(108, 92, 231, 0); }
                 }
             `;
             document.head.appendChild(style);
