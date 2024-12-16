@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meet Smart Cat - Your Curious and Creative Learner | Talkidz</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" rel="stylesheet">
+    
+    <!-- AOS (Animate On Scroll) CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #FF8C00; /* Dark Orange */
+            --accent-color: #1E90FF; /* Dodger Blue */
+            --background-color: #FFF5E1; /* Light Cream */
+            --secondary-background: #E0F7FA; /* Light Blue */
+            --star-color: #FFD700; /* Star Gold */
+            --golden-ratio: 1.618;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            margin: 0;
+            background: linear-gradient(270deg, var(--background-color), var(--secondary-background));
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Particle Effects */
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -2;
+        }
+
+        /* Back Button */
+        .back-button {
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            background: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 999px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            color: #666;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(78, 205, 196, 0.2);
+            color: var(--primary-color);
+        }
+
+        /* Share Button */
+        .share-button {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 999px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            color: #666;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .share-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(78, 205, 196, 0.2);
+            color: var(--primary-color);
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: calc(2rem * var(--golden-ratio)) 1rem;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            box-sizing: border-box;
+            gap: calc(1rem / var(--golden-ratio));
+            z-index: 1;
+        }
+
+        /* Character Container */
+        .character-container {
+            position: relative;
+            margin: 0 auto;
+            width: min(45vh, 220px);
+            height: min(45vh, 220px);
+            border-radius: 50%;
+            background: white;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+            animation: bounce 6s ease-in-out infinite;
+        }
+
+        .character-container .sparkle {
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            background: var(--star-color);
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+            animation: twinkle 2s infinite, float 4s ease-in-out infinite;
+            opacity: 0.8;
+        }
+
+        .sparkle:nth-child(2) {
+            top: 70%;
+            left: 90%;
+        }
+
+        .sparkle:nth-child(3) {
+            top: 80%;
+            left: 10%;
+        }
+
+        /* Removed sparkle:nth-child(1) to prevent overlap with particles.js */
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-15px) rotate(5deg); }
+            75% { transform: translateY(-10px) rotate(-5deg); }
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.8; transform: scale(1) rotate(0deg); }
+            50% { opacity: 1; transform: scale(1.3) rotate(180deg); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(360deg); }
+        }
+
+        .character-image {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        /* Title */
+        .title {
+            font-size: clamp(2rem, 6vw, 3rem);
+            font-weight: 800;
+            margin: calc(0.5rem / var(--golden-ratio)) 0;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            padding: 0 calc(1rem / var(--golden-ratio));
+        }
+
+        /* Subtitle */
+        .subtitle {
+            font-size: clamp(0.9rem, 4vw, 1.2rem);
+            color: #666;
+            margin: 0 auto calc(0.8rem / var(--golden-ratio));
+            padding: 0 calc(1rem / var(--golden-ratio));
+            max-width: 500px;
+        }
+
+        /* CTA Button */
+        .cta-button {
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            color: white;
+            border: none;
+            padding: 1.2rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(78, 205, 196, 0.2);
+            text-decoration: none;
+            margin: 1rem auto; /* Centers the button */
+            width: calc(300px * var(--golden-ratio)); /* Same width as .fun-fact */
+            max-width: 80%;
+        }
+        
+        .cta-button:hover {
+            transform: scale(1.05) rotate(2deg);
+            box-shadow: 0 6px 20px rgba(78, 205, 196, 0.3);
+        }
+
+        /* Traits Section */
+        .traits {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 2 columns by default */
+            gap: calc(1rem / var(--golden-ratio));
+            justify-content: center;
+            margin: calc(0.1rem / var(--golden-ratio)) auto;
+            padding: 0 calc(1rem / var(--golden-ratio));
+            width: calc(320px * var(--golden-ratio));
+            max-width: 90%;
+        }
+
+        @media (min-width: 900px) {
+            .traits {
+                grid-template-columns: repeat(4, 1fr); /* 4 columns on larger screens */
+            }
+        }
+
+        .trait {
+            background: white;
+            padding: calc(0.6rem / var(--golden-ratio)) calc(1rem / var(--golden-ratio));
+            border-radius: 999px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            font-weight: 500;
+            color: #666;
+            text-align: center;
+            font-size: 0.9rem;
+            transition: transform 0.3s ease, background 0.3s ease, color 0.3s ease;
+        }
+
+        .trait:hover {
+            transform: scale(1.1);
+            background: var(--accent-color);
+            color: white;
+        }
+
+        /* Fun Fact Section */
+        .fun-fact {
+            background: white;
+            padding: calc(0.8rem / var(--golden-ratio));
+            border-radius: 16px;
+            margin: calc(0.1rem / var(--golden-ratio)) auto;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            width: calc(320px * var(--golden-ratio));
+            max-width: 90%;
+            position: relative;
+        }
+
+        .fun-fact-title {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: calc(0.5rem / var(--golden-ratio));
+        }
+
+        .fun-fact p {
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Particle Background -->
+    <div id="particles-js"></div>
+
+    <!-- Back Button -->
+    <a href="/" class="back-button">
+        ← Back
+    </a>
+
+    <!-- Share Button -->
+    <button class="share-button" onclick="shareSmartCat()">
+        Share
+    </button>
+    
+    <div class="hero">
+        <!-- Character Container with Sparkles -->
+        <div class="character-container" data-aos="fade-up">
+            <img src="assets/cat.jpg" alt="Smart Cat Character" class="character-image">
+            <div class="sparkle"></div>
+            <div class="sparkle"></div>
+            <div class="sparkle"></div>
+        </div>
+        
+        <!-- Title and Subtitle -->
+        <h1 class="title" data-aos="fade-up">Meet Smart Cat! 🐱📚</h1>
+        <p class="subtitle" data-aos="fade-up" data-aos-delay="200">Your curious and creative learner, ready to explore the world of knowledge with you!</p>
+
+        <!-- Traits -->
+        <div class="traits" data-aos="fade-up" data-aos-delay="400">
+            <span class="trait">🧠 Quick Thinker</span>
+            <span class="trait">🎨 Creative Problem Solver</span>
+            <span class="trait">🌟 Curious Explorer</span>
+            <span class="trait">📖 Learning Enthusiast</span>
+        </div>
+
+        <!-- CTA Button -->
+        <a href="/characters/cupcake/chat" class="cta-button" data-aos="fade-up" data-aos-delay="600">
+            Start Learning with Smart Cat!
+        </a>
+
+        <!-- Fun Fact Section (Static) -->
+        <div class="fun-fact" data-aos="fade-up" data-aos-delay="800">
+            <div class="fun-fact-title">Did you know? 🌟</div>
+            <p>Smart Cat loves discovering fun facts, solving puzzles, and sharing creative ideas to make learning exciting! Ready to sharpen your mind together?</p>
+        </div>
+    </div>
+
+    <!-- AOS (Animate On Scroll) JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    
+    <!-- Particles.js -->
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    
+    <!-- canvas-confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 1000,
+            once: true,
+        });
+
+        // Initialize Particles.js
+        particlesJS({
+            "particles": {
+                "number": { "value": 50 },
+                "size": { "value": 3 },
+                "color": { "value": "#FF8C00" }, /* Changed to primary color */
+                "shape": { "type": "circle" },
+                "opacity": {
+                    "value": 0.5,
+                    "random": true
+                },
+                "move": {
+                    "enable": true,
+                    "speed": 1
+                }
+            },
+            "interactivity": {
+                "events": {
+                    "onhover": { "enable": true, "mode": "repulse" }
+                }
+            },
+            "retina_detect": true
+        });
+
+        // Share Functionality
+        function shareSmartCat() {
+            const shareData = {
+                title: 'Meet Smart Cat!',
+                text: 'Check out Smart Cat - your curious and creative learner!',
+                url: window.location.href
+            };
+
+            if (navigator.share) {
+                navigator.share(shareData).then(() => {
+                    console.log('Shared successfully');
+                    alert('Thanks for sharing Smart Cat!');
+                }).catch((error) => console.log('Error sharing:', error));
+            } else {
+                // Fallback for browsers that do not support navigator.share
+                const twitterURL = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareData.text)}&url=${encodeURIComponent(shareData.url)}`;
+                window.open(twitterURL, '_blank');
+            }
+        }
+
+        // Confetti Surprise on Scroll (Mobile Devices)
+        (function() {
+            const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+            if (!isMobile) return;
+
+            let confettiTriggered = false;
+
+            window.addEventListener('scroll', () => {
+                if (confettiTriggered) return;
+
+                const traitsSection = document.querySelector('.traits');
+                if (!traitsSection) return;
+
+                const scrollPosition = window.scrollY + window.innerHeight;
+                const triggerPoint = traitsSection.offsetTop + traitsSection.offsetHeight / 2;
+
+                if (scrollPosition > triggerPoint) {
+                    confettiTriggered = true;
+                    triggerConfetti();
+                }
+            });
+
+            function triggerConfetti() {
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+
+                // Optional: Highlight the CTA button
+                const ctaButton = document.querySelector('.cta-button');
+                ctaButton.classList.add('highlight-cta');
+
+                // Remove highlight after animation
+                setTimeout(() => {
+                    ctaButton.classList.remove('highlight-cta');
+                }, 3000);
+            }
+
+            // CSS for highlighting CTA button
+            const style = document.createElement('style');
+            style.innerHTML = `
+                .highlight-cta {
+                    animation: pulse 2s infinite;
+                }
+
+                @keyframes pulse {
+                    0% { box-shadow: 0 0 0 0 rgba(255, 140, 0, 0.7); }
+                    70% { box-shadow: 0 0 0 20px rgba(255, 140, 0, 0); }
+                    100% { box-shadow: 0 0 0 0 rgba(255, 140, 0, 0); }
+                }
+            `;
+            document.head.appendChild(style);
+        })();
+    </script>
+</body>
+</html>
