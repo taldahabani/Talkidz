@@ -166,16 +166,22 @@
             box-shadow: 0 6px 20px rgba(78, 205, 196, 0.3);
         }
 
-        .traits {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: calc(1rem / var(--golden-ratio));
-            justify-content: center;
-            margin: calc(0.1rem / var(--golden-ratio)) auto;
-            padding: 0 calc(1rem / var(--golden-ratio));
-            width: calc(320px * var(--golden-ratio));
-            max-width: 90%;
-        }
+.traits {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 columns by default */
+    gap: calc(1rem / var(--golden-ratio));
+    justify-content: center;
+    margin: calc(0.1rem / var(--golden-ratio)) auto;
+    padding: 0 calc(1rem / var(--golden-ratio));
+    width: calc(320px * var(--golden-ratio));
+    max-width: 90%;
+}
+
+@media (min-width: 900px) {
+    .traits {
+        grid-template-columns: repeat(4, 1fr); /* 4 columns on larger screens */
+    }
+}
 
         .trait {
             background: white;
