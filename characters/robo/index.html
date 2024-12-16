@@ -166,27 +166,27 @@
             box-shadow: 0 6px 20px rgba(78, 205, 196, 0.3);
         }
 
-        .traits {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: calc(1rem / var(--golden-ratio));
-            justify-content: center;
-            margin: calc(1rem / var(--golden-ratio)) auto;
-            padding: 0 calc(1rem / var(--golden-ratio));
-            width: calc(320px * var(--golden-ratio));
-            max-width: 90%;
-        }
+.traits {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem; 
+    margin: 1.5rem auto;
+    max-width: 600px; 
+}
 
-        .trait {
-            background: white;
-            padding: calc(0.6rem / var(--golden-ratio)) calc(1rem / var(--golden-ratio));
-            border-radius: 999px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            font-weight: 500;
-            color: #666;
-            text-align: center;
-            font-size: 0.9rem;
-        }
+.trait {
+    flex: 1 1 calc(50% - 1rem); 
+    background: white;
+    padding: 0.6rem 1rem;
+    border-radius: 999px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    font-weight: 500;
+    color: #666;
+    text-align: center;
+    font-size: 0.9rem;
+    min-width: 120px; 
+}
 
         .fun-fact {
             background: white;
