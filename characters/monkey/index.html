@@ -9,10 +9,6 @@
     <!-- AOS (Animate On Scroll) CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
     
-    <!-- BotUI CSS -->
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/botui/build/botui.min.css">
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/botui/build/botui-theme-default.css">
-    
     <style>
         :root {
             --primary-color: #FFC857; /* Banana yellow */
@@ -52,11 +48,11 @@
             z-index: -2;
         }
 
-        /* Back and Share Buttons */
-        .back-button,
-        .share-button {
+        /* Back Button */
+        .back-button {
             position: fixed;
             top: 1rem;
+            left: 1rem;
             background: white;
             border: none;
             padding: 0.5rem 1rem;
@@ -72,16 +68,7 @@
             z-index: 10;
         }
 
-        .back-button {
-            left: 1rem;
-        }
-
-        .share-button {
-            right: 1rem;
-        }
-
-        .back-button:hover,
-        .share-button:hover {
+        .back-button:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 16px rgba(78, 205, 196, 0.2);
             color: var(--primary-color);
@@ -111,7 +98,6 @@
             background: white;
             box-shadow: 0 8px 32px rgba(0,0,0,0.15);
             animation: bounce 6s ease-in-out infinite;
-            cursor: pointer;
         }
 
         .character-container .sparkle {
@@ -262,194 +248,11 @@
             font-size: 0.9rem;
         }
 
-        .fun-fact button {
-            margin-top: 1rem;
-            background: var(--accent-color);
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 999px;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
+        /* Exclusive Content (Removed since share button is removed) */
+        /* Removed .exclusive-content */
 
-        .fun-fact button:hover {
-            background: var(--primary-color);
-        }
-
-        /* Exclusive Content */
-        .exclusive-content {
-            margin: 2rem auto;
-            text-align: center;
-            display: none;
-        }
-
-        .exclusive-content img {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-
-        /* Social Media Buttons */
-        .social-media {
-            margin: 2rem auto;
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-        }
-
-        .social-media a {
-            background: var(--accent-color);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 999px;
-            text-decoration: none;
-            transition: background 0.3s ease;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .social-media a:hover {
-            background: var(--primary-color);
-        }
-
-        /* Achievements Section */
-        .achievements {
-            margin: 2rem auto;
-            max-width: 600px;
-            text-align: center;
-        }
-
-        .badge {
-            background: var(--primary-color);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 999px;
-            margin: 0.5rem 0;
-            display: inline-block;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease;
-        }
-
-        .badge:hover {
-            transform: scale(1.05);
-        }
-
-        /* Dark Mode Toggle */
-        .dark-mode-toggle {
-            position: fixed;
-            bottom: 1rem;
-            left: 1rem;
-            background: var(--accent-color);
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 999px;
-            cursor: pointer;
-            transition: background 0.3s ease;
-            z-index: 10;
-        }
-
-        .dark-mode-toggle:hover {
-            background: var(--primary-color);
-        }
-
-        /* Dark Mode Styles */
-        .dark-mode {
-            --primary-color: #FFD700; /* Adjusted colors for dark mode */
-            --accent-color: #81C784;
-            --background-color: #333;
-            --secondary-background: #444;
-            --star-color: #FFA500;
-            color: #EEE;
-            background: linear-gradient(270deg, var(--background-color), var(--secondary-background));
-        }
-
-        .dark-mode .back-button,
-        .dark-mode .share-button,
-        .dark-mode .cta-button,
-        .dark-mode .trait,
-        .dark-mode .fun-fact,
-        .dark-mode .social-media a {
-            background: #555;
-            color: #EEE;
-        }
-
-        .dark-mode .fun-fact-title {
-            color: #FFA500;
-        }
-
-        .dark-mode .badge {
-            background: #FFA500;
-        }
-
-        /* Chatbot Container */
-        #bongo-chat {
-            position: fixed;
-            bottom: 1rem;
-            right: 1rem;
-            width: 300px;
-            z-index: 1000;
-        }
-
-        /* Background Music Controls */
-        .music-toggle {
-            position: fixed;
-            bottom: 1rem;
-            right: 1rem;
-            background: var(--accent-color);
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 999px;
-            cursor: pointer;
-            transition: background 0.3s ease;
-            z-index: 10;
-        }
-
-        .music-toggle:hover {
-            background: var(--primary-color);
-        }
-
-        /* Game Section */
-        .game-section {
-            margin: 2rem auto;
-            max-width: 320px;
-            text-align: center;
-        }
-
-        .game-section h2 {
-            color: var(--accent-color);
-            margin-bottom: 1rem;
-        }
-
-        #bananaGame {
-            border: 2px solid var(--accent-color);
-            border-radius: 8px;
-            cursor: pointer;
-        }
-
-        /* Easter Egg Secret Animation */
-        .secret-animation {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            z-index: 1001;
-            animation: reveal 1s ease forwards;
-        }
-
-        @keyframes reveal {
-            from { opacity: 0; transform: scale(0); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        .secret-animation.active {
-            display: block;
-        }
+        /* Light Effects and Easter Eggs (Removed) */
+        /* Removed .light-effect and .secret-animation */
 
     </style>
 </head>
@@ -457,24 +260,14 @@
     <!-- Particle Background -->
     <div id="particles-js"></div>
 
-    <!-- Dark Mode Toggle -->
-    <button class="dark-mode-toggle" onclick="toggleDarkMode()">🌙 Dark Mode</button>
-
-    <!-- Background Music -->
-    <audio id="background-music" src="assets/background-music.mp3" loop></audio>
-    <button class="music-toggle" onclick="toggleMusic()">🎵 Music</button>
-
+    <!-- Back Button -->
+    <a href="/" class="back-button">
+        ← Back
+    </a>
+    
     <div class="hero">
-        <!-- Back and Share Buttons -->
-        <a href="/" class="back-button">
-            ← Back
-        </a>
-        <button class="share-button" onclick="shareBongo()">
-            Share
-        </button>
-        
-        <!-- Character Container with Click Animation -->
-        <div class="character-container" onclick="animateBongo()" data-aos="fade-up">
+        <!-- Character Container with Sparkles -->
+        <div class="character-container" data-aos="fade-up">
             <img src="assets/monkey.jpg" alt="Bongo the Monkey Character" class="character-image">
             <div class="sparkle"></div>
             <div class="sparkle"></div>
@@ -498,71 +291,18 @@
             Start Laughing with Bongo!
         </a>
 
-        <!-- Fun Fact with Refresh Button -->
+        <!-- Fun Fact Section (Static) -->
         <div class="fun-fact" data-aos="fade-up" data-aos-delay="800">
             <div class="fun-fact-title">Did you know? 🌟</div>
-            <p id="fun-fact-text">Bongo can tell hilarious stories, teach you silly tricks, and even help you plan your own playful pranks! Ready to monkey around?</p>
-            <button onclick="loadRandomFact()">Another Fact</button>
-        </div>
-
-        <!-- Exclusive Content -->
-        <div class="exclusive-content" id="exclusive-content" data-aos="fade-up">
-            <img src="assets/exclusive-sticker.png" alt="Exclusive Sticker">
-            <p>Thanks for sharing!</p>
-        </div>
-
-        <!-- Social Media Buttons -->
-        <div class="social-media" data-aos="fade-up" data-aos-delay="1000">
-            <a href="https://twitter.com/share?url=https%3A%2F%2Fyourwebsite.com&text=Check%20out%20Bongo%20the%20Monkey!%20🐒🍌" target="_blank" title="Share on Twitter">
-                🐦 Twitter
-            </a>
-            <a href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fyourwebsite.com" target="_blank" title="Share on Facebook">
-                📘 Facebook
-            </a>
-            <a href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fyourwebsite.com&title=Meet%20Bongo%20the%20Monkey!" target="_blank" title="Share on LinkedIn">
-                🔗 LinkedIn
-            </a>
-        </div>
-
-        <!-- Achievements Section -->
-        <div class="achievements" data-aos="fade-up" data-aos-delay="1200">
-            <h2>Your Achievements</h2>
-            <div class="badge" id="shareBadge" style="display:none;">
-                🏆 Shared Bongo!
-            </div>
-            <div class="badge" id="interactBadge" style="display:none;">
-                🎉 Interacted with Bongo!
-            </div>
+            <p>Bongo can tell hilarious stories, teach you silly tricks, and even help you plan your own playful pranks! Ready to monkey around?</p>
         </div>
     </div>
-
-    <!-- Secret Animation (Easter Egg) -->
-    <div class="secret-animation" id="secret-animation">
-        <img src="assets/secret-animation.gif" alt="Secret Animation">
-    </div>
-
-    <!-- BotUI Chatbot -->
-    <div id="bongo-chat"></div>
-
-    <!-- Game Section (Optional) -->
-    <div class="game-section" id="game-section" data-aos="fade-up" data-aos-delay="1400">
-        <h2>Help Bongo Collect Bananas!</h2>
-        <canvas id="bananaGame" width="300" height="300"></canvas>
-        <p>Score: <span id="score">0</span></p>
-    </div>
-
-    <!-- Light Effect -->
-    <div class="light-effect"></div>
 
     <!-- AOS (Animate On Scroll) JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
     
     <!-- Particles.js -->
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-    
-    <!-- BotUI JS -->
-    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
-    <script src="https://cdn.jsdelivr.net/npm/botui/build/botui.min.js"></script>
     
     <script>
         // Initialize AOS
@@ -594,177 +334,6 @@
             },
             "retina_detect": true
         });
-
-        // Toggle Dark Mode
-        function toggleDarkMode() {
-            document.body.classList.toggle('dark-mode');
-        }
-
-        // Toggle Background Music
-        function toggleMusic() {
-            const music = document.getElementById('background-music');
-            const button = document.querySelector('.music-toggle');
-            if (music.paused) {
-                music.play();
-                button.innerText = '🔊 Music On';
-            } else {
-                music.pause();
-                button.innerText = '🔇 Music Off';
-            }
-        }
-
-        // Animate Bongo (Shake Animation)
-        function animateBongo() {
-            const character = document.querySelector('.character-container');
-            character.classList.add('shake');
-            document.getElementById('interactBadge').style.display = 'inline-block';
-            setTimeout(() => character.classList.remove('shake'), 1000);
-        }
-
-        // Add Shake Animation CSS
-        const style = document.createElement('style');
-        style.innerHTML = `
-            @keyframes shake {
-                0% { transform: rotate(0deg); }
-                25% { transform: rotate(10deg); }
-                50% { transform: rotate(-10deg); }
-                75% { transform: rotate(10deg); }
-                100% { transform: rotate(0deg); }
-            }
-
-            .shake {
-                animation: shake 0.5s;
-            }
-        `;
-        document.head.appendChild(style);
-
-        // Random Fun Facts
-        const funFacts = [
-            "Bongo loves eating bananas every morning!",
-            "Bongo can swing across the jungle in seconds!",
-            "Bongo is an expert at hide and seek!",
-            "Bongo has a secret stash of colorful berries!",
-            "Bongo loves making new friends in the jungle!",
-            "Bongo can mimic any sound in the wild!",
-            "Bongo enjoys painting with jungle fruits!",
-            "Bongo can leap over trees effortlessly!"
-        ];
-
-        function loadRandomFact() {
-            const fact = funFacts[Math.floor(Math.random() * funFacts.length)];
-            document.getElementById('fun-fact-text').innerText = fact;
-        }
-
-        // Load a random fact on page load
-        window.onload = loadRandomFact;
-
-        // Share Functionality with Badge
-        function shareBongo() {
-            const shareData = {
-                title: 'Meet Bongo the Monkey!',
-                text: 'Check out Bongo the Monkey - your playful prankster!',
-                url: window.location.href
-            };
-
-            if (navigator.share) {
-                navigator.share(shareData).then(() => {
-                    console.log('Shared successfully');
-                    document.getElementById('shareBadge').style.display = 'inline-block';
-                    document.getElementById('exclusive-content').style.display = 'block';
-                }).catch((error) => console.log('Error sharing:', error));
-            } else {
-                // Fallback for browsers that do not support navigator.share
-                const twitterURL = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareData.text)}&url=${encodeURIComponent(shareData.url)}`;
-                window.open(twitterURL, '_blank');
-            }
-        }
-
-        // Initialize BotUI Chatbot
-        var botui = new BotUI('bongo-chat');
-
-        botui.message.add({
-            content: 'Hi! I\'m Bongo the Monkey! 🐒 How can I make you laugh today?'
-        }).then(function() {
-            return botui.action.button({
-                action: [
-                    { text: 'Tell me a joke', value: 'joke' },
-                    { text: 'Play a game', value: 'game' },
-                    { text: 'Share a fun fact', value: 'fact' }
-                ]
-            });
-        }).then(function(res) {
-            if(res.value === 'joke') {
-                return botui.message.add({ 
-                    content: 'Why don’t monkeys play cards in the jungle? Because there are too many cheetahs! 🐆😄' 
-                }).then(() => {
-                    document.getElementById('interactBadge').style.display = 'inline-block';
-                });
-            }
-            if(res.value === 'game') {
-                return botui.message.add({ 
-                    content: 'Let\'s play a game! Click <a href="#game-section">here</a> to start!' 
-                });
-            }
-            if(res.value === 'fact') {
-                const fact = funFacts[Math.floor(Math.random() * funFacts.length)];
-                return botui.message.add({ content: fact });
-            }
-        });
-
-        // Mouse-Following Light Effect
-        document.addEventListener('mousemove', function(e) {
-            const light = document.querySelector('.light-effect');
-            light.style.background = `radial-gradient(circle at ${e.clientX}px ${e.clientY}px, rgba(255,255,255,0.3), transparent 80%)`;
-        });
-
-        // Easter Egg: Secret Animation after 10 Clicks
-        let clickCount = 0;
-        document.body.addEventListener('click', function() {
-            clickCount++;
-            if (clickCount === 10) {
-                alert('You found the secret animation!');
-                document.getElementById('secret-animation').classList.add('active');
-            }
-        });
-
-        // Mini-Game: Click the Banana
-        const canvas = document.getElementById('bananaGame');
-        const ctx = canvas.getContext('2d');
-        let score = 0;
-        let banana = { x: 0, y: 0, size: 50 };
-
-        function drawBanana() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = 'yellow';
-            ctx.beginPath();
-            ctx.arc(banana.x, banana.y, banana.size / 2, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.closePath();
-        }
-
-        function moveBanana() {
-            banana.x = Math.random() * (canvas.width - banana.size) + banana.size / 2;
-            banana.y = Math.random() * (canvas.height - banana.size) + banana.size / 2;
-            drawBanana();
-        }
-
-        canvas.addEventListener('click', (e) => {
-            const rect = canvas.getBoundingClientRect();
-            const clickX = e.clientX - rect.left;
-            const clickY = e.clientY - rect.top;
-            const distance = Math.hypot(clickX - banana.x, clickY - banana.y);
-            if (distance < banana.size / 2) {
-                score++;
-                document.getElementById('score').innerText = score;
-                moveBanana();
-            }
-        });
-
-        // Initialize Banana Position
-        moveBanana();
     </script>
-
-    <!-- BotUI Scripts -->
-    <script src="https://cdn.jsdelivr.net/npm/botui/build/botui.min.js"></script>
 </body>
 </html>
