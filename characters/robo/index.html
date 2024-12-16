@@ -144,6 +144,27 @@
             max-width: 500px;
         }
 
+        .traits {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem; /* Adds equal spacing between traits */
+            flex-wrap: nowrap;
+            margin: 1rem auto;
+            max-width: 800px;
+        }
+
+        .trait {
+            background: white;
+            padding: 0.6rem 1rem;
+            border-radius: 999px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            font-weight: 500;
+            color: #666;
+            text-align: center;
+            font-size: 0.9rem;
+            flex: 1;
+        }
+
         .cta-button {
             background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
             color: white;
@@ -156,7 +177,8 @@
             transition: all 0.3s ease;
             box-shadow: 0 4px 12px rgba(78, 205, 196, 0.2);
             text-decoration: none;
-            margin: 0 auto;
+            margin: 1rem auto;
+            display: block;
             width: calc(320px * var(--golden-ratio));
             max-width: 90%;
         }
@@ -166,34 +188,12 @@
             box-shadow: 0 6px 20px rgba(78, 205, 196, 0.3);
         }
 
-        .traits {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: calc(1rem / var(--golden-ratio));
-            justify-content: center;
-            margin: calc(1rem / var(--golden-ratio)) auto;
-            padding: 0 calc(1rem / var(--golden-ratio));
-            width: calc(320px * var(--golden-ratio));
-            max-width: 90%;
-        }
-
-        .trait {
-            background: white;
-            padding: calc(0.6rem / var(--golden-ratio)) calc(1rem / var(--golden-ratio));
-            border-radius: 999px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            font-weight: 500;
-            color: #666;
-            text-align: center;
-            font-size: 0.9rem;
-        }
-
         .fun-fact {
             background: white;
-            padding: calc(0.8rem / var(--golden-ratio));
+            padding: 1rem;
             border-radius: 16px;
-            margin: calc(1rem / var(--golden-ratio)) auto;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin: 1rem auto;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             width: calc(320px * var(--golden-ratio));
             max-width: 90%;
         }
@@ -201,7 +201,7 @@
         .fun-fact-title {
             color: var(--primary-color);
             font-weight: 600;
-            margin-bottom: calc(0.5rem / var(--golden-ratio));
+            margin-bottom: 0.5rem;
         }
 
         .fun-fact p {
@@ -209,27 +209,25 @@
             font-size: 0.9rem;
         }
 
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
+            .traits {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+
+            .trait {
+                flex: 1 1 calc(50% - 1rem); /* Two traits per row on smaller screens */
+            }
+
             .cta-button,
-            .traits,
             .fun-fact {
                 width: 100%;
             }
         }
 
-        @media (max-height: 700px) {
-            .hero {
-                padding-top: calc(2rem / var(--golden-ratio));
-                gap: calc(0.8rem / var(--golden-ratio));
-            }
-            .traits {
-                margin: calc(0.5rem / var(--golden-ratio)) auto;
-            }
-        }
-
-        @media (min-height: 800px) {
-            .hero {
-                justify-content: center;
+        @media (max-width: 500px) {
+            .trait {
+                flex: 1 1 100%; /* Stacks traits vertically on very small screens */
             }
         }
     </style>
