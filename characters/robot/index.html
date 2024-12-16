@@ -22,10 +22,10 @@
             flex-direction: column;
         }
 
-        .back-button {
+        .back-button,
+        .share-button {
             position: fixed;
             top: 1rem;
-            left: 1rem;
             background: white;
             border: none;
             padding: 0.5rem 1rem;
@@ -41,8 +41,17 @@
             z-index: 10;
         }
 
-        .back-button:hover {
-            transform: translateX(-2px);
+        .back-button {
+            left: 1rem;
+        }
+
+        .share-button {
+            right: 1rem;
+        }
+
+        .back-button:hover,
+        .share-button:hover {
+            transform: translateY(-2px);
             box-shadow: 0 6px 16px rgba(78, 205, 196, 0.2);
             color: var(--primary-color);
         }
@@ -224,6 +233,9 @@
     <div class="hero">
         <a href="/" class="back-button">
             ← Back
+        </a>
+        <a href="#" class="share-button">
+            Share
         </a>
         
         <div class="character-container">
