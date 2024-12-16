@@ -329,6 +329,9 @@
     <!-- Particles.js -->
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
     
+    <!-- canvas-confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+
     <script>
         // Initialize AOS
         AOS.init({
@@ -379,6 +382,58 @@
                 window.open(twitterURL, '_blank');
             }
         }
+
+        // Confetti Surprise on Scroll (Mobile Devices)
+        (function() {
+            const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+            if (!isMobile) return;
+
+            let confettiTriggered = false;
+
+            window.addEventListener('scroll', () => {
+                if (confettiTriggered) return;
+
+                const scrollPosition = window.scrollY + window.innerHeight;
+                const triggerPoint = document.querySelector('.traits').offsetTop + document.querySelector('.traits').offsetHeight / 2;
+
+                if (scrollPosition > triggerPoint) {
+                    confettiTriggered = true;
+                    triggerConfetti();
+                }
+            });
+
+            function triggerConfetti() {
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+
+                // Optional: Highlight the CTA button
+                const ctaButton = document.querySelector('.cta-button');
+                ctaButton.classList.add('highlight-cta');
+
+                // Remove highlight after animation
+                setTimeout(() => {
+                    ctaButton.classList.remove('highlight-cta');
+                }, 3000);
+            }
+
+            // CSS for highlighting CTA button
+            const style = document.createElement('style');
+            style.innerHTML = `
+                .highlight-cta {
+                    animation: pulse 2s infinite;
+                }
+
+                @keyframes pulse {
+                    0% { box-shadow: 0 0 0 0 rgba(255, 200, 87, 0.7); }
+                    70% { box-shadow: 0 0 0 20px rgba(255, 200, 87, 0); }
+                    100% { box-shadow: 0 0 0 0 rgba(255, 200, 87, 0); }
+                }
+            `;
+            document.head.appendChild(style);
+        })();
     </script>
 </body>
 </html>
