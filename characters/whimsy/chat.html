@@ -462,9 +462,7 @@
 
         // Progress bar functions
         const startProgress = () => {
-            currentProgress = 0;
             const progressBar = document.getElementById('progressBar');
-            progressBar.style.width = '0%';
             
             clearInterval(progressInterval);
             progressInterval = setInterval(() => {
@@ -530,14 +528,12 @@
                         updateBackground('idle');
                         startButton.classList.remove('active');
                         startButton.textContent = 'Start Conversation';
-                        resetProgress();
                     },
                     onError: (error) => {
                         console.error('Conversation error:', error);
                         updateBackground('idle');
                         startButton.classList.remove('active');
                         startButton.textContent = 'Start Conversation';
-                        resetProgress();
                     }
                 });
 
@@ -570,7 +566,6 @@
                     updateBackground('idle');
                     startButton.classList.remove('active');
                     startButton.textContent = 'Start Conversation';
-                    resetProgress();
                 }
             }
         };
