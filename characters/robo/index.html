@@ -126,9 +126,9 @@
         }
 
         .title {
-            font-size: clamp(1.8rem, 5vw, 2.2rem);
+            font-size: clamp(2rem, 6vw, 2.6rem);
             font-weight: 800;
-            margin: calc(0.5rem / var(--golden-ratio)) 0;
+            margin: calc(0.8rem / var(--golden-ratio)) 0;
             background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
             -webkit-background-clip: text;
             background-clip: text;
@@ -139,28 +139,28 @@
         .subtitle {
             font-size: clamp(0.9rem, 4vw, 1rem);
             color: #666;
-            margin: 0 auto calc(0.8rem / var(--golden-ratio));
+            margin: 0 auto calc(1rem / var(--golden-ratio));
             padding: 0 calc(1rem / var(--golden-ratio));
             max-width: 500px;
         }
 
-.cta-button {
-    background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
-    color: white;
-    border: none;
-    padding: 0.7rem 1.5rem;
-    font-size: 1rem;
-    font-weight: 600;
-    border-radius: 999px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(78, 205, 196, 0.2);
-    text-decoration: none;
-    margin: 1rem auto; /* Centers the button */
-    width: calc(320px * var(--golden-ratio)); /* Same width as .fun-fact */
-    max-width: 90%;
-}
-        
+        .cta-button {
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            color: white;
+            border: none;
+            padding: 0.9rem 1.7rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(78, 205, 196, 0.2);
+            text-decoration: none;
+            margin: 1.5rem auto; /* Centers the button */
+            width: calc(320px * var(--golden-ratio)); /* Matches fun-fact width */
+            max-width: 90%;
+        }
+
         .cta-button:hover {
             transform: scale(1.05) rotate(2deg);
             box-shadow: 0 6px 20px rgba(78, 205, 196, 0.3);
@@ -169,7 +169,7 @@
         .traits {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: calc(1rem / var(--golden-ratio));
+            gap: calc(1.2rem / var(--golden-ratio));
             justify-content: center;
             margin: calc(1rem / var(--golden-ratio)) auto;
             padding: 0 calc(1rem / var(--golden-ratio));
@@ -190,9 +190,9 @@
 
         .fun-fact {
             background: white;
-            padding: calc(0.8rem / var(--golden-ratio));
+            padding: calc(0.9rem / var(--golden-ratio));
             border-radius: 16px;
-            margin: calc(1rem / var(--golden-ratio)) auto;
+            margin: calc(1.5rem / var(--golden-ratio)) auto;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             width: calc(320px * var(--golden-ratio));
             max-width: 90%;
@@ -242,14 +242,14 @@
         <button class="share-button" onclick="navigator.share({title: 'Meet Bongo!', text: 'Check out Bongo the Monkey!', url: window.location.href})">
             Share
         </button>
-        
+
         <div class="character-container">
             <img src="assets/monkey.jpg" alt="Bongo the Monkey Character" class="character-image">
             <div class="sparkle"></div>
             <div class="sparkle"></div>
             <div class="sparkle"></div>
         </div>
-        
+
         <h1 class="title">Meet Bongo the Monkey! 🐒🍌</h1>
         <p class="subtitle">Your playful prankster and funny friend who’s always ready to swing into action with laughter and mischief!</p>
 
