@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meet Emma - Your Encouraging Counselor | Talkidz</title>
+    <title>Meet Emma! 🌸💬 | Your Encouraging Counselor | Talkidz</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" rel="stylesheet">
     
     <!-- AOS (Animate On Scroll) CSS -->
@@ -12,9 +12,9 @@
     <style>
         :root {
             --primary-color: #28a745; /* Green */
-            --accent-color: #32CD32; /* Lime Green */
-            --background-color: #E0F8E0; /* Light Green */
-            --secondary-background: #C8E6C9; /* Light Green */
+            --accent-color: #20c997; /* Teal/Green */
+            --background-color: #E6F9E0; /* Light Greenish */
+            --secondary-background: #D4EDDA; /* Lighter Green */
             --star-color: #FFD700; /* Star Gold */
             --golden-ratio: 1.618;
         }
@@ -293,7 +293,7 @@
     <div class="hero">
         <!-- Character Container with Sparkles -->
         <div class="character-container" data-aos="fade-up">
-            <img src="assets/emma.jpg" alt="Emma the Counselor Character" class="character-image">
+            <img src="assets/emma.jpg" alt="Emma Character" class="character-image">
             <div class="sparkle"></div>
             <div class="sparkle"></div>
             <div class="sparkle"></div>
@@ -312,7 +312,7 @@
         </div>
 
         <!-- CTA Button -->
-        <a href="/characters/cupcake/chat" class="cta-button" data-aos="fade-up" data-aos-delay="600">
+        <a href="/characters/emma/chat" class="cta-button" data-aos="fade-up" data-aos-delay="600">
             Start Growing with Emma!
         </a>
 
@@ -344,7 +344,7 @@
             "particles": {
                 "number": { "value": 50 },
                 "size": { "value": 3 },
-                "color": { "value": "#FFD700" }, /* Star Gold */
+                "color": { "value": "#28a745" }, /* Changed to primary green color */
                 "shape": { "type": "circle" },
                 "opacity": {
                     "value": 0.5,
@@ -366,7 +366,7 @@
         // Share Functionality
         function shareEmma() {
             const shareData = {
-                title: 'Meet Emma!',
+                title: 'Meet Emma! 🌸💬',
                 text: 'Check out Emma - your encouraging counselor!',
                 url: window.location.href
             };
@@ -409,7 +409,8 @@
                 confetti({
                     particleCount: 100,
                     spread: 70,
-                    origin: { y: 0.6 }
+                    origin: { y: 0.6 },
+                    colors: ['#28a745', '#20c997', '#FFD700'] /* Green and Gold colors */
                 });
 
                 // Optional: Highlight the CTA button
