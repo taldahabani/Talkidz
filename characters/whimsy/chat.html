@@ -133,48 +133,52 @@
             background-position: center;
             background-repeat: no-repeat;
         }
-        
-.bottom-container {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    padding: 0 1.5rem;
-    padding-bottom: calc(env(safe-area-inset-bottom) + 2.5rem);
-    background: transparent;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    z-index: 10;
-}
+/* Continuing the style tag */
+        .bottom-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 1.5rem;
+            background: linear-gradient(to top, 
+                rgba(255,255,255,0.98) 70%,
+                rgba(255,255,255,0.8) 85%,
+                transparent);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+            z-index: 10;
+            backdrop-filter: blur(8px);
+        }
 
-.controls-wrapper {
-    width: 100%;
-    max-width: 600px;
-    position: relative;
-    margin-bottom: 1rem;
-}
+        .controls-wrapper {
+            width: 100%;
+            max-width: 600px;
+            position: relative;
+            margin-bottom: 1rem;
+        }
 
-.controls-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    margin-bottom: 1rem;
-}
+        .controls-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
 
-.bottom-status-container {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 1rem 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    z-index: 9;
-    background: white;
-}
+        .bottom-status-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1rem 1.5rem;
+            background: white;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            border-top: 1px solid rgba(108, 92, 231, 0.1);
+            z-index: 12;
+        }
 
         .logo-container {
             display: flex;
@@ -200,33 +204,37 @@
             margin-left: 0.25rem;
         }
 
-.progress-container {
-    position: relative; 
-    flex: 1;
-    height: 4px;
-    background: rgba(108, 92, 231, 0.1);
-    border-radius: 999px;
-    overflow: hidden;
-}
+        .progress-container {
+            flex: 1;
+            height: 4px;
+            background: rgba(108, 92, 231, 0.1);
+            border-radius: 999px;
+            overflow: hidden;
+        }
 
-.progress-bar {
-    width: 0%;
-    height: 100%;
-    background: linear-gradient(to right, #8B5CF6, #EC4899);
-    transition: width 1s linear;
-    border-radius: 999px;
-}
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(to right, var(--accent-color), var(--primary-color));
+            transition: width 1s linear;
+            border-radius: 999px;
+            box-shadow: 0 0 10px rgba(108, 92, 231, 0.2);
+        }
 
-.main-button {
-    background: linear-gradient(90deg, #8B5CF6, #EC4899);
-    padding: 0.75rem 2rem;
-    border-radius: 999px;
-    color: white;
-    font-weight: 600;
-    border: none;
-    cursor: pointer;
-    font-size: 1rem;
-}
+        .main-button {
+            background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
 
         .main-button::before {
             content: '';
@@ -293,23 +301,19 @@
             50% { transform: scale(1) rotate(180deg); opacity: 1; }
         }
 
-.share-button {
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-    background: white;
-    border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-}
-        
-        .share-button svg {
-    width: 24px;   
-    height: 24px;  
-    stroke-width: 2px; 
+        .share-button {
+            background: var(--secondary-background);
+            border: none;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-color);
+        }
 
         .share-button:hover {
             transform: translateY(-2px);
@@ -318,17 +322,9 @@
         }
 
         @media (max-width: 768px) {
-    .share-button svg {
-        width: 24px;    
-        height: 24px;   
-    }
-
-@media (max-width: 768px) {
-    .bottom-container {
-        padding-bottom: calc(env(safe-area-inset-bottom) + 5rem); 
-    }
-}
-
+            .bottom-status-container {
+                padding-bottom: calc(env(safe-area-inset-bottom) + 1rem);
+            }
             
             .bottom-container {
                 padding-bottom: calc(env(safe-area-inset-bottom) + 5rem);
@@ -348,17 +344,17 @@
                 <path d="M19 12H5M12 19l-7-7 7-7"/>
             </svg>
         </a>
-        <div class="character-name">Clumsy Whimsy</div>
+        <div class="character-name">Funny Cupcake</div>
     </div>
 
     <div class="main-container">
         <div class="video-wrapper">
             <div class="background image"></div>
             <video class="background video" id="idleVideo" loop muted playsinline disablePictureInPicture>
-                <source src="/characters/whimsy/assets/idle-whimsy.mp4" type="video/mp4">
+                <source src="/characters/cupcake/assets/idle-whimsy.mp4" type="video/mp4">
             </video>
             <video class="background video" id="speakingVideo" loop muted playsinline disablePictureInPicture>
-                <source src="/characters/whimsy/assets/speaking-whimsy.mp4" type="video/mp4">
+                <source src="/characters/cupcake/assets/speaking-whimsy.mp4" type="video/mp4">
             </video>
         </div>
     </div>
@@ -521,7 +517,7 @@
                 `;
 
                 conversation = await Conversation.startSession({
-                    agentId: 'jvbiMPIQOUiUs5GkepcA',
+                    agentId: 'iogofk9qnqvE98RwV1Kk',
                     onModeChange: (mode) => {
                         updateBackground(mode.mode);
                     },
