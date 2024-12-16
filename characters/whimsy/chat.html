@@ -344,17 +344,17 @@
                 <path d="M19 12H5M12 19l-7-7 7-7"/>
             </svg>
         </a>
-        <div class="character-name">Funny Cupcake</div>
+        <div class="character-name">Clumsy Whimsy</div>
     </div>
 
     <div class="main-container">
         <div class="video-wrapper">
             <div class="background image"></div>
             <video class="background video" id="idleVideo" loop muted playsinline disablePictureInPicture>
-                <source src="/characters/cupcake/assets/idle-whimsy.mp4" type="video/mp4">
+                <source src="/characters/whimsy/assets/idle-whimsy.mp4" type="video/mp4">
             </video>
             <video class="background video" id="speakingVideo" loop muted playsinline disablePictureInPicture>
-                <source src="/characters/cupcake/assets/speaking-whimsy.mp4" type="video/mp4">
+                <source src="/characters/whimsy/assets/speaking-whimsy.mp4" type="video/mp4">
             </video>
         </div>
     </div>
@@ -517,7 +517,7 @@
                 `;
 
                 conversation = await Conversation.startSession({
-                    agentId: 'iogofk9qnqvE98RwV1Kk',
+                    agentId: 'jvbiMPIQOUiUs5GkepcA',
                     onModeChange: (mode) => {
                         updateBackground(mode.mode);
                     },
