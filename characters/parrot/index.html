@@ -11,8 +11,8 @@
     
     <style>
         :root {
-            --primary-color: #6a0dad; /* Purple */
-            --accent-color: #8a2be2; /* BlueViolet */
+            --primary-color: #8a2be2; /* BlueViolet */
+            --accent-color: #6a0dad;  /* Purple */
             --background-color: #f3e5f5; /* Lavender Blush */
             --secondary-background: #e1bee7; /* Lavender */
             --star-color: #FFD700; /* Star Gold */
@@ -22,20 +22,12 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             margin: 0;
-            background: linear-gradient(270deg, var(--background-color), var(--secondary-background));
-            background-size: 400% 400%;
-            animation: gradientShift 15s ease infinite;
+            background: linear-gradient(135deg, var(--background-color), var(--secondary-background));
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             overflow-x: hidden;
             position: relative;
-        }
-
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
         }
 
         /* Particle Effects */
@@ -69,8 +61,8 @@
         }
 
         .back-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(78, 205, 196, 0.2);
+            transform: translateX(-2px);
+            box-shadow: 0 6px 16px rgba(106, 13, 173, 0.2); /* Accent Purple Shadow */
             color: var(--primary-color);
         }
 
@@ -96,7 +88,7 @@
 
         .share-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(78, 205, 196, 0.2);
+            box-shadow: 0 6px 16px rgba(106, 13, 173, 0.2); /* Accent Purple Shadow */
             color: var(--primary-color);
         }
 
@@ -122,7 +114,7 @@
             height: min(45vh, 220px);
             border-radius: 50%;
             background: white;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+            box-shadow: 0 8px 32px rgba(106, 13, 173, 0.15); /* Accent Purple Shadow */
             animation: bounce 6s ease-in-out infinite;
         }
 
@@ -176,18 +168,11 @@
             font-size: clamp(2rem, 6vw, 3rem);
             font-weight: 800;
             margin: calc(0.5rem / var(--golden-ratio)) 0;
-            background: linear-gradient(90deg, #6a0dad, #8a2be2, #6a0dad);
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
             padding: 0 calc(1rem / var(--golden-ratio));
-            animation: gradientMove 5s linear infinite;
-        }
-
-        @keyframes gradientMove {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
         }
 
         /* Subtitle */
@@ -197,37 +182,6 @@
             margin: 0 auto calc(0.8rem / var(--golden-ratio));
             padding: 0 calc(1rem / var(--golden-ratio));
             max-width: 500px;
-        }
-
-        /* CTA Button */
-        .cta-button {
-            background: linear-gradient(45deg, #6a0dad, #8a2be2);
-            background-size: 200% 200%;
-            animation: gradientShiftButton 5s linear infinite;
-            color: white;
-            border: none;
-            padding: 1.2rem 1.5rem;
-            font-size: 1rem;
-            font-weight: 600;
-            border-radius: 999px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(78, 205, 196, 0.2);
-            text-decoration: none;
-            margin: 1rem auto; /* Centers the button */
-            width: calc(300px * var(--golden-ratio)); /* Same width as .fun-fact */
-            max-width: 80%;
-        }
-        
-        @keyframes gradientShiftButton {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        
-        .cta-button:hover {
-            transform: scale(1.05) rotate(2deg);
-            box-shadow: 0 6px 20px rgba(78, 205, 196, 0.3);
         }
 
         /* Traits Section */
@@ -266,6 +220,32 @@
             color: white;
         }
 
+        /* CTA Button */
+        .cta-button {
+            background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
+            color: white;
+            border: none;
+            padding: 1.2rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(106, 13, 173, 0.2); /* Accent Purple Shadow */
+            text-decoration: none;
+            margin: 1rem auto; /* Centers the button */
+            width: calc(300px * var(--golden-ratio)); /* Same width as .fun-fact */
+            max-width: 80%;
+            display: inline-block;
+            text-align: center;
+            background-size: 200% 200%;
+        }
+        
+        .cta-button:hover {
+            transform: scale(1.05) rotate(2deg);
+            box-shadow: 0 6px 20px rgba(106, 13, 173, 0.3); /* Accent Purple Shadow */
+        }
+
         /* Fun Fact Section */
         .fun-fact {
             background: white;
@@ -300,6 +280,30 @@
             100% { box-shadow: 0 0 0 0 rgba(106, 13, 173, 0); }
         }
 
+        /* Responsive Adjustments */
+        @media (max-height: 700px) {
+            .hero {
+                padding-top: 3.5rem;
+                gap: 0.5rem;
+            }
+            .character-container {
+                width: min(35vh, 200px);
+                height: min(35vh, 200px);
+                margin: 0.5rem auto;
+            }
+            .traits {
+                margin: 0.5rem 0;
+            }
+            .fun-fact {
+                padding: 0.8rem;
+            }
+        }
+
+        @media (min-height: 800px) {
+            .hero {
+                justify-content: center;
+            }
+        }
     </style>
 </head>
 <body>
@@ -338,7 +342,7 @@
         </div>
 
         <!-- CTA Button -->
-        <a href="/characters/cupcake/chat" class="cta-button" data-aos="fade-up" data-aos-delay="600">
+        <a href="/characters/parrot/chat" class="cta-button" data-aos="fade-up" data-aos-delay="600">
             Start Your Story with Parrot!
         </a>
 
@@ -370,7 +374,7 @@
             "particles": {
                 "number": { "value": 50 },
                 "size": { "value": 3 },
-                "color": { "value": "#6a0dad" }, /* Changed to primary purple color */
+                "color": { "value": "#8a2be2" }, /* Accent Purple */
                 "shape": { "type": "circle" },
                 "opacity": {
                     "value": 0.5,
@@ -436,10 +440,10 @@
                     particleCount: 100,
                     spread: 70,
                     origin: { y: 0.6 },
-                    colors: ['#6a0dad', '#8a2be2', '#FFD700'] /* Purple and Gold colors */
+                    colors: ['#8a2be2', '#6a0dad', '#FFD700'] /* Purple and Gold colors */
                 });
 
-                // Optional: Highlight the CTA button
+                // Highlight the CTA button
                 const ctaButton = document.querySelector('.cta-button');
                 ctaButton.classList.add('highlight-cta');
 
