@@ -3,44 +3,165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meet Clever Fox - Your Learning Companion | Talkidz</title>
+    <title>Meet Clever Fox - Your Wise and Friendly Instructor | Talkidz</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" rel="stylesheet">
+    
+    <!-- AOS (Animate On Scroll) CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+    
     <style>
         :root {
-            --primary-color: #FF8C42;
-            --accent-color: #4A90E2;
-            --background-color: #FFFFFF;
-            --secondary-background: #F5F5F5;
+            --primary-color: #FF8C00; /* Dark Orange */
+            --accent-color: #1E90FF; /* Dodger Blue */
+            --background-color: #FFF5E1; /* Light Cream */
+            --secondary-background: #E0F7FA; /* Light Blue */
+            --star-color: #FFD700; /* Star Gold */
+            --golden-ratio: 1.618;
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             margin: 0;
-            background: linear-gradient(180deg, #FFF5F0 0%, #FFFFFF 100%);
+            background: linear-gradient(270deg, var(--background-color), var(--secondary-background));
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
         }
 
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Particle Effects */
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -2;
+        }
+
+        /* Back Button */
+        .back-button {
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            background: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 999px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            color: #666;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .back-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(78, 205, 196, 0.2);
+            color: var(--primary-color);
+        }
+
+        /* Share Button */
+        .share-button {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 999px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            color: #666;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .share-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(78, 205, 196, 0.2);
+            color: var(--primary-color);
+        }
+
+        /* Hero Section */
         .hero {
             text-align: center;
-            padding: 2rem 1rem;
+            padding: calc(2rem * var(--golden-ratio)) 1rem;
             position: relative;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            box-sizing: border-box;
+            gap: calc(1rem / var(--golden-ratio));
+            z-index: 1;
         }
 
+        /* Character Container */
         .character-container {
             position: relative;
-            margin: 2rem auto;
-            width: 280px;
-            height: 280px;
+            margin: 0 auto;
+            width: min(45vh, 220px);
+            height: min(45vh, 220px);
             border-radius: 50%;
             background: white;
-            box-shadow: 0 8px 32px rgba(255, 140, 66, 0.15);
-            animation: float 6s ease-in-out infinite;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+            animation: bounce 6s ease-in-out infinite;
+        }
+
+        .character-container .sparkle {
+            position: absolute;
+            width: 25px;
+            height: 25px;
+            background: var(--star-color);
+            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+            animation: twinkle 2s infinite, float 4s ease-in-out infinite;
+            opacity: 0.8;
+        }
+
+        .sparkle:nth-child(2) {
+            top: 70%;
+            left: 90%;
+        }
+
+        .sparkle:nth-child(3) {
+            top: 80%;
+            left: 10%;
+        }
+
+        /* Removed sparkle:nth-child(1) to prevent overlap with particles.js */
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            25% { transform: translateY(-15px) rotate(5deg); }
+            75% { transform: translateY(-10px) rotate(-5deg); }
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.8; transform: scale(1) rotate(0deg); }
+            50% { opacity: 1; transform: scale(1.3) rotate(180deg); }
         }
 
         @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(360deg); }
         }
 
         .character-image {
@@ -48,125 +169,274 @@
             height: 100%;
             border-radius: 50%;
             object-fit: cover;
-            transition: transform 0.3s ease;
         }
 
-        .sparkle {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background: white;
-            clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
-            animation: twinkle 2s infinite;
-        }
-
-        @keyframes twinkle {
-            0%, 100% { opacity: 0; transform: scale(0.5); }
-            50% { opacity: 1; transform: scale(1); }
-        }
-
+        /* Title */
         .title {
-            font-size: 2.5rem;
+            font-size: clamp(2rem, 6vw, 3rem);
             font-weight: 800;
-            margin: 1rem 0;
+            margin: calc(0.5rem / var(--golden-ratio)) 0;
             background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            padding: 0 calc(1rem / var(--golden-ratio));
         }
 
+        /* Subtitle */
         .subtitle {
-            font-size: 1.2rem;
+            font-size: clamp(0.9rem, 4vw, 1.2rem);
             color: #666;
-            margin-bottom: 2rem;
+            margin: 0 auto calc(0.8rem / var(--golden-ratio));
+            padding: 0 calc(1rem / var(--golden-ratio));
+            max-width: 500px;
         }
 
-        .traits {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-            margin: 2rem 0;
-        }
-
-        .trait {
-            background: white;
-            padding: 1rem 1.5rem;
-            border-radius: 999px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            font-weight: 500;
-            color: #666;
-            transition: all 0.3s ease;
-        }
-
-        .trait:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(74, 144, 226, 0.2);
-            color: var(--primary-color);
-        }
-
+        /* CTA Button */
         .cta-button {
-            background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
             color: white;
             border: none;
-            padding: 1rem 2rem;
-            font-size: 1.2rem;
+            padding: 1.2rem 1.5rem;
+            font-size: 1rem;
             font-weight: 600;
             border-radius: 999px;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(74, 144, 226, 0.2);
-            margin: 2rem 0;
+            box-shadow: 0 4px 12px rgba(78, 205, 196, 0.2);
+            text-decoration: none;
+            margin: 1rem auto; /* Centers the button */
+            width: calc(300px * var(--golden-ratio)); /* Same width as .fun-fact */
+            max-width: 80%;
         }
-
+        
         .cta-button:hover {
-            transform: translateY(-2px) scale(1.05);
-            box-shadow: 0 6px 24px rgba(74, 144, 226, 0.3);
+            transform: scale(1.05) rotate(2deg);
+            box-shadow: 0 6px 20px rgba(78, 205, 196, 0.3);
         }
 
+        /* Traits Section */
+        .traits {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 2 columns by default */
+            gap: calc(1rem / var(--golden-ratio));
+            justify-content: center;
+            margin: calc(0.1rem / var(--golden-ratio)) auto;
+            padding: 0 calc(1rem / var(--golden-ratio));
+            width: calc(320px * var(--golden-ratio));
+            max-width: 90%;
+        }
+
+        @media (min-width: 900px) {
+            .traits {
+                grid-template-columns: repeat(4, 1fr); /* 4 columns on larger screens */
+            }
+        }
+
+        .trait {
+            background: white;
+            padding: calc(0.6rem / var(--golden-ratio)) calc(1rem / var(--golden-ratio));
+            border-radius: 999px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            font-weight: 500;
+            color: #666;
+            text-align: center;
+            font-size: 0.9rem;
+            transition: transform 0.3s ease, background 0.3s ease, color 0.3s ease;
+        }
+
+        .trait:hover {
+            transform: scale(1.1);
+            background: var(--accent-color);
+            color: white;
+        }
+
+        /* Fun Fact Section */
         .fun-fact {
             background: white;
-            padding: 1.5rem;
+            padding: calc(0.8rem / var(--golden-ratio));
             border-radius: 16px;
-            max-width: 400px;
-            margin: 2rem auto;
+            margin: calc(0.1rem / var(--golden-ratio)) auto;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            width: calc(320px * var(--golden-ratio));
+            max-width: 90%;
+            position: relative;
         }
 
         .fun-fact-title {
             color: var(--primary-color);
             font-weight: 600;
-            margin-bottom: 0.5rem;
+            margin-bottom: calc(0.5rem / var(--golden-ratio));
         }
+
+        .fun-fact p {
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
     </style>
 </head>
 <body>
+    <!-- Particle Background -->
+    <div id="particles-js"></div>
+
+    <!-- Back Button -->
+    <a href="/" class="back-button">
+        ← Back
+    </a>
+
+    <!-- Share Button -->
+    <button class="share-button" onclick="shareCleverFox()">
+        Share
+    </button>
+    
     <div class="hero">
-        <div class="character-container">
-            <img src="/fox.jpg" alt="Clever Fox Character" class="character-image">
-            <div class="sparkle" style="top: 10%; left: 80%;"></div>
-            <div class="sparkle" style="top: 70%; left: 90%;"></div>
-            <div class="sparkle" style="top: 80%; left: 20%;"></div>
+        <!-- Character Container with Sparkles -->
+        <div class="character-container" data-aos="fade-up">
+            <img src="assets/fox.jpg" alt="Clever Fox Character" class="character-image">
+            <div class="sparkle"></div>
+            <div class="sparkle"></div>
+            <div class="sparkle"></div>
         </div>
         
-        <h1 class="title">Meet Clever Fox! 🦊✨</h1>
-        <p class="subtitle">Your wise and friendly instructor, here to make learning fun and exciting!</p>
+        <!-- Title and Subtitle -->
+        <h1 class="title" data-aos="fade-up">Meet Clever Fox! 🦊📚</h1>
+        <p class="subtitle" data-aos="fade-up" data-aos-delay="200">Your wise and friendly instructor, here to make learning fun and exciting!</p>
 
-        <div class="traits">
+        <!-- Traits -->
+        <div class="traits" data-aos="fade-up" data-aos-delay="400">
             <span class="trait">🧠 Knowledge Guru</span>
             <span class="trait">📖 Always Curious</span>
             <span class="trait">🌟 Problem Solver</span>
             <span class="trait">🎓 Inspiring Mentor</span>
         </div>
 
-        <a href="https://www.talkidz.com/characters/fox/chat" class="cta-button">
-            Start Learning with Fox!
+        <!-- CTA Button -->
+        <a href="/characters/cupcake/chat" class="cta-button" data-aos="fade-up" data-aos-delay="600">
+            Start Learning with Clever Fox!
         </a>
 
-        <div class="fun-fact">
+        <!-- Fun Fact Section (Static) -->
+        <div class="fun-fact" data-aos="fade-up" data-aos-delay="800">
             <div class="fun-fact-title">Did you know? 🌟</div>
             <p>Clever Fox can teach you fun facts, help you solve tricky puzzles, and guide you to discover new ideas every day! Ready to learn something amazing?</p>
         </div>
     </div>
+
+    <!-- AOS (Animate On Scroll) JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+    
+    <!-- Particles.js -->
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    
+    <!-- canvas-confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 1000,
+            once: true,
+        });
+
+        // Initialize Particles.js
+        particlesJS({
+            "particles": {
+                "number": { "value": 50 },
+                "size": { "value": 3 },
+                "color": { "value": "#FF8C00" }, /* Changed to primary color */
+                "shape": { "type": "circle" },
+                "opacity": {
+                    "value": 0.5,
+                    "random": true
+                },
+                "move": {
+                    "enable": true,
+                    "speed": 1
+                }
+            },
+            "interactivity": {
+                "events": {
+                    "onhover": { "enable": true, "mode": "repulse" }
+                }
+            },
+            "retina_detect": true
+        });
+
+        // Share Functionality
+        function shareCleverFox() {
+            const shareData = {
+                title: 'Meet Clever Fox!',
+                text: 'Check out Clever Fox - your wise and friendly instructor!',
+                url: window.location.href
+            };
+
+            if (navigator.share) {
+                navigator.share(shareData).then(() => {
+                    console.log('Shared successfully');
+                    alert('Thanks for sharing Clever Fox!');
+                }).catch((error) => console.log('Error sharing:', error));
+            } else {
+                // Fallback for browsers that do not support navigator.share
+                const twitterURL = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareData.text)}&url=${encodeURIComponent(shareData.url)}`;
+                window.open(twitterURL, '_blank');
+            }
+        }
+
+        // Confetti Surprise on Scroll (Mobile Devices)
+        (function() {
+            const isMobile = /Mobi|Android/i.test(navigator.userAgent);
+            if (!isMobile) return;
+
+            let confettiTriggered = false;
+
+            window.addEventListener('scroll', () => {
+                if (confettiTriggered) return;
+
+                const traitsSection = document.querySelector('.traits');
+                if (!traitsSection) return;
+
+                const scrollPosition = window.scrollY + window.innerHeight;
+                const triggerPoint = traitsSection.offsetTop + traitsSection.offsetHeight / 2;
+
+                if (scrollPosition > triggerPoint) {
+                    confettiTriggered = true;
+                    triggerConfetti();
+                }
+            });
+
+            function triggerConfetti() {
+                confetti({
+                    particleCount: 100,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+
+                // Optional: Highlight the CTA button
+                const ctaButton = document.querySelector('.cta-button');
+                ctaButton.classList.add('highlight-cta');
+
+                // Remove highlight after animation
+                setTimeout(() => {
+                    ctaButton.classList.remove('highlight-cta');
+                }, 3000);
+            }
+
+            // CSS for highlighting CTA button
+            const style = document.createElement('style');
+            style.innerHTML = `
+                .highlight-cta {
+                    animation: pulse 2s infinite;
+                }
+
+                @keyframes pulse {
+                    0% { box-shadow: 0 0 0 0 rgba(255, 140, 0, 0.7); }
+                    70% { box-shadow: 0 0 0 20px rgba(255, 140, 0, 0); }
+                    100% { box-shadow: 0 0 0 0 rgba(255, 140, 0, 0); }
+                }
+            `;
+            document.head.appendChild(style);
+        })();
+    </script>
 </body>
 </html>
