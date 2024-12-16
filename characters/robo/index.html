@@ -166,39 +166,27 @@
             box-shadow: 0 6px 20px rgba(78, 205, 196, 0.3);
         }
 
-.traits {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center; /* Centers the traits horizontally */
-    gap: 1rem 2rem; /* Vertical and horizontal spacing between traits */
-    margin: 1.5rem auto; /* Adds spacing around the traits section */
-    max-width: 600px; /* Limits the width for better symmetry on large screens */
-}
+        .traits {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: calc(1rem / var(--golden-ratio));
+            justify-content: center;
+            margin: calc(1rem / var(--golden-ratio)) auto;
+            padding: 0 calc(1rem / var(--golden-ratio));
+            width: calc(320px * var(--golden-ratio));
+            max-width: 90%;
+        }
 
-.trait {
-    flex: 0 1 45%; /* Ensures 2 traits per row on desktop */
-    background: white;
-    padding: 0.8rem 1.2rem;
-    border-radius: 999px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    font-weight: 500;
-    color: #666;
-    text-align: center;
-    font-size: 0.9rem;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.trait:hover {
-    transform: translateY(-3px); /* Adds a slight hover effect */
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-}
-
-/* Responsive Adjustments */
-@media (max-width: 768px) {
-    .trait {
-        flex: 0 1 100%; /* Stacks traits in a single column on smaller screens */
-    }
-}
+        .trait {
+            background: white;
+            padding: calc(0.6rem / var(--golden-ratio)) calc(1rem / var(--golden-ratio));
+            border-radius: 999px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            font-weight: 500;
+            color: #666;
+            text-align: center;
+            font-size: 0.9rem;
+        }
 
         .fun-fact {
             background: white;
@@ -264,7 +252,6 @@
         
         <h1 class="title">Meet Bongo the Monkey! 🐒🍌</h1>
         <p class="subtitle">Your playful prankster and funny friend who’s always ready to swing into action with laughter and mischief!</p>
-
 
         <div class="traits">
             <span class="trait">🎭 Prank Master</span>
