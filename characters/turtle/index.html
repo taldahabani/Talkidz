@@ -11,11 +11,11 @@
     
     <style>
         :root {
-            --primary-color: #FFD700; /* Gold */
-            --accent-color: #FFFACD;  /* Lemon Chiffon */
-            --background-color: #FFFFE0; /* Light Yellow Background */
+            --primary-color: #FFEB3B; /* Yellow */
+            --accent-color: #FF9800;  /* Orange */
+            --background-color: #FFF8E1; /* Light Yellow Background */
             --secondary-background: #FFFFFF; /* White Background */
-            --star-color: #FFD700; /* Matching Gold */
+            --star-color: #FFEB3B; /* Matching Yellow */
             --golden-ratio: 1.618;
         }
 
@@ -62,7 +62,7 @@
 
         .back-button:hover {
             transform: translateX(-2px);
-            box-shadow: 0 6px 16px rgba(255, 215, 0, 0.2); /* Gold Shadow */
+            box-shadow: 0 6px 16px rgba(255, 152, 0, 0.2); /* Orange Shadow */
             color: var(--primary-color);
         }
 
@@ -88,7 +88,7 @@
 
         .share-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(255, 215, 0, 0.2); /* Gold Shadow */
+            box-shadow: 0 6px 16px rgba(255, 152, 0, 0.2); /* Orange Shadow */
             color: var(--primary-color);
         }
 
@@ -114,7 +114,7 @@
             height: min(45vh, 220px);
             border-radius: 50%;
             background: white;
-            box-shadow: 0 8px 32px rgba(255, 215, 0, 0.15); /* Gold Shadow */
+            box-shadow: 0 8px 32px rgba(255, 152, 0, 0.15); /* Orange Shadow */
             animation: bounce 6s ease-in-out infinite;
         }
 
@@ -168,7 +168,7 @@
             font-size: clamp(2rem, 6vw, 3rem);
             font-weight: 800;
             margin: calc(0.5rem / var(--golden-ratio)) 0;
-            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            background: linear-gradient(45deg, #FFEB3B, #FF9800); /* Yellow to Orange Gradient */
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -222,7 +222,7 @@
 
         /* CTA Button */
         .cta-button {
-            background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
+            background: linear-gradient(45deg, #FFEB3B, #FF9800); /* Yellow to Orange Gradient */
             color: white;
             border: none;
             padding: 1.2rem 1.5rem;
@@ -231,7 +231,7 @@
             border-radius: 999px;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(255, 215, 0, 0.2); /* Gold Shadow */
+            box-shadow: 0 4px 12px rgba(255, 152, 0, 0.2); /* Orange Shadow */
             text-decoration: none;
             margin: 1rem auto; /* Centers the button */
             width: calc(300px * var(--golden-ratio)); /* Same width as .fun-fact */
@@ -242,7 +242,7 @@
         
         .cta-button:hover {
             transform: scale(1.05) rotate(2deg);
-            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.3); /* Gold Shadow */
+            box-shadow: 0 6px 20px rgba(255, 152, 0, 0.3); /* Orange Shadow */
         }
 
         /* Fun Fact Section */
@@ -270,9 +270,9 @@
 
         /* Highlight CTA Button */
         @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.7); }
-            70% { box-shadow: 0 0 0 20px rgba(255, 215, 0, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0); }
+            0% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(255, 152, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0); }
         }
 
         /* Responsive Adjustments */
@@ -318,7 +318,7 @@
     <div class="hero">
         <!-- Character Container with Sparkles -->
         <div class="character-container" data-aos="fade-up">
-            <img src="assets/turtle.jpg" alt="Tilly the Turtle Character" class="character-image">
+            <img src="assets/tilly.jpg" alt="Tilly the Turtle Character" class="character-image">
             <div class="sparkle" style="top: 20%; left: 80%;"></div>
             <div class="sparkle" style="top: 70%; left: 90%;"></div>
             <div class="sparkle" style="top: 80%; left: 10%;"></div>
@@ -339,7 +339,7 @@
         </div>
 
         <!-- CTA Button -->
-        <a href="/characters/turtle/chat" class="cta-button" data-aos="fade-up" data-aos-delay="600">
+        <a href="/characters/tilly/chat" class="cta-button" data-aos="fade-up" data-aos-delay="600">
             Start Learning with Tilly!
         </a>
 
@@ -371,7 +371,7 @@
             "particles": {
                 "number": { "value": 50 },
                 "size": { "value": 3 },
-                "color": { "value": "#FFD700" }, /* Gold */
+                "color": { "value": "#FFEB3B" }, /* Yellow */
                 "shape": { "type": "circle" },
                 "opacity": {
                     "value": 0.5,
@@ -437,7 +437,7 @@
                     particleCount: 100,
                     spread: 70,
                     origin: { y: 0.6 },
-                    colors: ['#FFD700', '#FFFACD', '#FFFFFF'] /* Matching color scheme */
+                    colors: ['#FFEB3B', '#FF9800', '#FFFFFF'] /* Matching color scheme */
                 });
 
                 // Highlight the CTA button
@@ -458,9 +458,9 @@
                 }
 
                 @keyframes pulse {
-                    0% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.7); }
-                    70% { box-shadow: 0 0 0 20px rgba(255, 215, 0, 0); }
-                    100% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0); }
+                    0% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0.7); }
+                    70% { box-shadow: 0 0 0 20px rgba(255, 152, 0, 0); }
+                    100% { box-shadow: 0 0 0 0 rgba(255, 152, 0, 0); }
                 }
             `;
             document.head.appendChild(style);
