@@ -133,52 +133,47 @@
             background-position: center;
             background-repeat: no-repeat;
         }
+        
+.bottom-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 0 1.5rem;
+    padding-bottom: calc(env(safe-area-inset-bottom) + 1.5rem);
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 10;
+}
 
-        .bottom-container {
-            position: fixed;
-            bottom: 70px; /* Position above status container */
-            left: 0;
-            width: 100%;
-            padding: 1.5rem;
-            background: linear-gradient(to top, 
-                rgba(255,255,255,0.98) 70%,
-                rgba(255,255,255,0.8) 85%,
-                transparent);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1.5rem;
-            z-index: 10;
-            backdrop-filter: blur(8px);
-        }
+.controls-wrapper {
+    width: 100%;
+    max-width: 600px;
+    position: relative;
+    margin-bottom: 1.5rem;
+}
 
-        .controls-wrapper {
-            width: 100%;
-            max-width: 600px;
-            position: relative;
-        }
+.controls-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
 
-        .controls-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 1rem;
-        }
-
-        .bottom-status-container {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 1rem 1.5rem;
-            background: white;
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-            border-top: 1px solid rgba(108, 92, 231, 0.1);
-            z-index: 12;
-            height: 70px;
-        }
+.bottom-status-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    z-index: 9;
+}
 
         .logo-container {
             display: flex;
@@ -204,13 +199,14 @@
             margin-left: 0.25rem;
         }
 
-        .progress-container {
-            flex: 1;
-            height: 4px;
-            background: rgba(108, 92, 231, 0.1);
-            border-radius: 999px;
-            overflow: hidden;
-        }
+.progress-container {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: transparent;
+}
 
         .progress-bar {
             width: 0%;
@@ -221,20 +217,16 @@
             box-shadow: 0 0 10px rgba(108, 92, 231, 0.2);
         }
 
-        .main-button {
-            background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
-            color: white;
-            border: none;
-            padding: 1rem 2.5rem;
-            font-size: 1rem;
-            font-weight: 600;
-            border-radius: 999px;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
-            position: relative;
-            overflow: hidden;
-        }
+.main-button {
+    background: linear-gradient(90deg, #8B5CF6, #EC4899);
+    padding: 0.75rem 2rem;
+    border-radius: 999px;
+    color: white;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+}
 
         .main-button::before {
             content: '';
@@ -276,26 +268,6 @@
             justify-content: center;
         }
 
-        .share-button {
-            background: var(--secondary-background);
-            border: none;
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            color: var(--text-color);
-        }
-
-        .share-button:hover {
-            transform: translateY(-2px);
-            background: white;
-            box-shadow: 0 4px 12px var(--shadow-color);
-        }
-
         .particle {
             position: absolute;
             pointer-events: none;
@@ -321,14 +293,33 @@
             50% { transform: scale(1) rotate(180deg); opacity: 1; }
         }
 
-        @media (max-width: 768px) {
-            .bottom-status-container {
-                padding-bottom: calc(env(safe-area-inset-bottom) + 1rem);
-            }
+.share-button {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+        .share-button:hover {
+            transform: translateY(-2px);
+            background: white;
+            box-shadow: 0 4px 12px var(--shadow-color);
+        }
+
+@media (max-width: 768px) {
+    .bottom-container {
+        padding-bottom: calc(env(safe-area-inset-bottom) + 2rem);
+    }
+}
             
             .bottom-container {
-                bottom: calc(70px + env(safe-area-inset-bottom));
-                padding-bottom: 1.5rem;
+                padding-bottom: calc(env(safe-area-inset-bottom) + 5rem);
             }
 
             .main-button {
@@ -542,6 +533,7 @@
                     }
                 });
 
+                // Add sparkle effect to button periodically
                 const sparkleInterval = setInterval(() => {
                     if (conversation) {
                         addSparkleEffect(startButton);
@@ -630,8 +622,8 @@
         window.shareCharacter = () => {
             if (navigator.share) {
                 navigator.share({
-                    title: 'Chat with Clumsy Whimsy on Talkidz',
-                    text: 'Come chat with Clumsy Whimsy, your new AI friend!',
+                    title: 'Chat with Funny Cupcake on Talkidz',
+                    text: 'Come chat with Funny Cupcake, your new AI friend!',
                     url: window.location.href
                 }).catch(console.error);
             }
