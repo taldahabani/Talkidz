@@ -74,6 +74,32 @@
             color: var(--primary-color);
         }
 
+        /* Share Button */
+        .share-button {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            background: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 999px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            color: #666;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 10;
+        }
+
+        .share-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(78, 205, 196, 0.2);
+            color: var(--primary-color);
+        }
+
         /* Hero Section */
         .hero {
             text-align: center;
@@ -248,12 +274,6 @@
             font-size: 0.9rem;
         }
 
-        /* Exclusive Content (Removed since share button is removed) */
-        /* Removed .exclusive-content */
-
-        /* Light Effects and Easter Eggs (Removed) */
-        /* Removed .light-effect and .secret-animation */
-
     </style>
 </head>
 <body>
@@ -264,6 +284,11 @@
     <a href="/" class="back-button">
         ← Back
     </a>
+
+    <!-- Share Button -->
+    <button class="share-button" onclick="shareBongo()">
+        Share
+    </button>
     
     <div class="hero">
         <!-- Character Container with Sparkles -->
@@ -334,6 +359,26 @@
             },
             "retina_detect": true
         });
+
+        // Share Functionality
+        function shareBongo() {
+            const shareData = {
+                title: 'Meet Bongo the Monkey!',
+                text: 'Check out Bongo the Monkey - your playful prankster!',
+                url: window.location.href
+            };
+
+            if (navigator.share) {
+                navigator.share(shareData).then(() => {
+                    console.log('Shared successfully');
+                    alert('Thanks for sharing Bongo the Monkey!');
+                }).catch((error) => console.log('Error sharing:', error));
+            } else {
+                // Fallback for browsers that do not support navigator.share
+                const twitterURL = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareData.text)}&url=${encodeURIComponent(shareData.url)}`;
+                window.open(twitterURL, '_blank');
+            }
+        }
     </script>
 </body>
 </html>
