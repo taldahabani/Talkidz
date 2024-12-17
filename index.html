@@ -524,6 +524,222 @@
             transform: rotate(12deg);
             box-shadow: 0 2px 4px rgba(108, 92, 231, 0.3);
         }
+
+.featured-section {
+    background: var(--secondary-background);
+    border-radius: 24px;
+    padding: 40px; 
+    margin: 32px 16px; 
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 8px 32px rgba(108, 92, 231, 0.08); 
+}
+
+.featured-section > div:first-child {
+    flex: 1;
+    padding-right: 48px;
+    max-width: 600px;
+}
+
+.featured-title {
+    font-size: 0.875rem; 
+    font-weight: 600;
+    color: var(--accent-color);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-transform: uppercase; /* Makes the label more distinct */
+    letter-spacing: 0.5px;
+}
+
+.featured-title::after {
+    content: '';
+    height: 2px;
+    flex: 1;
+    background: linear-gradient(to right, var(--accent-color, #6C5CE7) 0%, transparent 100%);
+    opacity: 0.3;
+}
+
+.featured-name {
+    font-size: 3rem; /* Larger for more impact */
+    font-weight: 800;
+    background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    margin: 0 0 10px 0;
+    letter-spacing: -1px;
+    line-height: 1.2;
+}
+
+.featured-description {
+    color: #666;
+    font-size: 1.125rem;
+    line-height: 1.6;
+    margin-bottom: 12px;
+    font-weight: 400;
+    max-width: 540px; 
+}
+
+.featured-image-container {
+    width: 260px; /* Larger image for more impact */
+    height: 260px;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.featured-image-wrap {
+    width: 240px;
+    height: 240px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.featured-image {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 4px solid white;
+    box-shadow: 0 12px 24px rgba(108, 92, 231, 0.15);
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.featured-image:hover {
+    transform: scale(1.05);
+    box-shadow: 0 16px 32px rgba(108, 92, 231, 0.2);
+}
+
+/* Make the button more prominent */
+.featured-section .share-button {
+    padding: 1rem 2rem;
+    font-size: 1.125rem;
+    transition: all 0.3s ease;
+}
+
+.featured-section .share-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(108, 92, 231, 0.25);
+}
+
+/* Responsive design with breakpoints for optimal viewing */
+@media (max-width: 1024px) {
+    .featured-section {
+        padding: 32px;
+        margin: 24px 12px;
+    }
+    
+    .featured-name {
+        font-size: 2.5rem;
+    }
+    
+    .featured-image-container {
+        width: 220px;
+        height: 220px;
+    }
+    
+    .featured-image-wrap {
+        width: 200px;
+        height: 200px;
+    }
+}
+
+@media (max-width: 768px) {
+    .featured-section {
+        padding: 24px;
+        margin: 20px 10px;
+    }
+    
+    .featured-section > div:first-child {
+        padding-right: 24px;
+    }
+    
+    .featured-name {
+        font-size: 2rem;
+    }
+    
+    .featured-description {
+        font-size: 1rem;
+        margin-bottom: 24px;
+    }
+    
+    .featured-image-container {
+        width: 180px;
+        height: 180px;
+    }
+    
+    .featured-image-wrap {
+        width: 160px;
+        height: 160px;
+    }
+}
+
+/* Stack layout for mobile */
+@media (max-width: 640px) {
+    .featured-section {
+        padding: 24px 20px;
+    }
+    
+    .featured-section > div:first-child {
+        padding-right: 16px;
+        text-align: left; 
+    }
+    
+    .featured-title {
+        justify-content: flex-start;
+    }
+    
+    .featured-description {
+        margin-left: 0;
+        margin-right: 0;
+        font-size: 0.875rem;
+    }
+    
+    .featured-image-container {
+        width: 120px; 
+        height: 200px;
+        margin-bottom: 0px;
+    }
+    
+    .featured-image-wrap {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .featured-section .share-button {
+        margin: 0;
+        padding: 0.75rem 1.5rem; /* Slightly smaller padding */
+        font-size: 0.875rem;
+    }
+}
+
+/* Small mobile devices */
+@media (max-width: 380px) {
+    .featured-section {
+        padding: 16px 12px;
+    }
+    
+    .featured-name {
+        font-size: 1.5rem;
+    }
+    
+    .featured-image-container {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .featured-image-wrap {
+        width: 100px;
+        height: 100px;
+    }
+}
     </style>
 </head>
 <body>
@@ -564,6 +780,28 @@
     </header>
 
     <main>
+        <section class="featured-section">
+    <div>
+        <div class="featured-title">
+            Featured Character:
+        </div>
+        <h2 class="featured-name">Funny Cupcake</h2>
+        <p class="featured-description">Meet Funny Cupcake, your sweet humor buddy ready to brighten your day with delightful conversations and endless laughter. Dive into a world of fun and sweetness!</p>
+        <button class="share-button" onclick="window.location.href='characters/cupcake'">
+            Chat Now
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M5 12h14M12 5l7 7-7 7"></path>
+            </svg>
+        </button>
+    </div>
+    <div class="featured-image-container">
+        <div class="featured-image-wrap">
+            <div class="featured-image">
+                <img src="characters/cupcake/assets/cupcake.jpg" alt="Funny Cupcake" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block;">
+            </div>
+        </div>
+    </div>
+</section>
         <section class="genre-section">
             <h2 class="genre-title">Funny</h2>
             <div class="character-carousel">
