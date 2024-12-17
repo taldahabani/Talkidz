@@ -283,18 +283,33 @@
             box-shadow: 0 6px 16px rgba(108, 92, 231, 0.3);
         }
 
+        /* Header Bottom Bar (Tagline and Categories) */
+        .header-bottom {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            opacity: 1;
+            transition: opacity 0.3s ease, max-height 0.3s ease;
+            max-height: 200px; /* Adjust as needed */
+            overflow: hidden;
+        }
+
+        .header.scrolled .header-bottom {
+            opacity: 0;
+            max-height: 0;
+        }
+
         .tagline {
             font-size: 1rem;
             color: #666;
             margin-bottom: var(--spacing-unit);
-            text-align: center;
+            text-align: left;
         }
 
         .categories {
             display: flex;
-            justify-content: center;
+            justify-content: flex-start;
             gap: 1rem;
-            margin-bottom: var(--spacing-unit);
             flex-wrap: wrap;
         }
 
@@ -578,13 +593,16 @@
         /* Responsive Styles */
         @media (max-width: 768px) {
             .featured-character-section {
-                flex-direction: column;
-                align-items: center;
-                text-align: center;
+                flex-direction: row-reverse;
+                text-align: left;
             }
 
             .featured-character-details {
-                flex: none;
+                text-align: left;
+            }
+
+            .featured-character-section {
+                flex-direction: row;
             }
 
             .character-card {
@@ -604,7 +622,7 @@
                 font-size: 0.75rem;
             }
 
-            .footer-logo {
+            .header-logo {
                 font-size: 2.5rem;
             }
 
@@ -637,12 +655,19 @@
 
         @media (max-width: 480px) {
             .featured-character-section {
-                padding: var(--spacing-unit);
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .featured-character-details {
+                flex: none;
             }
 
             .featured-character-image {
                 width: 150px;
                 height: 150px;
+                margin-bottom: var(--spacing-unit);
             }
 
             .featured-character-details h2 {
@@ -885,6 +910,7 @@
             color: white;
         }
 
+        /* Footer Responsive Styles */
         @media (max-width: 768px) {
             .footer-logo {
                 font-size: 2.5rem;
@@ -912,6 +938,62 @@
                 height: 20px;
             }
         }
+
+        /* Featured Character Section Responsive Layout */
+        @media (max-width: 768px) {
+            .featured-character-section {
+                flex-direction: row-reverse;
+                text-align: left;
+            }
+
+            .featured-character-details {
+                text-align: left;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .featured-character-section {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .featured-character-details {
+                flex: none;
+            }
+
+            .featured-character-image {
+                width: 150px;
+                height: 150px;
+                margin-bottom: var(--spacing-unit);
+            }
+
+            .featured-character-details h2 {
+                font-size: 1.5rem;
+            }
+
+            .featured-character-details p {
+                font-size: 0.9rem;
+            }
+
+            .cta-button {
+                padding: 0.5rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            /* Align tagline and categories to the left on mobile */
+            .header-bottom {
+                align-items: flex-start;
+            }
+
+            .tagline {
+                text-align: left;
+            }
+
+            .categories {
+                justify-content: flex-start;
+            }
+        }
     </style>
 </head>
 <body>
@@ -930,14 +1012,14 @@
     </div>
 
     <!-- Header -->
-    <header class="header">
+    <header class="header" id="mainHeader">
         <nav class="nav">
             <div class="logo-container">
                 <a href="#" class="logo">Talkidz</a>
                 <span class="logo-byline">by Playbox</span>
             </div>
             <div class="nav-icons">
-                <button class="share-button" onclick="shareApp()">
+                <button class="share-button" onclick="shareApp()" aria-label="Share">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
                         <polyline points="16 6 12 2 8 6"></polyline>
@@ -947,11 +1029,13 @@
                 </button>
             </div>
         </nav>
-        <p class="tagline">Explore AI Friends to Chat With</p>
-        <div class="categories">
-            <span class="category-pill active">All</span>
-            <span class="category-pill">Popular</span>
-            <span class="category-pill">New</span>
+        <div class="header-bottom">
+            <p class="tagline">Explore AI Friends to Chat With</p>
+            <div class="categories">
+                <span class="category-pill active">All</span>
+                <span class="category-pill">Popular</span>
+                <span class="category-pill">New</span>
+            </div>
         </div>
     </header>
 
@@ -963,7 +1047,7 @@
             <div class="featured-character-details">
                 <h2>Featured Character: Funny Cupcake</h2>
                 <p>Meet Funny Cupcake, your sweet humor buddy ready to brighten your day with delightful conversations and endless laughter. Dive into a world of fun and sweetness!</p>
-                <a href="characters/cupcake" class="cta-button">
+                <a href="characters/cupcake" class="cta-button" aria-label="Chat with Funny Cupcake">
                     <span>Chat Now</span>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M19 9l-7 7-7-7"></path>
@@ -976,19 +1060,19 @@
         <section class="genre-section">
             <h2 class="genre-title">Funny</h2>
             <div class="character-carousel">
-                <a href="characters/cupcake" class="character-card">
-                    <div class="character-image" style="background-image: url('/characters/cupcake/assets/cupcake.jpg');" aria-label="Funny Cupcake"></div>
+                <a href="characters/cupcake" class="character-card" aria-label="Funny Cupcake">
+                    <div class="character-image" style="background-image: url('/characters/cupcake/assets/cupcake.jpg');"></div>
                     <h3 class="character-name">Funny Cupcake</h3>
                     <p class="character-role">Sweet Humor Buddy</p>
                     <span class="new-badge">New!</span>
                 </a>
-                <a href="characters/monkey" class="character-card">
-                    <div class="character-image" style="background-image: url('/characters/monkey/assets/monkey.jpg');" aria-label="Bongo The Monkey"></div>
+                <a href="characters/monkey" class="character-card" aria-label="Bongo The Monkey">
+                    <div class="character-image" style="background-image: url('/characters/monkey/assets/monkey.jpg');"></div>
                     <h3 class="character-name">Bongo The Monkey</h3>
                     <p class="character-role">Playful Prankster</p>
                 </a>
-                <a href="characters/whimsy" class="character-card">
-                    <div class="character-image" style="background-image: url('/characters/whimsy/assets/whimsy.png');" aria-label="Whimsy The Clown"></div>
+                <a href="characters/whimsy" class="character-card" aria-label="Whimsy The Clown">
+                    <div class="character-image" style="background-image: url('/characters/whimsy/assets/whimsy.png');"></div>
                     <h3 class="character-name">Whimsy The Clown</h3>
                     <p class="character-role">Comedy Companion</p>
                 </a>
@@ -999,19 +1083,19 @@
         <section class="genre-section">
             <h2 class="genre-title">Education</h2>
             <div class="character-carousel">
-                <a href="characters/robo" class="character-card">
-                    <div class="character-image" style="background-image: url('/characters/robo/assets/robo.jpg');" aria-label="Robo the Robot"></div>
+                <a href="characters/robo" class="character-card" aria-label="Robo the Robot">
+                    <div class="character-image" style="background-image: url('/characters/robo/assets/robo.jpg');"></div>
                     <h3 class="character-name">Robo the Robot</h3>
                     <p class="character-role">Calm Educator</p>
                 </a>
-                <a href="characters/fox" class="character-card">
-                    <div class="character-image" style="background-image: url('/characters/fox/assets/fox.jpg');" aria-label="Clever Fox"></div>
+                <a href="characters/fox" class="character-card" aria-label="Clever Fox">
+                    <div class="character-image" style="background-image: url('/characters/fox/assets/fox.jpg');"></div>
                     <h3 class="character-name">Clever Fox</h3>
                     <p class="character-role">Wise Instructor</p>
                     <span class="new-badge">New!</span>
                 </a>
-                <a href="characters/cat" class="character-card">
-                    <div class="character-image" style="background-image: url('/characters/cat/assets/cat.jpg');" aria-label="Smart Cat"></div>
+                <a href="characters/cat" class="character-card" aria-label="Smart Cat">
+                    <div class="character-image" style="background-image: url('/characters/cat/assets/cat.jpg');"></div>
                     <h3 class="character-name">Smart Cat</h3>
                     <p class="character-role">Creative Learner</p>
                 </a>
@@ -1021,19 +1105,19 @@
         <section class="genre-section">
             <h2 class="genre-title">Personal Growth</h2>
             <div class="character-carousel">
-                <a href="characters/emma" class="character-card">
-                    <div class="character-image" style="background-image: url('/characters/emma/assets/emma.jpg');" aria-label="Emma"></div>
+                <a href="characters/emma" class="character-card" aria-label="Emma">
+                    <div class="character-image" style="background-image: url('/characters/emma/assets/emma.jpg');"></div>
                     <h3 class="character-name">Emma</h3>
                     <p class="character-role">Encouraging Counselor</p>
                     <span class="new-badge">New!</span>
                 </a>
-                <a href="characters/duck" class="character-card">
-                    <div class="character-image" style="background-image: url('/characters/duck/assets/duck.jpg');" aria-label="Quack the Duck"></div>
+                <a href="characters/duck" class="character-card" aria-label="Quack the Duck">
+                    <div class="character-image" style="background-image: url('/characters/duck/assets/duck.jpg');"></div>
                     <h3 class="character-name">Quack the Duck</h3>
                     <p class="character-role">Mindful Mentor</p>
                 </a>
-                <a href="characters/panda" class="character-card">
-                    <div class="character-image" style="background-image: url('/characters/panda/assets/panda.jpg');" aria-label="Dr. Panda"></div>
+                <a href="characters/panda" class="character-card" aria-label="Dr. Panda">
+                    <div class="character-image" style="background-image: url('/characters/panda/assets/panda.jpg');"></div>
                     <h3 class="character-name">Dr. Panda</h3>
                     <p class="character-role">Calm Listener</p>
                 </a>
@@ -1043,19 +1127,19 @@
         <section class="genre-section">
             <h2 class="genre-title">Storytellers</h2>
             <div class="character-carousel">
-                <a href="characters/parrot" class="character-card">
-                    <div class="character-image" style="background-image: url('/characters/parrot/assets/parrot.jpg');" aria-label="Parrot"></div>
+                <a href="characters/parrot" class="character-card" aria-label="Parrot">
+                    <div class="character-image" style="background-image: url('/characters/parrot/assets/parrot.jpg');"></div>
                     <h3 class="character-name">Parrot</h3>
                     <p class="character-role">Adventurous Narrator</p>
                 </a>
-                <a href="characters/wizard" class="character-card">
-                    <div class="character-image" style="background-image: url('/characters/wizard/assets/wizard.jpg');" aria-label="Winston the Wizard"></div>
+                <a href="characters/wizard" class="character-card" aria-label="Winston the Wizard">
+                    <div class="character-image" style="background-image: url('/characters/wizard/assets/wizard.jpg');"></div>
                     <h3 class="character-name">Winston the Wizard</h3>
                     <p class="character-role">Magical Story Spinner</p>
                     <span class="new-badge">New!</span>
                 </a>
-                <a href="characters/lion" class="character-card">
-                    <div class="character-image" style="background-image: url('/characters/lion/assets/lion.jpg');" aria-label="Leo the Lion"></div>
+                <a href="characters/lion" class="character-card" aria-label="Leo the Lion">
+                    <div class="character-image" style="background-image: url('/characters/lion/assets/lion.jpg');"></div>
                     <h3 class="character-name">Leo the Lion</h3>
                     <p class="character-role">Roaring Tale Teller</p>
                 </a>
@@ -1065,18 +1149,18 @@
         <section class="genre-section">
             <h2 class="genre-title">Language Tutors</h2>
             <div class="character-carousel">
-                <a href="characters/turtle" class="character-card">
-                    <div class="character-image" style="background-image: url('/characters/turtle/assets/turtle.jpg');" aria-label="Tilly the Turtle"></div>
+                <a href="characters/turtle" class="character-card" aria-label="Tilly the Turtle">
+                    <div class="character-image" style="background-image: url('/characters/turtle/assets/turtle.jpg');"></div>
                     <h3 class="character-name">Tilly the Turtle</h3>
                     <p class="character-role">Gentle Language Guide</p>
                 </a>
-                <a href="characters/world" class="character-card">
-                    <div class="character-image" style="background-image: url('/characters/world/assets/world.jpg');" aria-label="World"></div>
+                <a href="characters/world" class="character-card" aria-label="World">
+                    <div class="character-image" style="background-image: url('/characters/world/assets/world.jpg');"></div>
                     <h3 class="character-name">World</h3>
                     <p class="character-role">Global Language Explorer</p>
                 </a>
-                <a href="characters/pingo" class="character-card">
-                    <div class="character-image" style="background-image: url('/characters/pingo/assets/pingo.jpg');" aria-label="Pingo The Penguin"></div>
+                <a href="characters/pingo" class="character-card" aria-label="Pingo The Penguin">
+                    <div class="character-image" style="background-image: url('/characters/pingo/assets/pingo.jpg');"></div>
                     <h3 class="character-name">Pingo The Penguin</h3>
                     <p class="character-role">Linguistic Adventurer</p>
                     <span class="new-badge">New!</span>
@@ -1218,6 +1302,16 @@
 
         // Initialize Particles When the Page Loads
         document.addEventListener('DOMContentLoaded', createParticles);
+
+        // Handle Header Scroll to Toggle Bottom Bar
+        const header = document.getElementById('mainHeader');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 100) { // Adjust scroll threshold as needed
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
     </script>
 </body>
 </html>
