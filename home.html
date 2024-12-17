@@ -685,61 +685,60 @@
 /* Stack layout for mobile */
 @media (max-width: 640px) {
     .featured-section {
-        flex-direction: column-reverse; /* Image on top, text below */
         padding: 24px 20px;
-        text-align: center;
     }
     
     .featured-section > div:first-child {
-        padding-right: 0;
-        padding-top: 24px;
+        padding-right: 16px;
+        text-align: left; 
     }
     
     .featured-title {
-        justify-content: center;
+        justify-content: flex-start;
     }
     
     .featured-description {
-        margin-left: auto;
-        margin-right: auto;
+        margin-left: 0;
+        margin-right: 0;
+        font-size: 0.875rem;
     }
     
     .featured-image-container {
-        width: 200px; /* Slightly larger for mobile */
+        width: 120px; 
         height: 200px;
-        margin-bottom: 8px;
+        margin-bottom: 0px;
     }
     
     .featured-image-wrap {
-        width: 180px;
-        height: 180px;
+        width: 100px;
+        height: 100px;
     }
     
-    /* Center the button */
     .featured-section .share-button {
-        margin: 0 auto;
+        margin: 0;
+        padding: 0.75rem 1.5rem; /* Slightly smaller padding */
+        font-size: 0.875rem;
     }
 }
 
 /* Small mobile devices */
 @media (max-width: 380px) {
     .featured-section {
-        padding: 20px 16px;
-        margin: 16px 8px;
+        padding: 16px 12px;
     }
     
     .featured-name {
-        font-size: 1.75rem;
+        font-size: 1.5rem;
     }
     
     .featured-image-container {
-        width: 160px;
-        height: 160px;
+        width: 100px;
+        height: 100px;
     }
     
     .featured-image-wrap {
-        width: 140px;
-        height: 140px;
+        width: 80px;
+        height: 80px;
     }
 }
     </style>
