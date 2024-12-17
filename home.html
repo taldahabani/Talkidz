@@ -528,71 +528,73 @@
 .featured-section {
     background: var(--secondary-background);
     border-radius: 24px;
-    padding: 32px;
-    margin: 24px 16px;
+    padding: 40px; /* Increased padding for better breathing room */
+    margin: 32px 16px; /* Increased top/bottom margin to separate from other sections */
     display: flex;
     justify-content: space-between;
     align-items: center;
     position: relative;
     overflow: hidden;
+    box-shadow: 0 8px 32px rgba(108, 92, 231, 0.08); /* Subtle shadow to lift the section */
 }
 
 .featured-section > div:first-child {
     flex: 1;
-    padding-right: 24px;
+    padding-right: 48px; /* Increased spacing between text and image */
     max-width: 600px;
-    text-align: left; /* Force left alignment */
 }
 
 .featured-title {
-    font-size: 1.25rem;
-    font-weight: 700;
+    font-size: 1.125rem; /* Slightly smaller for better hierarchy */
+    font-weight: 600;
     color: var(--accent-color);
-    margin-bottom: 8px;
+    margin-bottom: 12px;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    text-align: left; /* Force left alignment */
+    gap: 0.75rem;
+    text-transform: uppercase; /* Makes the label more distinct */
+    letter-spacing: 0.5px;
 }
 
 .featured-title::after {
     content: '';
     height: 2px;
     flex: 1;
-    background: linear-gradient(to right, var(--secondary-background), transparent);
+    background: linear-gradient(to right, var(--accent-color, #6C5CE7) 0%, transparent 100%);
+    opacity: 0.3;
 }
 
 .featured-name {
-    font-size: 2.5rem;
+    font-size: 3rem; /* Larger for more impact */
     font-weight: 800;
     background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
     margin: 0 0 16px 0;
-    letter-spacing: -0.5px;
-    text-align: left; /* Force left alignment */
+    letter-spacing: -1px;
+    line-height: 1.2;
 }
 
 .featured-description {
     color: #666;
-    font-size: 1rem;
-    line-height: 1.5;
-    margin-bottom: 24px;
+    font-size: 1.125rem; /* Slightly larger for better readability */
+    line-height: 1.6;
+    margin-bottom: 32px; /* More space before the button */
     font-weight: 400;
-    text-align: left; /* Force left alignment */
+    max-width: 540px; /* Limit line length for readability */
 }
 
 .featured-image-container {
-    width: 200px;
-    height: 200px;
+    width: 260px; /* Larger image for more impact */
+    height: 260px;
     position: relative;
     flex-shrink: 0;
 }
 
 .featured-image-wrap {
-    width: 180px;
-    height: 180px;
+    width: 240px;
+    height: 240px;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -603,65 +605,141 @@
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    border: 3px solid white;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border: 4px solid white;
+    box-shadow: 0 12px 24px rgba(108, 92, 231, 0.15);
     position: relative;
     overflow: hidden;
     transition: all 0.3s ease;
 }
 
-/* Updated mobile styles */
-@media (max-width: 768px) {
+/* Hover effects */
+.featured-image:hover {
+    transform: scale(1.05);
+    box-shadow: 0 16px 32px rgba(108, 92, 231, 0.2);
+}
+
+/* Make the button more prominent */
+.featured-section .share-button {
+    padding: 1rem 2rem;
+    font-size: 1.125rem;
+    transition: all 0.3s ease;
+}
+
+.featured-section .share-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(108, 92, 231, 0.25);
+}
+
+/* Responsive design with breakpoints for optimal viewing */
+@media (max-width: 1024px) {
     .featured-section {
-        flex-direction: row; /* Keep row direction even on mobile */
-        padding: 16px; /* Reduce padding on mobile */
-        margin: 16px 8px; /* Reduce margins on mobile */
-        align-items: center;
-    }
-    
-    .featured-section > div:first-child {
-        padding-right: 16px; /* Reduce padding between text and image */
-        max-width: none; /* Allow content to take needed space */
+        padding: 32px;
+        margin: 24px 12px;
     }
     
     .featured-name {
-        font-size: 2rem; /* Slightly smaller font on mobile */
-    }
-    
-    .featured-description {
-        font-size: 0.9rem; /* Slightly smaller font on mobile */
+        font-size: 2.5rem;
     }
     
     .featured-image-container {
-        width: 140px; /* Smaller image container on mobile */
-        height: 140px;
+        width: 220px;
+        height: 220px;
     }
     
     .featured-image-wrap {
-        width: 120px; /* Smaller image on mobile */
-        height: 120px;
+        width: 200px;
+        height: 200px;
     }
 }
 
-/* Extra small devices */
-@media (max-width: 480px) {
+@media (max-width: 768px) {
     .featured-section {
-        padding: 12px; /* Even smaller padding for very small screens */
-        margin: 12px 6px; /* Even smaller margins for very small screens */
+        padding: 24px;
+        margin: 20px 10px;
+    }
+    
+    .featured-section > div:first-child {
+        padding-right: 24px;
     }
     
     .featured-name {
-        font-size: 1.75rem; /* Even smaller font for very small screens */
+        font-size: 2rem;
+    }
+    
+    .featured-description {
+        font-size: 1rem;
+        margin-bottom: 24px;
     }
     
     .featured-image-container {
-        width: 100px; /* Even smaller image for very small screens */
-        height: 100px;
+        width: 180px;
+        height: 180px;
     }
     
     .featured-image-wrap {
-        width: 80px;
-        height: 80px;
+        width: 160px;
+        height: 160px;
+    }
+}
+
+/* Stack layout for mobile */
+@media (max-width: 640px) {
+    .featured-section {
+        flex-direction: column-reverse; /* Image on top, text below */
+        padding: 24px 20px;
+        text-align: center;
+    }
+    
+    .featured-section > div:first-child {
+        padding-right: 0;
+        padding-top: 24px;
+    }
+    
+    .featured-title {
+        justify-content: center;
+    }
+    
+    .featured-description {
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .featured-image-container {
+        width: 200px; /* Slightly larger for mobile */
+        height: 200px;
+        margin-bottom: 8px;
+    }
+    
+    .featured-image-wrap {
+        width: 180px;
+        height: 180px;
+    }
+    
+    /* Center the button */
+    .featured-section .share-button {
+        margin: 0 auto;
+    }
+}
+
+/* Small mobile devices */
+@media (max-width: 380px) {
+    .featured-section {
+        padding: 20px 16px;
+        margin: 16px 8px;
+    }
+    
+    .featured-name {
+        font-size: 1.75rem;
+    }
+    
+    .featured-image-container {
+        width: 160px;
+        height: 160px;
+    }
+    
+    .featured-image-wrap {
+        width: 140px;
+        height: 140px;
     }
 }
     </style>
