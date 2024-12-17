@@ -1,112 +1,1167 @@
-.featured-character-section {
-    background: var(--secondary-background);
-    padding: calc(var(--spacing-unit) * 2);
-    margin: calc(var(--spacing-unit) * 2) 0;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px var(--shadow-color);
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-unit);
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.3s ease;
-}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talkidz - AI Friends to Chat With</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" rel="stylesheet">
+    <style>
+        /* All existing styles remain exactly the same until character-card */
+        :root {
+            --primary-color: #FF4B6E;
+            --text-color: #1A1A1A;
+            --background-color: #FFFFFF;
+            --secondary-background: #F5F5F5;
+            --accent-color: #6C5CE7;
+            --shadow-color: rgba(0, 0, 0, 0.08);
+            --spacing-unit: 1rem;
+            --header-blur: 10px; /* Added for backdrop-filter */
+            --header-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
 
-.featured-character-section:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 24px var(--shadow-color);
-}
+        /* Splash Screen Styles */
+        .splash-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--background-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            animation: fadeOut 0.5s ease-in-out 1.5s forwards;
+        }
 
-.featured-character-image {
-    flex: 1;
-    min-width: 200px;
-    height: 200px;
-    border-radius: 50%;
-    background-size: cover;
-    background-position: center;
-    box-shadow: 0 4px 12px var(--shadow-color);
-    position: relative;
-    overflow: hidden;
-    transition: transform 0.3s ease, border-color 0.3s ease;
-    border: 3px solid white;
-}
+        .splash-hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
 
-.featured-character-section:hover .featured-character-image {
-    transform: scale(1.05);
-    border-color: var(--primary-color);
-    box-shadow: 0 8px 24px var(--shadow-color);
-}
+        .splash-content {
+            text-align: center;
+            position: relative;
+        }
 
-.featured-character-image::after {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-    transform: rotate(45deg);
-    animation: shine 2s infinite;
-    pointer-events: none;
-}
+        .splash-logo-text {
+            font-size: 4rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.5s ease-out 0.5s forwards;
+            margin-bottom: 0; 
+            line-height: 1.5;
+        }
 
-.featured-character-details {
-    flex: 2;
-    text-align: left;
-}
+        .splash-byline {
+            font-size: 1.2rem;
+            color: #666;
+            margin-top: -0.4rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.5s ease-out 0.7s forwards;
+        }
 
-.featured-character-details h2 {
-    font-size: 2rem;
-    font-weight: 700;
-    background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    margin-bottom: 0.5rem;
-}
+        .loading-circle {
+            width: 300px;
+            height: 300px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
 
-.featured-character-details p {
-    font-size: 1rem;
-    color: #666;
-    margin-bottom: 1rem;
-}
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            width: 100%;
+            height: 100%;
+            animation: rotate 2s linear infinite;
+        }
 
-.featured-character-details .cta-button {
-    background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
-    color: white;
-    border: none;
-    padding: 0.6rem 1.2rem;
-    border-radius: 999px;  
-    cursor: pointer;
-    font-weight: 600;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
-    text-decoration: none;
-}
+        .circle-1 {
+            border-top-color: var(--primary-color);
+            animation-duration: 1s;
+        }
 
-.featured-character-details .cta-button svg {
-    color: white;
-    stroke: white;
-    width: 16px;
-    height: 16px;
-}
+        .circle-2 {
+            border-right-color: var(--accent-color);
+            animation-duration: 0.9s;
+            width: 80%;
+            height: 80%;
+            top: 10%;
+            left: 10%;
+        }
 
-.featured-character-details .cta-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(108, 92, 231, 0.3);
-}
+        .circle-3 {
+            border-bottom-color: var(--primary-color);
+            animation-duration: 0.8s;
+            width: 60%;
+            height: 60%;
+            top: 20%;
+            left: 20%;
+        }
 
-@media (max-width: 768px) {
-    .featured-character-section {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-    }
+        /* Animation Keyframes */
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
 
-    .featured-character-details {
-        flex: none;
-    }
-}
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                visibility: hidden;
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) translateX(0);
+                opacity: 0;
+            }
+            50% {
+                transform: translateY(-100px) translateX(50px);
+                opacity: 0.5;
+            }
+        }
+
+        /* Body and Global Styles */
+        body, html {
+            overflow-x: hidden; /* Changed from just overflow: hidden to allow scrolling after splash */
+        }
+
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .splash-particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            border-radius: 50%;
+            animation: float 3s infinite ease-in-out;
+        }
+
+        .character-carousel {
+            display: flex;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            gap: 1.5rem;
+            padding: var(--spacing-unit) 0;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+            position: relative;
+        }
+
+        .character-carousel::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 100%;
+            width: 40px;
+            background: linear-gradient(to left, var(--background-color), transparent);
+            pointer-events: none;
+        }
+
+        .character-carousel::-webkit-scrollbar {
+            display: none;
+        }
+
+        .character-card {
+            flex: 0 0 auto;
+            width: 130px;
+            scroll-snap-align: start;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .character-card:hover,
+        .character-card:active {
+            transform: translateY(-5px);
+        }
+
+        .character-image {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            background-size: cover;
+            background-position: center;
+            margin: 0 auto var(--spacing-unit);
+            transition: all 0.3s ease;
+            border: 3px solid white;
+            box-shadow: 0 4px 12px var(--shadow-color);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .character-card:hover .character-image,
+        .character-card:active .character-image {
+            box-shadow: 0 8px 24px var(--shadow-color);
+            border-color: var(--primary-color);
+            transform: scale(1.05);
+        }
+
+        .character-image::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transform: rotate(45deg);
+            animation: shine 2s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
+        }
+
+        .character-name {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            color: var(--text-color);
+        }
+
+        .character-role {
+            font-size: 0.875rem;
+            color: #666;
+            transition: color 0.2s ease;
+        }
+
+        .character-card:hover .character-role {
+            color: var(--primary-color);
+        }
+
+        .category-pill {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.4rem 1rem;
+            background: var(--secondary-background);
+            border-radius: 999px; 
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #666;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+
+        .category-pill:hover {
+            background: white;
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .category-pill.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        @media (max-width: 480px) {
+            .character-card {
+                width: 110px;
+            }
+
+            .character-image {
+                width: 90px;
+                height: 90px;
+            }
+
+            .character-name {
+                font-size: 0.875rem;
+            }
+
+            .character-role {
+                font-size: 0.75rem;
+            }
+        }
+
+        .new-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--accent-color);
+            color: white;
+            font-size: 0.625rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 999px;
+            font-weight: 600;
+            transform: rotate(12deg);
+            box-shadow: 0 2px 4px rgba(108, 92, 231, 0.3);
+        }
+
+        /* Featured Character Section Styles */
+        .featured-character-section {
+            background: var(--secondary-background);
+            padding: var(--spacing-unit) * 2;
+            margin: var(--spacing-unit) * 2 0;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px var(--shadow-color);
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-unit);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .featured-character-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px var(--shadow-color);
+        }
+
+        .featured-character-image {
+            flex: 1;
+            min-width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background-size: cover;
+            background-position: center;
+            box-shadow: 0 4px 12px var(--shadow-color);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+            border: 3px solid white;
+        }
+
+        .featured-character-section:hover .featured-character-image {
+            transform: scale(1.05);
+            border-color: var(--primary-color);
+            box-shadow: 0 8px 24px var(--shadow-color);
+        }
+
+        .featured-character-image::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transform: rotate(45deg);
+            animation: shine 2s infinite;
+            pointer-events: none;
+        }
+
+        .featured-character-details {
+            flex: 2;
+            text-align: left;
+        }
+
+        .featured-character-details h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        .featured-character-details p {
+            font-size: 1rem;
+            color: #666;
+            margin-bottom: 1rem;
+        }
+
+        .featured-character-details .cta-button {
+            background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 999px;  
+            cursor: pointer;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
+            text-decoration: none;
+        }
+
+        .featured-character-details .cta-button svg {
+            color: white;
+            stroke: white;
+            width: 16px;
+            height: 16px;
+        }
+
+        .featured-character-details .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(108, 92, 231, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .featured-character-section {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+            }
+
+            .featured-character-details {
+                flex: none;
+            }
+        }
+
+        /* Particle Background Styles */
+        .particle-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            border-radius: 50%;
+            filter: blur(1px);
+            animation: floatParticle 20s infinite linear;
+            opacity: 0.1;
+        }
+
+        @keyframes floatParticle {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            50% {
+                opacity: 0.2;
+            }
+            100% {
+                transform: translateY(-1000px) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Remaining existing styles... */
+
+        /* Body and Global Styles Continued */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+                Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.5;
+        }
+
+        .logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-right: auto;
+        }
+
+        .logo-byline {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #666;
+            margin-top: -0.25rem;
+            margin-left: 0.125rem;
+            letter-spacing: 0.5px;
+        }
+
+        .footer-logo-container .logo-byline {
+            font-size: 1rem;
+            margin-top: -0.5rem;
+            text-align: center;
+            width: 100%;
+        }
+
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(var(--header-blur));
+            -webkit-backdrop-filter: blur(var(--header-blur));
+            padding: var(--spacing-unit);
+            box-shadow: var(--header-shadow);
+            transition: all 0.3s ease;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-unit);
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-container {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .logo-container::after {
+            content: '';
+            position: absolute;
+            width: 120%;
+            height: 120%;
+            background: radial-gradient(circle, 
+                rgba(255,75,110,0.1) 0%, 
+                rgba(108,92,231,0.1) 50%, 
+                transparent 70%);
+            top: -10%;
+            left: -10%;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .logo-container:hover::after {
+            opacity: 1;
+            animation: pulse 2s infinite;
+        }
+        
+        .nav-icons {
+            display: flex;
+            gap: calc(var(--spacing-unit) * 2);
+        }
+
+        .nav-icon {
+            width: 24px;
+            height: 24px;
+            color: var(--text-color);
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+
+        .nav-icon:hover {
+            color: var(--primary-color);
+        }
+
+        .share-button {
+            background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
+            color: white !important; 
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 999px;  
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
+        }
+
+        .share-button svg {
+            color: white !important; 
+            stroke: white !important; 
+        }
+
+        .share-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(108, 92, 231, 0.3);
+        }
+
+        .tagline {
+            font-size: 1rem;
+            color: #666;
+            margin-bottom: var(--spacing-unit);
+        }
+
+        .genre-section {
+            margin: calc(var(--spacing-unit) * 2) 0;
+            padding: 0 var(--spacing-unit);
+            position: relative;
+        }
+
+        .genre-title {
+            font-size: 1.25rem;
+            margin-bottom: var(--spacing-unit);
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .genre-title::after {
+            content: '';
+            height: 2px;
+            flex: 1;
+            background: linear-gradient(to right, var(--secondary-background), transparent);
+        }
+
+        /* Existing particle-background and other styles... */
+
+    </style>
+</head>
+<body>
+    <!-- Splash Screen -->
+    <div class="splash-container" id="splashScreen">
+        <div class="particles"></div>
+        <div class="splash-content">
+            <div class="loading-circle">
+                <div class="circle circle-1"></div>
+                <div class="circle circle-2"></div>
+                <div class="circle circle-3"></div>
+            </div>
+            <h1 class="splash-logo-text">Talkidz</h1>
+            <p class="splash-byline">by Playbox</p>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <div class="logo-container">
+                <a href="#" class="logo">Talkidz</a>
+                <span class="logo-byline">by Playbox</span>
+            </div>
+            <div class="nav-icons">
+                <button class="share-button" onclick="shareApp()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                        <polyline points="16 6 12 2 8 6"></polyline>
+                        <line x1="12" y1="2" x2="12" y2="15"></line>
+                    </svg>
+                    Share
+                </button>
+            </div>
+        </nav>
+        <p class="tagline">Explore AI Friends to Chat With</p>
+        <div class="categories">
+            <span class="category-pill active">All</span>
+            <span class="category-pill">Popular</span>
+            <span class="category-pill">New</span>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Featured Character Section -->
+        <section class="featured-character-section">
+            <div class="featured-character-image" style="background-image: url('/characters/cupcake/assets/cupcake.jpg')"></div>
+            <div class="featured-character-details">
+                <h2>Featured Character: Funny Cupcake</h2>
+                <p>Meet Funny Cupcake, your sweet humor buddy ready to brighten your day with delightful conversations and endless laughter. Dive into a world of fun and sweetness!</p>
+                <a href="characters/cupcake" class="cta-button">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 9l-7 7-7-7"></path>
+                    </svg>
+                    Chat Now
+                </a>
+            </div>
+        </section>
+
+        <!-- Existing Genre Sections -->
+        <section class="genre-section">
+            <h2 class="genre-title">Funny</h2>
+            <div class="character-carousel">
+                <a href="characters/cupcake" class="character-card">
+                    <div class="character-image" style="background-image: url('/characters/cupcake/assets/cupcake.jpg')"></div>
+                    <h3 class="character-name">Funny Cupcake</h3>
+                    <p class="character-role">Sweet Humor Buddy</p>
+                    <span class="new-badge">New!</span>
+                </a>
+                <a href="characters/monkey" class="character-card">
+                    <div class="character-image" style="background-image: url('/characters/monkey/assets/monkey.jpg')"></div>
+                    <h3 class="character-name">Bongo The Monkey</h3>
+                    <p class="character-role">Playful Prankster</p>
+                </a>
+                <a href="characters/whimsy" class="character-card">
+                    <div class="character-image" style="background-image: url('/characters/whimsy/assets/whimsy.png')"></div>
+                    <h3 class="character-name">Whimsy The Clown</h3>
+                    <p class="character-role">Comedy Companion</p>
+                </a>
+            </div>
+        </section>
+
+        <!-- Additional Genre Sections... -->
+        <section class="genre-section">
+            <h2 class="genre-title">Education</h2>
+            <div class="character-carousel">
+                <a href="characters/robo" class="character-card">
+                    <div class="character-image" style="background-image: url('/characters/robo/assets/robo.jpg')"></div>
+                    <h3 class="character-name">Robo the Robot</h3>
+                    <p class="character-role">Calm Educator</p>
+                </a>
+                <a href="characters/fox" class="character-card">
+                    <div class="character-image" style="background-image: url('/characters/fox/assets/fox.jpg')"></div>
+                    <h3 class="character-name">Clever Fox</h3>
+                    <p class="character-role">Wise Instructor</p>
+                    <span class="new-badge">New!</span>
+                </a>
+                <a href="characters/cat" class="character-card">
+                    <div class="character-image" style="background-image: url('/characters/cat/assets/cat.jpg')"></div>
+                    <h3 class="character-name">Smart Cat</h3>
+                    <p class="character-role">Creative Learner</p>
+                </a>
+            </div>
+        </section>
+
+        <section class="genre-section">
+            <h2 class="genre-title">Personal Growth</h2>
+            <div class="character-carousel">
+                <a href="characters/emma" class="character-card">
+                    <div class="character-image" style="background-image: url('/characters/emma/assets/emma.jpg')"></div>
+                    <h3 class="character-name">Emma</h3>
+                    <p class="character-role">Encouraging Counselor</p>
+                    <span class="new-badge">New!</span>
+                </a>
+                <a href="characters/duck" class="character-card">
+                    <div class="character-image" style="background-image: url('characters/duck/assets/duck.jpg')"></div>
+                    <h3 class="character-name">Quack the Duck</h3>
+                    <p class="character-role">Mindful Mentor</p>
+                </a>
+                <a href="characters/panda" class="character-card">
+                    <div class="character-image" style="background-image: url('/characters/panda/assets/panda.jpg')"></div>
+                    <h3 class="character-name">Dr. Panda</h3>
+                    <p class="character-role">Calm Listener</p>
+                </a>
+            </div>
+        </section>
+
+        <section class="genre-section">
+            <h2 class="genre-title">Storytellers</h2>
+            <div class="character-carousel">
+                <a href="characters/parrot" class="character-card">
+                    <div class="character-image" style="background-image: url('/characters/parrot/assets/parrot.jpg')"></div>
+                    <h3 class="character-name">Parrot</h3>
+                    <p class="character-role">Adventurous Narrator</p>
+                </a>
+                <a href="characters/wizard" class="character-card">
+                    <div class="character-image" style="background-image: url('characters/wizard/assets/wizard.jpg')"></div>
+                    <h3 class="character-name">Winston the Wizard </h3>
+                    <p class="character-role">Magical Story Spinner</p>
+                    <span class="new-badge">New!</span>
+                </a>
+                <a href="characters/lion" class="character-card">
+                    <div class="character-image" style="background-image: url('/characters/lion/assets/lion.jpg')"></div>
+                    <h3 class="character-name">Leo the Lion</h3>
+                    <p class="character-role">Roaring Tale Teller</p>
+                </a>
+            </div>
+        </section>
+
+        <section class="genre-section">
+            <h2 class="genre-title">Language Tutors</h2>
+            <div class="character-carousel">
+                <a href="characters/turtle" class="character-card">
+                    <div class="character-image" style="background-image: url('/characters/turtle/assets/turtle.jpg')"></div>
+                    <h3 class="character-name">Tilly the Turtle</h3>
+                    <p class="character-role">Gentle Language Guide</p>
+                </a>
+                <a href="characters/world" class="character-card">
+                    <div class="character-image" style="background-image: url('/characters/world/assets/world.jpg')"></div>
+                    <h3 class="character-name">World</h3>
+                    <p class="character-role">Global Language Explorer</p>
+                </a>
+                <a href="characters/pingo" class="character-card">
+                    <div class="character-image" style="background-image: url('/characters/pingo/assets/pingo.jpg')"></div>
+                    <h3 class="character-name">Pingo The Penguin</h3>
+                    <p class="character-role">Linguistic Adventurer</p>
+                    <span class="new-badge">New!</span>
+                </a>
+            </div>
+        </section>  
+    </main>
+
+    <!-- Footer Styles (Existing) -->
+    <style>
+        .talkidz-footer {
+            background: linear-gradient(180deg, 
+                rgba(255,255,255,0) 0%,
+                rgba(245,245,245,0.5) 20%,
+                var(--secondary-background) 100%);
+            padding: 4rem 1rem 2rem;
+            margin-top: 4rem;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+            position: relative;
+        }
+
+        .footer-logo-container {
+            margin-bottom: 2rem;
+            position: relative;
+            display: flex;      
+            flex-direction: column; 
+            align-items: center;    
+        }
+
+        .footer-logo {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-decoration: none;
+            letter-spacing: -1px;
+            display: inline-block;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .logo-shine {
+            position: absolute;
+            top: -20%;
+            left: -20%;
+            right: -20%;
+            bottom: -20%;
+            background: radial-gradient(circle at 50% 50%, 
+                rgba(255,255,255,0.8) 0%,
+                rgba(255,255,255,0) 70%);
+            opacity: 0;
+            animation: shine-effect 5s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes shine-effect {
+            0%, 100% { opacity: 0; transform: scale(0.8); }
+            50% { opacity: 0.5; transform: scale(1); }
+        }
+
+        .footer-slogan {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 2rem 0;
+            padding: 0 1rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .slogan-primary {
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .slogan-secondary {
+            font-size: 1.8rem;
+            color: #666;
+            display: block;
+            margin-top: 0.5rem;
+        }
+
+        .footer-decoration {
+            position: absolute;
+            width: 140%;
+            height: 140%;
+            top: -20%;
+            left: -20%;
+            background: radial-gradient(circle at center,
+                rgba(108, 92, 231, 0.1) 0%,
+                rgba(255, 75, 110, 0.1) 50%,
+                transparent 70%);
+            border-radius: 50%;
+            animation: rotate 20s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .footer-navigation {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+            margin: 3rem 0;
+        }
+
+        .footer-nav-item {
+            color: #666;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 0.5rem 1rem;
+        }
+
+        .footer-nav-item::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .footer-nav-item:hover {
+            color: var(--primary-color);
+        }
+
+        .footer-nav-item:hover::after {
+            transform: scaleX(1);
+        }
+
+        .footer-bottom {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(0,0,0,0.1);
+            color: #666;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        .footer-social {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .social-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px var(--shadow-color);
+        }
+
+        .social-icon:hover {
+            transform: translateY(-5px) scale(1.1);
+            box-shadow: 0 8px 24px var(--shadow-color);
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+        }
+
+        .social-icon svg {
+            width: 24px;
+            height: 24px;
+            color: #666;
+            transition: color 0.3s ease;
+        }
+
+        .social-icon:hover svg {
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .footer-logo {
+                font-size: 2.5rem;
+            }
+
+            .footer-slogan {
+                font-size: 2rem;
+            }
+
+            .slogan-secondary {
+                font-size: 1.4rem;
+            }
+
+            .footer-navigation {
+                gap: 1.5rem;
+            }
+
+            .social-icon {
+                width: 40px;
+                height: 40px;
+            }
+
+            .social-icon svg {
+                width: 20px;
+                height: 20px;
+            }
+        }
+    </style>
+
+    <!-- Particle Background -->
+    <div class="particle-background"></div>
+
+    <!-- Footer -->
+    <footer class="talkidz-footer">
+        <div class="footer-content">
+            <div class="footer-logo-container">
+                <a href="#" class="footer-logo">Talkidz</a>
+                <span class="logo-byline">by Playbox</span>
+                <div class="logo-shine"></div>
+            </div>
+
+            <div class="footer-slogan">
+                <span class="slogan-primary">AI-Powered Playtime</span>
+                <span class="slogan-secondary">Endless discovery</span>
+            </div>
+
+            <div class="footer-decoration"></div>
+
+            <nav class="footer-navigation">
+                <a href="#" class="footer-nav-item">About</a>
+                <a href="#" class="footer-nav-item">Safety</a>
+                <a href="#" class="footer-nav-item">Parents Guide</a>
+                <a href="#" class="footer-nav-item">Support</a>
+                <a href="#" class="footer-nav-item">Privacy</a>
+            </nav>
+
+            <div class="footer-social">
+                <a href="#" class="social-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                    </svg>
+                </a>
+                <a href="#" class="social-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                    </svg>
+                </a>
+                <a href="#" class="social-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+                    </svg>
+                </a>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2024 Talkidz. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Modify your particle creation code
+        const particlesContainer = document.querySelector('.particles');
+        for (let i = 0; i < 20; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'splash-particle';
+            particle.style.left = Math.random() * 100 + 'vw';
+            particle.style.top = Math.random() * 100 + 'vh';
+            particle.style.animationDelay = (Math.random() * 2) + 's';
+            
+            // Add random size variation
+            const size = Math.random() * 3 + 3; // This will give sizes between 3-6px
+            particle.style.width = size + 'px';
+            particle.style.height = size + 'px';
+            
+            particlesContainer.appendChild(particle);
+        }
+            
+        // Handle category pill selection
+        const pills = document.querySelectorAll('.category-pill');
+        pills.forEach(pill => {
+            pill.addEventListener('click', () => {
+                pills.forEach(p => p.classList.remove('active'));
+                pill.classList.add('active');
+            });
+        });
+
+        // Handle share button
+        function shareApp() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Talkidz - AI Friends to Chat With',
+                    text: 'Check out Talkidz, where you can chat with AI friends!',
+                    url: window.location.href
+                })
+                .catch(console.error);
+            }
+        }
+
+        // Particle creation code
+        function createParticles() {
+            const background = document.querySelector('.particle-background');
+
+            const particleCount = 50;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                // Random starting position
+                particle.style.left = Math.random() * 100 + 'vw';
+                particle.style.top = Math.random() * 100 + 'vh';
+                
+                // Random size
+                const size = Math.random() * 4 + 2;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                
+                // Random animation duration and delay
+                particle.style.animationDuration = (Math.random() * 20 + 10) + 's';
+                particle.style.animationDelay = (Math.random() * 5) + 's';
+                
+                background.appendChild(particle);
+            }
+        }
+
+        // Initialize particles when the page loads
+        document.addEventListener('DOMContentLoaded', createParticles);
+    </script>
+</body>
+</html>
