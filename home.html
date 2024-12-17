@@ -233,13 +233,6 @@
             letter-spacing: 0.5px;
         }
 
-        .footer-logo-container .logo-byline {
-            font-size: 1rem;
-            margin-top: -0.5rem;
-            text-align: center;
-            width: 100%;
-        }
-
         .nav-icons {
             display: flex;
             gap: calc(var(--spacing-unit) * 2);
@@ -560,6 +553,11 @@
             pointer-events: none;
         }
 
+        @keyframes shine {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
+        }
+
         .character-name {
             font-weight: 600;
             margin-bottom: 0.25rem;
@@ -576,20 +574,6 @@
             color: var(--primary-color);
         }
 
-        .new-badge {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            background: var(--accent-color);
-            color: white;
-            font-size: 0.625rem;
-            padding: 0.25rem 0.5rem;
-            border-radius: 999px;
-            font-weight: 600;
-            transform: rotate(12deg);
-            box-shadow: 0 2px 4px rgba(108, 92, 231, 0.3);
-        }
-
         /* Responsive Styles */
         @media (max-width: 768px) {
             .featured-character-section {
@@ -599,10 +583,6 @@
 
             .featured-character-details {
                 text-align: left;
-            }
-
-            .featured-character-section {
-                flex-direction: row;
             }
 
             .character-card {
@@ -622,34 +602,17 @@
                 font-size: 0.75rem;
             }
 
-            .header-logo {
-                font-size: 2.5rem;
+            /* Align tagline and categories to the left on mobile */
+            .header-bottom {
+                align-items: flex-start;
             }
 
-            .footer-slogan {
-                font-size: 2rem;
-            }
-
-            .slogan-secondary {
-                font-size: 1.4rem;
-            }
-
-            .footer-navigation {
-                gap: 1.5rem;
-            }
-
-            .social-icon {
-                width: 40px;
-                height: 40px;
-            }
-
-            .social-icon svg {
-                width: 20px;
-                height: 20px;
+            .tagline {
+                text-align: left;
             }
 
             .categories {
-                gap: 0.5rem;
+                justify-content: flex-start;
             }
         }
 
@@ -910,7 +873,6 @@
             color: white;
         }
 
-        /* Footer Responsive Styles */
         @media (max-width: 768px) {
             .footer-logo {
                 font-size: 2.5rem;
@@ -936,62 +898,6 @@
             .social-icon svg {
                 width: 20px;
                 height: 20px;
-            }
-        }
-
-        /* Featured Character Section Responsive Layout */
-        @media (max-width: 768px) {
-            .featured-character-section {
-                flex-direction: row-reverse;
-                text-align: left;
-            }
-
-            .featured-character-details {
-                text-align: left;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .featured-character-section {
-                flex-direction: column;
-                align-items: center;
-                text-align: center;
-            }
-
-            .featured-character-details {
-                flex: none;
-            }
-
-            .featured-character-image {
-                width: 150px;
-                height: 150px;
-                margin-bottom: var(--spacing-unit);
-            }
-
-            .featured-character-details h2 {
-                font-size: 1.5rem;
-            }
-
-            .featured-character-details p {
-                font-size: 0.9rem;
-            }
-
-            .cta-button {
-                padding: 0.5rem 1rem;
-                font-size: 0.9rem;
-            }
-
-            /* Align tagline and categories to the left on mobile */
-            .header-bottom {
-                align-items: flex-start;
-            }
-
-            .tagline {
-                text-align: left;
-            }
-
-            .categories {
-                justify-content: flex-start;
             }
         }
     </style>
@@ -1079,7 +985,6 @@
             </div>
         </section>
 
-        <!-- Additional Genre Sections... -->
         <section class="genre-section">
             <h2 class="genre-title">Education</h2>
             <div class="character-carousel">
@@ -1112,7 +1017,7 @@
                     <span class="new-badge">New!</span>
                 </a>
                 <a href="characters/duck" class="character-card" aria-label="Quack the Duck">
-                    <div class="character-image" style="background-image: url('/characters/duck/assets/duck.jpg');"></div>
+                    <div class="character-image" style="background-image: url('characters/duck/assets/duck.jpg');"></div>
                     <h3 class="character-name">Quack the Duck</h3>
                     <p class="character-role">Mindful Mentor</p>
                 </a>
@@ -1133,7 +1038,7 @@
                     <p class="character-role">Adventurous Narrator</p>
                 </a>
                 <a href="characters/wizard" class="character-card" aria-label="Winston the Wizard">
-                    <div class="character-image" style="background-image: url('/characters/wizard/assets/wizard.jpg');"></div>
+                    <div class="character-image" style="background-image: url('characters/wizard/assets/wizard.jpg');"></div>
                     <h3 class="character-name">Winston the Wizard</h3>
                     <p class="character-role">Magical Story Spinner</p>
                     <span class="new-badge">New!</span>
