@@ -274,6 +274,8 @@
             transition: all 0.3s ease;
             cursor: pointer;
             border: 1px solid transparent;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
         }
 
         .category-pill:hover {
@@ -326,8 +328,8 @@
         /* Featured Character Section Styles */
         .featured-character-section {
             background: var(--secondary-background);
-            padding: var(--spacing-unit) * 2;
-            margin: var(--spacing-unit) * 2 0;
+            padding: calc(var(--spacing-unit) * 2);
+            margin: calc(var(--spacing-unit) * 2) 0;
             border-radius: 12px;
             box-shadow: 0 4px 12px var(--shadow-color);
             display: flex;
@@ -336,6 +338,7 @@
             position: relative;
             overflow: hidden;
             transition: transform 0.3s ease;
+            flex-wrap: wrap;
         }
 
         .featured-character-section:hover {
@@ -355,6 +358,8 @@
             overflow: hidden;
             transition: transform 0.3s ease, border-color 0.3s ease;
             border: 3px solid white;
+            max-width: 300px;
+            margin: 0 auto;
         }
 
         .featured-character-section:hover .featured-character-image {
@@ -379,6 +384,7 @@
         .featured-character-details {
             flex: 2;
             text-align: left;
+            max-width: 600px;
         }
 
         .featured-character-details h2 {
@@ -434,6 +440,19 @@
 
             .featured-character-details {
                 flex: none;
+            }
+
+            .featured-character-image {
+                max-width: 250px;
+                height: 250px;
+            }
+
+            .featured-character-details h2 {
+                font-size: 1.75rem;
+            }
+
+            .featured-character-details p {
+                font-size: 0.95rem;
             }
         }
 
@@ -1038,6 +1057,48 @@
                 height: 20px;
             }
         }
+
+        /* Scrollbar Navigation Buttons (Optional Enhancement) */
+        .carousel-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.8);
+            border: none;
+            border-radius: 50%;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+
+        .carousel-nav:hover {
+            background: var(--primary-color);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .carousel-nav svg {
+            width: 20px;
+            height: 20px;
+            stroke: var(--text-color);
+            transition: stroke 0.3s ease;
+        }
+
+        .carousel-nav:hover svg {
+            stroke: white;
+        }
+
+        .carousel-nav.left {
+            left: 10px;
+        }
+
+        .carousel-nav.right {
+            right: 10px;
+        }
     </style>
 
     <!-- Particle Background -->
@@ -1118,6 +1179,11 @@
             pill.addEventListener('click', () => {
                 pills.forEach(p => p.classList.remove('active'));
                 pill.classList.add('active');
+
+                // Optional: Add filtering functionality here
+                // Example:
+                // const category = pill.textContent.trim();
+                // filterCharacters(category);
             });
         });
 
@@ -1130,6 +1196,8 @@
                     url: window.location.href
                 })
                 .catch(console.error);
+            } else {
+                alert('Share not supported on this browser.');
             }
         }
 
@@ -1162,6 +1230,42 @@
 
         // Initialize particles when the page loads
         document.addEventListener('DOMContentLoaded', createParticles);
+
+        // Optional: Add scroll navigation buttons to carousels
+        document.querySelectorAll('.genre-section').forEach(section => {
+            const carousel = section.querySelector('.character-carousel');
+
+            const leftBtn = document.createElement('button');
+            leftBtn.className = 'carousel-nav left';
+            leftBtn.innerHTML = `
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+            `;
+            leftBtn.addEventListener('click', () => {
+                carousel.scrollBy({
+                    left: -300,
+                    behavior: 'smooth'
+                });
+            });
+
+            const rightBtn = document.createElement('button');
+            rightBtn.className = 'carousel-nav right';
+            rightBtn.innerHTML = `
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+            `;
+            rightBtn.addEventListener('click', () => {
+                carousel.scrollBy({
+                    left: 300,
+                    behavior: 'smooth'
+                });
+            });
+
+            section.appendChild(leftBtn);
+            section.appendChild(rightBtn);
+        });
     </script>
 </body>
 </html>
