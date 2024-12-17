@@ -525,7 +525,7 @@
             box-shadow: 0 2px 4px rgba(108, 92, 231, 0.3);
         }
 
-        .featured-section {
+.featured-section {
     background: var(--secondary-background);
     border-radius: 24px;
     padding: 32px;
@@ -541,6 +541,7 @@
     flex: 1;
     padding-right: 24px;
     max-width: 600px;
+    text-align: left; /* Force left alignment */
 }
 
 .featured-title {
@@ -551,6 +552,7 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    text-align: left; /* Force left alignment */
 }
 
 .featured-title::after {
@@ -569,6 +571,7 @@
     color: transparent;
     margin: 0 0 16px 0;
     letter-spacing: -0.5px;
+    text-align: left; /* Force left alignment */
 }
 
 .featured-description {
@@ -577,6 +580,7 @@
     line-height: 1.5;
     margin-bottom: 24px;
     font-weight: 400;
+    text-align: left; /* Force left alignment */
 }
 
 .featured-image-container {
@@ -606,15 +610,58 @@
     transition: all 0.3s ease;
 }
 
+/* Updated mobile styles */
 @media (max-width: 768px) {
     .featured-section {
-        flex-direction: column;
-        text-align: center;
-        padding: 24px;
+        flex-direction: row; /* Keep row direction even on mobile */
+        padding: 16px; /* Reduce padding on mobile */
+        margin: 16px 8px; /* Reduce margins on mobile */
+        align-items: center;
     }
+    
     .featured-section > div:first-child {
-        padding-right: 0;
-        padding-bottom: 24px;
+        padding-right: 16px; /* Reduce padding between text and image */
+        max-width: none; /* Allow content to take needed space */
+    }
+    
+    .featured-name {
+        font-size: 2rem; /* Slightly smaller font on mobile */
+    }
+    
+    .featured-description {
+        font-size: 0.9rem; /* Slightly smaller font on mobile */
+    }
+    
+    .featured-image-container {
+        width: 140px; /* Smaller image container on mobile */
+        height: 140px;
+    }
+    
+    .featured-image-wrap {
+        width: 120px; /* Smaller image on mobile */
+        height: 120px;
+    }
+}
+
+/* Extra small devices */
+@media (max-width: 480px) {
+    .featured-section {
+        padding: 12px; /* Even smaller padding for very small screens */
+        margin: 12px 6px; /* Even smaller margins for very small screens */
+    }
+    
+    .featured-name {
+        font-size: 1.75rem; /* Even smaller font for very small screens */
+    }
+    
+    .featured-image-container {
+        width: 100px; /* Even smaller image for very small screens */
+        height: 100px;
+    }
+    
+    .featured-image-wrap {
+        width: 80px;
+        height: 80px;
     }
 }
     </style>
