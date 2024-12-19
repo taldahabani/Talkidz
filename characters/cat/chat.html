@@ -409,7 +409,7 @@
                 particle.className = 'particle';
                 particle.style.width = Math.random() * 10 + 'px';
                 particle.style.height = particle.style.width;
-                particle.style.background = rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.5);
+                particle.style.background = `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.5)`;
                 particle.style.borderRadius = '50%';
                 particle.style.position = 'absolute';
                 restartParticle(particle);
@@ -430,7 +430,7 @@
             
             particle.style.animation = 'none';
             particle.offsetHeight; // Force reflow
-            particle.style.animation = float ${Math.random() * 2 + 3}s linear infinite;
+            particle.style.animation = `float ${Math.random() * 2 + 3}s linear infinite`;
         };
 
         // Add sparkle effect
@@ -443,7 +443,7 @@
             sparkle.style.top = Math.random() * 100 + '%';
             element.appendChild(sparkle);
 
-            sparkle.style.animation = sparkle ${Math.random() * 0.5 + 0.5}s ease-in-out;
+            sparkle.style.animation = `sparkle ${Math.random() * 0.5 + 0.5}s ease-in-out`;
             sparkle.addEventListener('animationend', () => sparkle.remove());
         };
 
@@ -472,7 +472,7 @@
                     currentProgress = 100;
                     endConversation();
                 }
-                progressBar.style.width = ${currentProgress}%;
+                progressBar.style.width = `${currentProgress}%`;
             }, 1000);
         };
 
@@ -507,15 +507,15 @@
                 await navigator.mediaDevices.getUserMedia({ audio: true });
                 triggerConfetti();
                 startButton.classList.add('active');
-                startButton.innerHTML = 
+                startButton.innerHTML = `
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
                         <line x1="18" y1="6" x2="6" y2="18"></line>
                         <line x1="6" y1="6" x2="18" y2="18"></line>
                     </svg>
-                ;
+                `;
 
                 conversation = await Conversation.startSession({
-                    agentId: 'jvbiMPIQOUiUs5GkepcA',
+                    agentId: '4gWkcgFThRtBuhM5akxT',
                     onModeChange: (mode) => {
                         updateBackground(mode.mode);
                     },
