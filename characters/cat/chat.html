@@ -458,8 +458,7 @@
             if (conversation) {
                 await endConversation();
             } else {
-                 if (currentProgress >= 100) {
-                    currentProgress = 0;
+                currentProgress = 0;
                 await startConversation();
             }
         });
