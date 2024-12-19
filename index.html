@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -542,32 +543,31 @@
 .featured-section {
     background: var(--secondary-background);
     border-radius: 24px;
-    padding: 32px; /* Balanced padding for spaciousness */
-    margin: 16px; /* Slight margin for spacing from other elements */
+    padding: 25px; 
+    margin: 0px 16px; 
     display: flex;
     justify-content: space-between;
     align-items: center;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 8px 24px rgba(108, 92, 231, 0.1); /* Softer shadow */
-    gap: 24px; /* Add spacing between text and image */
+    box-shadow: 0 8px 32px rgba(108, 92, 231, 0.08); 
 }
 
 .featured-section > div:first-child {
     flex: 1;
-    padding-right: 32px; /* Reduce padding to align well with mobile */
+    padding-right: 48px;
     max-width: 600px;
 }
 
 .featured-title {
-    font-size: 0.875rem;
+    font-size: 0.875rem; 
     font-weight: 600;
     color: var(--accent-color);
-    margin-bottom: 12px; /* More space between title and main name */
+    margin-bottom: 8px;
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    text-transform: uppercase;
+    text-transform: uppercase; /* Makes the label more distinct */
     letter-spacing: 0.5px;
 }
 
@@ -575,19 +575,19 @@
     content: '';
     height: 2px;
     flex: 1;
-    background: linear-gradient(to right, var(--accent-color) 0%, transparent 100%);
+    background: linear-gradient(to right, var(--accent-color, #6C5CE7) 0%, transparent 100%);
     opacity: 0.3;
 }
 
 .featured-name {
-    font-size: 2.75rem; /* Adjusted for better scaling */
+    font-size: 3rem; /* Larger for more impact */
     font-weight: 800;
     background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    margin: 0 0 16px 0; /* Add space after the name */
-    letter-spacing: -0.5px;
+    margin: 0 0 10px 0;
+    letter-spacing: -1px;
     line-height: 1.2;
 }
 
@@ -595,21 +595,21 @@
     color: #666;
     font-size: 1.125rem;
     line-height: 1.6;
-    margin-bottom: 16px; /* More space between description and button */
+    margin-bottom: 12px;
     font-weight: 400;
-    max-width: 540px;
+    max-width: 540px; 
 }
 
 .featured-image-container {
-    width: 240px; /* Balanced size */
-    height: 240px;
+    width: 260px; /* Larger image for more impact */
+    height: 260px;
     position: relative;
     flex-shrink: 0;
 }
 
 .featured-image-wrap {
-    width: 220px;
-    height: 220px;
+    width: 240px;
+    height: 240px;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -621,7 +621,7 @@
     height: 100%;
     border-radius: 50%;
     border: 4px solid white;
-    box-shadow: 0 8px 16px rgba(108, 92, 231, 0.15);
+    box-shadow: 0 12px 24px rgba(108, 92, 231, 0.15);
     position: relative;
     overflow: hidden;
     transition: all 0.3s ease;
@@ -629,19 +629,13 @@
 
 .featured-image:hover {
     transform: scale(1.05);
-    box-shadow: 0 12px 24px rgba(108, 92, 231, 0.2);
+    box-shadow: 0 16px 32px rgba(108, 92, 231, 0.2);
 }
 
+/* Make the button more prominent */
 .featured-section .share-button {
     padding: 1rem 2rem;
-    font-size: 1rem; /* Standardize size */
-    font-weight: 600;
-    color: white;
-    background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
-    border: none;
-    border-radius: 12px;
-    cursor: pointer;
-    box-shadow: 0 4px 12px rgba(108, 92, 231, 0.15);
+    font-size: 1.125rem;
     transition: all 0.3s ease;
 }
 
@@ -652,81 +646,73 @@
 
 @media (max-width: 768px) {
     .featured-section {
-        flex-direction: column; /* Stack elements for smaller screens */
-        text-align: center;
-        padding: 24px; /* Adjust padding for smaller devices */
-        gap: 16px; /* Smaller gap between elements */
+        padding: 24px;
+        margin: 20px 10px;
     }
-
+    
     .featured-section > div:first-child {
-        padding-right: 0;
+        padding-right: 24px;
     }
-
+    
     .featured-name {
-        font-size: 2.25rem; /* Adjust for smaller screens */
-        margin-bottom: 8px;
+        font-size: 2rem;
     }
-
+    
     .featured-description {
         font-size: 1rem;
-        margin-bottom: 16px;
+        margin-bottom: 24px;
     }
-
+    
     .featured-image-container {
+        width: 220px;
+        height: 220px;
+    }
+    
+    .featured-image-wrap {
         width: 200px;
         height: 200px;
     }
+}
 
-    .featured-image-wrap {
-        width: 180px;
-        height: 180px;
+/* Stack layout for mobile */
+@media (max-width: 640px) {
+    .featured-section {
+        padding: 24px 20px;
     }
-
+    
+    .featured-section > div:first-child {
+        padding-right: 8px;
+        text-align: left; 
+    }
+    
+    .featured-title {
+        justify-content: flex-start;
+    }
+    
+    .featured-description {
+        margin-left: 0;
+        margin-right: 0;
+        font-size: 0.875rem;
+    }
+    
+    .featured-image-container {
+        width: 140px; 
+        height: 140px;
+        margin-bottom: 0px;
+    }
+    
+    .featured-image-wrap {
+        width: 120px;
+        height: 120px;
+    }
+    
     .featured-section .share-button {
+        margin: 0;
         padding: 0.75rem 1.5rem; /* Slightly smaller padding */
         font-size: 0.875rem;
     }
 }
 
-@media (max-width: 640px) {
-    .featured-section {
-        padding: 20px 16px;
-        gap: 12px;
-    }
-
-    .featured-section > div:first-child {
-        padding-right: 0;
-        text-align: center; /* Center-align text */
-    }
-
-    .featured-title {
-        justify-content: center; /* Align title properly */
-    }
-
-    .featured-name {
-        font-size: 2rem;
-    }
-
-    .featured-description {
-        font-size: 0.875rem;
-        line-height: 1.4;
-    }
-
-    .featured-image-container {
-        width: 160px;
-        height: 160px;
-    }
-
-    .featured-image-wrap {
-        width: 140px;
-        height: 140px;
-    }
-
-    .featured-section .share-button {
-        padding: 0.75rem 1rem; /* Compact padding */
-        font-size: 0.875rem;
-    }
-}
     </style>
 </head>
 <body>
