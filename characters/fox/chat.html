@@ -447,18 +447,20 @@
             sparkle.addEventListener('animationend', () => sparkle.remove());
         };
 
-        // Preload videos
-        const preloadVideos = () => {
-            idleVideo.load();
-            idleVideo.addEventListener('loadeddata', () => {
-                videosLoaded.idle = true;
-            });
+const preloadVideos = () => {
+    idleVideo.load();
+    idleVideo.addEventListener('loadeddata', () => {
+        videosLoaded.idle = true;
+        backgroundImage.style.display = 'none';
+        idleVideo.style.display = 'block';
+        idleVideo.play().catch(console.error);
+    });
 
-            speakingVideo.load();
-            speakingVideo.addEventListener('loadeddata', () => {
-                videosLoaded.speaking = true;
-            });
-        };
+    speakingVideo.load();
+    speakingVideo.addEventListener('loadeddata', () => {
+        videosLoaded.speaking = true;
+    });
+};
 
         // Progress bar functions
         const startProgress = () => {
