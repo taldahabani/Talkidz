@@ -485,24 +485,27 @@ const preloadVideos = () => {
             currentProgress = 0;
         };
 
-        const updateBackground = (mode) => {
-            backgroundImage.style.display = 'none';
-            idleVideo.style.display = 'none';
-            speakingVideo.style.display = 'none';
-            
-            idleVideo.pause();
-            speakingVideo.pause();
+const updateBackground = (mode) => {
+    backgroundImage.style.display = 'none';
+    idleVideo.style.display = 'none';
+    speakingVideo.style.display = 'none';
+    
+    speakingVideo.pause();
 
-            if (mode === 'speaking' && videosLoaded.speaking) {
-                speakingVideo.style.display = 'block';
-                speakingVideo.play().catch(console.error);
-            } else if (mode === 'listening' && videosLoaded.idle) {
-                idleVideo.style.display = 'block';
-                idleVideo.play().catch(console.error);
-            } else {
-                backgroundImage.style.display = 'block';
-            }
-        };
+    if (mode === 'speaking' && videosLoaded.speaking) {
+        speakingVideo.style.display = 'block';
+        speakingVideo.play().catch(console.error);
+    } else if (mode === 'idle' || mode === 'listening') {
+        // Show idle video for both idle and listening states
+        if (videosLoaded.idle) {
+            idleVideo.style.display = 'block';
+            idleVideo.play().catch(console.error);
+        } else {
+            backgroundImage.style.display = 'block';
+        }
+    }
+};
+
 
         const startConversation = async () => {
             try {
@@ -557,20 +560,21 @@ const preloadVideos = () => {
             }
         };
 
-        const endConversation = async () => {
-            if (conversation) {
-                try {
-                    await conversation.endSession();
-                } catch (error) {
-                    console.error('Error ending conversation:', error);
-                } finally {
-                    conversation = null;
-                    updateBackground('idle');
-                    startButton.classList.remove('active');
-                    startButton.textContent = 'Start Conversation';
-                }
-            }
-        };
+const endConversation = async () => {
+    if (conversation) {
+        try {
+            await conversation.endSession();
+        } catch (error) {
+            console.error('Error ending conversation:', error);
+        } finally {
+            conversation = null;
+            updateBackground('idle');
+            startButton.classList.remove('active');
+            startButton.textContent = 'Start Conversation';
+            resetProgress();
+        }
+    }
+};
 
         // Confetti effect function
         const triggerConfetti = () => {
