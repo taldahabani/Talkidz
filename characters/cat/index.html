@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meet Noodles The Cat - Your Funny Companion | Talkidz</title>
+    <title>Meet Noodles the Stupid Cat 🐱🍜 | Talkidz</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" rel="stylesheet">
     
     <!-- AOS (Animate On Scroll) CSS -->
@@ -11,31 +11,23 @@
     
     <style>
         :root {
-            --primary-color: #FF8C00; /* Dark Orange */
-            --accent-color: #1E90FF; /* Dodger Blue */
-            --background-color: #FFF5E1; /* Light Cream */
-            --secondary-background: #E0F7FA; /* Light Blue */
-            --star-color: #FFD700; /* Star Gold */
+            --primary-color: #FF4B6E; /* Primary Color */
+            --accent-color: #FFC107;  /* Accent Color */
+            --background-color: #FFFFFF; /* Light Background */
+            --secondary-background: #F5F5F5; /* Secondary Light Background */
+            --star-color: #FFC107; /* Star Color matching Accent */
             --golden-ratio: 1.618;
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             margin: 0;
-            background: linear-gradient(270deg, var(--background-color), var(--secondary-background));
-            background-size: 400% 400%;
-            animation: gradientShift 15s ease infinite;
+            background: linear-gradient(180deg, var(--background-color) 0%, var(--secondary-background) 100%);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             overflow-x: hidden;
             position: relative;
-        }
-
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
         }
 
         /* Particle Effects */
@@ -69,8 +61,8 @@
         }
 
         .back-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(78, 205, 196, 0.2);
+            transform: translateX(-2px);
+            box-shadow: 0 6px 16px rgba(255, 193, 7, 0.2); /* Accent color shadow */
             color: var(--primary-color);
         }
 
@@ -96,7 +88,7 @@
 
         .share-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(78, 205, 196, 0.2);
+            box-shadow: 0 6px 16px rgba(255, 193, 7, 0.2); /* Accent color shadow */
             color: var(--primary-color);
         }
 
@@ -122,7 +114,7 @@
             height: min(45vh, 220px);
             border-radius: 50%;
             background: white;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+            box-shadow: 0 8px 32px rgba(255, 193, 7, 0.15); /* Accent color shadow */
             animation: bounce 6s ease-in-out infinite;
         }
 
@@ -192,29 +184,6 @@
             max-width: 500px;
         }
 
-        /* CTA Button */
-        .cta-button {
-            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
-            color: white;
-            border: none;
-            padding: 1.2rem 1.5rem;
-            font-size: 1rem;
-            font-weight: 600;
-            border-radius: 999px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px rgba(78, 205, 196, 0.2);
-            text-decoration: none;
-            margin: 1rem auto; /* Centers the button */
-            width: calc(300px * var(--golden-ratio)); /* Same width as .fun-fact */
-            max-width: 80%;
-        }
-        
-        .cta-button:hover {
-            transform: scale(1.05) rotate(2deg);
-            box-shadow: 0 6px 20px rgba(78, 205, 196, 0.3);
-        }
-
         /* Traits Section */
         .traits {
             display: grid;
@@ -251,6 +220,31 @@
             color: white;
         }
 
+        /* CTA Button */
+        .cta-button {
+            background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
+            color: white;
+            border: none;
+            padding: 1.2rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(255, 193, 7, 0.2); /* Accent color shadow */
+            text-decoration: none;
+            margin: 1rem auto; /* Centers the button */
+            width: calc(300px * var(--golden-ratio)); /* Same width as .fun-fact */
+            max-width: 80%;
+            display: inline-block;
+            text-align: center;
+        }
+        
+        .cta-button:hover {
+            transform: scale(1.05) rotate(2deg);
+            box-shadow: 0 6px 20px rgba(255, 193, 7, 0.3); /* Accent color shadow */
+        }
+
         /* Fun Fact Section */
         .fun-fact {
             background: white;
@@ -274,6 +268,37 @@
             font-size: 0.9rem;
         }
 
+        /* Highlight CTA Button */
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.7); }
+            70% { box-shadow: 0 0 0 20px rgba(255, 193, 7, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0); }
+        }
+
+        /* Responsive Adjustments */
+        @media (max-height: 700px) {
+            .hero {
+                padding-top: 3.5rem;
+                gap: 0.5rem;
+            }
+            .character-container {
+                width: min(35vh, 200px);
+                height: min(35vh, 200px);
+                margin: 0.5rem auto;
+            }
+            .traits {
+                margin: 0.5rem 0;
+            }
+            .fun-fact {
+                padding: 0.8rem;
+            }
+        }
+
+        @media (min-height: 800px) {
+            .hero {
+                justify-content: center;
+            }
+        }
     </style>
 </head>
 <body>
@@ -286,21 +311,21 @@
     </a>
 
     <!-- Share Button -->
-    <button class="share-button" onclick="shareSmartCat()">
+    <button class="share-button" onclick="shareNoodles()">
         Share
     </button>
     
     <div class="hero">
         <!-- Character Container with Sparkles -->
         <div class="character-container" data-aos="fade-up">
-            <img src="assets/cat.jpg" alt="Noodles The Chat" class="character-image">
-            <div class="sparkle"></div>
-            <div class="sparkle"></div>
-            <div class="sparkle"></div>
+            <img src="assets/cat.jpg" alt="Noodles the Stupid Cat Character" class="character-image">
+            <div class="sparkle" style="top: 20%; left: 80%;"></div>
+            <div class="sparkle" style="top: 70%; left: 90%;"></div>
+            <div class="sparkle" style="top: 80%; left: 10%;"></div>
         </div>
         
         <!-- Title and Subtitle -->
-        <h1 class="title" data-aos="fade-up">Meet Noodles the Stupid Cat 🐱🍜</h1>
+        <h1 class="title" data-aos="fade-up">Meet Noodles the Stupid Cat! 🐱🍜</h1>
         <p class="subtitle" data-aos="fade-up" data-aos-delay="200">Your goofy and wonderfully weird friend who's ready to brighten your day with laughter and quirky antics! Dive into a world of silliness and fun!</p>
 
         <!-- Traits -->
@@ -313,7 +338,7 @@
 
         <!-- CTA Button -->
         <a href="/characters/cat/chat" class="cta-button" data-aos="fade-up" data-aos-delay="600">
-            Start Learning with Smart Cat!
+            Start Laughing with Noodles!
         </a>
 
         <!-- Fun Fact Section (Static) -->
@@ -344,7 +369,7 @@
             "particles": {
                 "number": { "value": 50 },
                 "size": { "value": 3 },
-                "color": { "value": "#FF8C00" }, /* Changed to primary color */
+                "color": { "value": "#FFC107" }, /* Accent color */
                 "shape": { "type": "circle" },
                 "opacity": {
                     "value": 0.5,
@@ -364,79 +389,19 @@
         });
 
         // Share Functionality
-        function shareSmartCat() {
+        function shareNoodles() {
             const shareData = {
-                title: 'Meet Smart Cat!',
-                text: 'Check out Smart Cat - your curious and creative learner!',
+                title: 'Meet Noodles the Stupid Cat!',
+                text: 'Check out Noodles the Cat - your goofy and wonderfully weird friend!',
                 url: window.location.href
             };
 
             if (navigator.share) {
                 navigator.share(shareData).then(() => {
                     console.log('Shared successfully');
-                    alert('Thanks for sharing Smart Cat!');
+                    alert('Thanks for sharing Noodles the Stupid Cat!');
                 }).catch((error) => console.log('Error sharing:', error));
             } else {
                 // Fallback for browsers that do not support navigator.share
                 const twitterURL = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareData.text)}&url=${encodeURIComponent(shareData.url)}`;
-                window.open(twitterURL, '_blank');
-            }
-        }
-
-        // Confetti Surprise on Scroll (Mobile Devices)
-        (function() {
-            const isMobile = /Mobi|Android/i.test(navigator.userAgent);
-            if (!isMobile) return;
-
-            let confettiTriggered = false;
-
-            window.addEventListener('scroll', () => {
-                if (confettiTriggered) return;
-
-                const traitsSection = document.querySelector('.traits');
-                if (!traitsSection) return;
-
-                const scrollPosition = window.scrollY + window.innerHeight;
-                const triggerPoint = traitsSection.offsetTop + traitsSection.offsetHeight / 2;
-
-                if (scrollPosition > triggerPoint) {
-                    confettiTriggered = true;
-                    triggerConfetti();
-                }
-            });
-
-            function triggerConfetti() {
-                confetti({
-                    particleCount: 100,
-                    spread: 70,
-                    origin: { y: 0.6 }
-                });
-
-                // Optional: Highlight the CTA button
-                const ctaButton = document.querySelector('.cta-button');
-                ctaButton.classList.add('highlight-cta');
-
-                // Remove highlight after animation
-                setTimeout(() => {
-                    ctaButton.classList.remove('highlight-cta');
-                }, 3000);
-            }
-
-            // CSS for highlighting CTA button
-            const style = document.createElement('style');
-            style.innerHTML = `
-                .highlight-cta {
-                    animation: pulse 2s infinite;
-                }
-
-                @keyframes pulse {
-                    0% { box-shadow: 0 0 0 0 rgba(255, 140, 0, 0.7); }
-                    70% { box-shadow: 0 0 0 20px rgba(255, 140, 0, 0); }
-                    100% { box-shadow: 0 0 0 0 rgba(255, 140, 0, 0); }
-                }
-            `;
-            document.head.appendChild(style);
-        })();
-    </script>
-</body>
-</html>
+                window.open(twitterURL
