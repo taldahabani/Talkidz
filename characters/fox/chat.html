@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Funny Cupcake - Talkidz</title>
+    <title>Clever Fox - Talkidz</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" rel="stylesheet">
     <style>
         :root {
@@ -128,7 +128,7 @@
             width: 100%;
             height: 100%;
             object-fit: contain;
-            background-image: url('/characters/cupcake/assets/cupcake.png');
+            background-image: url('/characters/fox/assets/foxxy.png');
             background-size: contain;
             background-position: center;
             background-repeat: no-repeat;
@@ -344,17 +344,17 @@
                 <path d="M19 12H5M12 19l-7-7 7-7"/>
             </svg>
         </a>
-        <div class="character-name">Funny Cupcake</div>
+        <div class="character-name">Clever Fox</div>
     </div>
 
     <div class="main-container">
         <div class="video-wrapper">
             <div class="background image"></div>
             <video class="background video" id="idleVideo" loop muted playsinline disablePictureInPicture>
-                <source src="/characters/cupcake/assets/cupcake-blinking.mp4" type="video/mp4">
+                <source src="/characters/fox/assets/fox-idle.mp4" type="video/mp4">
             </video>
             <video class="background video" id="speakingVideo" loop muted playsinline disablePictureInPicture>
-                <source src="/characters/cupcake/assets/cupcake-talk.mp4" type="video/mp4">
+                <source src="/characters/fox/assets/fox-speaking.mp4" type="video/mp4">
             </video>
         </div>
     </div>
@@ -462,9 +462,7 @@
 
         // Progress bar functions
         const startProgress = () => {
-            currentProgress = 0;
             const progressBar = document.getElementById('progressBar');
-            progressBar.style.width = '0%';
             
             clearInterval(progressInterval);
             progressInterval = setInterval(() => {
@@ -517,7 +515,7 @@
                 `;
 
                 conversation = await Conversation.startSession({
-                    agentId: 'iogofk9qnqvE98RwV1Kk',
+                    agentId: 'XJ3eFR10myzK01A10BlN',
                     onModeChange: (mode) => {
                         updateBackground(mode.mode);
                     },
@@ -530,14 +528,12 @@
                         updateBackground('idle');
                         startButton.classList.remove('active');
                         startButton.textContent = 'Start Conversation';
-                        resetProgress();
                     },
                     onError: (error) => {
                         console.error('Conversation error:', error);
                         updateBackground('idle');
                         startButton.classList.remove('active');
                         startButton.textContent = 'Start Conversation';
-                        resetProgress();
                     }
                 });
 
@@ -570,7 +566,6 @@
                     updateBackground('idle');
                     startButton.classList.remove('active');
                     startButton.textContent = 'Start Conversation';
-                    resetProgress();
                 }
             }
         };
