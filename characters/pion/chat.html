@@ -69,30 +69,11 @@
         }
 
         .bottom-content {
-            width: 100%;
-            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
-            padding: 0 1.5rem;
-        }
-
-        .logo-container {
-            position: absolute;
-            left: 1.5rem;
-            bottom: 0;
-        }
-
-        .controls-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .share-button-container {
-            position: absolute;
-            right: 1.5rem;
-            bottom: 0;
         }
 
         .logo-container {
@@ -188,21 +169,6 @@
             to { transform: translateX(100%) rotate(45deg); }
         }
 
-        /* Ensure minimum spacing between elements */
-        @media (max-width: 900px) {
-            .bottom-content {
-                padding: 0 1rem;
-            }
-            
-            .logo-container {
-                left: 1rem;
-            }
-            
-            .share-button-container {
-                right: 1rem;
-            }
-        }
-
         @media (max-width: 768px) {
             .bottom-bar {
                 padding: 1rem;
@@ -244,8 +210,6 @@
             
             <div class="controls-container">
                 <button id="startButton" class="main-button">Start Conversation</button>
-            </div>
-            <div class="share-button-container">
                 <button class="share-button" onclick="shareCharacter()">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
