@@ -75,12 +75,14 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
         }
 
         .logo-container {
             display: flex;
             flex-direction: column;
             align-items: flex-start;
+            margin-bottom: 1rem; /* Space for wrapped items */
         }
 
         .logo {
@@ -105,6 +107,9 @@
             display: flex;
             align-items: center;
             gap: 1rem;
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
+            justify-content: center; /* Center buttons */
+            width: 100%; /* Full width on small screens */
         }
 
         .main-button {
@@ -120,6 +125,8 @@
             box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
             position: relative;
             overflow: hidden;
+            min-width: 200px; /* Ensure minimum size */
+            text-align: center;
         }
 
         .main-button::before {
@@ -158,6 +165,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-shrink: 0; /* Prevent shrinking */
         }
 
         .share-button:hover {
@@ -178,10 +186,20 @@
 
             .main-button {
                 padding: 0.75rem 1.5rem;
+                min-width: 150px; /* Adjust minimum size for smaller screens */
             }
 
             .logo {
                 font-size: 1.125rem;
+            }
+
+            .bottom-content {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .controls-container {
+                gap: 0.75rem;
             }
         }
     </style>
@@ -191,6 +209,9 @@
     <div class="main-container">
         <div class="video-wrapper">
             <div class="background image"></div>
+            <video class="background video" id="startVideo" loop playsinline disablePictureInPicture>
+                <source src="/characters/pion/assets/pion-start.mp4" type="video/mp4">
+            </video>
             <video class="background video" id="idleVideo" loop playsinline disablePictureInPicture>
                 <source src="/characters/pion/assets/pion-idle.mp4" type="video/mp4">
             </video>
@@ -211,7 +232,7 @@
             
             <div class="controls-container">
                 <button id="startButton" class="main-button">Start Conversation</button>
-                <button class="share-button" onclick="shareCharacter()">
+                <button class="share-button" onclick="shareCharacter()" aria-label="Share">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
                         <polyline points="16 6 12 2 8 6"/>
@@ -226,25 +247,35 @@
         import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
 
         let conversation = null;
-        let videosLoaded = { idle: false, speaking: false };
-        let progressInterval;
+        let videosLoaded = { start: false, idle: false, speaking: false };
         const CONVERSATION_TIME = 180; // 3 minutes in seconds
         let currentProgress = 0;
 
         const backgroundImage = document.querySelector('.background.image');
+        const startVideo = document.getElementById('startVideo');
         const idleVideo = document.getElementById('idleVideo');
         const speakingVideo = document.getElementById('speakingVideo');
         const startButton = document.getElementById('startButton');
 
         const preloadVideos = () => {
+            // Preload Start Video
+            startVideo.load();
+            startVideo.addEventListener('loadeddata', () => {
+                videosLoaded.start = true;
+            });
+
+            startVideo.addEventListener('ended', () => {
+                // After start video ends, switch to idle
+                updateBackground('idle');
+            });
+
+            // Preload Idle Video
             idleVideo.load();
             idleVideo.addEventListener('loadeddata', () => {
                 videosLoaded.idle = true;
-                backgroundImage.style.display = 'none';
-                idleVideo.style.display = 'block';
-                idleVideo.play().catch(console.error);
             });
 
+            // Preload Speaking Video
             speakingVideo.load();
             speakingVideo.addEventListener('loadeddata', () => {
                 videosLoaded.speaking = true;
@@ -252,13 +283,18 @@
         };
 
         const updateBackground = (mode) => {
-            [backgroundImage, idleVideo, speakingVideo].forEach(el => el.style.display = 'none');
+            [backgroundImage, startVideo, idleVideo, speakingVideo].forEach(el => el.style.display = 'none');
             speakingVideo.pause();
+            startVideo.pause();
 
-            if (mode === 'speaking' && videosLoaded.speaking) {
+            if (mode === 'start' && videosLoaded.start) {
+                startVideo.style.display = 'block';
+                startVideo.currentTime = 0;
+                startVideo.play().catch(console.error);
+            } else if (mode === 'speaking' && videosLoaded.speaking) {
                 speakingVideo.style.display = 'block';
                 speakingVideo.play().catch(console.error);
-            } else if (videosLoaded.idle) {
+            } else if (mode === 'idle' && videosLoaded.idle) {
                 idleVideo.style.display = 'block';
                 idleVideo.play().catch(console.error);
             } else {
@@ -297,11 +333,20 @@
                     </svg>
                 `;
 
+                // Play start video first
+                updateBackground('start');
+
                 conversation = await Conversation.startSession({
                     agentId: 'ZWAt4Km480Nn6oHdyNfn',
-                    onModeChange: (mode) => updateBackground(mode.mode),
+                    onModeChange: (mode) => {
+                        if (mode.mode === 'speaking') {
+                            updateBackground('speaking');
+                        } else {
+                            updateBackground('idle');
+                        }
+                    },
                     onConnect: () => {
-                        updateBackground('listening');
+                        updateBackground('speaking');
                     },
                     onDisconnect: () => {
                         updateBackground('idle');
@@ -350,10 +395,13 @@
         window.shareCharacter = () => {
             if (navigator.share) {
                 navigator.share({
-                    title: 'Chat with pion on Talkidz',
+                    title: 'Chat with Pion on Talkidz',
                     text: 'Come chat with Pion, your new AI friend!',
                     url: window.location.href
                 }).catch(console.error);
+            } else {
+                // Fallback for browsers that do not support navigator.share
+                alert('Share not supported on this browser.');
             }
         };
 
