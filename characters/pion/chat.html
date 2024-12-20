@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -71,17 +70,17 @@
 
         .bottom-content {
             width: 100%;
-            display: grid;
-            grid-template-columns: 1fr auto 1fr;
+            position: relative;
+            display: flex;
+            justify-content: center;
             align-items: center;
-            gap: 1rem;
+            padding: 0 1.5rem;
         }
 
         .logo-container {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            justify-self: start;
+            position: absolute;
+            left: 1.5rem;
+            bottom: 0;
         }
 
         .controls-container {
@@ -91,8 +90,15 @@
         }
 
         .share-button-container {
+            position: absolute;
+            right: 1.5rem;
+            bottom: 0;
+        }
+
+        .logo-container {
             display: flex;
-            justify-content: flex-end;
+            flex-direction: column;
+            align-items: flex-start;
         }
 
         .logo {
@@ -111,6 +117,12 @@
             color: #666;
             margin-top: -0.25rem;
             margin-left: 0.25rem;
+        }
+
+        .controls-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
         }
 
         .main-button {
@@ -176,9 +188,18 @@
             to { transform: translateX(100%) rotate(45deg); }
         }
 
+        /* Ensure minimum spacing between elements */
         @media (max-width: 900px) {
             .bottom-content {
-                gap: 0.5rem;
+                padding: 0 1rem;
+            }
+            
+            .logo-container {
+                left: 1rem;
+            }
+            
+            .share-button-container {
+                right: 1rem;
             }
         }
 
@@ -224,7 +245,6 @@
             <div class="controls-container">
                 <button id="startButton" class="main-button">Start Conversation</button>
             </div>
-            
             <div class="share-button-container">
                 <button class="share-button" onclick="shareCharacter()">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
