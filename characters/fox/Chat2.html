@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clever Fox - Talkidz</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #FF4B6E;
+            --accent-color: #6C5CE7;
+            --text-color: #1A1A1A;
+            --background: #FFFFFF;
+            --secondary-bg: #F5F5F5;
+            --shadow: rgba(0, 0, 0, 0.08);
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--background);
+            overflow: hidden;
+        }
+
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            padding: 0 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 100;
+            background: linear-gradient(to right, rgba(245, 245, 245, 0.98), rgba(255, 255, 255, 0.98));
+            backdrop-filter: blur(10px);
+        }
+
+        .character-name {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .main-container {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        .background.video {
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .background.video.active {
+            opacity: 1;
+        }
+
+        .bottom-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 1.5rem;
+            padding-bottom: calc(5rem + env(safe-area-inset-bottom));
+            background: linear-gradient(to top, rgba(255, 255, 255, 0.98), transparent);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 10;
+            backdrop-filter: blur(8px);
+        }
+
+        .controls-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .main-button {
+            background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .main-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .progress-bar {
+            width: 0%;
+            height: 4px;
+            background: linear-gradient(to right, var(--accent-color), var(--primary-color));
+            transition: width 1s linear;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-bar">
+        <div class="character-name">Clever Fox</div>
+    </div>
+
+    <div class="main-container">
+        <div class="video-wrapper">
+            <video class="background video" id="idleVideo" loop muted playsinline disablePictureInPicture>
+                <source src="/characters/fox/assets/fox-idle.mp4" type="video/mp4">
+            </video>
+            <video class="background video" id="speakingVideo" loop muted playsinline disablePictureInPicture>
+                <source src="/characters/fox/assets/fox-talking.mp4" type="video/mp4">
+            </video>
+        </div>
+    </div>
+
+    <div class="bottom-container">
+        <div class="controls-container">
+            <button id="startButton" class="main-button">Start Conversation</button>
+        </div>
+        <div class="progress-container">
+            <div id="progressBar" class="progress-bar"></div>
+        </div>
+    </div>
+
+    <script>
+        const idleVideo = document.getElementById('idleVideo');
+        const speakingVideo = document.getElementById('speakingVideo');
+        const startButton = document.getElementById('startButton');
+
+        let isSpeaking = false;
+
+        const updateBackground = (mode) => {
+            idleVideo.classList.remove('active');
+            speakingVideo.classList.remove('active');
+            
+            if (mode === 'speaking') {
+                speakingVideo.classList.add('active');
+                speakingVideo.play().catch(console.error);
+            } else {
+                idleVideo.classList.add('active');
+                idleVideo.play().catch(console.error);
+            }
+        };
+
+        startButton.addEventListener('click', () => {
+            isSpeaking = !isSpeaking;
+            updateBackground(isSpeaking ? 'speaking' : 'idle');
+        });
+
+        // Initialize with idle state
+        idleVideo.addEventListener('loadeddata', () => {
+            idleVideo.classList.add('active');
+            idleVideo.play().catch(console.error);
+        });
+
+        speakingVideo.addEventListener('loadeddata', () => {
+            console.log('Speaking video ready');
+        });
+    </script>
+</body>
+</html>
