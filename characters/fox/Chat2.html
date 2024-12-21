@@ -13,7 +13,8 @@
             --background: #FFFFFF;
             --secondary-bg: #F5F5F5;
             --shadow: rgba(0, 0, 0, 0.08);
-            --transition-duration: 0.5s;
+            --transition-duration: 0.3s;
+            --blend-mode: difference;
         }
 
         body {
@@ -87,6 +88,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            background: black;
+            overflow: hidden;
         }
 
         .background {
@@ -98,10 +101,17 @@
 
         .background.video {
             opacity: 0;
+            position: absolute;
+            mix-blend-mode: var(--blend-mode);
+            transform: scale(1.001);
+            will-change: opacity, transform;
+            transition: opacity var(--transition-duration) cubic-bezier(0.4, 0.0, 0.2, 1),
+                        transform var(--transition-duration) cubic-bezier(0.4, 0.0, 0.2, 1);
         }
 
         .background.video.active {
             opacity: 1;
+            transform: scale(1);
         }
 
         .background.image {
@@ -109,6 +119,18 @@
             height: 100%;
             background: url('/characters/fox/assets/foxxy.jpg') center/contain no-repeat;
             opacity: 1;
+        }
+
+        .video-mask {
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(
+                circle at center,
+                transparent 95%,
+                rgba(0,0,0,0.1) 100%
+            );
+            pointer-events: none;
+            z-index: 2;
         }
 
         .bottom-container {
@@ -296,6 +318,7 @@
             <video class="background video" id="speakingVideo" loop muted playsinline disablePictureInPicture>
                 <source src="/characters/fox/assets/fox-talking.mp4" type="video/mp4">
             </video>
+            <div class="video-mask"></div>
         </div>
     </div>
 
@@ -340,18 +363,50 @@
         const speakingVideo = document.getElementById('speakingVideo');
         const startButton = document.getElementById('startButton');
 
+        // Enhanced video synchronization
+        const syncVideos = () => {
+            const syncThreshold = 0.1; // 100ms threshold
+            
+            setInterval(() => {
+                if (idleVideo.classList.contains('active') && !idleVideo.paused) {
+                    speakingVideo.currentTime = idleVideo.currentTime;
+                } else if (speakingVideo.classList.contains('active') && !speakingVideo.paused) {
+                    idleVideo.currentTime = speakingVideo.currentTime;
+                }
+            }, 1000); // Check every second
+        };
+
+        // Enhanced video transitions
+        const enhanceVideoTransitions = () => {
+            // Preload both videos
+            idleVideo.preload = 'auto';
+            speakingVideo.preload = 'auto';
+            
+            // Keep both videos playing but only one visible
+            idleVideo.play().catch(console.error);
+            speakingVideo.play().catch(console.error);
+            
+            // Start synchronization
+            syncVideos();
+        };
+
         const preloadVideos = () => {
             idleVideo.load();
             idleVideo.addEventListener('loadeddata', () => {
                 videosLoaded.idle = true;
                 backgroundImage.style.opacity = '0';
                 idleVideo.classList.add('active');
-                idleVideo.play().catch(console.error);
+                if (videosLoaded.speaking) {
+                    enhanceVideoTransitions();
+                }
             });
 
             speakingVideo.load();
             speakingVideo.addEventListener('loadeddata', () => {
                 videosLoaded.speaking = true;
+                if (videosLoaded.idle) {
+                    enhanceVideoTransitions();
+                }
             });
         };
 
@@ -371,17 +426,37 @@
         };
 
         const updateBackground = (mode) => {
+            const transitionVideo = async (from, to) => {
+                // Start both videos playing before transition
+                if (!from.paused) from.currentTime = 0;
+                if (!to.paused) to.currentTime = 0;
+                
+                // Ensure videos are playing and in sync
+                await Promise.all([
+                    from.play().catch(console.error),
+                    to.play().catch(console.error)
+                ]);
+
+                // Small delay to allow videos to start playing
+                await new Promise(resolve => setTimeout(resolve, 50));
+
+                // Perform the transition
+                requestAnimationFrame(() => {
+                    from.classList.remove('active');
+                    to.classList.add('active');
+                });
+            };
+
             if (mode === 'speaking' && videosLoaded.speaking) {
-                idleVideo.classList.remove('active');
-                speakingVideo.classList.add('active');
-                speakingVideo.play().catch(console.error);
+                transitionVideo(idleVideo, speakingVideo);
             } else if (videosLoaded.idle) {
-                speakingVideo.classList.remove('active');
-                idleVideo.classList.add('active');
-                idleVideo.play().catch(console.error);
+                transitionVideo(speakingVideo, idleVideo);
             } else {
                 backgroundImage.style.opacity = '1';
-                [idleVideo, speakingVideo].forEach(video => video.classList.remove('active'));
+                [idleVideo, speakingVideo].forEach(video => {
+                    video.classList.remove('active');
+                    video.pause();
+                });
             }
         };
 
