@@ -111,36 +111,43 @@
             opacity: 1;
         }
 
-        .bottom-container {
+        .controls-container {
             position: fixed;
             bottom: 0;
             left: 0;
-            width: 100%;
-            padding: 1.5rem;
-            padding-bottom: calc(5rem + env(safe-area-inset-bottom));
-            background: linear-gradient(to top, 
-                rgba(255,255,255,0.98) 70%,
-                rgba(255,255,255,0.8) 85%,
-                transparent);
+            right: 0;
+            height: 70px;
+            padding: 0 1.5rem;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 10;
+            border-top: 1px solid rgba(108, 92, 231, 0.1);
+        }
+
+        .logo-container {
             display: flex;
             flex-direction: column;
-            align-items: center;
-            gap: 1.5rem;
-            z-index: 10;
-            backdrop-filter: blur(8px);
+            align-items: flex-start;
         }
 
-        .controls-wrapper {
-            width: 100%;
-            max-width: 600px;
-            margin-bottom: 1rem;
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-decoration: none;
+            letter-spacing: -0.5px;
         }
 
-        .controls-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 1rem;
+        .logo-byline {
+            font-size: 0.75rem;
+            color: #666;
+            margin-top: -0.25rem;
+            margin-left: 0.25rem;
         }
 
         .main-button {
@@ -202,72 +209,13 @@
             box-shadow: 0 4px 12px var(--shadow);
         }
 
-        .bottom-status-container {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 1rem 1.5rem;
-            background: white;
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-            border-top: 1px solid rgba(108, 92, 231, 0.1);
-            z-index: 12;
-        }
-
-        .logo-container {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        .logo {
-            font-size: 1.25rem;
-            font-weight: 800;
-            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-decoration: none;
-            letter-spacing: -0.5px;
-        }
-
-        .logo-byline {
-            font-size: 0.75rem;
-            color: #666;
-            margin-top: -0.25rem;
-            margin-left: 0.25rem;
-        }
-
-        .progress-container {
-            flex: 1;
-            height: 4px;
-            background: rgba(108, 92, 231, 0.1);
-            border-radius: 999px;
-            overflow: hidden;
-        }
-
-        .progress-bar {
-            width: 0%;
-            height: 100%;
-            background: linear-gradient(to right, var(--accent-color), var(--primary-color));
-            transition: width 1s linear;
-            border-radius: 999px;
-            box-shadow: 0 0 10px rgba(108, 92, 231, 0.2);
-        }
-
         @keyframes buttonShine {
             to { transform: translateX(100%) rotate(45deg); }
         }
 
         @media (max-width: 768px) {
-            .bottom-status-container {
-                padding-bottom: calc(env(safe-area-inset-bottom) + 1rem);
-            }
-            
-            .bottom-container {
-                padding-bottom: calc(env(safe-area-inset-bottom) + 5rem);
+            .controls-container {
+                padding-bottom: env(safe-area-inset-bottom);
             }
 
             .main-button {
@@ -301,29 +249,19 @@
 
     <canvas id="confetti-canvas"></canvas>
 
-    <div class="bottom-container">
-        <div class="controls-wrapper">
-            <div class="controls-container">
-                <button id="startButton" class="main-button">Start Conversation</button>
-                <button class="share-button" onclick="shareCharacter()">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
-                        <polyline points="16 6 12 2 8 6"/>
-                        <line x1="12" y1="2" x2="12" y2="15"/>
-                    </svg>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <div class="bottom-status-container">
+    <div class="controls-container">
         <div class="logo-container">
             <a href="/" class="logo">Talkidz</a>
             <span class="logo-byline">by Playbox</span>
         </div>
-        <div class="progress-container">
-            <div id="progressBar" class="progress-bar"></div>
-        </div>
+        <button id="startButton" class="main-button">Start Conversation</button>
+        <button class="share-button" onclick="shareCharacter()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+                <polyline points="16 6 12 2 8 6"/>
+                <line x1="12" y1="2" x2="12" y2="15"/>
+            </svg>
+        </button>
     </div>
 
     <script type="module">
@@ -331,9 +269,7 @@
 
         let conversation = null;
         let videosLoaded = { idle: false, speaking: false };
-        let progressInterval;
         const CONVERSATION_TIME = 180; // 3 minutes in seconds
-        let currentProgress = 0;
 
         const backgroundImage = document.querySelector('.background.image');
         const idleVideo = document.getElementById('idleVideo');
@@ -353,21 +289,6 @@
             speakingVideo.addEventListener('loadeddata', () => {
                 videosLoaded.speaking = true;
             });
-        };
-
-        const startProgress = () => {
-            clearInterval(progressInterval);
-            const progressBar = document.getElementById('progressBar');
-            
-            progressInterval = setInterval(() => {
-                currentProgress = Math.min(currentProgress + (100 / CONVERSATION_TIME), 100);
-                progressBar.style.width = `${currentProgress}%`;
-                
-                if (currentProgress >= 100) {
-                    clearInterval(progressInterval);
-                    endConversation();
-                }
-            }, 1000);
         };
 
         const updateBackground = (mode) => {
@@ -421,7 +342,6 @@
                     onModeChange: (mode) => updateBackground(mode.mode),
                     onConnect: () => {
                         updateBackground('listening');
-                        startProgress();
                     },
                     onDisconnect: () => {
                         updateBackground('idle');
@@ -433,7 +353,6 @@
                         updateBackground('idle');
                         startButton.classList.remove('active');
                         startButton.textContent = 'Start Conversation';
-                        clearInterval(progressInterval);
                     }
                 });
 
@@ -456,9 +375,6 @@
                     updateBackground('idle');
                     startButton.classList.remove('active');
                     startButton.textContent = 'Start Conversation';
-                    clearInterval(progressInterval);
-                    currentProgress = 0;
-                    document.getElementById('progressBar').style.width = '0%';
                 }
             }
         };
@@ -467,8 +383,6 @@
             if (conversation) {
                 await endConversation();
             } else {
-                currentProgress = 0;
-                document.getElementById('progressBar').style.width = '0%';
                 await startConversation();
             }
         });
