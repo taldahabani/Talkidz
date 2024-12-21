@@ -113,17 +113,16 @@
 
         .controls-container {
             position: fixed;
-            bottom: 0;
+            bottom: 2rem;
             left: 0;
             right: 0;
             height: 70px;
             padding: 0 1.5rem;
-            background: white;
             display: flex;
             align-items: center;
             justify-content: space-between;
             z-index: 10;
-            border-top: 1px solid rgba(108, 92, 231, 0.1);
+            background: transparent;
         }
 
         .logo-container {
@@ -194,7 +193,7 @@
             height: 48px;
             border: none;
             border-radius: 50%;
-            background: var(--secondary-bg);
+            background: transparent;
             color: var(--text-color);
             cursor: pointer;
             transition: all 0.3s ease;
@@ -205,8 +204,6 @@
 
         .share-button:hover {
             transform: translateY(-2px);
-            background: white;
-            box-shadow: 0 4px 12px var(--shadow);
         }
 
         @keyframes buttonShine {
@@ -215,7 +212,7 @@
 
         @media (max-width: 768px) {
             .controls-container {
-                padding-bottom: env(safe-area-inset-bottom);
+                bottom: calc(2rem + env(safe-area-inset-bottom));
             }
 
             .main-button {
