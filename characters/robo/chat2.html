@@ -14,7 +14,7 @@
             --secondary-bg: #F5F5F5;
             --shadow: rgba(0, 0, 0, 0.08);
             --transition-duration: 0.5s;
-            --max-content-width: 768px; /* iPad width */
+            --max-content-width: 768px;
         }
 
         body {
@@ -23,7 +23,6 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: var(--background);
             overflow: hidden;
-            transition: background-color 0.3s ease;
         }
 
         .top-bar {
@@ -102,7 +101,6 @@
             object-fit: contain;
         }
 
-        /* Mobile-first approach */
         @media (max-width: 768px) {
             .background {
                 width: 100%;
@@ -127,7 +125,7 @@
 
         .main-action-container {
             position: fixed;
-            bottom: 140px;
+            bottom: 90px;
             left: 0;
             right: 0;
             display: flex;
@@ -181,66 +179,46 @@
             bottom: 0;
             left: 0;
             right: 0;
-            height: 120px;
-            padding: 1rem 1.5rem;
+            height: 70px;
+            padding: 0 1.5rem;
             background: white;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
             z-index: 10;
             border-top: 1px solid rgba(108, 92, 231, 0.1);
-            transition: background-color 0.3s ease;
         }
 
-        .control-item {
+        .logo-container {
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 0.5rem;
-            border-radius: 12px;
-            background: var(--secondary-bg);
-            transition: all 0.3s ease;
-            cursor: pointer;
-            color: var(--text-color);
+            align-items: flex-start;
         }
 
-        .control-item:hover {
-            background: white;
-            box-shadow: 0 4px 12px var(--shadow);
-            transform: translateY(-2px);
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-decoration: none;
+            letter-spacing: -0.5px;
         }
 
-        .control-icon {
-            width: 24px;
-            height: 24px;
-            margin-bottom: 0.5rem;
-            color: currentColor;
-        }
-
-        .control-label {
+        .logo-byline {
             font-size: 0.75rem;
-            text-align: center;
-            color: currentColor;
+            color: #666;
+            margin-top: -0.25rem;
+            margin-left: 0.25rem;
         }
 
         .status-indicator {
-            position: fixed;
-            bottom: 180px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 0.5rem 1rem;
-            border-radius: 999px;
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(10px);
-            font-size: 0.875rem;
-            color: var(--text-color);
-            box-shadow: 0 2px 8px var(--shadow);
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            z-index: 20;
-            transition: all 0.3s ease;
+            font-size: 0.875rem;
+            color: var(--text-color);
         }
 
         .status-dot {
@@ -255,10 +233,24 @@
             animation: pulse 1.5s infinite;
         }
 
-        .dark-mode {
-            --background: #1a1a1a;
-            --text-color: #FFFFFF;
-            --secondary-bg: #333333;
+        .share-button {
+            width: 48px;
+            height: 48px;
+            border: none;
+            border-radius: 50%;
+            background: var(--secondary-bg);
+            color: var(--text-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .share-button:hover {
+            transform: translateY(-2px);
+            background: white;
+            box-shadow: 0 4px 12px var(--shadow);
         }
 
         @keyframes buttonShine {
@@ -271,28 +263,20 @@
             100% { transform: scale(1); opacity: 1; }
         }
 
-        /* Media queries for responsive design */
         @media (max-width: 768px) {
             .controls-container {
-                grid-template-columns: repeat(2, 1fr);
-                height: auto;
-                padding-bottom: calc(1rem + env(safe-area-inset-bottom));
-            }
-
-            .main-action-container {
-                bottom: 200px;
-            }
-
-            .status-indicator {
-                bottom: 240px;
+                padding-bottom: env(safe-area-inset-bottom);
             }
 
             .main-button {
                 padding: 1rem 2rem;
             }
+
+            .main-action-container {
+                bottom: calc(90px + env(safe-area-inset-bottom));
+            }
         }
 
-        /* Center content for larger screens */
         @media (min-width: 769px) {
             .main-container {
                 padding: 70px max(1.5rem, calc((100vw - var(--max-content-width)) / 2));
@@ -327,11 +311,6 @@
         </div>
     </div>
 
-    <div class="status-indicator">
-        <div class="status-dot"></div>
-        <span class="status-text">Ready to chat</span>
-    </div>
-
     <div class="main-action-container">
         <button id="startButton" class="main-button">Start Conversation</button>
     </div>
@@ -339,46 +318,21 @@
     <canvas id="confetti-canvas"></canvas>
 
     <div class="controls-container">
-        <div class="control-item" id="volumeControl">
-            <svg class="control-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-                <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-            </svg>
-            <span class="control-label">Volume</span>
+        <div class="logo-container">
+            <a href="/" class="logo">Talkidz</a>
+            <span class="logo-byline">by Playbox</span>
         </div>
-
-        <div class="control-item" id="languageControl">
-            <svg class="control-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="2" y1="12" x2="22" y2="12"></line>
-                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-            </svg>
-            <span class="control-label">Language</span>
+        <div class="status-indicator">
+            <div class="status-dot"></div>
+            <span class="status-text">Ready to chat</span>
         </div>
-
-        <div class="control-item" id="themeControl">
-            <svg class="control-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="5"></circle>
-                <line x1="12" y1="1" x2="12" y2="3"></line>
-                <line x1="12" y1="21" x2="12" y2="23"></line>
-                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
-                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
-                <line x1="1" y1="12" x2="3" y2="12"></line>
-                <line x1="21" y1="12" x2="23" y2="12"></line>
-                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
-                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        <button class="share-button" onclick="shareCharacter()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+                <polyline points="16 6 12 2 8 6"/>
+                <line x1="12" y1="2" x2="12" y2="15"/>
             </svg>
-            <span class="control-label">Theme</span>
-        </div>
-
-        <div class="control-item" id="shareControl" onclick="shareCharacter()">
-            <svg class="control-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
-                <polyline points="16 6 12 2 8 6"></polyline>
-                <line x1="12" y1="2" x2="12" y2="15"></line>
-            </svg>
-            <span class="control-label">Share</span>
-        </div>
+        </button>
     </div>
 
     <script type="module">
@@ -386,9 +340,9 @@
 
         let conversation = null;
         let videosLoaded = { idle: false, speaking: false };
-        const CONVERSATION_TIME = 180; // 3 minutes in seconds
+        const CONVERSATION_TIME = 180;
 
-                const backgroundImage = document.querySelector('.background.image');
+        const backgroundImage = document.querySelector('.background.image');
         const idleVideo = document.getElementById('idleVideo');
         const speakingVideo = document.getElementById('speakingVideo');
         const startButton = document.getElementById('startButton');
@@ -525,41 +479,6 @@
             }
         });
 
-        // Theme toggling
-        let isDarkMode = false;
-        document.getElementById('themeControl').addEventListener('click', () => {
-            isDarkMode = !isDarkMode;
-            document.body.classList.toggle('dark-mode', isDarkMode);
-            // Update status indicator and controls container for dark mode
-            const statusIndicator = document.querySelector('.status-indicator');
-            const controlsContainer = document.querySelector('.controls-container');
-            if (isDarkMode) {
-                statusIndicator.style.background = 'rgba(26, 26, 26, 0.9)';
-                controlsContainer.style.background = '#1a1a1a';
-            } else {
-                statusIndicator.style.background = 'rgba(255, 255, 255, 0.9)';
-                controlsContainer.style.background = 'white';
-            }
-        });
-
-        // Volume control
-        let isMuted = false;
-        document.getElementById('volumeControl').addEventListener('click', () => {
-            isMuted = !isMuted;
-            const volumeControl = document.getElementById('volumeControl');
-            volumeControl.style.opacity = isMuted ? 0.5 : 1;
-            [idleVideo, speakingVideo].forEach(video => {
-                video.muted = isMuted;
-            });
-        });
-
-        // Language selection
-        document.getElementById('languageControl').addEventListener('click', () => {
-            // Add your language selection logic here
-            alert('Language selection coming soon!');
-        });
-
-        // Share functionality
         window.shareCharacter = () => {
             if (navigator.share) {
                 navigator.share({
