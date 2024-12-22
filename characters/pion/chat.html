@@ -51,18 +51,12 @@
             width: auto;
             height: auto;
             object-fit: contain;
-            display: none;
-        }
-
-        .background.video {
             opacity: 0;
             transition: opacity var(--fade-duration) ease-in-out;
         }
 
-        #idleVideo.active,
-        #speakingVideo.active {
+        .background.active {
             opacity: 1;
-            display: block;
         }
 
         .background.video {
@@ -202,7 +196,7 @@
             <video class="background video" id="idleVideo" loop playsinline disablePictureInPicture>
                 <source src="/characters/pion/assets/pion-idle.mp4" type="video/mp4">
             </video>
-            <video class="background video" id="speakingVideo" loop muted="false" playsinline disablePictureInPicture>
+            <video class="background video" id="speakingVideo" loop playsinline disablePictureInPicture>
                 <source src="/characters/pion/assets/pion-talking.mp4" type="video/mp4">
             </video>
         </div>
@@ -302,52 +296,24 @@
         };
 
         const updateBackground = async (mode) => {
+            let targetVideo;
+            
             if (mode === 'start' && videosLoaded.start && !startVideoPlayed) {
-                // Handle start video without crossfade
-                startVideo.style.display = 'block';
-                currentVideo = startVideo;
+                targetVideo = startVideo;
                 startVideoPlayed = true;
-                try {
-                    await startVideo.play();
-                } catch (error) {
-                    console.error('Error playing start video:', error);
-                }
                 
+                // When start video ends, switch to idle
                 startVideo.onended = () => {
-                    startVideo.style.display = 'none';
                     updateBackground('idle');
                 };
-                return;
+            } else if (mode === 'speaking' && videosLoaded.speaking) {
+                targetVideo = speakingVideo;
+            } else if (videosLoaded.idle) {
+                targetVideo = idleVideo;
             }
 
-            // Only apply crossfade between idle and speaking
-            if (mode === 'speaking' && videosLoaded.speaking) {
-                speakingVideo.style.display = 'block';
-                try {
-                    await speakingVideo.play();
-                    speakingVideo.classList.add('active');
-                    if (currentVideo === idleVideo) {
-                        idleVideo.classList.remove('active');
-                    }
-                    currentVideo = speakingVideo;
-                } catch (error) {
-                    console.error('Error playing speaking video:', error);
-                }
-            } else if (videosLoaded.idle) {
-                idleVideo.style.display = 'block';
-                try {
-                    await idleVideo.play();
-                    idleVideo.classList.add('active');
-                    if (currentVideo === speakingVideo) {
-                        speakingVideo.classList.remove('active');
-                        setTimeout(() => {
-                            speakingVideo.style.display = 'none';
-                        }, FADE_DURATION);
-                    }
-                    currentVideo = idleVideo;
-                } catch (error) {
-                    console.error('Error playing idle video:', error);
-                }
+            if (targetVideo) {
+                await crossfadeToVideo(currentVideo, targetVideo);
             }
         };
 
