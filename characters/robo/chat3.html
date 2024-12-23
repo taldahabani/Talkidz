@@ -15,16 +15,6 @@
             --shadow: rgba(0, 0, 0, 0.08);
             --transition-duration: 0.5s;
             --max-content-width: 768px;
-            --dark-background: #1A1A1A;
-            --dark-text-color: #FFFFFF;
-            --dark-secondary-bg: #2C2C2C;
-        }
-
-        /* Light/Dark Mode Styles */
-        body.dark-mode {
-            --background: var(--dark-background);
-            --text-color: var(--dark-text-color);
-            --secondary-bg: var(--dark-secondary-bg);
         }
 
         body {
@@ -32,12 +22,9 @@
             min-height: 100vh;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: var(--background);
-            color: var(--text-color);
             overflow: hidden;
-            transition: background var(--transition-duration) ease, color var(--transition-duration) ease;
         }
 
-        /* Top Bar */
         .top-bar {
             position: fixed;
             top: 0;
@@ -51,14 +38,8 @@
             z-index: 100;
             background: linear-gradient(to right, rgba(245, 245, 245, 0.98), rgba(255, 255, 255, 0.98));
             backdrop-filter: blur(10px);
-            transition: background var(--transition-duration) ease;
         }
 
-        body.dark-mode .top-bar {
-            background: linear-gradient(to right, rgba(28, 28, 28, 0.98), rgba(26, 26, 26, 0.98));
-        }
-
-        /* Back Button */
         .back-button {
             width: 40px;
             height: 40px;
@@ -79,7 +60,6 @@
             color: var(--accent-color);
         }
 
-        /* Character Name */
         .character-name {
             position: absolute;
             left: 50%;
@@ -93,7 +73,82 @@
             letter-spacing: -0.5px;
         }
 
-        /* Main Container */
+        /* Language Selector Styles */
+        .language-selector {
+            position: relative;
+            display: inline-block;
+        }
+
+        .language-button {
+            background: white;
+            border: 1px solid rgba(108, 92, 231, 0.15);
+            border-radius: 8px;
+            padding: 0.5rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(108, 92, 231, 0.1);
+        }
+
+        .language-button:hover {
+            border-color: var(--accent-color);
+            box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
+        }
+
+        .language-button span {
+            margin-left: 0.5rem;
+            font-size: 1rem;
+            color: var(--text-color);
+        }
+
+        .language-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 110%;
+            background: white;
+            border: 1px solid rgba(108, 92, 231, 0.15);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 200;
+            width: 250px;
+        }
+
+        .language-dropdown.active {
+            display: block;
+        }
+
+        .language-option {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .language-option:hover {
+            background: var(--secondary-bg);
+        }
+
+        .language-option span {
+            margin-left: 0.5rem;
+            font-size: 0.95rem;
+            color: var(--text-color);
+        }
+
+        /* Scrollbar Styling for Dropdown */
+        .language-dropdown::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .language-dropdown::-webkit-scrollbar-thumb {
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 3px;
+        }
+
         .main-container {
             position: fixed;
             inset: 0;
@@ -101,10 +156,8 @@
             align-items: center;
             justify-content: center;
             padding: 70px 0;
-            overflow-y: auto;
         }
 
-        /* Video Wrapper */
         .video-wrapper {
             position: relative;
             width: 100%;
@@ -116,7 +169,6 @@
             margin: 0 auto;
         }
 
-        /* Background Images and Videos */
         .background {
             position: absolute;
             width: 100%;
@@ -147,10 +199,9 @@
             opacity: 1;
         }
 
-        /* Main Action Button */
         .main-action-container {
             position: fixed;
-            bottom: 150px; /* Adjusted to make room for chat interface */
+            bottom: 70px;
             left: 0;
             right: 0;
             display: flex;
@@ -199,7 +250,6 @@
             background: #808080;
         }
 
-        /* Controls Container */
         .controls-container {
             position: fixed;
             bottom: 0;
@@ -213,15 +263,8 @@
             justify-content: space-between;
             z-index: 10;
             border-top: 1px solid rgba(108, 92, 231, 0.1);
-            transition: background var(--transition-duration) ease;
         }
 
-        body.dark-mode .controls-container {
-            background: var(--dark-secondary-bg);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        /* Logo */
         .logo-container {
             display: flex;
             flex-direction: column;
@@ -246,11 +289,6 @@
             margin-left: 0.25rem;
         }
 
-        body.dark-mode .logo-byline {
-            color: #ccc;
-        }
-
-        /* Status Indicator */
         .status-indicator {
             display: flex;
             align-items: center;
@@ -272,7 +310,6 @@
             animation: pulse 1.5s infinite;
         }
 
-        /* Share Button */
         .share-button {
             width: 48px;
             height: 48px;
@@ -293,238 +330,6 @@
             box-shadow: 0 4px 12px var(--shadow);
         }
 
-        /* Theme Toggle Button */
-        .theme-toggle {
-            margin-left: 15px;
-            cursor: pointer;
-            width: 32px;
-            height: 32px;
-            border: none;
-            background: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .theme-toggle svg {
-            width: 24px;
-            height: 24px;
-            fill: var(--text-color);
-            transition: fill var(--transition-duration) ease;
-        }
-
-        /* Chat Interface */
-        .chat-container {
-            position: fixed;
-            bottom: 80px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 90%;
-            max-width: 400px;
-            background: var(--secondary-bg);
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            padding: 1rem;
-            z-index: 20;
-            display: none; /* Hidden by default */
-            flex-direction: column;
-            transition: background var(--transition-duration) ease;
-        }
-
-        .chat-container.active {
-            display: flex;
-        }
-
-        .chat-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 0.5rem;
-        }
-
-        .chat-title {
-            font-size: 1rem;
-            font-weight: 600;
-        }
-
-        .close-chat {
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: var(--text-color);
-        }
-
-        .chat-messages {
-            flex: 1;
-            overflow-y: auto;
-            max-height: 200px;
-            margin-bottom: 0.5rem;
-        }
-
-        .chat-message {
-            margin-bottom: 0.5rem;
-        }
-
-        .chat-message.user {
-            text-align: right;
-            color: var(--accent-color);
-        }
-
-        .chat-message.eva {
-            text-align: left;
-            color: var(--primary-color);
-        }
-
-        .chat-input-container {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .chat-input {
-            flex: 1;
-            padding: 0.5rem;
-            border: 1px solid var(--shadow);
-            border-radius: 8px;
-            outline: none;
-            transition: border-color var(--transition-duration) ease;
-        }
-
-        .chat-input:focus {
-            border-color: var(--accent-color);
-        }
-
-        .send-chat {
-            background: var(--accent-color);
-            border: none;
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background var(--transition-duration) ease;
-        }
-
-        .send-chat:hover {
-            background: var(--primary-color);
-        }
-
-        /* Feedback Button */
-        .feedback-button {
-            position: fixed;
-            top: 80px;
-            right: 20px;
-            background: var(--accent-color);
-            border: none;
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 12px;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
-            transition: background var(--transition-duration) ease, transform 0.3s ease;
-            z-index: 100;
-        }
-
-        .feedback-button:hover {
-            background: var(--primary-color);
-            transform: translateY(-2px);
-        }
-
-        /* Feedback Modal */
-        .feedback-modal {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.5);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 200;
-        }
-
-        .feedback-modal.active {
-            display: flex;
-        }
-
-        .feedback-content {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 12px;
-            width: 90%;
-            max-width: 400px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            position: relative;
-        }
-
-        body.dark-mode .feedback-content {
-            background: var(--dark-secondary-bg);
-            color: var(--dark-text-color);
-        }
-
-        .close-feedback {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: var(--text-color);
-        }
-
-        .feedback-form textarea {
-            width: 100%;
-            height: 100px;
-            padding: 0.5rem;
-            border: 1px solid var(--shadow);
-            border-radius: 8px;
-            resize: none;
-            outline: none;
-            transition: border-color var(--transition-duration) ease;
-        }
-
-        .feedback-form textarea:focus {
-            border-color: var(--accent-color);
-        }
-
-        .feedback-form button {
-            margin-top: 0.5rem;
-            background: var(--accent-color);
-            border: none;
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: background var(--transition-duration) ease;
-        }
-
-        .feedback-form button:hover {
-            background: var(--primary-color);
-        }
-
-        /* Theme Toggle Button Styles */
-        .theme-toggle svg {
-            fill: var(--text-color);
-        }
-
-        /* Chat Button */
-        .chat-button {
-            position: fixed;
-            bottom: 80px;
-            right: 20px;
-            background: var(--accent-color);
-            border: none;
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 12px;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
-            transition: background var(--transition-duration) ease, transform 0.3s ease;
-            z-index: 100;
-        }
-
-        .chat-button:hover {
-            background: var(--primary-color);
-            transform: translateY(-2px);
-        }
-
-        /* Animations */
         @keyframes buttonShine {
             to { transform: translateX(100%) rotate(45deg); }
         }
@@ -535,22 +340,6 @@
             100% { transform: scale(1); opacity: 1; }
         }
 
-        /* Loading Spinner */
-        .loading-spinner {
-            border: 4px solid var(--secondary-bg);
-            border-top: 4px solid var(--accent-color);
-            border-radius: 50%;
-            width: 24px;
-            height: 24px;
-            animation: spin 1s linear infinite;
-            margin-right: 8px;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* Responsive Adjustments */
         @media (max-width: 768px) {
             .controls-container {
                 padding-bottom: env(safe-area-inset-bottom);
@@ -561,11 +350,12 @@
             }
 
             .main-action-container {
-                bottom: calc(150px + env(safe-area-inset-bottom));
+                bottom: calc(70px + env(safe-area-inset-bottom));
             }
 
-            .chat-container {
-                bottom: 140px;
+            /* Adjust language selector for mobile */
+            .language-selector {
+                display: none;
             }
         }
 
@@ -582,26 +372,132 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 </head>
 <body>
-    <!-- Top Bar -->
     <div class="top-bar">
-        <a href="/" class="back-button" aria-label="Go Back">
+        <a href="/" class="back-button">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M19 12H5M12 19l-7-7 7-7"/>
             </svg>
         </a>
         <div class="character-name">Eva The Robot</div>
-        <!-- Theme Toggle Button -->
-        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
-            <svg id="themeIcon" viewBox="0 0 24 24">
-                <!-- Sun Icon -->
-                <path id="sunIcon" d="M12 4V2m0 20v-2m8-8h2M2 12H4m15.364-6.364l1.414 1.414M4.222 19.778l1.414-1.414M19.778 19.778l-1.414-1.414M4.222 4.222l1.414 1.414" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                <!-- Moon Icon (hidden by default) -->
-                <path id="moonIcon" d="M21 12.79A9 9 0 1111.21 3a7 7 0 109.79 9.79z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;"/>
-            </svg>
-        </button>
+        
+        <!-- Language Selector -->
+        <div class="language-selector">
+            <button class="language-button" id="languageButton">
+                🌐 <span>Language</span>
+            </button>
+            <div class="language-dropdown" id="languageDropdown">
+                <div class="language-option" onclick="selectLanguage('en-US')">
+                    🇺🇸 <span>English (USA)</span>
+                </div>
+                <div class="language-option" onclick="selectLanguage('en-GB')">
+                    🇬🇧 <span>English (UK)</span>
+                </div>
+                <div class="language-option" onclick="selectLanguage('en-AU')">
+                    🇦🇺 <span>English (Australia)</span>
+                </div>
+                <div class="language-option" onclick="selectLanguage('en-CA')">
+                    🇨🇦 <span>English (Canada)</span>
+                </div>
+                <div class="language-option" onclick="selectLanguage('ja-JP')">
+                    🇯🇵 <span>Japanese</span>
+                </div>
+                <div class="language-option" onclick="selectLanguage('zh-CN')">
+                    🇨🇳 <span>Chinese</span>
+                </div>
+                <div class="language-option" onclick="selectLanguage('de-DE')">
+                    🇩🇪 <span>German</span>
+                </div>
+                <div class="language-option" onclick="selectLanguage('hi-IN')">
+                    🇮🇳 <span>Hindi</span>
+                </div>
+                <div class="language-option" onclick="selectLanguage('fr-FR')">
+                    🇫🇷 <span>French (France)</span>
+                </div>
+                <div class="language-option" onclick="selectLanguage('fr-CA')">
+                    🇨🇦 <span>French (Canada)</span>
+                </div>
+                <div class="language-option" onclick="selectLanguage('ko-KR')">
+                    🇰🇷 <span>Korean</span>
+                </div>
+                <div class="language-option" onclick="selectLanguage('pt-BR')">
+                    🇧🇷 <span>Portuguese (Brazil)</span>
+                </div>
+                <div class="language-option" onclick="selectLanguage('pt-PT')">
+                    🇵🇹 <span>Portuguese (Portugal)</span>
+                </div>
+                <div class="language-option" onclick="selectLanguage('it-IT')">
+                    🇮🇹 <span>Italian</span>
+                </div>
+                <div class="language-option" onclick="selectLanguage('es-ES')">
+                    🇪🇸 <span>Spanish (Spain)</span>
+                </div>
+                <div class="language-option" onclick="selectLanguage('es-MX')">
+                    🇲🇽 <span>Spanish (Mexico)</span>
+                </div>
+                <div class="language-option" onclick="selectLanguage('id-ID')">
+                    🇮🇩 <span>Indonesian</span>
+                </div>
+                <div class="language-option" onclick="selectLanguage('nl-NL')">
+                    🇳🇱 <span>Dutch</span>
+                </div>
+                <div class="language-option" onclick="selectLanguage('tr-TR')">
+                    🇹🇷 <span>Turkish</span>
+                </div>
+                <div class="language-option" onclick="selectLanguage('fil-PH')">
+                    🇵🇭 <span>Filipino</span>
+                </div>
+                <div class="language-option" onclick="selectLanguage('pl-PL')">
+                    🇵🇱 <span>Polish</span>
+                </div>
+                <div class="language-option" onclick="selectLanguage('sv-SE')">
+                    🇸🇪 <span>Swedish</span>
+                </div>
+                <div class="language-option" onclick="selectLanguage('bg-BG')">
+                    🇧🇬 <span>Bulgarian</span>
+                </div>
+                <div class="language-option" onclick="selectLanguage('ro-RO')">
+                    🇷🇴 <span>Romanian</span>
+                </div>
+                <div class="language-option" onclick="selectLanguage('ar-SA')">
+                    🇸🇦 <span>Arabic (Saudi Arabia)</span>
+                </div>
+                <div class="language-option" onclick="selectLanguage('ar-AE')">
+                    🇦🇪 <span>Arabic (UAE)</span>
+                </div>
+                <div class="language-option" onclick="selectLanguage('cs-CZ')">
+                    🇨🇿 <span>Czech</span>
+                </div>
+                <div class="language-option" onclick="selectLanguage('el-GR')">
+                    🇬🇷 <span>Greek</span>
+                </div>
+                <div class="language-option" onclick="selectLanguage('fi-FI')">
+                    🇫🇮 <span>Finnish</span>
+                </div>
+                <div class="language-option" onclick="selectLanguage('hr-HR')">
+                    🇭🇷 <span>Croatian</span>
+                </div>
+                <div class="language-option" onclick="selectLanguage('ms-MY')">
+                    🇲🇾 <span>Malay</span>
+                </div>
+                <div class="language-option" onclick="selectLanguage('sk-SK')">
+                    🇸🇰 <span>Slovak</span>
+                </div>
+                <div class="language-option" onclick="selectLanguage('da-DK')">
+                    🇩🇰 <span>Danish</span>
+                </div>
+                <div class="language-option" onclick="selectLanguage('ta-IN')">
+                    🇮🇳 <span>Tamil</span>
+                </div>
+                <div class="language-option" onclick="selectLanguage('uk-UA')">
+                    🇺🇦 <span>Ukrainian</span>
+                </div>
+                <div class="language-option" onclick="selectLanguage('ru-RU')">
+                    🇷🇺 <span>Russian</span>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <!-- Main Container -->
     <div class="main-container">
         <div class="video-wrapper">
             <div class="background image"></div>
@@ -614,67 +510,12 @@
         </div>
     </div>
 
-    <!-- Main Action Button -->
     <div class="main-action-container">
-        <button id="startButton" class="main-button" aria-label="Start Conversation">Start Conversation</button>
+        <button id="startButton" class="main-button">Start Conversation</button>
     </div>
 
-    <!-- Chat Interface -->
-    <div class="chat-container" id="chatContainer" aria-label="Chat with Eva">
-        <div class="chat-header">
-            <div class="chat-title">Chat with Eva</div>
-            <button class="close-chat" onclick="toggleChat()" aria-label="Close Chat">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="18" y1="6" x2="6" y2="18"/>
-                    <line x1="6" y1="6" x2="18" y2="18"/>
-                </svg>
-            </button>
-        </div>
-        <div class="chat-messages" id="chatMessages">
-            <!-- Chat messages will appear here -->
-        </div>
-        <div class="chat-input-container">
-            <input type="text" id="chatInput" class="chat-input" placeholder="Type your message..." aria-label="Type your message">
-            <button class="send-chat" onclick="sendMessage()" aria-label="Send Message">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-                    <line x1="22" y1="2" x2="11" y2="13"/>
-                    <polygon points="22 2 15 22 11 13 2 9 22 2"/>
-                </svg>
-            </button>
-        </div>
-    </div>
+    <canvas id="confetti-canvas"></canvas>
 
-    <!-- Feedback Button -->
-    <button class="feedback-button" onclick="openFeedback()" aria-label="Give Feedback">Feedback</button>
-
-    <!-- Feedback Modal -->
-    <div class="feedback-modal" id="feedbackModal" aria-hidden="true">
-        <div class="feedback-content">
-            <button class="close-feedback" onclick="closeFeedback()" aria-label="Close Feedback">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="18" y1="6" x2="6" y2="18"/>
-                    <line x1="6" y1="6" x2="18" y2="18"/>
-                </svg>
-            </button>
-            <h2>We Value Your Feedback</h2>
-            <form class="feedback-form" onsubmit="submitFeedback(event)">
-                <textarea id="feedbackText" placeholder="Tell us about your experience..." required></textarea>
-                <button type="submit">Submit</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Chat Button -->
-    <button class="chat-button" onclick="toggleChat()" aria-label="Open Chat">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
-        </svg>
-    </button>
-
-    <!-- Canvas for Confetti -->
-    <canvas id="confetti-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index: 50;"></canvas>
-
-    <!-- Controls Container -->
     <div class="controls-container">
         <div class="logo-container">
             <a href="/" class="logo">Talkidz</a>
@@ -684,7 +525,7 @@
             <div class="status-dot"></div>
             <span class="status-text">Ready to chat</span>
         </div>
-        <button class="share-button" onclick="shareCharacter()" aria-label="Share Eva">
+        <button class="share-button" onclick="shareCharacter()">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
                 <polyline points="16 6 12 2 8 6"/>
@@ -706,11 +547,6 @@
         const startButton = document.getElementById('startButton');
         const statusDot = document.querySelector('.status-dot');
         const statusText = document.querySelector('.status-text');
-        const confettiCanvas = document.getElementById('confetti-canvas');
-        const chatContainer = document.getElementById('chatContainer');
-        const chatMessages = document.getElementById('chatMessages');
-        const chatInput = document.getElementById('chatInput');
-        const feedbackModal = document.getElementById('feedbackModal');
 
         const updateStatus = (mode) => {
             statusDot.classList.remove('listening');
@@ -791,7 +627,6 @@
                         <line x1="6" y1="6" x2="18" y2="18"></line>
                     </svg>
                 `;
-                startButton.setAttribute('aria-label', 'End Conversation');
 
                 conversation = await Conversation.startSession({
                     agentId: 'UWxUKTTWxyHwoEfDDic2',
@@ -802,33 +637,21 @@
                     onDisconnect: () => {
                         updateBackground('idle');
                         startButton.classList.remove('active');
-                        startButton.innerHTML = 'Start Conversation';
-                        startButton.setAttribute('aria-label', 'Start Conversation');
+                        startButton.textContent = 'Start Conversation';
                     },
                     onError: (error) => {
                         console.error('Conversation error:', error);
                         updateBackground('idle');
                         startButton.classList.remove('active');
-                        startButton.innerHTML = 'Start Conversation';
-                        startButton.setAttribute('aria-label', 'Start Conversation');
-                    },
-                    onMessage: (message) => {
-                        displayChatMessage('eva', message.text);
+                        startButton.textContent = 'Start Conversation';
                     }
-                });
-
-                // Listen for user messages
-                conversation.on('userMessage', (message) => {
-                    displayChatMessage('user', message.text);
                 });
 
             } catch (error) {
                 console.error('Error starting conversation:', error);
                 updateBackground('idle');
                 startButton.classList.remove('active');
-                startButton.innerHTML = 'Start Conversation';
-                startButton.setAttribute('aria-label', 'Start Conversation');
-                alert('Unable to access microphone. Please check your permissions.');
+                startButton.textContent = 'Start Conversation';
             }
         };
 
@@ -842,21 +665,18 @@
                     conversation = null;
                     updateBackground('idle');
                     startButton.classList.remove('active');
-                    startButton.innerHTML = 'Start Conversation';
-                    startButton.setAttribute('aria-label', 'Start Conversation');
+                    startButton.textContent = 'Start Conversation';
                 }
             }
         };
 
-        const toggleConversation = async () => {
+        startButton.addEventListener('click', async () => {
             if (conversation) {
                 await endConversation();
             } else {
                 await startConversation();
             }
-        };
-
-        startButton.addEventListener('click', toggleConversation);
+        });
 
         window.shareCharacter = () => {
             if (navigator.share) {
@@ -865,9 +685,6 @@
                     text: 'Come chat with Eva, your new AI friend!',
                     url: window.location.href
                 }).catch(console.error);
-            } else {
-                // Fallback for browsers that do not support the Web Share API
-                prompt('Copy and share this link:', window.location.href);
             }
         };
 
@@ -875,68 +692,35 @@
         preloadVideos();
         updateBackground('idle');
 
-        // Chat Functionality
-        const toggleChat = () => {
-            chatContainer.classList.toggle('active');
-        };
+        // Language Selector Functionality
+        const languageButton = document.getElementById('languageButton');
+        const languageDropdown = document.getElementById('languageDropdown');
 
-        const displayChatMessage = (sender, text) => {
-            const messageDiv = document.createElement('div');
-            messageDiv.classList.add('chat-message', sender);
-            messageDiv.textContent = text;
-            chatMessages.appendChild(messageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        };
+        languageButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            languageDropdown.classList.toggle('active');
+        });
 
-        const sendMessage = () => {
-            const text = chatInput.value.trim();
-            if (text === '' || !conversation) return;
-            displayChatMessage('user', text);
-            conversation.sendMessage(text);
-            chatInput.value = '';
-        };
-
-        chatInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                sendMessage();
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!languageButton.contains(e.target) && !languageDropdown.contains(e.target)) {
+                languageDropdown.classList.remove('active');
             }
         });
 
-        // Theme Toggle Functionality
-        const toggleTheme = () => {
-            document.body.classList.toggle('dark-mode');
-            const sunIcon = document.getElementById('sunIcon');
-            const moonIcon = document.getElementById('moonIcon');
-            if (document.body.classList.contains('dark-mode')) {
-                sunIcon.style.display = 'none';
-                moonIcon.style.display = 'block';
-            } else {
-                sunIcon.style.display = 'block';
-                moonIcon.style.display = 'none';
-            }
-        };
-
-        // Feedback Functionality
-        const openFeedback = () => {
-            feedbackModal.classList.add('active');
-            feedbackModal.setAttribute('aria-hidden', 'false');
-        };
-
-        const closeFeedback = () => {
-            feedbackModal.classList.remove('active');
-            feedbackModal.setAttribute('aria-hidden', 'true');
-        };
-
-        const submitFeedback = (event) => {
-            event.preventDefault();
-            const feedbackText = document.getElementById('feedbackText').value.trim();
-            if (feedbackText === '') return;
-            // TODO: Integrate with backend or email service to collect feedback
-            alert('Thank you for your feedback!');
-            closeFeedback();
-            document.getElementById('feedbackText').value = '';
-        };
+        function selectLanguage(langCode) {
+            // Placeholder function for language selection
+            // Implement localization logic here
+            console.log('Selected language:', langCode);
+            alert(`Language selected: ${langCode}`);
+            languageDropdown.classList.remove('active');
+            // Optionally, update the language button to show the selected language
+            // Example:
+            // const selectedOption = languageDropdown.querySelector(`[onclick="selectLanguage('${langCode}')"]`);
+            // const flag = selectedOption.querySelector('span').previousSibling.textContent;
+            // const languageName = selectedOption.querySelector('span').textContent;
+            // languageButton.innerHTML = `${flag} <span>${languageName}</span>`;
+        }
     </script>
 </body>
 </html>
