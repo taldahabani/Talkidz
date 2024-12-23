@@ -342,20 +342,16 @@
     import { MicrophoneManager } from '/js/microphone-manager.js';
 
     let conversation = null;
-    let videosLoaded = { idle: false, speaking: false };
-    const CONVERSATION_TIME = 180;
     const micManager = new MicrophoneManager();
-
-    const backgroundImage = document.querySelector('.background.image');
-    const idleVideo = document.getElementById('idleVideo');
-    const speakingVideo = document.getElementById('speakingVideo');
     const startButton = document.getElementById('startButton');
     const statusDot = document.querySelector('.status-dot');
     const statusText = document.querySelector('.status-text');
+    const idleVideo = document.getElementById('idleVideo');
+    const speakingVideo = document.getElementById('speakingVideo');
 
     const updateStatus = (mode) => {
         statusDot.classList.remove('listening');
-        switch(mode) {
+        switch (mode) {
             case 'listening':
                 statusText.textContent = 'Listening...';
                 statusDot.classList.add('listening');
@@ -371,54 +367,17 @@
         }
     };
 
-    const preloadVideos = () => {
-        idleVideo.load();
-        idleVideo.addEventListener('loadeddata', () => {
-            videosLoaded.idle = true;
-            backgroundImage.style.opacity = '0';
-            idleVideo.classList.add('active');
-            idleVideo.play().catch(console.error);
-        });
-
-        speakingVideo.load();
-        speakingVideo.addEventListener('loadeddata', () => {
-            videosLoaded.speaking = true;
-        });
-    };
-
     const updateBackground = (mode) => {
-        if (mode === 'speaking' && videosLoaded.speaking) {
+        if (mode === 'speaking') {
             idleVideo.classList.remove('active');
             speakingVideo.classList.add('active');
             speakingVideo.play().catch(console.error);
-        } else if (videosLoaded.idle) {
+        } else {
             speakingVideo.classList.remove('active');
             idleVideo.classList.add('active');
             idleVideo.play().catch(console.error);
-        } else {
-            backgroundImage.style.opacity = '1';
-            [idleVideo, speakingVideo].forEach(video => video.classList.remove('active'));
         }
         updateStatus(mode);
-    };
-
-    const triggerConfetti = () => {
-        const options = { origin: { y: 0.7 } };
-        const count = 200;
-        
-        [
-            { spread: 26, startVelocity: 55, particleRatio: 0.25 },
-            { spread: 60, particleRatio: 0.2 },
-            { spread: 100, decay: 0.91, scalar: 0.8, particleRatio: 0.35 },
-            { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2, particleRatio: 0.1 },
-            { spread: 120, startVelocity: 45, particleRatio: 0.1 }
-        ].forEach(opts => {
-            confetti({
-                ...options,
-                ...opts,
-                particleCount: Math.floor(count * opts.particleRatio)
-            });
-        });
     };
 
     const startConversation = async () => {
@@ -429,7 +388,6 @@
                 return;
             }
 
-            triggerConfetti();
             startButton.classList.add('active');
             startButton.innerHTML = `
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
@@ -439,11 +397,9 @@
             `;
 
             conversation = await Conversation.startSession({
-                agentId: 'UWxUKTTWxyHwoEfDDic2',
+                agentId: 'YOUR_AGENT_ID', // Replace with your actual agent ID
                 onModeChange: (mode) => updateBackground(mode.mode),
-                onConnect: () => {
-                    updateBackground('listening');
-                },
+                onConnect: () => updateBackground('listening'),
                 onDisconnect: () => {
                     updateBackground('idle');
                     startButton.classList.remove('active');
@@ -454,11 +410,8 @@
                     updateBackground('idle');
                     startButton.classList.remove('active');
                     startButton.textContent = 'Start Conversation';
-                },
-                // Pass the existing microphone stream if possible
-                microphoneStream: micManager.micStream // Assuming Conversation can accept this
+                }
             });
-
         } catch (error) {
             console.error('Error starting conversation:', error);
             updateBackground('idle');
@@ -490,22 +443,12 @@
         }
     });
 
-    window.shareCharacter = () => {
-        if (navigator.share) {
-            navigator.share({
-                title: 'Chat with Eva on Talkidz',
-                text: 'Come chat with Eva, your new AI friend!',
-                url: window.location.href
-            }).catch(console.error);
-        }
-    };
-
     window.addEventListener('beforeunload', () => {
         micManager.cleanup();
     });
 
     // Initialize with idle state
-    preloadVideos();
     updateBackground('idle');
 </script>
-
+</body>
+</html>
