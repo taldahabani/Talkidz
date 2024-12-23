@@ -337,12 +337,14 @@
         </button>
     </div>
 
-    <script type="module">
+<script type="module">
         import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
+        import { MicrophoneManager } from '/js/microphone-manager.js';
 
         let conversation = null;
         let videosLoaded = { idle: false, speaking: false };
         const CONVERSATION_TIME = 180;
+        const micManager = new MicrophoneManager();
 
         const backgroundImage = document.querySelector('.background.image');
         const idleVideo = document.getElementById('idleVideo');
@@ -421,7 +423,11 @@
 
         const startConversation = async () => {
             try {
-                await navigator.mediaDevices.getUserMedia({ audio: true });
+                const hasAccess = await micManager.getMicrophoneAccess();
+                if (!hasAccess) {
+                    throw new Error('Microphone access denied');
+                }
+
                 triggerConfetti();
                 startButton.classList.add('active');
                 startButton.innerHTML = `
@@ -490,6 +496,10 @@
                 }).catch(console.error);
             }
         };
+
+        window.addEventListener('beforeunload', () => {
+            micManager.cleanup();
+        });
 
         // Initialize with idle state
         preloadVideos();
