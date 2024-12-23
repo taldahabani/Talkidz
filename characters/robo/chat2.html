@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -341,7 +342,6 @@
 
         let conversation = null;
         let videosLoaded = { idle: false, speaking: false };
-        let audioStream = null;
         const CONVERSATION_TIME = 180;
 
         const backgroundImage = document.querySelector('.background.image');
@@ -350,23 +350,6 @@
         const startButton = document.getElementById('startButton');
         const statusDot = document.querySelector('.status-dot');
         const statusText = document.querySelector('.status-text');
-
-        const checkMicrophonePermission = async () => {
-            try {
-                if (audioStream) {
-                    return true;
-                }
-                
-                const permissionStatus = await navigator.permissions.query({ name: 'microphone' });
-                if (permissionStatus.state === 'granted') {
-                    audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                    return true;
-                }
-                return false;
-            } catch (error) {
-                return false;
-            }
-        };
 
         const updateStatus = (mode) => {
             statusDot.classList.remove('listening');
@@ -438,11 +421,7 @@
 
         const startConversation = async () => {
             try {
-                const hasPermission = await checkMicrophonePermission();
-                if (!hasPermission) {
-                    audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                }
-
+                await navigator.mediaDevices.getUserMedia({ audio: true });
                 triggerConfetti();
                 startButton.classList.add('active');
                 startButton.innerHTML = `
@@ -512,13 +491,7 @@
             }
         };
 
-        window.addEventListener('beforeunload', () => {
-            if (audioStream) {
-                audioStream.getTracks().forEach(track => track.stop());
-                audioStream = null;
-            }
-        });
-
+        // Initialize with idle state
         preloadVideos();
         updateBackground('idle');
     </script>
