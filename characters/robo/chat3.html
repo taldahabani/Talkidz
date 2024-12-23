@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eva The Robot - Talkidz</title>
+    <title>Talkidz - Chat with Characters</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" rel="stylesheet">
     <style>
         :root {
@@ -186,6 +186,7 @@
 
         .main-button.active, .character-button.active {
             background: #808080;
+            cursor: not-allowed;
         }
 
         .main-button::before, .character-button::before {
@@ -252,11 +253,15 @@
         /* Main Container and Video Styles */
         .main-container {
             position: fixed;
-            inset: 0;
+            top: 70px;
+            bottom: 70px;
+            left: 0;
+            right: 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 70px 0;
+            padding: 0;
+            z-index: 1;
         }
 
         .video-wrapper {
@@ -289,23 +294,6 @@
         .background.image {
             background: url('/characters/emma/assets/emma.jpg') center/contain no-repeat;
             opacity: 1;
-        }
-
-        .main-action-container {
-            position: fixed;
-            bottom: 70px;
-            left: 0;
-            right: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 1rem;
-            z-index: 10;
-        }
-
-        .main-button.active, .character-button.active {
-            background: #808080;
-            cursor: not-allowed;
         }
 
         /* Controls Container Styles */
@@ -404,7 +392,7 @@
                 <path d="M19 12H5M12 19l-7-7 7-7"/>
             </svg>
         </a>
-        <div class="character-name">Eva The Robot</div>
+        <div class="character-name">Emma</div>
         
         <!-- Language Selector -->
         <div class="language-selector">
@@ -670,9 +658,7 @@
                     await navigator.mediaDevices.getUserMedia({ audio: true });
                     triggerConfetti();
                     startButton.classList.add('active');
-                    startButton.innerHTML = `
-                        ❌
-                    `;
+                    startButton.innerHTML = `❌`;
 
                     conversation = await Conversation.startSession({
                         agentId: 'UWxUKTTWxyHwoEfDDic2',
@@ -727,8 +713,8 @@
             window.shareCharacter = () => {
                 if (navigator.share) {
                     navigator.share({
-                        title: 'Chat with Eva on Talkidz',
-                        text: 'Come chat with Eva, your new AI friend!',
+                        title: 'Chat with Characters on Talkidz',
+                        text: 'Come chat with your favorite characters on Talkidz!',
                         url: window.location.href
                     }).catch(console.error);
                 }
