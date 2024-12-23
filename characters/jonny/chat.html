@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jonny - Talkidz</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #FF4B6E;
+            --accent-color: #6C5CE7;
+            --text-color: #1A1A1A;
+            --background: #FFFFFF;
+            --secondary-bg: #F5F5F5;
+            --shadow: rgba(0, 0, 0, 0.08);
+            --transition-duration: 0.5s;
+            --max-content-width: 768px;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--background);
+            overflow: hidden;
+        }
+
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            padding: 0 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 100;
+            background: linear-gradient(to right, rgba(245, 245, 245, 0.98), rgba(255, 255, 255, 0.98));
+            backdrop-filter: blur(10px);
+        }
+
+        .back-button {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-color);
+            background: white;
+            border: 1px solid rgba(108, 92, 231, 0.15);
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(108, 92, 231, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            transform: translateX(-2px);
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        .character-name {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .main-container {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 70px 0;
+        }
+
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            max-width: var(--max-content-width);
+            margin: 0 auto;
+        }
+
+        .background {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            transition: opacity var(--transition-duration) ease;
+            object-fit: contain;
+        }
+
+        @media (max-width: 768px) {
+            .background {
+                width: 100%;
+                height: auto;
+                max-height: none;
+                object-fit: cover;
+            }
+        }
+
+        .background.video {
+            opacity: 0;
+        }
+
+        .background.video.active {
+            opacity: 1;
+        }
+
+        .background.image {
+            background: url('/characters/jonny/assets/jonny.jpg') center/contain no-repeat;
+            opacity: 1;
+        }
+
+        .main-action-container {
+            position: fixed;
+            bottom: 70px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+            z-index: 10;
+        }
+
+        .main-button {
+            background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .main-button::before {
+            content: '';
+            position: absolute;
+            inset: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: translateX(-100%) rotate(45deg);
+            animation: buttonShine 3s infinite;
+        }
+
+        .main-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(108, 92, 231, 0.3);
+        }
+
+        .main-button.active {
+            width: 48px;
+            height: 48px;
+            padding: 0;
+            border-radius: 50%;
+            background: #808080;
+        }
+
+        .controls-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            padding: 0 1.5rem;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 10;
+            border-top: 1px solid rgba(108, 92, 231, 0.1);
+        }
+
+        .logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-byline {
+            font-size: 0.75rem;
+            color: #666;
+            margin-top: -0.25rem;
+            margin-left: 0.25rem;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.875rem;
+            color: var(--text-color);
+            margin-right: 20px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #22c55e;
+            transition: background-color 0.3s ease;
+        }
+
+        .status-dot.listening {
+            animation: pulse 1.5s infinite;
+        }
+
+        .share-button {
+            width: 48px;
+            height: 48px;
+            border: none;
+            border-radius: 50%;
+            background: var(--secondary-bg);
+            color: var(--text-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .share-button:hover {
+            transform: translateY(-2px);
+            background: white;
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        @keyframes buttonShine {
+            to { transform: translateX(100%) rotate(45deg); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.7; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .controls-container {
+                padding-bottom: env(safe-area-inset-bottom);
+            }
+
+            .main-button {
+                padding: 1rem 2rem;
+            }
+
+            .main-action-container {
+                bottom: calc(70px + env(safe-area-inset-bottom));
+            }
+        }
+
+        @media (min-width: 769px) {
+            .main-container {
+                padding: 70px max(1.5rem, calc((100vw - var(--max-content-width)) / 2));
+            }
+
+            .video-wrapper {
+                max-height: calc(100vh - 140px);
+            }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+    <div class="top-bar">
+        <a href="/" class="back-button">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+        </a>
+        <div class="character-name">Jonny</div>
+    </div>
+
+    <div class="main-container">
+        <div class="video-wrapper">
+            <div class="background image"></div>
+            <video class="background video" id="idleVideo" loop muted playsinline disablePictureInPicture>
+                <source src="/characters/robo/assets/jonny-idle.mp4" type="video/mp4">
+            </video>
+            <video class="background video" id="speakingVideo" loop muted playsinline disablePictureInPicture>
+                <source src="/characters/robo/assets/jonny-talking.mp4" type="video/mp4">
+            </video>
+        </div>
+    </div>
+
+    <div class="main-action-container">
+        <button id="startButton" class="main-button">Start Conversation</button>
+    </div>
+
+    <canvas id="confetti-canvas"></canvas>
+
+    <div class="controls-container">
+        <div class="logo-container">
+            <a href="/" class="logo">Talkidz</a>
+            <span class="logo-byline">by Playbox</span>
+        </div>
+        <div class="status-indicator">
+            <div class="status-dot"></div>
+            <span class="status-text">Ready to chat</span>
+        </div>
+        <button class="share-button" onclick="shareCharacter()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+                <polyline points="16 6 12 2 8 6"/>
+                <line x1="12" y1="2" x2="12" y2="15"/>
+            </svg>
+        </button>
+    </div>
+
+    <script type="module">
+        import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
+
+        let conversation = null;
+        let videosLoaded = { idle: false, speaking: false };
+        const CONVERSATION_TIME = 180;
+
+        const backgroundImage = document.querySelector('.background.image');
+        const idleVideo = document.getElementById('idleVideo');
+        const speakingVideo = document.getElementById('speakingVideo');
+        const startButton = document.getElementById('startButton');
+        const statusDot = document.querySelector('.status-dot');
+        const statusText = document.querySelector('.status-text');
+
+        const updateStatus = (mode) => {
+            statusDot.classList.remove('listening');
+            switch(mode) {
+                case 'listening':
+                    statusText.textContent = 'Listening...';
+                    statusDot.classList.add('listening');
+                    statusDot.style.background = '#22c55e';
+                    break;
+                case 'speaking':
+                    statusText.textContent = 'Speaking...';
+                    statusDot.style.background = '#3b82f6';
+                    break;
+                default:
+                    statusText.textContent = 'Ready to chat';
+                    statusDot.style.background = '#22c55e';
+            }
+        };
+
+        const preloadVideos = () => {
+            idleVideo.load();
+            idleVideo.addEventListener('loadeddata', () => {
+                videosLoaded.idle = true;
+                backgroundImage.style.opacity = '0';
+                idleVideo.classList.add('active');
+                idleVideo.play().catch(console.error);
+            });
+
+            speakingVideo.load();
+            speakingVideo.addEventListener('loadeddata', () => {
+                videosLoaded.speaking = true;
+            });
+        };
+
+        const updateBackground = (mode) => {
+            if (mode === 'speaking' && videosLoaded.speaking) {
+                idleVideo.classList.remove('active');
+                speakingVideo.classList.add('active');
+                speakingVideo.play().catch(console.error);
+            } else if (videosLoaded.idle) {
+                speakingVideo.classList.remove('active');
+                idleVideo.classList.add('active');
+                idleVideo.play().catch(console.error);
+            } else {
+                backgroundImage.style.opacity = '1';
+                [idleVideo, speakingVideo].forEach(video => video.classList.remove('active'));
+            }
+            updateStatus(mode);
+        };
+
+        const triggerConfetti = () => {
+            const options = { origin: { y: 0.7 } };
+            const count = 200;
+            
+            [
+                { spread: 26, startVelocity: 55, particleRatio: 0.25 },
+                { spread: 60, particleRatio: 0.2 },
+                { spread: 100, decay: 0.91, scalar: 0.8, particleRatio: 0.35 },
+                { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2, particleRatio: 0.1 },
+                { spread: 120, startVelocity: 45, particleRatio: 0.1 }
+            ].forEach(opts => {
+                confetti({
+                    ...options,
+                    ...opts,
+                    particleCount: Math.floor(count * opts.particleRatio)
+                });
+            });
+        };
+
+        const startConversation = async () => {
+            try {
+                await navigator.mediaDevices.getUserMedia({ audio: true });
+                triggerConfetti();
+                startButton.classList.add('active');
+                startButton.innerHTML = `
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                `;
+
+                conversation = await Conversation.startSession({
+                    agentId: 'UWxUKTTWxyHwoEfDDic2',
+                    onModeChange: (mode) => updateBackground(mode.mode),
+                    onConnect: () => {
+                        updateBackground('listening');
+                    },
+                    onDisconnect: () => {
+                        updateBackground('idle');
+                        startButton.classList.remove('active');
+                        startButton.textContent = 'Start Conversation';
+                    },
+                    onError: (error) => {
+                        console.error('Conversation error:', error);
+                        updateBackground('idle');
+                        startButton.classList.remove('active');
+                        startButton.textContent = 'Start Conversation';
+                    }
+                });
+
+            } catch (error) {
+                console.error('Error starting conversation:', error);
+                updateBackground('idle');
+                startButton.classList.remove('active');
+                startButton.textContent = 'Start Conversation';
+            }
+        };
+
+        const endConversation = async () => {
+            if (conversation) {
+                try {
+                    await conversation.endSession();
+                } catch (error) {
+                    console.error('Error ending conversation:', error);
+                } finally {
+                    conversation = null;
+                    updateBackground('idle');
+                    startButton.classList.remove('active');
+                    startButton.textContent = 'Start Conversation';
+                }
+            }
+        };
+
+        startButton.addEventListener('click', async () => {
+            if (conversation) {
+                await endConversation();
+            } else {
+                await startConversation();
+            }
+        });
+
+        window.shareCharacter = () => {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Chat with Jonny on Talkidz',
+                    text: 'Come chat with Jonny, your new AI friend!',
+                    url: window.location.href
+                }).catch(console.error);
+            }
+        };
+
+        // Initialize with idle state
+        preloadVideos();
+        updateBackground('idle');
+    </script>
+</body>
+</html>
