@@ -336,7 +336,7 @@
         </button>
     </div>
 
-    <script type="module">
+<script type="module">
         import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
 
         let conversation = null;
@@ -349,6 +349,15 @@
         const startButton = document.getElementById('startButton');
         const statusDot = document.querySelector('.status-dot');
         const statusText = document.querySelector('.status-text');
+
+        const checkMicrophonePermission = async () => {
+            try {
+                const permissionStatus = await navigator.permissions.query({ name: 'microphone' });
+                return permissionStatus.state === 'granted';
+            } catch (error) {
+                return false;
+            }
+        };
 
         const updateStatus = (mode) => {
             statusDot.classList.remove('listening');
@@ -420,7 +429,11 @@
 
         const startConversation = async () => {
             try {
-                await navigator.mediaDevices.getUserMedia({ audio: true });
+                const hasPermission = await checkMicrophonePermission();
+                if (!hasPermission) {
+                    await navigator.mediaDevices.getUserMedia({ audio: true });
+                }
+
                 triggerConfetti();
                 startButton.classList.add('active');
                 startButton.innerHTML = `
@@ -490,7 +503,6 @@
             }
         };
 
-        // Initialize with idle state
         preloadVideos();
         updateBackground('idle');
     </script>
