@@ -145,6 +145,111 @@
             border-radius: 3px;
         }
 
+        /* Character Chooser Styles */
+        .main-action-container {
+            position: fixed;
+            bottom: 70px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+            z-index: 10;
+        }
+
+        .main-button, .character-button {
+            background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
+            color: white;
+            border: none;
+            padding: 1rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
+            position: relative;
+            overflow: hidden;
+            margin: 0 0.5rem; /* Space between buttons */
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .main-button:hover, .character-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(108, 92, 231, 0.3);
+        }
+
+        .main-button.active, .character-button.active {
+            background: #808080;
+        }
+
+        .main-button::before, .character-button::before {
+            content: '';
+            position: absolute;
+            inset: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: translateX(-100%) rotate(45deg);
+            animation: buttonShine 3s infinite;
+        }
+
+        @keyframes buttonShine {
+            to { transform: translateX(100%) rotate(45deg); }
+        }
+
+        /* Character Dropdown Styles */
+        .character-dropdown {
+            display: none;
+            position: absolute;
+            bottom: 110%;
+            right: 0;
+            background: white;
+            border: 1px solid rgba(108, 92, 231, 0.15);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
+            padding: 0.5rem;
+            z-index: 200;
+            width: 200px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .character-dropdown.active {
+            display: block;
+        }
+
+        .character-option {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .character-option:hover {
+            background: var(--secondary-bg);
+        }
+
+        .character-option img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-right: 0.5rem;
+            border: 2px solid var(--accent-color);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Main Container and Video Styles */
         .main-container {
             position: fixed;
             inset: 0;
@@ -173,6 +278,39 @@
             object-fit: contain;
         }
 
+        @media (max-width: 768px) {
+            .background {
+                width: 100%;
+                height: auto;
+                max-height: none;
+                object-fit: cover;
+            }
+
+            .controls-container {
+                padding-bottom: env(safe-area-inset-bottom);
+            }
+
+            .main-button, .character-button {
+                width: 40px;
+                height: 40px;
+                padding: 0.75rem;
+            }
+
+            .main-action-container {
+                bottom: calc(70px + env(safe-area-inset-bottom));
+            }
+        }
+
+        @media (min-width: 769px) {
+            .main-container {
+                padding: 70px max(1.5rem, calc((100vw - var(--max-content-width)) / 2));
+            }
+
+            .video-wrapper {
+                max-height: calc(100vh - 140px);
+            }
+        }
+
         .background.video {
             opacity: 0;
         }
@@ -186,57 +324,13 @@
             opacity: 1;
         }
 
-        .main-action-container {
-            position: fixed;
-            bottom: 70px;
-            left: 0;
-            right: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 1rem;
-            z-index: 10;
-        }
-
-        .main-button {
-            background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
-            color: white;
-            border: none;
-            padding: 1rem 2.5rem;
-            font-size: 1rem;
-            font-weight: 600;
-            border-radius: 999px;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .main-button::before {
-            content: '';
-            position: absolute;
-            inset: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-            transform: translateX(-100%) rotate(45deg);
-            animation: buttonShine 3s infinite;
-        }
-
-        .main-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(108, 92, 231, 0.3);
-        }
-
+        /* Main Action Button Text */
         .main-button.active {
-            width: 48px;
-            height: 48px;
-            padding: 0;
-            border-radius: 50%;
             background: #808080;
+            cursor: not-allowed;
         }
 
+        /* Controls Container Styles */
         .controls-container {
             position: fixed;
             bottom: 0;
@@ -317,50 +411,10 @@
             box-shadow: 0 4px 12px var(--shadow);
         }
 
-        @keyframes buttonShine {
-            to { transform: translateX(100%) rotate(45deg); }
-        }
-
         @keyframes pulse {
             0% { transform: scale(1); opacity: 1; }
             50% { transform: scale(1.2); opacity: 0.7; }
             100% { transform: scale(1); opacity: 1; }
-        }
-
-        @media (max-width: 768px) {
-            .background {
-                width: 100%;
-                height: auto;
-                max-height: none;
-                object-fit: cover;
-            }
-
-            .controls-container {
-                padding-bottom: env(safe-area-inset-bottom);
-            }
-
-            .main-button {
-                padding: 1rem 2rem;
-            }
-
-            .main-action-container {
-                bottom: calc(70px + env(safe-area-inset-bottom));
-            }
-
-            /* Language selector remains visible on mobile */
-            .language-selector {
-                /* Optional: Adjust position for better mobile display */
-            }
-        }
-
-        @media (min-width: 769px) {
-            .main-container {
-                padding: 70px max(1.5rem, calc((100vw - var(--max-content-width)) / 2));
-            }
-
-            .video-wrapper {
-                max-height: calc(100vh - 140px);
-            }
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
@@ -490,251 +544,330 @@
                 </div>
             </div>
         </div>
-    </div>
 
-    <div class="main-container">
-        <div class="video-wrapper">
-            <div class="background image"></div>
-            <video class="background video" id="idleVideo" loop muted playsinline disablePictureInPicture>
-                <source src="/characters/robo/assets/eva-idle.mp4" type="video/mp4">
-            </video>
-            <video class="background video" id="speakingVideo" loop muted playsinline disablePictureInPicture>
-                <source src="/characters/robo/assets/eva-talking.mp4" type="video/mp4">
-            </video>
+        <div class="main-container">
+            <div class="video-wrapper">
+                <div class="background image"></div>
+                <video class="background video" id="idleVideo" loop muted playsinline disablePictureInPicture>
+                    <source src="/characters/emma/assets/emma-idle.mp4" type="video/mp4">
+                </video>
+                <video class="background video" id="speakingVideo" loop muted playsinline disablePictureInPicture>
+                    <source src="/characters/emma/assets/emma-talking.mp4" type="video/mp4">
+                </video>
+            </div>
         </div>
-    </div>
 
-    <div class="main-action-container">
-        <button id="startButton" class="main-button">Start Conversation</button>
-    </div>
-
-    <canvas id="confetti-canvas"></canvas>
-
-    <div class="controls-container">
-        <div class="logo-container">
-            <a href="/" class="logo">Talkidz</a>
-            <span class="logo-byline">by Playbox</span>
+        <div class="main-action-container">
+            <button id="startButton" class="main-button" aria-label="Start Conversation">
+                ▶️
+            </button>
+            <!-- Character Chooser Button -->
+            <button class="character-button" id="characterButton" aria-haspopup="true" aria-expanded="false" aria-controls="characterDropdown" aria-label="Choose Character">
+                🧑
+            </button>
+            <div class="character-dropdown" id="characterDropdown" role="menu" aria-label="Character Selector">
+                <div class="character-option" onclick="selectCharacter('emma')" role="menuitem" tabindex="0">
+                    <img src="/characters/emma/assets/emma.jpg" alt="Emma">
+                    <span>Emma</span>
+                </div>
+                <div class="character-option" onclick="selectCharacter('panda')" role="menuitem" tabindex="0">
+                    <img src="/characters/panda/assets/panda.jpg" alt="Panda">
+                    <span>Panda</span>
+                </div>
+                <div class="character-option" onclick="selectCharacter('parrot')" role="menuitem" tabindex="0">
+                    <img src="/characters/parrot/assets/parrot.jpg" alt="Parrot">
+                    <span>Parrot</span>
+                </div>
+                <div class="character-option" onclick="selectCharacter('duck')" role="menuitem" tabindex="0">
+                    <img src="/characters/duck/assets/duck.jpg" alt="Duck">
+                    <span>Duck</span>
+                </div>
+            </div>
         </div>
-        <div class="status-indicator">
-            <div class="status-dot"></div>
-            <span class="status-text">Ready to chat</span>
+
+        <div class="controls-container">
+            <div class="logo-container">
+                <a href="/" class="logo">Talkidz</a>
+                <span class="logo-byline">by Playbox</span>
+            </div>
+            <div class="status-indicator">
+                <div class="status-dot"></div>
+                <span class="status-text">Ready to chat</span>
+            </div>
+            <button class="share-button" onclick="shareCharacter()" aria-label="Share">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+                    <polyline points="16 6 12 2 8 6"/>
+                    <line x1="12" y1="2" x2="12" y2="15"/>
+                </svg>
+            </button>
         </div>
-        <button class="share-button" onclick="shareCharacter()" aria-label="Share">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
-                <polyline points="16 6 12 2 8 6"/>
-                <line x1="12" y1="2" x2="12" y2="15"/>
-            </svg>
-        </button>
-    </div>
 
-    <script type="module">
-        import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
+        <script type="module">
+            import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
 
-        let conversation = null;
-        let videosLoaded = { idle: false, speaking: false };
-        const CONVERSATION_TIME = 180;
+            let conversation = null;
+            let videosLoaded = { idle: false, speaking: false };
+            const CONVERSATION_TIME = 180;
+            let currentCharacter = 'emma'; // Default character
 
-        const backgroundImage = document.querySelector('.background.image');
-        const idleVideo = document.getElementById('idleVideo');
-        const speakingVideo = document.getElementById('speakingVideo');
-        const startButton = document.getElementById('startButton');
-        const statusDot = document.querySelector('.status-dot');
-        const statusText = document.querySelector('.status-text');
+            const backgroundImage = document.querySelector('.background.image');
+            const idleVideo = document.getElementById('idleVideo');
+            const speakingVideo = document.getElementById('speakingVideo');
+            const startButton = document.getElementById('startButton');
+            const statusDot = document.querySelector('.status-dot');
+            const statusText = document.querySelector('.status-text');
 
-        const updateStatus = (mode) => {
-            statusDot.classList.remove('listening');
-            switch(mode) {
-                case 'listening':
-                    statusText.textContent = 'Listening...';
-                    statusDot.classList.add('listening');
-                    statusDot.style.background = '#22c55e';
-                    break;
-                case 'speaking':
-                    statusText.textContent = 'Speaking...';
-                    statusDot.style.background = '#3b82f6';
-                    break;
-                default:
-                    statusText.textContent = 'Ready to chat';
-                    statusDot.style.background = '#22c55e';
-            }
-        };
+            const updateStatus = (mode) => {
+                statusDot.classList.remove('listening');
+                switch(mode) {
+                    case 'listening':
+                        statusText.textContent = 'Listening...';
+                        statusDot.classList.add('listening');
+                        statusDot.style.background = '#22c55e';
+                        break;
+                    case 'speaking':
+                        statusText.textContent = 'Speaking...';
+                        statusDot.style.background = '#3b82f6';
+                        break;
+                    default:
+                        statusText.textContent = 'Ready to chat';
+                        statusDot.style.background = '#22c55e';
+                }
+            };
 
-        const preloadVideos = () => {
-            idleVideo.load();
-            idleVideo.addEventListener('loadeddata', () => {
-                videosLoaded.idle = true;
-                backgroundImage.style.opacity = '0';
-                idleVideo.classList.add('active');
-                idleVideo.play().catch(console.error);
-            });
-
-            speakingVideo.load();
-            speakingVideo.addEventListener('loadeddata', () => {
-                videosLoaded.speaking = true;
-            });
-        };
-
-        const updateBackground = (mode) => {
-            if (mode === 'speaking' && videosLoaded.speaking) {
-                idleVideo.classList.remove('active');
-                speakingVideo.classList.add('active');
-                speakingVideo.play().catch(console.error);
-            } else if (videosLoaded.idle) {
-                speakingVideo.classList.remove('active');
-                idleVideo.classList.add('active');
-                idleVideo.play().catch(console.error);
-            } else {
-                backgroundImage.style.opacity = '1';
-                [idleVideo, speakingVideo].forEach(video => video.classList.remove('active'));
-            }
-            updateStatus(mode);
-        };
-
-        const triggerConfetti = () => {
-            const options = { origin: { y: 0.7 } };
-            const count = 200;
-            
-            [
-                { spread: 26, startVelocity: 55, particleRatio: 0.25 },
-                { spread: 60, particleRatio: 0.2 },
-                { spread: 100, decay: 0.91, scalar: 0.8, particleRatio: 0.35 },
-                { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2, particleRatio: 0.1 },
-                { spread: 120, startVelocity: 45, particleRatio: 0.1 }
-            ].forEach(opts => {
-                confetti({
-                    ...options,
-                    ...opts,
-                    particleCount: Math.floor(count * opts.particleRatio)
-                });
-            });
-        };
-
-        const startConversation = async () => {
-            try {
-                await navigator.mediaDevices.getUserMedia({ audio: true });
-                triggerConfetti();
-                startButton.classList.add('active');
-                startButton.innerHTML = `
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                `;
-
-                conversation = await Conversation.startSession({
-                    agentId: 'UWxUKTTWxyHwoEfDDic2',
-                    onModeChange: (mode) => updateBackground(mode.mode),
-                    onConnect: () => {
-                        updateBackground('listening');
-                    },
-                    onDisconnect: () => {
-                        updateBackground('idle');
-                        startButton.classList.remove('active');
-                        startButton.innerHTML = 'Start Conversation';
-                    },
-                    onError: (error) => {
-                        console.error('Conversation error:', error);
-                        updateBackground('idle');
-                        startButton.classList.remove('active');
-                        startButton.innerHTML = 'Start Conversation';
-                    }
+            const preloadVideos = () => {
+                idleVideo.load();
+                idleVideo.addEventListener('loadeddata', () => {
+                    videosLoaded.idle = true;
+                    backgroundImage.style.opacity = '0';
+                    idleVideo.classList.add('active');
+                    idleVideo.play().catch(console.error);
                 });
 
-            } catch (error) {
-                console.error('Error starting conversation:', error);
-                updateBackground('idle');
-                startButton.classList.remove('active');
-                startButton.innerHTML = 'Start Conversation';
-            }
-        };
+                speakingVideo.load();
+                speakingVideo.addEventListener('loadeddata', () => {
+                    videosLoaded.speaking = true;
+                });
+            };
 
-        const endConversation = async () => {
-            if (conversation) {
+            const updateBackground = (mode) => {
+                if (mode === 'speaking' && videosLoaded.speaking) {
+                    idleVideo.classList.remove('active');
+                    speakingVideo.classList.add('active');
+                    speakingVideo.play().catch(console.error);
+                } else if (videosLoaded.idle) {
+                    speakingVideo.classList.remove('active');
+                    idleVideo.classList.add('active');
+                    idleVideo.play().catch(console.error);
+                } else {
+                    backgroundImage.style.opacity = '1';
+                    [idleVideo, speakingVideo].forEach(video => video.classList.remove('active'));
+                }
+                updateStatus(mode);
+            };
+
+            const triggerConfetti = () => {
+                const options = { origin: { y: 0.7 } };
+                const count = 200;
+                
+                [
+                    { spread: 26, startVelocity: 55, particleRatio: 0.25 },
+                    { spread: 60, particleRatio: 0.2 },
+                    { spread: 100, decay: 0.91, scalar: 0.8, particleRatio: 0.35 },
+                    { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2, particleRatio: 0.1 },
+                    { spread: 120, startVelocity: 45, particleRatio: 0.1 }
+                ].forEach(opts => {
+                    confetti({
+                        ...options,
+                        ...opts,
+                        particleCount: Math.floor(count * opts.particleRatio)
+                    });
+                });
+            };
+
+            const startConversation = async () => {
                 try {
-                    await conversation.endSession();
+                    await navigator.mediaDevices.getUserMedia({ audio: true });
+                    triggerConfetti();
+                    startButton.classList.add('active');
+                    startButton.innerHTML = `
+                        ❌
+                    `;
+
+                    conversation = await Conversation.startSession({
+                        agentId: 'UWxUKTTWxyHwoEfDDic2',
+                        onModeChange: (mode) => updateBackground(mode.mode),
+                        onConnect: () => {
+                            updateBackground('listening');
+                        },
+                        onDisconnect: () => {
+                            updateBackground('idle');
+                            startButton.classList.remove('active');
+                            startButton.innerHTML = '▶️';
+                        },
+                        onError: (error) => {
+                            console.error('Conversation error:', error);
+                            updateBackground('idle');
+                            startButton.classList.remove('active');
+                            startButton.innerHTML = '▶️';
+                        }
+                    });
+
                 } catch (error) {
-                    console.error('Error ending conversation:', error);
-                } finally {
-                    conversation = null;
+                    console.error('Error starting conversation:', error);
                     updateBackground('idle');
                     startButton.classList.remove('active');
-                    startButton.innerHTML = 'Start Conversation';
+                    startButton.innerHTML = '▶️';
                 }
-            }
-        };
+            };
 
-        startButton.addEventListener('click', async () => {
-            if (conversation) {
-                await endConversation();
-            } else {
-                await startConversation();
-            }
-        });
+            const endConversation = async () => {
+                if (conversation) {
+                    try {
+                        await conversation.endSession();
+                    } catch (error) {
+                        console.error('Error ending conversation:', error);
+                    } finally {
+                        conversation = null;
+                        updateBackground('idle');
+                        startButton.classList.remove('active');
+                        startButton.innerHTML = '▶️';
+                    }
+                }
+            };
 
-        window.shareCharacter = () => {
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Chat with Eva on Talkidz',
-                    text: 'Come chat with Eva, your new AI friend!',
-                    url: window.location.href
-                }).catch(console.error);
-            }
-        };
+            startButton.addEventListener('click', async () => {
+                if (conversation) {
+                    await endConversation();
+                } else {
+                    await startConversation();
+                }
+            });
 
-        // Initialize with idle state
-        preloadVideos();
-        updateBackground('idle');
+            window.shareCharacter = () => {
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'Chat with Eva on Talkidz',
+                        text: 'Come chat with Eva, your new AI friend!',
+                        url: window.location.href
+                    }).catch(console.error);
+                }
+            };
 
-        // Language Selector Functionality
-        const languageButton = document.getElementById('languageButton');
-        const languageDropdown = document.getElementById('languageDropdown');
+            // Initialize with idle state
+            preloadVideos();
+            updateBackground('idle');
 
-        languageButton.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const isActive = languageDropdown.classList.toggle('active');
-            languageButton.setAttribute('aria-expanded', isActive);
-        });
+            // Language Selector Functionality
+            const languageButton = document.getElementById('languageButton');
+            const languageDropdown = document.getElementById('languageDropdown');
 
-        // Close dropdown when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!languageButton.contains(e.target) && !languageDropdown.contains(e.target)) {
+            languageButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const isActive = languageDropdown.classList.toggle('active');
+                languageButton.setAttribute('aria-expanded', isActive);
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!languageButton.contains(e.target) && !languageDropdown.contains(e.target)) {
+                    languageDropdown.classList.remove('active');
+                    languageButton.setAttribute('aria-expanded', 'false');
+                }
+            });
+
+            function selectLanguage(langCode) {
+                // Placeholder function for language selection
+                // Implement localization logic here
+                console.log('Selected language:', langCode);
+                alert(`Language selected: ${langCode}`);
                 languageDropdown.classList.remove('active');
                 languageButton.setAttribute('aria-expanded', 'false');
+
+                // Update language button to show selected flag
+                const selectedOption = languageDropdown.querySelector(`[onclick="selectLanguage('${langCode}')"]`);
+                const flag = selectedOption.querySelector('span').previousSibling.textContent;
+                languageButton.innerHTML = `${flag}`;
+
+                // Store preference
+                localStorage.setItem('preferredLanguage', langCode);
+
+                // Implement actual localization logic here
             }
-        });
 
-        function selectLanguage(langCode) {
-            // Placeholder function for language selection
-            // Implement localization logic here
-            console.log('Selected language:', langCode);
-            alert(`Language selected: ${langCode}`);
-            languageDropdown.classList.remove('active');
-            languageButton.setAttribute('aria-expanded', 'false');
+            // Character Chooser Functionality
+            const characterButton = document.getElementById('characterButton');
+            const characterDropdown = document.getElementById('characterDropdown');
 
-            // Update language button to show selected flag
-            const selectedOption = languageDropdown.querySelector(`[onclick="selectLanguage('${langCode}')"]`);
-            const flag = selectedOption.querySelector('span').previousSibling.textContent;
-            languageButton.innerHTML = `${flag}`;
+            characterButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const isActive = characterDropdown.classList.toggle('active');
+                characterButton.setAttribute('aria-expanded', isActive);
+            });
 
-            // Optionally, store the selected language in localStorage
-            localStorage.setItem('preferredLanguage', langCode);
-
-            // Implement actual localization logic here
-            // For example, reload the page with a language parameter or dynamically update text
-        }
-
-        // On page load, set language if previously selected
-        document.addEventListener('DOMContentLoaded', () => {
-            const savedLang = localStorage.getItem('preferredLanguage');
-            if (savedLang) {
-                const selectedOption = languageDropdown.querySelector(`[onclick="selectLanguage('${savedLang}')"]`);
-                if (selectedOption) {
-                    const flag = selectedOption.querySelector('span').previousSibling.textContent;
-                    languageButton.innerHTML = `${flag}`;
+            // Close character dropdown when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!characterButton.contains(e.target) && !characterDropdown.contains(e.target)) {
+                    characterDropdown.classList.remove('active');
+                    characterButton.setAttribute('aria-expanded', 'false');
                 }
+            });
+
+            function selectCharacter(character) {
+                // Update current character
+                currentCharacter = character;
+
+                // Update character name
+                const characterNameElement = document.querySelector('.character-name');
+                const characterNames = {
+                    'emma': 'Emma',
+                    'panda': 'Panda',
+                    'parrot': 'Parrot',
+                    'duck': 'Duck'
+                };
+                characterNameElement.textContent = characterNames[character] || 'Talkidz';
+
+                // Update video sources based on selected character
+                const newIdleSrc = `/characters/${character}/assets/${character}-idle.mp4`;
+                const newSpeakingSrc = `/characters/${character}/assets/${character}-talking.mp4`;
+
+                idleVideo.src = newIdleSrc;
+                speakingVideo.src = newSpeakingSrc;
+
+                // Reload videos
+                idleVideo.load();
+                speakingVideo.load();
+
+                // Update background image
+                backgroundImage.style.backgroundImage = `url('/characters/${character}/assets/${character}.jpg')`;
+
+                // Close the dropdown
+                characterDropdown.classList.remove('active');
+                characterButton.setAttribute('aria-expanded', 'false');
+
+                // Optionally, store the selected character in localStorage
+                localStorage.setItem('preferredCharacter', character);
+
+                console.log(`Character selected: ${character}`);
             }
-        });
-    </script>
-</body>
+
+            // On page load, set language and character if previously selected
+            document.addEventListener('DOMContentLoaded', () => {
+                const savedLang = localStorage.getItem('preferredLanguage');
+                if (savedLang) {
+                    const selectedOption = languageDropdown.querySelector(`[onclick="selectLanguage('${savedLang}')"]`);
+                    if (selectedOption) {
+                        const flag = selectedOption.querySelector('span').previousSibling.textContent;
+                        languageButton.innerHTML = `${flag}`;
+                    }
+                }
+
+                const savedCharacter = localStorage.getItem('preferredCharacter');
+                if (savedCharacter) {
+                    selectCharacter(savedCharacter);
+                }
+            });
+        </script>
+    </body>
 </html>
