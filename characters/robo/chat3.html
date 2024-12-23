@@ -87,19 +87,15 @@
             cursor: pointer;
             display: flex;
             align-items: center;
+            justify-content: center;
             transition: all 0.3s ease;
             box-shadow: 0 2px 8px rgba(108, 92, 231, 0.1);
+            font-size: 1.2rem; /* Increased size for better visibility */
         }
 
         .language-button:hover {
             border-color: var(--accent-color);
             box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
-        }
-
-        .language-button span {
-            margin-left: 0.5rem;
-            font-size: 1rem;
-            color: var(--text-color);
         }
 
         .language-dropdown {
@@ -175,15 +171,6 @@
             height: 100%;
             transition: opacity var(--transition-duration) ease;
             object-fit: contain;
-        }
-
-        @media (max-width: 768px) {
-            .background {
-                width: 100%;
-                height: auto;
-                max-height: none;
-                object-fit: cover;
-            }
         }
 
         .background.video {
@@ -341,6 +328,13 @@
         }
 
         @media (max-width: 768px) {
+            .background {
+                width: 100%;
+                height: auto;
+                max-height: none;
+                object-fit: cover;
+            }
+
             .controls-container {
                 padding-bottom: env(safe-area-inset-bottom);
             }
@@ -353,9 +347,9 @@
                 bottom: calc(70px + env(safe-area-inset-bottom));
             }
 
-            /* Adjust language selector for mobile */
+            /* Language selector remains visible on mobile */
             .language-selector {
-                display: none;
+                /* Optional: Adjust position for better mobile display */
             }
         }
 
@@ -373,7 +367,7 @@
 </head>
 <body>
     <div class="top-bar">
-        <a href="/" class="back-button">
+        <a href="/" class="back-button" aria-label="Go Back">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M19 12H5M12 19l-7-7 7-7"/>
             </svg>
@@ -382,116 +376,116 @@
         
         <!-- Language Selector -->
         <div class="language-selector">
-            <button class="language-button" id="languageButton">
-                🌐 <span>Language</span>
+            <button class="language-button" id="languageButton" aria-haspopup="true" aria-expanded="false" aria-controls="languageDropdown">
+                🇺🇸
             </button>
-            <div class="language-dropdown" id="languageDropdown">
-                <div class="language-option" onclick="selectLanguage('en-US')">
+            <div class="language-dropdown" id="languageDropdown" role="menu" aria-label="Language Selector">
+                <div class="language-option" onclick="selectLanguage('en-US')" role="menuitem" tabindex="0">
                     🇺🇸 <span>English (USA)</span>
                 </div>
-                <div class="language-option" onclick="selectLanguage('en-GB')">
+                <div class="language-option" onclick="selectLanguage('en-GB')" role="menuitem" tabindex="0">
                     🇬🇧 <span>English (UK)</span>
                 </div>
-                <div class="language-option" onclick="selectLanguage('en-AU')">
+                <div class="language-option" onclick="selectLanguage('en-AU')" role="menuitem" tabindex="0">
                     🇦🇺 <span>English (Australia)</span>
                 </div>
-                <div class="language-option" onclick="selectLanguage('en-CA')">
+                <div class="language-option" onclick="selectLanguage('en-CA')" role="menuitem" tabindex="0">
                     🇨🇦 <span>English (Canada)</span>
                 </div>
-                <div class="language-option" onclick="selectLanguage('ja-JP')">
+                <div class="language-option" onclick="selectLanguage('ja-JP')" role="menuitem" tabindex="0">
                     🇯🇵 <span>Japanese</span>
                 </div>
-                <div class="language-option" onclick="selectLanguage('zh-CN')">
+                <div class="language-option" onclick="selectLanguage('zh-CN')" role="menuitem" tabindex="0">
                     🇨🇳 <span>Chinese</span>
                 </div>
-                <div class="language-option" onclick="selectLanguage('de-DE')">
+                <div class="language-option" onclick="selectLanguage('de-DE')" role="menuitem" tabindex="0">
                     🇩🇪 <span>German</span>
                 </div>
-                <div class="language-option" onclick="selectLanguage('hi-IN')">
+                <div class="language-option" onclick="selectLanguage('hi-IN')" role="menuitem" tabindex="0">
                     🇮🇳 <span>Hindi</span>
                 </div>
-                <div class="language-option" onclick="selectLanguage('fr-FR')">
+                <div class="language-option" onclick="selectLanguage('fr-FR')" role="menuitem" tabindex="0">
                     🇫🇷 <span>French (France)</span>
                 </div>
-                <div class="language-option" onclick="selectLanguage('fr-CA')">
+                <div class="language-option" onclick="selectLanguage('fr-CA')" role="menuitem" tabindex="0">
                     🇨🇦 <span>French (Canada)</span>
                 </div>
-                <div class="language-option" onclick="selectLanguage('ko-KR')">
+                <div class="language-option" onclick="selectLanguage('ko-KR')" role="menuitem" tabindex="0">
                     🇰🇷 <span>Korean</span>
                 </div>
-                <div class="language-option" onclick="selectLanguage('pt-BR')">
+                <div class="language-option" onclick="selectLanguage('pt-BR')" role="menuitem" tabindex="0">
                     🇧🇷 <span>Portuguese (Brazil)</span>
                 </div>
-                <div class="language-option" onclick="selectLanguage('pt-PT')">
+                <div class="language-option" onclick="selectLanguage('pt-PT')" role="menuitem" tabindex="0">
                     🇵🇹 <span>Portuguese (Portugal)</span>
                 </div>
-                <div class="language-option" onclick="selectLanguage('it-IT')">
+                <div class="language-option" onclick="selectLanguage('it-IT')" role="menuitem" tabindex="0">
                     🇮🇹 <span>Italian</span>
                 </div>
-                <div class="language-option" onclick="selectLanguage('es-ES')">
+                <div class="language-option" onclick="selectLanguage('es-ES')" role="menuitem" tabindex="0">
                     🇪🇸 <span>Spanish (Spain)</span>
                 </div>
-                <div class="language-option" onclick="selectLanguage('es-MX')">
+                <div class="language-option" onclick="selectLanguage('es-MX')" role="menuitem" tabindex="0">
                     🇲🇽 <span>Spanish (Mexico)</span>
                 </div>
-                <div class="language-option" onclick="selectLanguage('id-ID')">
+                <div class="language-option" onclick="selectLanguage('id-ID')" role="menuitem" tabindex="0">
                     🇮🇩 <span>Indonesian</span>
                 </div>
-                <div class="language-option" onclick="selectLanguage('nl-NL')">
+                <div class="language-option" onclick="selectLanguage('nl-NL')" role="menuitem" tabindex="0">
                     🇳🇱 <span>Dutch</span>
                 </div>
-                <div class="language-option" onclick="selectLanguage('tr-TR')">
+                <div class="language-option" onclick="selectLanguage('tr-TR')" role="menuitem" tabindex="0">
                     🇹🇷 <span>Turkish</span>
                 </div>
-                <div class="language-option" onclick="selectLanguage('fil-PH')">
+                <div class="language-option" onclick="selectLanguage('fil-PH')" role="menuitem" tabindex="0">
                     🇵🇭 <span>Filipino</span>
                 </div>
-                <div class="language-option" onclick="selectLanguage('pl-PL')">
+                <div class="language-option" onclick="selectLanguage('pl-PL')" role="menuitem" tabindex="0">
                     🇵🇱 <span>Polish</span>
                 </div>
-                <div class="language-option" onclick="selectLanguage('sv-SE')">
+                <div class="language-option" onclick="selectLanguage('sv-SE')" role="menuitem" tabindex="0">
                     🇸🇪 <span>Swedish</span>
                 </div>
-                <div class="language-option" onclick="selectLanguage('bg-BG')">
+                <div class="language-option" onclick="selectLanguage('bg-BG')" role="menuitem" tabindex="0">
                     🇧🇬 <span>Bulgarian</span>
                 </div>
-                <div class="language-option" onclick="selectLanguage('ro-RO')">
+                <div class="language-option" onclick="selectLanguage('ro-RO')" role="menuitem" tabindex="0">
                     🇷🇴 <span>Romanian</span>
                 </div>
-                <div class="language-option" onclick="selectLanguage('ar-SA')">
+                <div class="language-option" onclick="selectLanguage('ar-SA')" role="menuitem" tabindex="0">
                     🇸🇦 <span>Arabic (Saudi Arabia)</span>
                 </div>
-                <div class="language-option" onclick="selectLanguage('ar-AE')">
+                <div class="language-option" onclick="selectLanguage('ar-AE')" role="menuitem" tabindex="0">
                     🇦🇪 <span>Arabic (UAE)</span>
                 </div>
-                <div class="language-option" onclick="selectLanguage('cs-CZ')">
+                <div class="language-option" onclick="selectLanguage('cs-CZ')" role="menuitem" tabindex="0">
                     🇨🇿 <span>Czech</span>
                 </div>
-                <div class="language-option" onclick="selectLanguage('el-GR')">
+                <div class="language-option" onclick="selectLanguage('el-GR')" role="menuitem" tabindex="0">
                     🇬🇷 <span>Greek</span>
                 </div>
-                <div class="language-option" onclick="selectLanguage('fi-FI')">
+                <div class="language-option" onclick="selectLanguage('fi-FI')" role="menuitem" tabindex="0">
                     🇫🇮 <span>Finnish</span>
                 </div>
-                <div class="language-option" onclick="selectLanguage('hr-HR')">
+                <div class="language-option" onclick="selectLanguage('hr-HR')" role="menuitem" tabindex="0">
                     🇭🇷 <span>Croatian</span>
                 </div>
-                <div class="language-option" onclick="selectLanguage('ms-MY')">
+                <div class="language-option" onclick="selectLanguage('ms-MY')" role="menuitem" tabindex="0">
                     🇲🇾 <span>Malay</span>
                 </div>
-                <div class="language-option" onclick="selectLanguage('sk-SK')">
+                <div class="language-option" onclick="selectLanguage('sk-SK')" role="menuitem" tabindex="0">
                     🇸🇰 <span>Slovak</span>
                 </div>
-                <div class="language-option" onclick="selectLanguage('da-DK')">
+                <div class="language-option" onclick="selectLanguage('da-DK')" role="menuitem" tabindex="0">
                     🇩🇰 <span>Danish</span>
                 </div>
-                <div class="language-option" onclick="selectLanguage('ta-IN')">
+                <div class="language-option" onclick="selectLanguage('ta-IN')" role="menuitem" tabindex="0">
                     🇮🇳 <span>Tamil</span>
                 </div>
-                <div class="language-option" onclick="selectLanguage('uk-UA')">
+                <div class="language-option" onclick="selectLanguage('uk-UA')" role="menuitem" tabindex="0">
                     🇺🇦 <span>Ukrainian</span>
                 </div>
-                <div class="language-option" onclick="selectLanguage('ru-RU')">
+                <div class="language-option" onclick="selectLanguage('ru-RU')" role="menuitem" tabindex="0">
                     🇷🇺 <span>Russian</span>
                 </div>
             </div>
@@ -525,7 +519,7 @@
             <div class="status-dot"></div>
             <span class="status-text">Ready to chat</span>
         </div>
-        <button class="share-button" onclick="shareCharacter()">
+        <button class="share-button" onclick="shareCharacter()" aria-label="Share">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
                 <polyline points="16 6 12 2 8 6"/>
@@ -637,13 +631,13 @@
                     onDisconnect: () => {
                         updateBackground('idle');
                         startButton.classList.remove('active');
-                        startButton.textContent = 'Start Conversation';
+                        startButton.innerHTML = 'Start Conversation';
                     },
                     onError: (error) => {
                         console.error('Conversation error:', error);
                         updateBackground('idle');
                         startButton.classList.remove('active');
-                        startButton.textContent = 'Start Conversation';
+                        startButton.innerHTML = 'Start Conversation';
                     }
                 });
 
@@ -651,7 +645,7 @@
                 console.error('Error starting conversation:', error);
                 updateBackground('idle');
                 startButton.classList.remove('active');
-                startButton.textContent = 'Start Conversation';
+                startButton.innerHTML = 'Start Conversation';
             }
         };
 
@@ -665,7 +659,7 @@
                     conversation = null;
                     updateBackground('idle');
                     startButton.classList.remove('active');
-                    startButton.textContent = 'Start Conversation';
+                    startButton.innerHTML = 'Start Conversation';
                 }
             }
         };
@@ -698,13 +692,15 @@
 
         languageButton.addEventListener('click', (e) => {
             e.stopPropagation();
-            languageDropdown.classList.toggle('active');
+            const isActive = languageDropdown.classList.toggle('active');
+            languageButton.setAttribute('aria-expanded', isActive);
         });
 
         // Close dropdown when clicking outside
         document.addEventListener('click', (e) => {
             if (!languageButton.contains(e.target) && !languageDropdown.contains(e.target)) {
                 languageDropdown.classList.remove('active');
+                languageButton.setAttribute('aria-expanded', 'false');
             }
         });
 
@@ -714,13 +710,31 @@
             console.log('Selected language:', langCode);
             alert(`Language selected: ${langCode}`);
             languageDropdown.classList.remove('active');
-            // Optionally, update the language button to show the selected language
-            // Example:
-            // const selectedOption = languageDropdown.querySelector(`[onclick="selectLanguage('${langCode}')"]`);
-            // const flag = selectedOption.querySelector('span').previousSibling.textContent;
-            // const languageName = selectedOption.querySelector('span').textContent;
-            // languageButton.innerHTML = `${flag} <span>${languageName}</span>`;
+            languageButton.setAttribute('aria-expanded', 'false');
+
+            // Update language button to show selected flag
+            const selectedOption = languageDropdown.querySelector(`[onclick="selectLanguage('${langCode}')"]`);
+            const flag = selectedOption.querySelector('span').previousSibling.textContent;
+            languageButton.innerHTML = `${flag}`;
+
+            // Optionally, store the selected language in localStorage
+            localStorage.setItem('preferredLanguage', langCode);
+
+            // Implement actual localization logic here
+            // For example, reload the page with a language parameter or dynamically update text
         }
+
+        // On page load, set language if previously selected
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedLang = localStorage.getItem('preferredLanguage');
+            if (savedLang) {
+                const selectedOption = languageDropdown.querySelector(`[onclick="selectLanguage('${savedLang}')"]`);
+                if (selectedOption) {
+                    const flag = selectedOption.querySelector('span').previousSibling.textContent;
+                    languageButton.innerHTML = `${flag}`;
+                }
+            }
+        });
     </script>
 </body>
 </html>
