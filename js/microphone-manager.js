@@ -6,21 +6,24 @@ export class MicrophoneManager {
 
     async getMicrophoneAccess() {
         try {
-            const hasStoredPermission = localStorage.getItem('microphonePermission') === 'granted';
-            
-            if (hasStoredPermission && !this.micStream) {
+            // Check the current permission state
+            const permissionStatus = await navigator.permissions.query({ name: 'microphone' });
+
+            if (permissionStatus.state === 'granted') {
+                if (!this.micStream) {
+                    this.micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                }
+                return true;
+            } else if (permissionStatus.state === 'prompt') {
+                // Request access since it's not yet granted
                 this.micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
                 return true;
-            } else if (this.micStream) {
-                return true;
+            } else {
+                // Permission denied
+                return false;
             }
-
-            this.micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            localStorage.setItem('microphonePermission', 'granted');
-            return true;
         } catch (error) {
             console.error('Microphone access error:', error);
-            localStorage.removeItem('microphonePermission');
             return false;
         }
     }
