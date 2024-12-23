@@ -336,11 +336,12 @@
         </button>
     </div>
 
-<script type="module">
+    <script type="module">
         import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
 
         let conversation = null;
         let videosLoaded = { idle: false, speaking: false };
+        let audioStream = null;
         const CONVERSATION_TIME = 180;
 
         const backgroundImage = document.querySelector('.background.image');
@@ -352,8 +353,16 @@
 
         const checkMicrophonePermission = async () => {
             try {
+                if (audioStream) {
+                    return true;
+                }
+                
                 const permissionStatus = await navigator.permissions.query({ name: 'microphone' });
-                return permissionStatus.state === 'granted';
+                if (permissionStatus.state === 'granted') {
+                    audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    return true;
+                }
+                return false;
             } catch (error) {
                 return false;
             }
@@ -431,7 +440,7 @@
             try {
                 const hasPermission = await checkMicrophonePermission();
                 if (!hasPermission) {
-                    await navigator.mediaDevices.getUserMedia({ audio: true });
+                    audioStream = await navigator.mediaDevices.getUserMedia({ audio: true });
                 }
 
                 triggerConfetti();
@@ -502,6 +511,13 @@
                 }).catch(console.error);
             }
         };
+
+        window.addEventListener('beforeunload', () => {
+            if (audioStream) {
+                audioStream.getTracks().forEach(track => track.stop());
+                audioStream = null;
+            }
+        });
 
         preloadVideos();
         updateBackground('idle');
