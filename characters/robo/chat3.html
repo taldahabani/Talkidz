@@ -90,7 +90,7 @@
             justify-content: center;
             transition: all 0.3s ease;
             box-shadow: 0 2px 8px rgba(108, 92, 231, 0.1);
-            font-size: 1.2rem; /* Increased size for better visibility */
+            font-size: 1.2rem;
         }
 
         .language-button:hover {
@@ -171,7 +171,7 @@
             box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
             position: relative;
             overflow: hidden;
-            margin: 0 0.5rem; /* Space between buttons */
+            margin: 0 0.5rem;
             width: 48px;
             height: 48px;
             display: flex;
@@ -278,39 +278,6 @@
             object-fit: contain;
         }
 
-        @media (max-width: 768px) {
-            .background {
-                width: 100%;
-                height: auto;
-                max-height: none;
-                object-fit: cover;
-            }
-
-            .controls-container {
-                padding-bottom: env(safe-area-inset-bottom);
-            }
-
-            .main-button, .character-button {
-                width: 40px;
-                height: 40px;
-                padding: 0.75rem;
-            }
-
-            .main-action-container {
-                bottom: calc(70px + env(safe-area-inset-bottom));
-            }
-        }
-
-        @media (min-width: 769px) {
-            .main-container {
-                padding: 70px max(1.5rem, calc((100vw - var(--max-content-width)) / 2));
-            }
-
-            .video-wrapper {
-                max-height: calc(100vh - 140px);
-            }
-        }
-
         .background.video {
             opacity: 0;
         }
@@ -320,12 +287,23 @@
         }
 
         .background.image {
-            background: url('/characters/eva/assets/eva.jpg') center/contain no-repeat;
+            background: url('/characters/emma/assets/emma.jpg') center/contain no-repeat;
             opacity: 1;
         }
 
-        /* Main Action Button Text */
-        .main-button.active {
+        .main-action-container {
+            position: fixed;
+            bottom: 70px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+            z-index: 10;
+        }
+
+        .main-button.active, .character-button.active {
             background: #808080;
             cursor: not-allowed;
         }
@@ -561,7 +539,6 @@
             <button id="startButton" class="main-button" aria-label="Start Conversation">
                 ▶️
             </button>
-            <!-- Character Chooser Button -->
             <button class="character-button" id="characterButton" aria-haspopup="true" aria-expanded="false" aria-controls="characterDropdown" aria-label="Choose Character">
                 🧑
             </button>
@@ -603,13 +580,15 @@
             </button>
         </div>
 
+        <canvas id="confetti-canvas"></canvas>
+
         <script type="module">
             import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
 
             let conversation = null;
             let videosLoaded = { idle: false, speaking: false };
             const CONVERSATION_TIME = 180;
-            let currentCharacter = 'emma'; // Default character
+            let currentCharacter = 'emma';
 
             const backgroundImage = document.querySelector('.background.image');
             const idleVideo = document.getElementById('idleVideo');
@@ -769,7 +748,6 @@
                 languageButton.setAttribute('aria-expanded', isActive);
             });
 
-            // Close dropdown when clicking outside
             document.addEventListener('click', (e) => {
                 if (!languageButton.contains(e.target) && !languageDropdown.contains(e.target)) {
                     languageDropdown.classList.remove('active');
@@ -778,22 +756,16 @@
             });
 
             function selectLanguage(langCode) {
-                // Placeholder function for language selection
-                // Implement localization logic here
                 console.log('Selected language:', langCode);
                 alert(`Language selected: ${langCode}`);
                 languageDropdown.classList.remove('active');
                 languageButton.setAttribute('aria-expanded', 'false');
 
-                // Update language button to show selected flag
                 const selectedOption = languageDropdown.querySelector(`[onclick="selectLanguage('${langCode}')"]`);
                 const flag = selectedOption.querySelector('span').previousSibling.textContent;
                 languageButton.innerHTML = `${flag}`;
 
-                // Store preference
                 localStorage.setItem('preferredLanguage', langCode);
-
-                // Implement actual localization logic here
             }
 
             // Character Chooser Functionality
@@ -806,7 +778,6 @@
                 characterButton.setAttribute('aria-expanded', isActive);
             });
 
-            // Close character dropdown when clicking outside
             document.addEventListener('click', (e) => {
                 if (!characterButton.contains(e.target) && !characterDropdown.contains(e.target)) {
                     characterDropdown.classList.remove('active');
@@ -815,10 +786,8 @@
             });
 
             function selectCharacter(character) {
-                // Update current character
                 currentCharacter = character;
 
-                // Update character name
                 const characterNameElement = document.querySelector('.character-name');
                 const characterNames = {
                     'emma': 'Emma',
@@ -828,31 +797,23 @@
                 };
                 characterNameElement.textContent = characterNames[character] || 'Talkidz';
 
-                // Update video sources based on selected character
                 const newIdleSrc = `/characters/${character}/assets/${character}-idle.mp4`;
                 const newSpeakingSrc = `/characters/${character}/assets/${character}-talking.mp4`;
 
                 idleVideo.src = newIdleSrc;
                 speakingVideo.src = newSpeakingSrc;
 
-                // Reload videos
                 idleVideo.load();
                 speakingVideo.load();
 
-                // Update background image
                 backgroundImage.style.backgroundImage = `url('/characters/${character}/assets/${character}.jpg')`;
 
-                // Close the dropdown
                 characterDropdown.classList.remove('active');
                 characterButton.setAttribute('aria-expanded', 'false');
 
-                // Optionally, store the selected character in localStorage
                 localStorage.setItem('preferredCharacter', character);
-
-                console.log(`Character selected: ${character}`);
             }
 
-            // On page load, set language and character if previously selected
             document.addEventListener('DOMContentLoaded', () => {
                 const savedLang = localStorage.getItem('preferredLanguage');
                 if (savedLang) {
