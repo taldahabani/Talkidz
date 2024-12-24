@@ -8,8 +8,7 @@ const characters = {
        assets: {
            idle: '/characters/jonny/assets/jonny-idle.mp4',
            talking: '/characters/jonny/assets/jonny-talk.mp4',
-           preview: '/characters/jonny/assets/jonny.jpg',
-           icon: '/characters/jonny/assets/jonny-icon.jpg'
+           preview: '/characters/jonny/assets/jonny.jpg'
        }
    },
    eva: {
@@ -19,27 +18,13 @@ const characters = {
        assets: {
            idle: '/characters/robo/assets/eva-idle.mp4',
            talking: '/characters/robo/assets/eva-talking.mp4',
-           preview: '/characters/robo/assets/eva.jpg',
-           icon: '/characters/robo/assets/eva-icon.jpg'
-       }
-   },
-   // Add more characters here
-   alex: {
-       id: 'alex',
-       name: 'Alex',
-       agentId: 'SomeAgentIdForAlex',
-       assets: {
-           idle: '/characters/alex/assets/alex-idle.mp4',
-           talking: '/characters/alex/assets/alex-talk.mp4',
-           preview: '/characters/alex/assets/alex.jpg',
-           icon: '/characters/alex/assets/alex-icon.jpg'
+           preview: '/characters/robo/assets/eva.jpg'
        }
    }
 };
 
 class ChatController {
    constructor(characterId) {
-       this.characters = characters;
        this.character = characters[characterId];
        this.conversation = null;
        this.videosLoaded = { idle: false, speaking: false };
@@ -50,13 +35,9 @@ class ChatController {
        this.statusDot = document.querySelector('.status-dot');
        this.statusText = document.querySelector('.status-text');
        this.characterName = document.querySelector('.character-name');
-       this.characterSelectButton = document.querySelector('.character-select-button');
-       this.characterMenu = document.querySelector('.character-menu');
-       this.characterMenuContent = document.querySelector('.character-menu-content');
        
        this.setupCharacter();
        this.setupEventListeners();
-       this.populateCharacterMenu();
        this.preloadVideos();
        this.updateBackground('idle');
    }
@@ -67,16 +48,6 @@ class ChatController {
        this.backgroundImage.style.background = `url('${this.character.assets.preview}') center/contain no-repeat`;
        this.idleVideo.src = this.character.assets.idle;
        this.speakingVideo.src = this.character.assets.talking;
-   }
-
-   populateCharacterMenu() {
-       this.characterMenuContent.innerHTML = Object.values(this.characters)
-           .map(character => `
-               <div class="character-menu-item" data-character-id="${character.id}">
-                   <img src="${character.assets.icon}" alt="${character.name}">
-                   <span>${character.name}</span>
-               </div>
-           `).join('');
    }
 
    updateStatus(mode) {
@@ -206,47 +177,6 @@ class ChatController {
                await this.startConversation();
            }
        });
-
-       this.characterSelectButton.addEventListener('click', () => {
-           this.characterMenu.classList.toggle('open');
-       });
-
-       this.characterMenuContent.addEventListener('click', (event) => {
-           const characterItem = event.target.closest('.character-menu-item');
-           if (characterItem) {
-               const characterId = characterItem.dataset.characterId;
-               this.changeCharacter(characterId);
-               this.characterMenu.classList.remove('open');
-           }
-       });
-
-       // Close menu when clicking outside
-       document.addEventListener('click', (event) => {
-           if (!this.characterMenu.contains(event.target) && 
-               !this.characterSelectButton.contains(event.target)) {
-               this.characterMenu.classList.remove('open');
-           }
-       });
-   }
-
-   changeCharacter(characterId) {
-       if (characters[characterId]) {
-           // Update URL without page reload
-           const url = new URL(window.location);
-           url.searchParams.set('character', characterId);
-           window.history.pushState({}, '', url);
-
-           // Update character
-           this.character = characters[characterId];
-           this.setupCharacter();
-           this.preloadVideos();
-           this.updateBackground('idle');
-
-           // End current conversation if active
-           if (this.conversation) {
-               this.endConversation();
-           }
-       }
    }
 }
 
