@@ -1,8 +1,8 @@
+// js/languages.js
+
 export const languages = [
     { code: 'en-US', flag: '🇺🇸', name: 'English (USA)' },
     { code: 'en-GB', flag: '🇬🇧', name: 'English (UK)' },
-    { code: 'en-AU', flag: '🇦🇺', name: 'English (Australia)' },
-    { code: 'en-CA', flag: '🇨🇦', name: 'English (Canada)' },
     { code: 'ja-JP', flag: '🇯🇵', name: 'Japanese' },
     { code: 'zh-CN', flag: '🇨🇳', name: 'Chinese' },
     { code: 'de-DE', flag: '🇩🇪', name: 'German' },
