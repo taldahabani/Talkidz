@@ -1,5 +1,3 @@
-// chat.js
-
 import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
 
 const characters = {
@@ -25,176 +23,23 @@ const characters = {
            icon: '/characters/robo/assets/eva-icon.jpg'
        }
    },
-   // Add 13 more characters here
-   char1: {
-       id: 'char1',
-       name: 'Luna',
-       agentId: 'AgentID1',
+   // Add more characters here
+   alex: {
+       id: 'alex',
+       name: 'Alex',
+       agentId: 'SomeAgentIdForAlex',
        assets: {
-           idle: '/characters/luna/assets/luna-idle.mp4',
-           talking: '/characters/luna/assets/luna-talk.mp4',
-           preview: '/characters/luna/assets/luna.jpg',
-           icon: '/characters/luna/assets/luna-icon.jpg'
-       }
-   },
-   char2: {
-       id: 'char2',
-       name: 'Max',
-       agentId: 'AgentID2',
-       assets: {
-           idle: '/characters/max/assets/max-idle.mp4',
-           talking: '/characters/max/assets/max-talk.mp4',
-           preview: '/characters/max/assets/max.jpg',
-           icon: '/characters/max/assets/max-icon.jpg'
-       }
-   },
-   char3: {
-       id: 'char3',
-       name: 'Sophie',
-       agentId: 'AgentID3',
-       assets: {
-           idle: '/characters/sophie/assets/sophie-idle.mp4',
-           talking: '/characters/sophie/assets/sophie-talk.mp4',
-           preview: '/characters/sophie/assets/sophie.jpg',
-           icon: '/characters/sophie/assets/sophie-icon.jpg'
-       }
-   },
-   char4: {
-       id: 'char4',
-       name: 'Leo',
-       agentId: 'AgentID4',
-       assets: {
-           idle: '/characters/leo/assets/leo-idle.mp4',
-           talking: '/characters/leo/assets/leo-talk.mp4',
-           preview: '/characters/leo/assets/leo.jpg',
-           icon: '/characters/leo/assets/leo-icon.jpg'
-       }
-   },
-   char5: {
-       id: 'char5',
-       name: 'Mia',
-       agentId: 'AgentID5',
-       assets: {
-           idle: '/characters/mia/assets/mia-idle.mp4',
-           talking: '/characters/mia/assets/mia-talk.mp4',
-           preview: '/characters/mia/assets/mia.jpg',
-           icon: '/characters/mia/assets/mia-icon.jpg'
-       }
-   },
-   char6: {
-       id: 'char6',
-       name: 'Oliver',
-       agentId: 'AgentID6',
-       assets: {
-           idle: '/characters/oliver/assets/oliver-idle.mp4',
-           talking: '/characters/oliver/assets/oliver-talk.mp4',
-           preview: '/characters/oliver/assets/oliver.jpg',
-           icon: '/characters/oliver/assets/oliver-icon.jpg'
-       }
-   },
-   char7: {
-       id: 'char7',
-       name: 'Ava',
-       agentId: 'AgentID7',
-       assets: {
-           idle: '/characters/ava/assets/ava-idle.mp4',
-           talking: '/characters/ava/assets/ava-talk.mp4',
-           preview: '/characters/ava/assets/ava.jpg',
-           icon: '/characters/ava/assets/ava-icon.jpg'
-       }
-   },
-   char8: {
-       id: 'char8',
-       name: 'Ethan',
-       agentId: 'AgentID8',
-       assets: {
-           idle: '/characters/ethan/assets/ethan-idle.mp4',
-           talking: '/characters/ethan/assets/ethan-talk.mp4',
-           preview: '/characters/ethan/assets/ethan.jpg',
-           icon: '/characters/ethan/assets/ethan-icon.jpg'
-       }
-   },
-   char9: {
-       id: 'char9',
-       name: 'Isabella',
-       agentId: 'AgentID9',
-       assets: {
-           idle: '/characters/isabella/assets/isabella-idle.mp4',
-           talking: '/characters/isabella/assets/isabella-talk.mp4',
-           preview: '/characters/isabella/assets/isabella.jpg',
-           icon: '/characters/isabella/assets/isabella-icon.jpg'
-       }
-   },
-   char10: {
-       id: 'char10',
-       name: 'James',
-       agentId: 'AgentID10',
-       assets: {
-           idle: '/characters/james/assets/james-idle.mp4',
-           talking: '/characters/james/assets/james-talk.mp4',
-           preview: '/characters/james/assets/james.jpg',
-           icon: '/characters/james/assets/james-icon.jpg'
-       }
-   },
-   char11: {
-       id: 'char11',
-       name: 'Sophia',
-       agentId: 'AgentID11',
-       assets: {
-           idle: '/characters/sophia/assets/sophia-idle.mp4',
-           talking: '/characters/sophia/assets/sophia-talk.mp4',
-           preview: '/characters/sophia/assets/sophia.jpg',
-           icon: '/characters/sophia/assets/sophia-icon.jpg'
-       }
-   },
-   char12: {
-       id: 'char12',
-       name: 'Benjamin',
-       agentId: 'AgentID12',
-       assets: {
-           idle: '/characters/benjamin/assets/benjamin-idle.mp4',
-           talking: '/characters/benjamin/assets/benjamin-talk.mp4',
-           preview: '/characters/benjamin/assets/benjamin.jpg',
-           icon: '/characters/benjamin/assets/benjamin-icon.jpg'
-       }
-   },
-   char13: {
-       id: 'char13',
-       name: 'Charlotte',
-       agentId: 'AgentID13',
-       assets: {
-           idle: '/characters/charlotte/assets/charlotte-idle.mp4',
-           talking: '/characters/charlotte/assets/charlotte-talk.mp4',
-           preview: '/characters/charlotte/assets/charlotte.jpg',
-           icon: '/characters/charlotte/assets/charlotte-icon.jpg'
-       }
-   },
-   char14: {
-       id: 'char14',
-       name: 'Henry',
-       agentId: 'AgentID14',
-       assets: {
-           idle: '/characters/henry/assets/henry-idle.mp4',
-           talking: '/characters/henry/assets/henry-talk.mp4',
-           preview: '/characters/henry/assets/henry.jpg',
-           icon: '/characters/henry/assets/henry-icon.jpg'
-       }
-   },
-   char15: {
-       id: 'char15',
-       name: 'Amelia',
-       agentId: 'AgentID15',
-       assets: {
-           idle: '/characters/amelia/assets/amelia-idle.mp4',
-           talking: '/characters/amelia/assets/amelia-talk.mp4',
-           preview: '/characters/amelia/assets/amelia.jpg',
-           icon: '/characters/amelia/assets/amelia-icon.jpg'
+           idle: '/characters/alex/assets/alex-idle.mp4',
+           talking: '/characters/alex/assets/alex-talk.mp4',
+           preview: '/characters/alex/assets/alex.jpg',
+           icon: '/characters/alex/assets/alex-icon.jpg'
        }
    }
 };
 
 class ChatController {
    constructor(characterId) {
+       this.characters = characters;
        this.character = characters[characterId];
        this.conversation = null;
        this.videosLoaded = { idle: false, speaking: false };
@@ -205,16 +50,15 @@ class ChatController {
        this.statusDot = document.querySelector('.status-dot');
        this.statusText = document.querySelector('.status-text');
        this.characterName = document.querySelector('.character-name');
-       this.characterSelectButton = document.getElementById('characterSelectButton');
-       this.characterMenu = document.getElementById('characterMenu');
-       this.closeCharacterMenuButton = document.getElementById('closeCharacterMenu');
-       this.characterOptionsContainer = document.getElementById('characterOptions');
+       this.characterSelectButton = document.querySelector('.character-select-button');
+       this.characterMenu = document.querySelector('.character-menu');
+       this.characterMenuContent = document.querySelector('.character-menu-content');
        
        this.setupCharacter();
        this.setupEventListeners();
+       this.populateCharacterMenu();
        this.preloadVideos();
        this.updateBackground('idle');
-       this.populateCharacterOptions();
    }
 
    setupCharacter() {
@@ -223,6 +67,16 @@ class ChatController {
        this.backgroundImage.style.background = `url('${this.character.assets.preview}') center/contain no-repeat`;
        this.idleVideo.src = this.character.assets.idle;
        this.speakingVideo.src = this.character.assets.talking;
+   }
+
+   populateCharacterMenu() {
+       this.characterMenuContent.innerHTML = Object.values(this.characters)
+           .map(character => `
+               <div class="character-menu-item" data-character-id="${character.id}">
+                   <img src="${character.assets.icon}" alt="${character.name}">
+                   <span>${character.name}</span>
+               </div>
+           `).join('');
    }
 
    updateStatus(mode) {
@@ -312,20 +166,20 @@ class ChatController {
                onDisconnect: () => {
                    this.updateBackground('idle');
                    this.startButton.classList.remove('active');
-                   this.startButton.innerHTML = 'Start Conversation';
+                   this.startButton.textContent = 'Start Conversation';
                },
                onError: (error) => {
                    console.error('Conversation error:', error);
                    this.updateBackground('idle');
                    this.startButton.classList.remove('active');
-                   this.startButton.innerHTML = 'Start Conversation';
+                   this.startButton.textContent = 'Start Conversation';
                }
            });
        } catch (error) {
            console.error('Error starting conversation:', error);
            this.updateBackground('idle');
            this.startButton.classList.remove('active');
-           this.startButton.innerHTML = 'Start Conversation';
+           this.startButton.textContent = 'Start Conversation';
        }
    }
 
@@ -339,7 +193,7 @@ class ChatController {
                this.conversation = null;
                this.updateBackground('idle');
                this.startButton.classList.remove('active');
-               this.startButton.innerHTML = 'Start Conversation';
+               this.startButton.textContent = 'Start Conversation';
            }
        }
    }
@@ -354,61 +208,45 @@ class ChatController {
        });
 
        this.characterSelectButton.addEventListener('click', () => {
-           this.openCharacterMenu();
+           this.characterMenu.classList.toggle('open');
        });
 
-       this.closeCharacterMenuButton.addEventListener('click', () => {
-           this.closeCharacterMenu();
+       this.characterMenuContent.addEventListener('click', (event) => {
+           const characterItem = event.target.closest('.character-menu-item');
+           if (characterItem) {
+               const characterId = characterItem.dataset.characterId;
+               this.changeCharacter(characterId);
+               this.characterMenu.classList.remove('open');
+           }
        });
 
-       window.addEventListener('click', (e) => {
-           if (e.target === this.characterMenu) {
-               this.closeCharacterMenu();
+       // Close menu when clicking outside
+       document.addEventListener('click', (event) => {
+           if (!this.characterMenu.contains(event.target) && 
+               !this.characterSelectButton.contains(event.target)) {
+               this.characterMenu.classList.remove('open');
            }
        });
    }
 
-   populateCharacterOptions() {
-       Object.values(characters).forEach(char => {
-           const option = document.createElement('div');
-           option.classList.add('character-option');
-           option.dataset.characterId = char.id;
-           option.innerHTML = `
-               <img src="${char.assets.icon}" alt="${char.name}" class="character-icon">
-               <span class="character-option-name">${char.name}</span>
-           `;
-           option.addEventListener('click', () => {
-               this.selectCharacter(char.id);
-           });
-           this.characterOptionsContainer.appendChild(option);
-       });
-   }
-
-   selectCharacter(characterId) {
+   changeCharacter(characterId) {
        if (characters[characterId]) {
-           this.endConversation().then(() => {
-               this.character = characters[characterId];
-               this.setupCharacter();
-               this.preloadVideos();
-               this.updateBackground('idle');
-               this.updateURLParameter('character', characterId);
-               this.closeCharacterMenu();
-           });
+           // Update URL without page reload
+           const url = new URL(window.location);
+           url.searchParams.set('character', characterId);
+           window.history.pushState({}, '', url);
+
+           // Update character
+           this.character = characters[characterId];
+           this.setupCharacter();
+           this.preloadVideos();
+           this.updateBackground('idle');
+
+           // End current conversation if active
+           if (this.conversation) {
+               this.endConversation();
+           }
        }
-   }
-
-   openCharacterMenu() {
-       this.characterMenu.classList.add('active');
-   }
-
-   closeCharacterMenu() {
-       this.characterMenu.classList.remove('active');
-   }
-
-   updateURLParameter(key, value) {
-       const url = new URL(window.location);
-       url.searchParams.set(key, value);
-       window.history.replaceState({}, '', url);
    }
 }
 
