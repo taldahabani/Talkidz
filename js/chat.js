@@ -17,10 +17,10 @@ const characters = {
         name: 'Cupcake',
         agentId: 'iogofk9qnqvE98RwV1Kk',
         assets: {
-            idle: '/characters/jonny/assets/cupcake-blinking.mp4',
-            talking: '/characters/jonny/assets/jonny-talk.mp4',
-            preview: '/characters/jonny/assets/cupcake.png',
-            icon: '/characters/jonny/assets/cupcake.jpg'
+            idle: '/characters/cupcake/assets/cupcake-blinking.mp4',
+            talking: '/characters/cupcake/assets/jonny-talk.mp4',
+            preview: '/characters/cupcake/assets/cupcake.png',
+            icon: '/characters/cupcake/assets/cupcake.jpg'
         }
     },
     eva: {
