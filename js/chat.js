@@ -12,17 +12,6 @@ const characters = {
             icon: '/characters/jonny/assets/jonny-icon.jpg'
         }
     },
-    cupcake: {
-        id: 'cupcake',
-        name: 'Cupcake',
-        agentId: 'iogofk9qnqvE98RwV1Kk',
-        assets: {
-            idle: '/characters/cupcake/assets/cupcake-blinking.mp4',
-            talking: '/characters/cupcake/assets/jonny-talk.mp4',
-            preview: '/characters/cupcake/assets/cupcake.png',
-            icon: '/characters/cupcake/assets/cupcake.jpg'
-        }
-    },
     eva: {
         id: 'eva',
         name: 'Eva',
@@ -32,6 +21,17 @@ const characters = {
             talking: '/characters/robo/assets/eva-talking.mp4',
             preview: '/characters/robo/assets/eva.jpg',
             icon: '/characters/robo/assets/eva-icon.jpg'
+        }
+    },
+    cupcake: {
+        id: 'cupcake',
+        name: 'Cupcake',
+        agentId: 'iogofk9qnqvE98RwV1Kk',
+        assets: {
+            idle: '/characters/cupcake/assets/cupcake-blinking.mp4',
+            talking: '/characters/cupcake/assets/cupcake-talk.mp4',
+            preview: '/characters/cupcake/assets/cupcake.png',
+            icon: '/characters/cupcake/assets/cupcake.jpg'
         }
     }
 };
