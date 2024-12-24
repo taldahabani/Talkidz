@@ -8,11 +8,9 @@
     --background-color: #FFFFFF;
     --secondary-background: #F5F5F5;
     --shadow-color: rgba(0, 0, 0, 0.08);
-    --transition-duration: 0.5s;
-    --max-content-width: 768px;
+    --spacing-unit: 1rem;
     --header-blur: 10px;
     --header-shadow: 0 2px 8px rgba(108, 92, 231, 0.1);
-    --spacing-unit: 1rem;
 }
 
 /* General Styles */
@@ -126,6 +124,7 @@ body {
     left: 20%;
 }
 
+/* Animation Keyframes */
 @keyframes rotate {
     from { transform: rotate(0deg); }
     to { transform: rotate(360deg); }
@@ -157,36 +156,19 @@ body {
 }
 
 @keyframes pulse {
-    0% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.2); opacity: 0.7; }
-    100% { transform: scale(1); opacity: 1; }
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
 }
 
-@keyframes buttonShine {
-    to { transform: translateX(100%) rotate(45deg); }
+@keyframes shine {
+    0% { transform: translateX(-100%) rotate(45deg); }
+    100% { transform: translateX(100%) rotate(45deg); }
 }
 
-/* Particle Background */
-.particle-background {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: -1;
-    overflow: hidden;
-}
-
-.particle {
-    position: absolute;
-    width: 6px;
-    height: 6px;
-    background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
-    border-radius: 50%;
-    filter: blur(1px);
-    animation: floatParticle 20s infinite linear;
-    opacity: 0.1;
+@keyframes shine-effect {
+    0%, 100% { opacity: 0; transform: scale(0.8); }
+    50% { opacity: 0.5; transform: scale(1); }
 }
 
 @keyframes floatParticle {
@@ -201,6 +183,11 @@ body {
         transform: translateY(-1000px) translateX(100px) rotate(360deg);
         opacity: 0;
     }
+}
+
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
 
 /* Header */
@@ -228,17 +215,8 @@ body {
     flex-direction: column;
     align-items: flex-start;
     margin-right: auto;
-}
-
-.logo {
-    font-size: 2rem;
-    font-weight: 800;
-    background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    text-decoration: none;
-    letter-spacing: -0.5px;
+    position: relative;
+    transition: all 0.3s ease;
 }
 
 .logo-container::after {
@@ -261,6 +239,17 @@ body {
 .logo-container:hover::after {
     opacity: 1;
     animation: pulse 2s infinite;
+}
+
+.logo {
+    font-size: 2rem;
+    font-weight: 800;
+    background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-decoration: none;
+    letter-spacing: -0.5px;
 }
 
 .share-button {
@@ -296,7 +285,7 @@ body {
 
 .categories {
     display: flex;
-    justify-content: center;
+    justify-content: flex-start; /* Align to the left */
     gap: 1rem;
     margin-bottom: var(--spacing-unit);
     padding: 0 var(--spacing-unit);
@@ -370,7 +359,8 @@ main {
     content: '';
     height: 2px;
     flex: 1;
-    background: linear-gradient(to right, var(--secondary-background), transparent);
+    background: linear-gradient(to right, var(--accent-color, #6C5CE7) 0%, transparent 100%);
+    opacity: 0.3;
 }
 
 .featured-name {
@@ -395,7 +385,7 @@ main {
 }
 
 .featured-image-container {
-    width: 260px;
+    width: 260px; /* Larger image for more impact */
     height: 260px;
     position: relative;
     flex-shrink: 0;
@@ -536,11 +526,6 @@ main {
     pointer-events: none;
 }
 
-@keyframes shine {
-    0% { transform: translateX(-100%) rotate(45deg); }
-    100% { transform: translateX(100%) rotate(45deg); }
-}
-
 .character-name {
     font-weight: 600;
     margin-bottom: 0.25rem;
@@ -635,11 +620,6 @@ main {
     opacity: 0;
     animation: shine-effect 5s infinite;
     pointer-events: none;
-}
-
-@keyframes shine-effect {
-    0%, 100% { opacity: 0; transform: scale(0.8); }
-    50% { opacity: 0.5; transform: scale(1); }
 }
 
 .footer-slogan {
@@ -771,11 +751,6 @@ main {
 
 /* Responsive Styles */
 @media (max-width: 768px) {
-    .splash-container {
-        width: 100vw;
-        height: 100vh;
-    }
-
     .featured-section {
         padding: 17px;
         margin: 20px 10px;
@@ -810,27 +785,6 @@ main {
         font-size: 0.875rem;
     }
 
-    .character-carousel {
-        gap: 1rem;
-    }
-
-    .character-card {
-        width: 110px;
-    }
-
-    .character-image {
-        width: 90px;
-        height: 90px;
-    }
-
-    .character-name {
-        font-size: 0.875rem;
-    }
-
-    .character-role {
-        font-size: 0.75rem;
-    }
-
     .footer-logo {
         font-size: 2.5rem;
     }
@@ -855,5 +809,43 @@ main {
     .social-icon svg {
         width: 20px;
         height: 20px;
+    }
+}
+
+@media (max-width: 550px) {
+    .featured-section {
+        padding: 14px 14px;
+    }
+    
+    .featured-section > div:first-child {
+        padding-right: 8px;
+        text-align: left; 
+    }
+    
+    .featured-title {
+        justify-content: flex-start;
+    }
+    
+    .featured-description {
+        margin-left: 0;
+        margin-right: 0;
+        font-size: 0.875rem;
+    }
+    
+    .featured-image-container {
+        width: 140px; 
+        height: 140px;
+        margin-bottom: 0px;
+    }
+    
+    .featured-image-wrap {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .featured-section .share-button {
+        margin: 0;
+        padding: 0.75rem 1.5rem;
+        font-size: 0.875rem;
     }
 }
