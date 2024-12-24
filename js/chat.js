@@ -10,6 +10,16 @@ const characters = {
             talking: '/characters/jonny/assets/jonny-talk.mp4',
             preview: '/characters/jonny/assets/jonny.jpg'
         }
+
+    eva: {
+        id: 'eva',
+        name: 'eva',
+        agentId: 'UWxUKTTWxyHwoEfDDic2',
+        assets: {
+            idle: '/characters/robo/assets/eva-idle.mp4',
+            talking: '/characters/robo/assets/eva-talking.mp4',
+            preview: '/characters/robo/assets/eva.jpg'
+        }
     }
 };
 
