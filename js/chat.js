@@ -12,6 +12,17 @@ const characters = {
             icon: '/characters/jonny/assets/jonny-icon.jpg'
         }
     },
+    cupcake: {
+        id: 'cupcake',
+        name: 'Cupcake',
+        agentId: 'xiC8L3SOeHwYyCLLnYxF',
+        assets: {
+            idle: '/characters/jonny/assets/cupcake-blinking.mp4',
+            talking: '/characters/jonny/assets/jonny-talk.mp4',
+            preview: '/characters/jonny/assets/cupcake.png',
+            icon: '/characters/jonny/assets/cupcake.jpg'
+        }
+    },
     eva: {
         id: 'eva',
         name: 'Eva',
