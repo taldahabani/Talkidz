@@ -47,6 +47,7 @@ class ChatController {
         this.preloadVideos();
         this.updateBackground('idle');
         this.setupCharacterMenu();
+        this.loadingScreen.classList.remove('hidden');
     }
 
     setupElements() {
@@ -60,6 +61,7 @@ class ChatController {
         this.characterMenu = document.querySelector('.character-menu');
         this.characterMenuContent = document.querySelector('.character-menu-content');
         this.characterSelectButton = document.querySelector('.character-select-button');
+        this.loadingScreen = document.querySelector('.character-loading');
     }
 
     setupCharacter() {
@@ -95,6 +97,9 @@ class ChatController {
         if (this.conversation) {
             await this.endConversation();
         }
+
+        this.loadingScreen.classList.remove('hidden');
+        this.videosLoaded = { idle: false, speaking: false };
 
         const url = new URL(window.location);
         url.searchParams.set('character', characterId);
@@ -137,6 +142,7 @@ class ChatController {
             this.backgroundImage.style.opacity = '0';
             this.idleVideo.classList.add('active');
             this.idleVideo.play().catch(console.error);
+            this.loadingScreen.classList.add('hidden');
         });
 
         this.speakingVideo.load();
