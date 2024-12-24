@@ -1,18 +1,18 @@
 export const characters = {
-    jonny: {
-        id: 'jonny',
-        name: 'Jonny',
-        assets: {
-            idle: '/assets/characters/jonny/idle.mp4',
-            talking: '/assets/characters/jonny/talking.mp4',
-            preview: '/assets/characters/jonny/preview.jpg'
-        },
-        agents: {
-            'en-US': 'xiC8L3SOeHwYyCLLnYxF',
-            'es-ES': 'spanish-agent-id',
-            'fr-FR': 'french-agent-id'
-        }
+jonny: {
+    id: 'jonny',
+    name: 'Jonny',
+    assets: {
+        idle: '/characters/jonny/assets/jonny-idle.mp4',
+        talking: '/characters/jonny/assets/jonny-talk.mp4',
+        preview: '/characters/jonny/assets/jonny.jpg'
     },
+    agents: {
+        'en-US': 'xiC8L3SOeHwYyCLLnYxF',
+        'es-ES': 'spanish-agent-id',
+        'fr-FR': 'french-agent-id'
+    }
+},
     eva: {
         id: 'eva',
         name: 'Eva',
