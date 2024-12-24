@@ -24,10 +24,20 @@ class ChatController {
         this.startButton = document.getElementById('startButton');
         this.statusDot = document.querySelector('.status-dot');
         this.statusText = document.querySelector('.status-text');
+        this.characterName = document.querySelector('.character-name');
         
+        this.setupCharacter();
         this.setupEventListeners();
         this.preloadVideos();
         this.updateBackground('idle');
+    }
+
+    setupCharacter() {
+        document.title = `${this.character.name} - Talkidz`;
+        this.characterName.textContent = this.character.name;
+        this.backgroundImage.style.background = `url('${this.character.assets.preview}') center/contain no-repeat`;
+        this.idleVideo.src = this.character.assets.idle;
+        this.speakingVideo.src = this.character.assets.talking;
     }
 
     updateStatus(mode) {
@@ -163,8 +173,8 @@ class ChatController {
 window.shareCharacter = () => {
     if (navigator.share) {
         navigator.share({
-            title: 'Chat with Jonny on Talkidz',
-            text: 'Come chat with Jonny, your new AI friend!',
+            title: `Chat with ${chat.character.name} on Talkidz`,
+            text: `Come chat with ${chat.character.name}, your new AI friend!`,
             url: window.location.href
         }).catch(console.error);
     }
