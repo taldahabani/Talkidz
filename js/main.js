@@ -1,11 +1,8 @@
-// js/main.js
+// main.js
 
-import { languages } from './languages.js';
-import { characters } from './characters.js';
 import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
 
-let currentCharacter = characters[0];
-let currentLanguage = 'en-US';
+// Initialize variables
 let conversation = null;
 let videosLoaded = { idle: false, speaking: false };
 const CONVERSATION_TIME = 180;
@@ -17,66 +14,48 @@ const speakingVideo = document.getElementById('speakingVideo');
 const startButton = document.getElementById('startButton');
 const statusDot = document.querySelector('.status-dot');
 const statusText = document.querySelector('.status-text');
-const languageButton = document.getElementById('languageButton');
-const languageDropdown = document.getElementById('languageDropdown');
-const characterSelector = document.getElementById('characterSelect');
-const characterName = document.querySelector('.character-name');
+const categoryPills = document.querySelectorAll('.category-pill');
 
-// Initialize the application
-document.addEventListener('DOMContentLoaded', () => {
-    const savedLanguage = localStorage.getItem('preferredLanguage');
-    const savedCharacterId = localStorage.getItem('selectedCharacter');
-
-    if (savedLanguage && languages.some(lang => lang.code === savedLanguage)) {
-        currentLanguage = savedLanguage;
+// Share Functions
+function shareApp() {
+    if (navigator.share) {
+        navigator.share({
+            title: 'Talkidz - AI Friends to Chat With',
+            text: 'Check out Talkidz, where you can chat with AI friends!',
+            url: window.location.href
+        })
+        .catch((error) => console.error('Error sharing:', error));
+    } else {
+        // Fallback for unsupported browsers
+        const shareText = 'Check out Talkidz, where you can chat with AI friends! ' + window.location.href;
+        navigator.clipboard.writeText(shareText)
+            .then(() => alert('Link copied to clipboard!'))
+            .catch((error) => console.error('Error copying text:', error));
     }
-
-    if (savedCharacterId && characters.some(char => char.id === savedCharacterId)) {
-        currentCharacter = characters.find(char => char.id === savedCharacterId);
-        characterSelector.value = savedCharacterId;
-    }
-
-    initializeCharacter();
-    populateLanguageDropdown();
-    populateCharacterSelector();
-    updateLanguageButton();
-
-    const currentLangObj = languages.find(lang => lang.code === currentLanguage);
-    if (currentLangObj) {
-        languageButton.innerHTML = `${currentLangObj.flag}`;
-    }
-});
-
-// Function to initialize character media and agent ID
-function initializeCharacter() {
-    characterName.textContent = currentCharacter.name;
-    backgroundImage.style.backgroundImage = `url('${currentCharacter.assets.image}')`;
-    idleVideo.querySelector('source').src = currentCharacter.assets.idleVideo;
-    speakingVideo.querySelector('source').src = currentCharacter.assets.speakingVideo;
-
-    // Reload videos with new sources
-    idleVideo.load();
-    speakingVideo.load();
-    preloadVideos();
 }
 
-// Function to preload videos
-function preloadVideos() {
-    videosLoaded = { idle: false, speaking: false };
-
-    idleVideo.addEventListener('loadeddata', () => {
-        videosLoaded.idle = true;
-        backgroundImage.style.opacity = '0';
-        idleVideo.classList.add('active');
-        idleVideo.play().catch(console.error);
-    }, { once: true });
-
-    speakingVideo.addEventListener('loadeddata', () => {
-        videosLoaded.speaking = true;
-    }, { once: true });
+function shareCharacter() {
+    if (navigator.share) {
+        navigator.share({
+            title: 'Chat with Your Favorite AI Character on Talkidz',
+            text: 'Come chat with your favorite AI character on Talkidz!',
+            url: window.location.href
+        })
+        .catch((error) => console.error('Error sharing:', error));
+    } else {
+        // Fallback for unsupported browsers
+        const shareText = 'Come chat with your favorite AI character on Talkidz! ' + window.location.href;
+        navigator.clipboard.writeText(shareText)
+            .then(() => alert('Link copied to clipboard!'))
+            .catch((error) => console.error('Error copying text:', error));
+    }
 }
 
-// Function to update status indicator
+// Initialize Share Functions
+window.shareApp = shareApp;
+window.shareCharacter = shareCharacter;
+
+// Update Status Indicator
 function updateStatus(mode) {
     statusDot.classList.remove('listening');
     switch(mode) {
@@ -95,7 +74,23 @@ function updateStatus(mode) {
     }
 }
 
-// Function to update background based on mode
+// Preload Videos
+function preloadVideos() {
+    idleVideo.load();
+    idleVideo.addEventListener('loadeddata', () => {
+        videosLoaded.idle = true;
+        backgroundImage.style.opacity = '0';
+        idleVideo.classList.add('active');
+        idleVideo.play().catch(console.error);
+    }, { once: true });
+
+    speakingVideo.load();
+    speakingVideo.addEventListener('loadeddata', () => {
+        videosLoaded.speaking = true;
+    }, { once: true });
+}
+
+// Update Background Based on Mode
 function updateBackground(mode) {
     if (mode === 'speaking' && videosLoaded.speaking) {
         idleVideo.classList.remove('active');
@@ -112,7 +107,7 @@ function updateBackground(mode) {
     updateStatus(mode);
 }
 
-// Function to trigger confetti
+// Trigger Confetti Animation
 function triggerConfetti() {
     const options = { origin: { y: 0.7 } };
     const count = 200;
@@ -132,7 +127,7 @@ function triggerConfetti() {
     });
 }
 
-// Function to start conversation
+// Start Conversation
 async function startConversation() {
     try {
         await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -145,10 +140,8 @@ async function startConversation() {
             </svg>
         `;
 
-        const agentId = currentCharacter.agentIds[currentLanguage] || currentCharacter.agentIds['en-US'];
-
         conversation = await Conversation.startSession({
-            agentId: agentId,
+            agentId: 'UWxUKTTWxyHwoEfDDic2', // Replace with your actual agent ID
             onModeChange: (mode) => updateBackground(mode.mode),
             onConnect: () => {
                 updateBackground('listening');
@@ -170,11 +163,11 @@ async function startConversation() {
         console.error('Error starting conversation:', error);
         updateBackground('idle');
         startButton.classList.remove('active');
-        startButton.textContent = 'Start Conversation';
+        startButton.innerHTML = 'Start Conversation';
     }
 }
 
-// Function to end conversation
+// End Conversation
 async function endConversation() {
     if (conversation) {
         try {
@@ -185,12 +178,12 @@ async function endConversation() {
             conversation = null;
             updateBackground('idle');
             startButton.classList.remove('active');
-            startButton.textContent = 'Start Conversation';
+            startButton.innerHTML = 'Start Conversation';
         }
     }
 }
 
-// Event listener for start button
+// Event Listener for Start Button
 startButton.addEventListener('click', async () => {
     if (conversation) {
         await endConversation();
@@ -199,117 +192,61 @@ startButton.addEventListener('click', async () => {
     }
 });
 
-// Function to share character
-window.shareCharacter = () => {
-    if (navigator.share) {
-        navigator.share({
-            title: `Chat with ${currentCharacter.name} on Talkidz`,
-            text: `Come chat with ${currentCharacter.name}, your new AI friend!`,
-            url: window.location.href
-        }).catch(console.error);
-    } else {
-        const shareText = `Come chat with ${currentCharacter.name}, your new AI friend! ${window.location.href}`;
-        navigator.clipboard.writeText(shareText).then(() => {
-            alert('Link copied to clipboard!');
-        }).catch(console.error);
-    }
-};
-
-// Function to share app
-window.shareApp = () => {
-    if (navigator.share) {
-        navigator.share({
-            title: 'Talkidz - AI Friends to Chat With',
-            text: 'Check out Talkidz, where you can chat with AI friends!',
-            url: window.location.href
-        }).catch(console.error);
-    }
-};
-
-// Function to populate language dropdown
-function populateLanguageDropdown() {
-    languageDropdown.innerHTML = '';
-    languages.forEach(lang => {
-        const option = document.createElement('div');
-        option.classList.add('language-option');
-        option.setAttribute('role', 'menuitem');
-        option.setAttribute('tabindex', '0');
-        option.onclick = () => selectLanguage(lang.code);
-        option.innerHTML = `
-            ${lang.flag} <span>${lang.name}</span>
-        `;
-        languageDropdown.appendChild(option);
+// Handle Category Pill Selection and Filtering
+categoryPills.forEach(pill => {
+    pill.addEventListener('click', () => {
+        // Remove active class from all pills
+        categoryPills.forEach(p => p.classList.remove('active'));
+        // Add active class to the clicked pill
+        pill.classList.add('active');
+        // Get the selected category
+        const selectedCategory = pill.textContent.trim();
+        // Filter characters based on the selected category
+        filterCharacters(selectedCategory);
     });
-}
-
-// Function to populate character selector
-function populateCharacterSelector() {
-    characters.forEach(char => {
-        const option = document.createElement('option');
-        option.value = char.id;
-        option.textContent = char.name;
-        characterSelector.appendChild(option);
-    });
-}
-
-// Event listener for language button
-languageButton.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const isActive = languageDropdown.classList.toggle('active');
-    languageButton.setAttribute('aria-expanded', isActive);
 });
 
-// Event listener for character selector
-characterSelector.addEventListener('change', (e) => {
-    const selectedId = e.target.value;
-    const selectedCharacter = characters.find(char => char.id === selectedId);
-    if (selectedCharacter) {
-        currentCharacter = selectedCharacter;
-        localStorage.setItem('selectedCharacter', selectedId);
-        initializeCharacter();
-        if (conversation) {
-            endConversation();
+function filterCharacters(category) {
+    const characterCards = document.querySelectorAll('.character-card');
+    characterCards.forEach(card => {
+        const role = card.querySelector('.character-role').textContent.trim();
+        const isPopular = card.querySelector('.popular-badge') !== null;
+        const isNew = card.querySelector('.new-badge') !== null;
+
+        if (category === 'All') {
+            card.style.display = 'block';
+        } else if (category === 'Popular' && isPopular) {
+            card.style.display = 'block';
+        } else if (category === 'New' && isNew) {
+            card.style.display = 'block';
+        } else {
+            card.style.display = 'none';
         }
-    }
-});
+    });
+}
 
-// Close language dropdown when clicking outside
-document.addEventListener('click', (e) => {
-    if (!languageButton.contains(e.target) && !languageDropdown.contains(e.target)) {
-        languageDropdown.classList.remove('active');
-        languageButton.setAttribute('aria-expanded', 'false');
-    }
-});
-
-// Function to select language
-function selectLanguage(langCode) {
-    const langExists = languages.some(lang => lang.code === langCode);
-    if (!langExists) {
-        console.warn(`Language code ${langCode} not found.`);
-        return;
-    }
-
-    currentLanguage = langCode;
-    localStorage.setItem('preferredLanguage', langCode);
-    languageDropdown.classList.remove('active');
-    languageButton.setAttribute('aria-expanded', 'false');
-
-    const selectedLang = languages.find(lang => lang.code === langCode);
-    if (selectedLang) {
-        languageButton.innerHTML = `${selectedLang.flag}`;
-    }
-
-    if (conversation) {
-        endConversation().then(() => {
-            startConversation();
-        });
+// Particle Creation for Loader
+function createParticles() {
+    const particlesContainer = document.querySelector('.particles');
+    for (let i = 0; i < 20; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'splash-particle';
+        particle.style.left = Math.random() * 100 + 'vw';
+        particle.style.top = Math.random() * 100 + 'vh';
+        particle.style.animationDelay = (Math.random() * 2) + 's';
+        
+        // Add random size variation
+        const size = Math.random() * 3 + 3; // Sizes between 3-6px
+        particle.style.width = size + 'px';
+        particle.style.height = size + 'px';
+        
+        particlesContainer.appendChild(particle);
     }
 }
 
-// Function to update language button on load
-function updateLanguageButton() {
-    const currentLangObj = languages.find(lang => lang.code === currentLanguage);
-    if (currentLangObj) {
-        languageButton.innerHTML = `${currentLangObj.flag}`;
-    }
-}
+// Initialize Particles and Preload Videos on DOMContentLoaded
+document.addEventListener('DOMContentLoaded', () => {
+    createParticles();
+    preloadVideos();
+    updateBackground('idle');
+});
