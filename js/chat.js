@@ -15,7 +15,7 @@ const characters = {
     cupcake: {
         id: 'cupcake',
         name: 'Cupcake',
-        agentId: 'xiC8L3SOeHwYyCLLnYxF',
+        agentId: 'iogofk9qnqvE98RwV1Kk',
         assets: {
             idle: '/characters/jonny/assets/cupcake-blinking.mp4',
             talking: '/characters/jonny/assets/jonny-talk.mp4',
