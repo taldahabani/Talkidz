@@ -2,10 +2,10 @@
 
 import { languages } from './languages.js';
 import { characters } from './characters.js';
-import { Conversation } from 'https://cdn.skypack.dev/@11labs/client'; // Ensure this import is correct
+import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
 
-let currentCharacter = characters[0]; // Default to the first character
-let currentLanguage = 'en-US'; // Default language
+let currentCharacter = characters[0];
+let currentLanguage = 'en-US';
 let conversation = null;
 let videosLoaded = { idle: false, speaking: false };
 const CONVERSATION_TIME = 180;
@@ -24,7 +24,6 @@ const characterName = document.querySelector('.character-name');
 
 // Initialize the application
 document.addEventListener('DOMContentLoaded', () => {
-    // Load saved language and character from localStorage
     const savedLanguage = localStorage.getItem('preferredLanguage');
     const savedCharacterId = localStorage.getItem('selectedCharacter');
 
@@ -42,7 +41,6 @@ document.addEventListener('DOMContentLoaded', () => {
     populateCharacterSelector();
     updateLanguageButton();
 
-    // Set language button to show the current language flag
     const currentLangObj = languages.find(lang => lang.code === currentLanguage);
     if (currentLangObj) {
         languageButton.innerHTML = `${currentLangObj.flag}`;
@@ -147,7 +145,7 @@ async function startConversation() {
             </svg>
         `;
 
-        const agentId = currentCharacter.agentIds[currentLanguage] || currentCharacter.agentIds['en-US']; // Fallback to 'en-US'
+        const agentId = currentCharacter.agentIds[currentLanguage] || currentCharacter.agentIds['en-US'];
 
         conversation = await Conversation.startSession({
             agentId: agentId,
@@ -210,7 +208,6 @@ window.shareCharacter = () => {
             url: window.location.href
         }).catch(console.error);
     } else {
-        // Fallback for browsers that do not support the Web Share API
         const shareText = `Come chat with ${currentCharacter.name}, your new AI friend! ${window.location.href}`;
         navigator.clipboard.writeText(shareText).then(() => {
             alert('Link copied to clipboard!');
@@ -218,9 +215,20 @@ window.shareCharacter = () => {
     }
 };
 
+// Function to share app
+window.shareApp = () => {
+    if (navigator.share) {
+        navigator.share({
+            title: 'Talkidz - AI Friends to Chat With',
+            text: 'Check out Talkidz, where you can chat with AI friends!',
+            url: window.location.href
+        }).catch(console.error);
+    }
+};
+
 // Function to populate language dropdown
 function populateLanguageDropdown() {
-    languageDropdown.innerHTML = ''; // Clear existing options
+    languageDropdown.innerHTML = '';
     languages.forEach(lang => {
         const option = document.createElement('div');
         option.classList.add('language-option');
@@ -259,7 +267,6 @@ characterSelector.addEventListener('change', (e) => {
         currentCharacter = selectedCharacter;
         localStorage.setItem('selectedCharacter', selectedId);
         initializeCharacter();
-        // Update agent ID if conversation is active
         if (conversation) {
             endConversation();
         }
@@ -287,13 +294,11 @@ function selectLanguage(langCode) {
     languageDropdown.classList.remove('active');
     languageButton.setAttribute('aria-expanded', 'false');
 
-    // Update language button to show selected flag
     const selectedLang = languages.find(lang => lang.code === langCode);
     if (selectedLang) {
         languageButton.innerHTML = `${selectedLang.flag}`;
     }
 
-    // If a conversation is active, restart it with the new language's agent ID
     if (conversation) {
         endConversation().then(() => {
             startConversation();
