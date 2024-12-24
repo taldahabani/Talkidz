@@ -30,14 +30,12 @@ class ChatController {
         this.character = characters[characterId];
         this.conversation = null;
         this.videosLoaded = { idle: false, speaking: false };
-        this.videosCache = new Map();
         this.setupElements();
         this.setupCharacter();
         this.setupEventListeners();
         this.preloadVideos();
         this.updateBackground('idle');
         this.setupCharacterMenu();
-        this.preloadAdjacentCharacters();
     }
 
     setupElements() {
@@ -53,47 +51,12 @@ class ChatController {
         this.characterSelectButton = document.querySelector('.character-select-button');
     }
 
-    preloadCharacterVideos(characterId) {
-        if (!this.videosCache.has(characterId)) {
-            const character = characters[characterId];
-            const idleVideo = document.createElement('video');
-            const talkingVideo = document.createElement('video');
-            
-            idleVideo.src = character.assets.idle;
-            talkingVideo.src = character.assets.talking;
-            idleVideo.load();
-            talkingVideo.load();
-            
-            this.videosCache.set(characterId, {
-                idle: idleVideo,
-                talking: talkingVideo
-            });
-        }
-    }
-
-    preloadAdjacentCharacters() {
-        const characterIds = Object.keys(characters);
-        const currentIndex = characterIds.indexOf(this.character.id);
-        const prevId = characterIds[currentIndex - 1];
-        const nextId = characterIds[currentIndex + 1];
-
-        if (prevId) this.preloadCharacterVideos(prevId);
-        if (nextId) this.preloadCharacterVideos(nextId);
-    }
-
     setupCharacter() {
         document.title = `${this.character.name} - Talkidz`;
         this.characterName.textContent = this.character.name;
         this.backgroundImage.style.background = `url('${this.character.assets.preview}') center/contain no-repeat`;
-        
-        if (this.videosCache.has(this.character.id)) {
-            const cachedVideos = this.videosCache.get(this.character.id);
-            this.idleVideo.src = cachedVideos.idle.src;
-            this.speakingVideo.src = cachedVideos.talking.src;
-        } else {
-            this.idleVideo.src = this.character.assets.idle;
-            this.speakingVideo.src = this.character.assets.talking;
-        }
+        this.idleVideo.src = this.character.assets.idle;
+        this.speakingVideo.src = this.character.assets.talking;
     }
 
     setupCharacterMenu() {
@@ -102,7 +65,6 @@ class ChatController {
             option.className = `character-option ${char.id === this.character.id ? 'active' : ''}`;
             option.innerHTML = `<img src="${char.assets.icon}" alt="${char.name}">`;
             option.addEventListener('click', () => this.changeCharacter(char.id));
-            option.addEventListener('mouseenter', () => this.preloadCharacterVideos(char.id));
             this.characterMenuContent.appendChild(option);
         });
 
@@ -123,21 +85,14 @@ class ChatController {
             await this.endConversation();
         }
 
-        this.backgroundImage.style.opacity = '1';
-        this.idleVideo.classList.remove('active');
-        this.speakingVideo.classList.remove('active');
-        this.backgroundImage.style.background = `url('${characters[characterId].assets.preview}') center/contain no-repeat`;
-
         const url = new URL(window.location);
         url.searchParams.set('character', characterId);
         window.history.pushState({}, '', url);
 
         this.character = characters[characterId];
         this.setupCharacter();
-        this.videosLoaded = { idle: false, speaking: false };
         this.preloadVideos();
         this.updateBackground('idle');
-        this.preloadAdjacentCharacters();
 
         document.querySelectorAll('.character-option').forEach(option => {
             option.classList.toggle('active', option.querySelector('img').src.includes(characterId));
@@ -168,10 +123,9 @@ class ChatController {
         this.idleVideo.load();
         this.idleVideo.addEventListener('loadeddata', () => {
             this.videosLoaded.idle = true;
-            if (this.idleVideo.classList.contains('active')) {
-                this.backgroundImage.style.opacity = '0';
-                this.idleVideo.play().catch(console.error);
-            }
+            this.backgroundImage.style.opacity = '0';
+            this.idleVideo.classList.add('active');
+            this.idleVideo.play().catch(console.error);
         });
 
         this.speakingVideo.load();
@@ -182,12 +136,10 @@ class ChatController {
 
     updateBackground(mode) {
         if (mode === 'speaking' && this.videosLoaded.speaking) {
-            this.backgroundImage.style.opacity = '0';
             this.idleVideo.classList.remove('active');
             this.speakingVideo.classList.add('active');
             this.speakingVideo.play().catch(console.error);
         } else if (this.videosLoaded.idle) {
-            this.backgroundImage.style.opacity = '0';
             this.speakingVideo.classList.remove('active');
             this.idleVideo.classList.add('active');
             this.idleVideo.play().catch(console.error);
