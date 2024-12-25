@@ -243,7 +243,7 @@ body {
 }
 
 .controls-right {
-    display: inline-flex;
+    display: flex;
     align-items: center;
     gap: 1rem;
     position: relative;
@@ -297,6 +297,7 @@ body {
 }
 
 .character-select-button, .share-button {
+    aspect-ratio: 1;
     width: 48px;
     height: 48px;
     border: none;
