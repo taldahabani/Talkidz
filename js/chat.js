@@ -23,6 +23,50 @@ const characters = {
             icon: '/characters/robo/assets/eva-icon.jpg'
         }
     },
+    fox: {
+        id: 'fox',
+        name: 'Foxxy',
+        agentId: 'XJ3eFR10myzK01A10BlN',
+        assets: {
+            idle: '/characters/fox/assets/fox-idle.mp4',
+            talking: '/characters/fox/assets/fox-talking.mp4',
+            preview: '/characters/fox/assets/foxxy.jpg',
+            icon: '/characters/fox/assets/fox.jpg'
+        }
+    },
+    whimsy: {
+        id: 'whimsy',
+        name: 'Clumsy Whimsy',
+        agentId: 'jvbiMPIQOUiUs5GkepcA',
+        assets: {
+            idle: '/characters/whimsy/assets/idle-whimsy.mp4',
+            talking: '/characters/whimsy/assets/speaking-whimsy.mp4',
+            preview: '/characters/whimsy/assets/whimsy.jpg',
+            icon: '/characters/whimsy/assets/whimsy.png'
+        }
+    },
+    cat: {
+        id: 'cat',
+        name: 'Noodles',
+        agentId: '4gWkcgFThRtBuhM5akxT',
+        assets: {
+            idle: '/characters/cat/assets/cat-idle.mp4',
+            talking: '/characters/cat/assets/cat-talking.mp4',
+            preview: '/characters/cat/assets/cat.png',
+            icon: '/characters/cat/assets/cat.jpg'
+        }
+    },
+    emma: {
+        id: 'emma',
+        name: 'Emma',
+        agentId: 'UFCiWykxf7I8pgANcBuJ',
+        assets: {
+            idle: '/characters/emma/assets/idle.mp4',
+            talking: '/characters/emma/assets/speaking.mp4',
+            preview: '/characters/emma/assets/emma.png',
+            icon: '/characters/emma/assets/emma.jpg'
+        }
+    },
     cupcake: {
         id: 'cupcake',
         name: 'Cupcake',
