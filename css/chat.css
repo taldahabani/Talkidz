@@ -325,11 +325,6 @@ body {
     color: var(--text-color);
 }
 
-.character-select-button {
-    position: relative;
-    overflow: visible;
-}
-
 .character-select-button::after {
     content: '✨';
     position: absolute;
