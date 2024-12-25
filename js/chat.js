@@ -114,11 +114,19 @@ class ChatController {
        this.backgroundImage.style.background = `url('${this.character.assets.preview}') center/contain no-repeat`;
        this.idleVideo.src = this.character.assets.idle;
        this.speakingVideo.src = this.character.assets.talking;
-       this.characterSelectButton.innerHTML = `<img src="${this.character.assets.icon}" alt="${this.character.name}">`;
+this.characterSelectButton.innerHTML = `
+  <div class="character-icon">
+    <img src="${this.character.assets.icon}" alt="${this.character.name}">
+  </div>`;
+
    }
 
    setupCharacterMenu() {
-       this.characterSelectButton.innerHTML = `<img src="${this.character.assets.icon}" alt="${this.character.name}">`;
+this.characterSelectButton.innerHTML = `
+  <div class="character-icon">
+    <img src="${this.character.assets.icon}" alt="${this.character.name}">
+  </div>`;
+
        
        Object.values(characters).forEach(char => {
            const option = document.createElement('div');
@@ -161,7 +169,11 @@ class ChatController {
            option.classList.toggle('active', option.querySelector('img').src.includes(characterId));
        });
        
-       this.characterSelectButton.innerHTML = `<img src="${this.character.assets.icon}" alt="${this.character.name}">`;
+this.characterSelectButton.innerHTML = `
+  <div class="character-icon">
+    <img src="${this.character.assets.icon}" alt="${this.character.name}">
+  </div>`;
+
        this.characterMenu.classList.remove('active');
    }
 
