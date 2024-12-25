@@ -312,7 +312,7 @@ body {
 
 .character-select-button {
     position: relative;
-    overflow: hidden;
+    overflow: visible;
 }
 
 .character-select-button img {
