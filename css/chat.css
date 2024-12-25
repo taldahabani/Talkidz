@@ -306,6 +306,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
 }
 
 .share-button {
@@ -316,7 +317,6 @@ body {
 .character-select-button {
     position: relative;
     overflow: visible;
-    flex-shrink: 0;
 }
 
 .character-select-button img {
