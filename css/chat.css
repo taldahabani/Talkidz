@@ -316,12 +316,20 @@ body {
 }
 
 .character-select-button .character-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.character-select-button .character-icon img {
     width: 100%;
     height: 100%;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
-    border-radius: 50%;
+    object-fit: cover;
+    object-position: center;
 }
 
 .share-button {
