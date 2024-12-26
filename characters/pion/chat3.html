@@ -45,29 +45,19 @@
 
         .background {
             position: absolute;
-            max-width: 100%;
-            max-height: 100%;
-            width: auto;
-            height: auto;
-            object-fit: contain;
-            opacity: 0;
-        }
-
-        /* Remove the transition to avoid white flickers or delays */
-        .background.active {
-            opacity: 1;
-        }
-
-        .background.video {
             width: 100%;
-            height: auto;
-            object-fit: contain;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+
+        .background.active {
+            display: block;
         }
 
         .background.image {
-            background: url('/characters/pion/assets/pion.jpg') center/contain no-repeat;
-            width: 100%;
-            height: 100%;
+            background: url('/characters/pion/assets/pion.jpg') center/cover no-repeat;
+            display: block;
         }
 
         .bottom-bar {
@@ -180,13 +170,23 @@
         @keyframes buttonShine {
             to { transform: translateX(100%) rotate(45deg); }
         }
+
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 </head>
 <body>
     <div class="main-container">
         <div class="video-wrapper">
-            <div class="background image"></div>
+            <div class="background image active"></div>
 
             <!-- Start Video -->
             <video class="background video" id="startVideo" playsinline disablePictureInPicture>
@@ -194,13 +194,13 @@
             </video>
 
             <!-- Idle (listening) Video -->
-            <video class="background video" id="idleVideo" loop playsinline disablePictureInPicture>
+            <video class="background video" id="idleVideo" loop playsinline disablePictureInPicture muted>
                 <source src="/characters/pion/assets/pion-idle.mp4" type="video/mp4">
             </video>
 
             <!-- Speaking Video (pion-talk.mp4) -->
-            <video class="background video" id="talkVideo" loop playsinline disablePictureInPicture>
-                <source src="/characters/pion/assets/pion-idle.mp4" type="video/mp4">
+            <video class="background video" id="talkVideo" loop playsinline disablePictureInPicture muted>
+                <source src="/characters/pion/assets/pion-talk.mp4" type="video/mp4">
             </video>
         </div>
     </div>
@@ -269,56 +269,47 @@
             });
         };
 
-        // Simplified function to switch instantly between videos (no fade)
-        const switchVideo = async (fromVideo, toVideo) => {
-            if (fromVideo === toVideo) return;
+        const switchVideo = async (toVideo) => {
+            if (currentVideo === toVideo) return;
+
+            // Pause and hide current video
+            if (currentVideo) {
+                currentVideo.pause();
+                currentVideo.classList.remove('active');
+            }
 
             // Show and play the new video
             if (toVideo) {
-                toVideo.style.display = 'block';
+                toVideo.classList.add('active');
                 try {
                     await toVideo.play();
-                    toVideo.classList.add('active');
                 } catch (error) {
                     console.error('Error playing video:', error);
                 }
-            }
-
-            // Hide and pause the old video
-            if (fromVideo && fromVideo !== toVideo) {
-                fromVideo.classList.remove('active');
-                fromVideo.pause();
-                fromVideo.style.display = 'none';
             }
 
             currentVideo = toVideo;
         };
 
         const updateBackground = async (mode) => {
-            let targetVideo;
+            let targetVideo = null;
 
-            // Start video
             if (mode === 'start' && videosLoaded.start && !startVideoPlayed) {
                 targetVideo = startVideo;
                 startVideoPlayed = true;
 
-                // Once the start video ends, go idle + automatically begin conversation
                 startVideo.onended = async () => {
-                    await updateBackground('idle');
+                    await switchVideo(idleVideo);
                     await startConversation();
                 };
-            }
-            // Speaking => talkVideo
-            else if (mode === 'speaking' && videosLoaded.talk) {
+            } else if (mode === 'speaking' && videosLoaded.talk) {
                 targetVideo = talkVideo;
-            }
-            // Else, fallback to idle => idleVideo
-            else if (videosLoaded.idle) {
+            } else if (videosLoaded.idle) {
                 targetVideo = idleVideo;
             }
 
             if (targetVideo) {
-                await switchVideo(currentVideo, targetVideo);
+                await switchVideo(targetVideo);
             }
         };
 
@@ -349,15 +340,14 @@
                 conversation = await Conversation.startSession({
                     agentId: 'ZWAt4Km480Nn6oHdyNfn',
                     onModeChange: async (mode) => {
-                        // If conversation says "speaking", show talkVideo. Otherwise, show idleVideo.
-                        await updateBackground(mode.mode === 'speaking' ? 'speaking' : 'idle');
-                    },
-                    onConnect: async () => {
-                        if (!startVideo.ended && startVideo.style.display === 'block') {
-                            startVideo.onended = () => updateBackground('idle');
+                        if (mode.mode === 'speaking') {
+                            await updateBackground('speaking');
                         } else {
                             await updateBackground('idle');
                         }
+                    },
+                    onConnect: async () => {
+                        await updateBackground('idle');
                     },
                     onDisconnect: async () => {
                         await updateBackground('idle');
@@ -373,8 +363,9 @@
             }
         };
 
+        // User taps the button => hide it => play start video
         startButton.addEventListener('click', async () => {
-            if (!videosLoaded.start) return;
+            if (!videosLoaded.start) return; // If the user clicks too early, do nothing
             startButton.style.display = 'none';
             await updateBackground('start');
         });
@@ -389,7 +380,7 @@
             }
         };
 
-        // Preload videos and set default background to idle
+        // Load everything and set default background to idle
         preloadVideos();
         updateBackground('idle');
     </script>
