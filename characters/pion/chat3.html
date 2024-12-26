@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="apple-itunes-app" content="app-id=1484468651">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pion - Talkidz</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #FF4B6E;
+            --accent-color: #6C5CE7;
+            --text-color: #1A1A1A;
+            --background: #FFFFFF;
+            --secondary-bg: #F5F5F5;
+            --shadow: rgba(0, 0, 0, 0.08);
+            --fade-duration: 0.5s;
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--background);
+            overflow: hidden;
+        }
+
+        .main-container {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .video-wrapper {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .background {
+            position: absolute;
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            opacity: 0;
+            transition: opacity var(--fade-duration) ease-in-out;
+        }
+
+        .background.active {
+            opacity: 1;
+        }
+
+        .background.video {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .background.image {
+            background: url('/characters/pion/assets/pion.jpg') center/contain no-repeat;
+            width: 100%;
+            height: 100%;
+        }
+
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 1.5rem;
+            padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
+            background: transparent;
+            z-index: 10;
+        }
+
+        .bottom-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-byline {
+            font-size: 0.75rem;
+            color: #666;
+            margin-top: -0.25rem;
+            margin-left: 0.25rem;
+        }
+
+        .controls-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-right: 2rem;
+        }
+
+        .main-button {
+            background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .main-button::before {
+            content: '';
+            position: absolute;
+            inset: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: translateX(-100%) rotate(45deg);
+            animation: buttonShine 3s infinite;
+        }
+
+        .main-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(108, 92, 231, 0.3);
+        }
+
+        /* Gray out the button (disabled) */
+        .main-button.disabled {
+            background: grey;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        .share-button {
+            width: 48px;
+            height: 48px;
+            border: none;
+            border-radius: 50%;
+            background: var(--secondary-bg);
+            color: var(--text-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .share-button:hover {
+            transform: translateY(-2px);
+            background: white;
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        @keyframes buttonShine {
+            to { transform: translateX(100%) rotate(45deg); }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+    <div class="main-container">
+        <div class="video-wrapper">
+            <div class="background image"></div>
+            <video class="background video" id="startVideo" playsinline disablePictureInPicture>
+                <!-- Renamed source to pion-speaking if that’s your actual file -->
+                <source src="/characters/pion/assets/pion-start.mp4" type="video/mp4">
+            </video>
+            <video class="background video" id="idleVideo" loop playsinline disablePictureInPicture>
+                <source src="/characters/pion/assets/pion-idle.mp4" type="video/mp4">
+            </video>
+            <video class="background video" id="speakingVideo" loop playsinline disablePictureInPicture>
+                <!-- Ensure this matches the actual speaking MP4 file -->
+                <source src="/characters/pion/assets/pion-speaking.mp4" type="video/mp4">
+            </video>
+        </div>
+    </div>
+
+    <canvas id="confetti-canvas"></canvas>
+
+    <div class="bottom-bar">
+        <div class="bottom-content">
+            <div class="logo-container">
+                <a href="/" class="logo">Talkidz</a>
+                <span class="logo-byline">by Playbox</span>
+            </div>
+            
+            <div class="controls-container">
+                <!-- Default text changed to "Tap to Start" and disabled by default -->
+                <button id="startButton" class="main-button disabled">Tap to Start</button>
+                <button class="share-button" onclick="shareCharacter()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+                        <polyline points="16 6 12 2 8 6"/>
+                        <line x1="12" y1="2" x2="12" y2="15"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
+
+        let conversation = null;
+        let videosLoaded = { start: false, idle: false, speaking: false };
+        let startVideoPlayed = false;
+        let currentVideo = null;
+        const FADE_DURATION = 500; // 500ms, matching CSS var(--fade-duration)
+
+        const backgroundImage = document.querySelector('.background.image');
+        const startVideo = document.getElementById('startVideo');
+        const idleVideo = document.getElementById('idleVideo');
+        const speakingVideo = document.getElementById('speakingVideo');
+        const startButton = document.getElementById('startButton');
+
+        const preloadVideos = () => {
+            // Load start video
+            startVideo.load();
+            startVideo.addEventListener('loadeddata', () => {
+                videosLoaded.start = true;
+                // Now enable the button
+                startButton.classList.remove('disabled');
+            });
+
+            // Load idle video
+            idleVideo.load();
+            idleVideo.addEventListener('loadeddata', () => {
+                videosLoaded.idle = true;
+                if (!startVideoPlayed) {
+                    backgroundImage.style.display = 'none';
+                    idleVideo.classList.add('active');
+                    idleVideo.play().catch(console.error);
+                    currentVideo = idleVideo;
+                }
+            });
+
+            // Load speaking video
+            speakingVideo.load();
+            speakingVideo.addEventListener('loadeddata', () => {
+                videosLoaded.speaking = true;
+            });
+        };
+
+        const crossfadeToVideo = async (fromVideo, toVideo) => {
+            if (fromVideo === toVideo) return;
+            
+            // Start playing the new video before the crossfade
+            if (toVideo) {
+                toVideo.style.display = 'block';
+                try {
+                    await toVideo.play();
+                    toVideo.classList.add('active');
+                } catch (error) {
+                    console.error('Error playing video:', error);
+                }
+            }
+
+            // Remove active class from old video to start fade out
+            if (fromVideo) {
+                fromVideo.classList.remove('active');
+                setTimeout(() => {
+                    if (fromVideo !== currentVideo) {
+                        fromVideo.pause();
+                        fromVideo.style.display = 'none';
+                    }
+                }, FADE_DURATION);
+            }
+
+            currentVideo = toVideo;
+        };
+
+        const updateBackground = async (mode) => {
+            let targetVideo;
+            
+            if (mode === 'start' && videosLoaded.start && !startVideoPlayed) {
+                targetVideo = startVideo;
+                startVideoPlayed = true;
+
+                // When start video ends, we automatically begin conversation
+                startVideo.onended = async () => {
+                    await updateBackground('idle');
+                    await startConversation();
+                };
+            } else if (mode === 'speaking' && videosLoaded.speaking) {
+                targetVideo = speakingVideo;
+            } else if (videosLoaded.idle) {
+                targetVideo = idleVideo;
+            }
+
+            if (targetVideo) {
+                await crossfadeToVideo(currentVideo, targetVideo);
+            }
+        };
+
+        const triggerConfetti = () => {
+            const options = { origin: { y: 0.7 } };
+            const count = 200;
+            
+            [
+                { spread: 26, startVelocity: 55, particleRatio: 0.25 },
+                { spread: 60, particleRatio: 0.2 },
+                { spread: 100, decay: 0.91, scalar: 0.8, particleRatio: 0.35 },
+                { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2, particleRatio: 0.1 },
+                { spread: 120, startVelocity: 45, particleRatio: 0.1 }
+            ].forEach(opts => {
+                confetti({
+                    ...options,
+                    ...opts,
+                    particleCount: Math.floor(count * opts.particleRatio)
+                });
+            });
+        };
+
+        // Automatically called after start video ends
+        const startConversation = async () => {
+            try {
+                await navigator.mediaDevices.getUserMedia({ audio: true });
+                triggerConfetti();
+
+                conversation = await Conversation.startSession({
+                    agentId: 'ZWAt4Km480Nn6oHdyNfn',
+                    onModeChange: async (mode) => {
+                        // Switch to speaking video if speaking, otherwise idle
+                        await updateBackground(mode.mode === 'speaking' ? 'speaking' : 'idle');
+                    },
+                    onConnect: async () => {
+                        // Ensure idle is playing after connect (if start video ended)
+                        if (!startVideo.ended && startVideo.style.display === 'block') {
+                            startVideo.onended = () => updateBackground('idle');
+                        } else {
+                            await updateBackground('idle');
+                        }
+                    },
+                    onDisconnect: async () => {
+                        await updateBackground('idle');
+                    },
+                    onError: async (error) => {
+                        console.error('Conversation error:', error);
+                        await updateBackground('idle');
+                    }
+                });
+            } catch (error) {
+                console.error('Error starting conversation:', error);
+                await updateBackground('idle');
+            }
+        };
+
+        // Remove button once user taps, then play start video
+        startButton.addEventListener('click', async () => {
+            if (!videosLoaded.start) return; // Guard if user clicks too fast
+            startButton.style.display = 'none';
+            await updateBackground('start');
+        });
+
+        window.shareCharacter = () => {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Chat with Pion on Talkidz',
+                    text: 'Come chat with Pion, your new AI friend!',
+                    url: window.location.href
+                }).catch(console.error);
+            }
+        };
+
+        // Initialize with idle state
+        preloadVideos();
+        updateBackground('idle');
+    </script>
+</body>
+</html>
