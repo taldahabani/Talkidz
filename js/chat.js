@@ -18,7 +18,7 @@ const characters = {
        agentId: '2AnipCyOETtlieJLCfsr',
        assets: {
            idle: '/assets/duck-idle.mp4',
-           talking: '/assets/duck-talking.mp4',
+           talking: '/assets/duck-talk.mp4',
            preview: '/assets/duck.jpg',
            icon: '/assets/duck-icon.jpg'
        }
