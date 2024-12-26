@@ -15,7 +15,6 @@
             --background: #FFFFFF;
             --secondary-bg: #F5F5F5;
             --shadow: rgba(0, 0, 0, 0.08);
-            --fade-duration: 0.5s;
         }
 
         body {
@@ -36,8 +35,8 @@
 
         .video-wrapper {
             position: relative;
-            width: 100vw;
-            height: 100vh;
+            width: 100%;
+            height: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -46,29 +45,19 @@
 
         .background {
             position: absolute;
-            max-width: 100%;
-            max-height: 100%;
-            width: auto;
-            height: auto;
-            object-fit: contain;
-            opacity: 0;
-            transition: opacity var(--fade-duration) ease-in-out;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
         }
 
         .background.active {
-            opacity: 1;
-        }
-
-        .background.video {
-            width: 100%;
-            height: auto;
-            object-fit: contain;
+            display: block;
         }
 
         .background.image {
-            background: url('/characters/pion/assets/pion.jpg') center/contain no-repeat;
-            width: 100%;
-            height: 100%;
+            background: url('/characters/pion/assets/pion.jpg') center/cover no-repeat;
+            display: block;
         }
 
         .bottom-bar {
@@ -86,14 +75,16 @@
             max-width: 1200px;
             margin: 0 auto;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
             align-items: center;
+            position: relative;
         }
 
         .logo-container {
             display: flex;
             flex-direction: column;
-            align-items: flex-start;
+            align-items: center;
+            margin-bottom: 1rem;
         }
 
         .logo {
@@ -118,7 +109,7 @@
             display: flex;
             align-items: center;
             gap: 1rem;
-            margin-right: 2rem;
+            justify-content: center;
         }
 
         .main-button {
@@ -152,12 +143,10 @@
             box-shadow: 0 6px 16px rgba(108, 92, 231, 0.3);
         }
 
-        .main-button.active {
-            width: 48px;
-            height: 48px;
-            padding: 0;
-            border-radius: 50%;
-            background: #808080;
+        .main-button.disabled {
+            background: grey;
+            cursor: not-allowed;
+            box-shadow: none;
         }
 
         .share-button {
@@ -172,6 +161,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            position: absolute;
+            right: 0;
         }
 
         .share-button:hover {
@@ -183,21 +174,59 @@
         @keyframes buttonShine {
             to { transform: translateX(100%) rotate(45deg); }
         }
+
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        @media (max-width: 600px) {
+            .bottom-content {
+                padding: 0 1rem;
+            }
+
+            .share-button {
+                position: static;
+                margin-top: 1rem;
+            }
+
+            .controls-container {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+        }
+
+        .background.video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 </head>
 <body>
     <div class="main-container">
         <div class="video-wrapper">
-            <div class="background image"></div>
+            <div class="background image active"></div>
+
+            <!-- Start Video -->
             <video class="background video" id="startVideo" playsinline disablePictureInPicture>
                 <source src="/characters/pion/assets/pion-start.mp4" type="video/mp4">
             </video>
-            <video class="background video" id="idleVideo" loop playsinline disablePictureInPicture>
+
+            <!-- Idle (listening) Video -->
+            <video class="background video" id="idleVideo" loop playsinline disablePictureInPicture muted>
                 <source src="/characters/pion/assets/pion-idle.mp4" type="video/mp4">
             </video>
-            <video class="background video" id="speakingVideo" loop playsinline disablePictureInPicture>
-                <source src="/characters/pion/assets/pion-talking.mp4" type="video/mp4">
+
+            <!-- Speaking Video (pion-talk.mp4) -->
+            <video class="background video" id="talkVideo" loop playsinline disablePictureInPicture muted>
+                <source src="/characters/pion/assets/pion-talk.mp4" type="video/mp4">
             </video>
         </div>
     </div>
@@ -212,15 +241,15 @@
             </div>
             
             <div class="controls-container">
-                <button id="startButton" class="main-button">Start Conversation</button>
-                <button class="share-button" onclick="shareCharacter()">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
-                        <polyline points="16 6 12 2 8 6"/>
-                        <line x1="12" y1="2" x2="12" y2="15"/>
-                    </svg>
-                </button>
+                <button id="startButton" class="main-button disabled">Tap to Start</button>
             </div>
+            <button class="share-button" onclick="shareCharacter()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+                    <polyline points="16 6 12 2 8 6"/>
+                    <line x1="12" y1="2" x2="12" y2="15"/>
+                </svg>
+            </button>
         </div>
     </div>
 
@@ -228,15 +257,14 @@
         import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
 
         let conversation = null;
-        let videosLoaded = { start: false, idle: false, speaking: false };
+        let videosLoaded = { start: false, idle: false, talk: false };
         let startVideoPlayed = false;
         let currentVideo = null;
-        const FADE_DURATION = 500; // 500ms, matching CSS var(--fade-duration)
 
         const backgroundImage = document.querySelector('.background.image');
         const startVideo = document.getElementById('startVideo');
         const idleVideo = document.getElementById('idleVideo');
-        const speakingVideo = document.getElementById('speakingVideo');
+        const talkVideo = document.getElementById('talkVideo');
         const startButton = document.getElementById('startButton');
 
         const preloadVideos = () => {
@@ -244,6 +272,8 @@
             startVideo.load();
             startVideo.addEventListener('loadeddata', () => {
                 videosLoaded.start = true;
+                // Enable the button once the start video is loaded
+                startButton.classList.remove('disabled');
             });
 
             // Load idle video
@@ -258,62 +288,54 @@
                 }
             });
 
-            // Load speaking video
-            speakingVideo.load();
-            speakingVideo.addEventListener('loadeddata', () => {
-                videosLoaded.speaking = true;
+            // Load talking video
+            talkVideo.load();
+            talkVideo.addEventListener('loadeddata', () => {
+                videosLoaded.talk = true;
             });
         };
 
-        const crossfadeToVideo = async (fromVideo, toVideo) => {
-            if (fromVideo === toVideo) return;
-            
-            // Start playing the new video before the crossfade
+        const switchVideo = async (toVideo) => {
+            if (currentVideo === toVideo) return;
+
+            // Pause and hide current video
+            if (currentVideo) {
+                currentVideo.pause();
+                currentVideo.classList.remove('active');
+            }
+
+            // Show and play the new video
             if (toVideo) {
-                toVideo.style.display = 'block';
+                toVideo.classList.add('active');
                 try {
                     await toVideo.play();
-                    // Add active class to start fade in
-                    toVideo.classList.add('active');
                 } catch (error) {
                     console.error('Error playing video:', error);
                 }
-            }
-
-            // Remove active class from old video to start fade out
-            if (fromVideo) {
-                fromVideo.classList.remove('active');
-                // Wait for fade out to complete before pausing
-                setTimeout(() => {
-                    if (fromVideo !== currentVideo) {
-                        fromVideo.pause();
-                        fromVideo.style.display = 'none';
-                    }
-                }, FADE_DURATION);
             }
 
             currentVideo = toVideo;
         };
 
         const updateBackground = async (mode) => {
-            let targetVideo;
-            
+            let targetVideo = null;
+
             if (mode === 'start' && videosLoaded.start && !startVideoPlayed) {
                 targetVideo = startVideo;
                 startVideoPlayed = true;
-                
-                // When start video ends, switch to idle
-                startVideo.onended = () => {
-                    updateBackground('idle');
+
+                startVideo.onended = async () => {
+                    await switchVideo(idleVideo);
+                    await startConversation();
                 };
-            } else if (mode === 'speaking' && videosLoaded.speaking) {
-                targetVideo = speakingVideo;
+            } else if (mode === 'speaking' && videosLoaded.talk) {
+                targetVideo = talkVideo;
             } else if (videosLoaded.idle) {
                 targetVideo = idleVideo;
             }
 
             if (targetVideo) {
-                await crossfadeToVideo(currentVideo, targetVideo);
+                await switchVideo(targetVideo);
             }
         };
 
@@ -340,84 +362,51 @@
             try {
                 await navigator.mediaDevices.getUserMedia({ audio: true });
                 triggerConfetti();
-                startButton.classList.add('active');
-                startButton.innerHTML = `
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                `;
-
-                // Play start video first
-                await updateBackground('start');
 
                 conversation = await Conversation.startSession({
                     agentId: 'ZWAt4Km480Nn6oHdyNfn',
                     onModeChange: async (mode) => {
-                        await updateBackground(mode.mode === 'speaking' ? 'speaking' : 'idle');
-                    },
-                    onConnect: async () => {
-                        if (!startVideo.ended && startVideo.style.display === 'block') {
-                            startVideo.onended = () => updateBackground('idle');
+                        if (mode.mode === 'speaking') {
+                            await updateBackground('speaking');
                         } else {
                             await updateBackground('idle');
                         }
                     },
+                    onConnect: async () => {
+                        await updateBackground('idle');
+                    },
                     onDisconnect: async () => {
                         await updateBackground('idle');
-                        startButton.classList.remove('active');
-                        startButton.textContent = 'Start Conversation';
                     },
                     onError: async (error) => {
                         console.error('Conversation error:', error);
                         await updateBackground('idle');
-                        startButton.classList.remove('active');
-                        startButton.textContent = 'Start Conversation';
                     }
                 });
-
             } catch (error) {
                 console.error('Error starting conversation:', error);
                 await updateBackground('idle');
-                startButton.classList.remove('active');
-                startButton.textContent = 'Start Conversation';
             }
         };
 
-        const endConversation = async () => {
-            if (conversation) {
-                try {
-                    await conversation.endSession();
-                } catch (error) {
-                    console.error('Error ending conversation:', error);
-                } finally {
-                    conversation = null;
-                    await updateBackground('idle');
-                    startButton.classList.remove('active');
-                    startButton.textContent = 'Start Conversation';
-                }
-            }
-        };
-
+        // User taps the button => hide it => play start video
         startButton.addEventListener('click', async () => {
-            if (conversation) {
-                await endConversation();
-            } else {
-                await startConversation();
-            }
+            if (!videosLoaded.start) return; // If the user clicks too early, do nothing
+            startButton.style.display = 'none';
+            await updateBackground('start');
         });
 
         window.shareCharacter = () => {
             if (navigator.share) {
                 navigator.share({
-                    title: 'Chat with pion on Talkidz',
+                    title: 'Chat with Pion on Talkidz',
                     text: 'Come chat with Pion, your new AI friend!',
                     url: window.location.href
                 }).catch(console.error);
             }
         };
 
-        // Initialize with idle state
+        // Load everything and set default background to idle
         preloadVideos();
         updateBackground('idle');
     </script>
