@@ -78,6 +78,7 @@
             justify-content: space-between;
             align-items: center;
             position: relative;
+            padding: 0 1rem;
         }
 
         .logo-container {
@@ -183,17 +184,31 @@
 
         @media (max-width: 600px) {
             .bottom-content {
-                padding: 0 1rem;
                 flex-direction: row;
                 justify-content: space-between;
+                align-items: center;
+                padding: 0 1rem;
             }
 
-            .share-button {
-                margin-left: auto;
+            .logo-container {
+                align-items: flex-start;
             }
 
             .main-button {
-                margin: 0 auto;
+                position: absolute;
+                left: 50%;
+                transform: translateX(-50%);
+                margin: 0;
+            }
+
+            .share-button {
+                position: absolute;
+                right: 1rem;
+            }
+
+            .logo-container {
+                position: absolute;
+                left: 1rem;
             }
         }
 
@@ -201,12 +216,6 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-        }
-
-        .start-button-container {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
@@ -242,19 +251,15 @@
                 <span class="logo-byline">by Playbox</span>
             </div>
             
-            <div class="start-button-container">
-                <button id="startButton" class="main-button disabled">Tap to Start</button>
-            </div>
+            <button id="startButton" class="main-button disabled">Tap to Start</button>
 
-            <div class="share-button-container">
-                <button class="share-button" onclick="shareCharacter()">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
-                        <polyline points="16 6 12 2 8 6"/>
-                        <line x1="12" y1="2" x2="12" y2="15"/>
-                    </svg>
-                </button>
-            </div>
+            <button class="share-button" onclick="shareCharacter()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+                    <polyline points="16 6 12 2 8 6"/>
+                    <line x1="12" y1="2" x2="12" y2="15"/>
+                </svg>
+            </button>
         </div>
     </div>
 
