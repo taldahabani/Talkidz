@@ -17,206 +17,215 @@
             --shadow: rgba(0, 0, 0, 0.08);
         }
 
-        body {
-            margin: 0;
-            height: 100vh;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--background);
-            overflow: hidden;
-        }
+body {
+    margin: 0;
+    height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--background);
+    overflow: hidden;
+    overflow-x: hidden; /* Prevent horizontal overflow */
+}
 
-        .main-container {
-            position: fixed;
-            inset: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+.main-container {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
-        .video-wrapper {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
+.video-wrapper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
 
-        .background {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: none;
-        }
+.background {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none;
+}
 
-        .background.active {
-            display: block;
-        }
+.background.active {
+    display: block;
+}
 
-        .background.image {
-            background: url('/characters/pion/assets/pion.jpg') center/cover no-repeat;
-            display: block;
-        }
+.background.image {
+    background: url('/characters/pion/assets/pion.jpg') center/cover no-repeat;
+    display: block;
+}
 
-        .bottom-bar {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            padding: 1.5rem;
-            padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
-            background: transparent;
-            z-index: 10;
-        }
+.bottom-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 1.5rem;
+    padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
+    background: transparent;
+    z-index: 10;
+}
 
-        .bottom-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: relative;
-            padding: 0 1rem;
-        }
+.bottom-content {
+    width: 100%; /* Ensure full width */
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
 
-        .logo-container {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-        }
+.logo-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
 
-        .logo {
-            font-size: 1.25rem;
-            font-weight: 800;
-            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-decoration: none;
-            letter-spacing: -0.5px;
-        }
+.logo {
+    font-size: 1.25rem;
+    font-weight: 800;
+    background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-decoration: none;
+    letter-spacing: -0.5px;
+}
 
-        .logo-byline {
-            font-size: 0.75rem;
-            color: #666;
-            margin-top: -0.25rem;
-            margin-left: 0.25rem;
-        }
+.logo-byline {
+    font-size: 0.75rem;
+    color: #666;
+    margin-top: -0.25rem;
+    margin-left: 0.25rem;
+}
 
-        .controls-container {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
+.controls-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
 
-        .main-button {
-            background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
-            color: white;
-            border: none;
-            padding: 1rem 2.5rem;
-            font-size: 1rem;
-            font-weight: 600;
-            border-radius: 999px;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
-            position: relative;
-            overflow: hidden;
-        }
+.main-button {
+    background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
+    color: white;
+    border: none;
+    padding: 1rem 2.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
+    position: relative;
+    overflow: hidden;
+}
 
-        .main-button::before {
-            content: '';
-            position: absolute;
-            inset: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-            transform: translateX(-100%) rotate(45deg);
-            animation: buttonShine 3s infinite;
-        }
+.main-button::before {
+    content: '';
+    position: absolute;
+    inset: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transform: translateX(-100%) rotate(45deg);
+    animation: buttonShine 3s infinite;
+}
 
-        .main-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(108, 92, 231, 0.3);
-        }
+.main-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(108, 92, 231, 0.3);
+}
 
-        .main-button.disabled {
-            background: grey;
-            cursor: not-allowed;
-            box-shadow: none;
-        }
+.main-button.disabled {
+    background: grey;
+    cursor: not-allowed;
+    box-shadow: none;
+}
 
-        .share-button {
-            width: 48px;
-            height: 48px;
-            border: none;
-            border-radius: 50%;
-            background: var(--secondary-bg);
-            color: var(--text-color);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+.share-button {
+    width: 48px;
+    height: 48px;
+    border: none;
+    border-radius: 50%;
+    background: var(--secondary-bg);
+    color: var(--text-color);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
-        .share-button:hover {
-            transform: translateY(-2px);
-            background: white;
-            box-shadow: 0 4px 12px var(--shadow);
-        }
+.share-button:hover {
+    transform: translateY(-2px);
+    background: white;
+    box-shadow: 0 4px 12px var(--shadow);
+}
 
-        @keyframes buttonShine {
-            to { transform: translateX(100%) rotate(45deg); }
-        }
+@keyframes buttonShine {
+    to { transform: translateX(100%) rotate(45deg); }
+}
 
-        #confetti-canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 5;
-        }
+#confetti-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 5;
+}
 
-        @media (max-width: 600px) {
-            .bottom-content {
-                flex-direction: row;
-                justify-content: space-between;
-                align-items: center;
-                padding: 0 1rem;
-            }
+@media (max-width: 600px) {
+    .bottom-bar {
+        padding: 0.75rem 1rem; /* Reduced padding */
+        padding-bottom: calc(0.75rem + env(safe-area-inset-bottom));
+    }
 
-            .logo-container {
-                align-items: flex-start;
-            }
+    .bottom-content {
+        padding: 0 1rem;
+        flex-direction: row;
+        justify-content: center; /* Center items horizontally */
+        align-items: center;     /* Center items vertically */
+        gap: 1rem;               /* Add uniform spacing between items */
+        max-width: 100%;         /* Ensure it doesn't exceed viewport */
+    }
 
-            .main-button {
-                position: absolute;
-                left: 50%;
-                transform: translateX(-50%);
-                margin: 0;
-            }
+    .start-button-container {
+        position: static; /* Remove absolute positioning */
+        transform: none;  /* Reset any transformations */
+    }
 
-            .share-button {
-                position: absolute;
-                right: 1rem;
-            }
+    .share-button {
+        margin-left: 0; /* Remove auto margin */
+        width: 40px;     /* Optional: Reduce size */
+        height: 40px;    /* Optional: Reduce size */
+    }
 
-            .logo-container {
-                position: absolute;
-                left: 1rem;
-            }
-        }
+    .main-button {
+        margin: 0; /* Remove auto margin */
+        padding: 0.8rem 2rem; /* Optional: Adjust padding for smaller screens */
+    }
+}
 
-        .background.video {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+.background.video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.start-button-container {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+}
     </style>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 </head>
