@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="apple-itunes-app" content="app-id=1484468651">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pion - Talkidz</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #FF4B6E;
+            --accent-color: #6C5CE7;
+            --text-color: #1A1A1A;
+            --background: #FFFFFF;
+            --secondary-bg: #F5F5F5;
+            --shadow: rgba(0, 0, 0, 0.08);
+            --fade-duration: 0.5s;
+        }
+
+        body {
+            margin: 0;
+            height: 100vh;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--background);
+            overflow: hidden;
+        }
+
+        .main-container {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .video-wrapper {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .background {
+            position: absolute;
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+            opacity: 0;
+            transition: opacity var(--fade-duration) ease-in-out;
+        }
+
+        .background.active {
+            opacity: 1;
+        }
+
+        .background.video {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .background.image {
+            background: url('/characters/pion/assets/pion.jpg') center/contain no-repeat;
+            width: 100%;
+            height: 100%;
+        }
+
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 1.5rem;
+            padding-bottom: calc(1.5rem + env(safe-area-inset-bottom));
+            background: transparent;
+            z-index: 10;
+        }
+
+        .bottom-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-byline {
+            font-size: 0.75rem;
+            color: #666;
+            margin-top: -0.25rem;
+            margin-left: 0.25rem;
+        }
+
+        .controls-container {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-right: 2rem;
+        }
+        .main-button {
+            background: #808080;  /* Start with gray */
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 999px;
+            cursor: not-allowed;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .main-button.ready {
+            background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
+            cursor: pointer;
+        }
+
+        .main-button.ready:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(108, 92, 231, 0.3);
+        }
+
+        .main-button.ready::before {
+            content: '';
+            position: absolute;
+            inset: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: translateX(-100%) rotate(45deg);
+            animation: buttonShine 3s infinite;
+        }
+
+        .main-button.hidden {
+            display: none;
+        }
+
+        .share-button {
+            width: 48px;
+            height: 48px;
+            border: none;
+            border-radius: 50%;
+            background: var(--secondary-bg);
+            color: var(--text-color);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .share-button:hover {
+            transform: translateY(-2px);
+            background: white;
+            box-shadow: 0 4px 12px var(--shadow);
+        }
+
+        @keyframes buttonShine {
+            to { transform: translateX(100%) rotate(45deg); }
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+    <!-- ... (HTML structure remains the same until the button) ... -->
+    <div class="bottom-bar">
+        <div class="bottom-content">
+            <div class="logo-container">
+                <a href="/" class="logo">Talkidz</a>
+                <span class="logo-byline">by Playbox</span>
+            </div>
+            
+            <div class="controls-container">
+                <button id="startButton" class="main-button">Tap to Start</button>
+                <button class="share-button" onclick="shareCharacter()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+                        <polyline points="16 6 12 2 8 6"/>
+                        <line x1="12" y1="2" x2="12" y2="15"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
+
+        let conversation = null;
+        let videosLoaded = { start: false, idle: false, speaking: false };
+        let startVideoPlayed = false;
+        let currentVideo = null;
+        const FADE_DURATION = 500;
+
+        const backgroundImage = document.querySelector('.background.image');
+        const startVideo = document.getElementById('startVideo');
+        const idleVideo = document.getElementById('idleVideo');
+        const speakingVideo = document.getElementById('speakingVideo');
+        const startButton = document.getElementById('startButton');
+
+        const preloadVideos = () => {
+            // Load start video
+            startVideo.load();
+            startVideo.addEventListener('loadeddata', () => {
+                videosLoaded.start = true;
+                checkAllVideosLoaded();
+            });
+
+            // Load idle video
+            idleVideo.load();
+            idleVideo.addEventListener('loadeddata', () => {
+                videosLoaded.idle = true;
+                checkAllVideosLoaded();
+            });
+
+            // Load speaking video
+            speakingVideo.load();
+            speakingVideo.addEventListener('loadeddata', () => {
+                videosLoaded.speaking = true;
+                checkAllVideosLoaded();
+            });
+        };
+
+        const checkAllVideosLoaded = () => {
+            if (videosLoaded.start && videosLoaded.idle && videosLoaded.speaking) {
+                startButton.classList.add('ready');
+            }
+        };
+
+        const crossfadeToVideo = async (fromVideo, toVideo) => {
+            if (fromVideo === toVideo) return;
+            
+            if (toVideo) {
+                toVideo.style.display = 'block';
+                try {
+                    await toVideo.play();
+                    toVideo.classList.add('active');
+                } catch (error) {
+                    console.error('Error playing video:', error);
+                }
+            }
+
+            if (fromVideo) {
+                fromVideo.classList.remove('active');
+                setTimeout(() => {
+                    if (fromVideo !== currentVideo) {
+                        fromVideo.pause();
+                        fromVideo.style.display = 'none';
+                    }
+                }, FADE_DURATION);
+            }
+
+            currentVideo = toVideo;
+        };
+
+        const updateBackground = async (mode) => {
+            let targetVideo;
+            
+            if (mode === 'start' && videosLoaded.start && !startVideoPlayed) {
+                targetVideo = startVideo;
+                startVideoPlayed = true;
+                
+                // When start video ends, initiate conversation automatically
+                startVideo.onended = async () => {
+                    await startConversation();
+                };
+            } else if (mode === 'speaking' && videosLoaded.speaking) {
+                targetVideo = speakingVideo;
+            } else if (videosLoaded.idle) {
+                targetVideo = idleVideo;
+            }
+
+            if (targetVideo) {
+                await crossfadeToVideo(currentVideo, targetVideo);
+            }
+        };
+
+        const triggerConfetti = () => {
+            const options = { origin: { y: 0.7 } };
+            const count = 200;
+            
+            [
+                { spread: 26, startVelocity: 55, particleRatio: 0.25 },
+                { spread: 60, particleRatio: 0.2 },
+                { spread: 100, decay: 0.91, scalar: 0.8, particleRatio: 0.35 },
+                { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2, particleRatio: 0.1 },
+                { spread: 120, startVelocity: 45, particleRatio: 0.1 }
+            ].forEach(opts => {
+                confetti({
+                    ...options,
+                    ...opts,
+                    particleCount: Math.floor(count * opts.particleRatio)
+                });
+            });
+        };
+
+        const startConversation = async () => {
+            try {
+                await navigator.mediaDevices.getUserMedia({ audio: true });
+                triggerConfetti();
+                startButton.classList.add('hidden');
+
+                conversation = await Conversation.startSession({
+                    agentId: 'ZWAt4Km480Nn6oHdyNfn',
+                    onModeChange: async (mode) => {
+                        await updateBackground(mode.mode === 'speaking' ? 'speaking' : 'idle');
+                    },
+                    onConnect: async () => {
+                        await updateBackground('idle');
+                    },
+                    onDisconnect: async () => {
+                        await updateBackground('idle');
+                    },
+                    onError: async (error) => {
+                        console.error('Conversation error:', error);
+                        await updateBackground('idle');
+                    }
+                });
+
+            } catch (error) {
+                console.error('Error starting conversation:', error);
+                await updateBackground('idle');
+            }
+        };
+
+        startButton.addEventListener('click', async () => {
+            if (!startButton.classList.contains('ready')) return;
+            
+            // Play start video and hide button
+            await updateBackground('start');
+            startButton.classList.add('hidden');
+        });
+
+        window.shareCharacter = () => {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Chat with pion on Talkidz',
+                    text: 'Come chat with Pion, your new AI friend!',
+                    url: window.location.href
+                }).catch(console.error);
+            }
+        };
+
+        // Initialize
+        preloadVideos();
+        updateBackground('idle');
+    </script>
+</body>
+</html>
