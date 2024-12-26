@@ -261,12 +261,6 @@
             idleVideo.load();
             idleVideo.addEventListener('loadeddata', () => {
                 videosLoaded.idle = true;
-                if (!startVideoPlayed) {
-                    backgroundImage.style.display = 'none';
-                    idleVideo.classList.add('active');
-                    idleVideo.play().catch(console.error);
-                    currentVideo = idleVideo;
-                }
             });
 
             // Load talking video
