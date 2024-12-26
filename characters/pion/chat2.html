@@ -122,7 +122,7 @@
         }
 
         .main-button {
-            background: #808080;  /* Start with gray */
+            background: #808080;
             color: white;
             border: none;
             padding: 1rem 2.5rem;
@@ -150,11 +150,6 @@
             background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
             transform: translateX(-100%) rotate(45deg);
             animation: buttonShine 3s infinite;
-        }
-
-        .main-button.ready:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(108, 92, 231, 0.3);
         }
 
         .main-button.hidden {
@@ -224,5 +219,166 @@
             </div>
         </div>
     </div>
+
+    <script type="module">
+        import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
+
+        let conversation = null;
+        let videosLoaded = { start: false, idle: false, speaking: false };
+        let startVideoPlayed = false;
+        let currentVideo = null;
+        const FADE_DURATION = 500;
+
+        const backgroundImage = document.querySelector('.background.image');
+        const startVideo = document.getElementById('startVideo');
+        const idleVideo = document.getElementById('idleVideo');
+        const speakingVideo = document.getElementById('speakingVideo');
+        const startButton = document.getElementById('startButton');
+
+        const preloadVideos = () => {
+            startVideo.load();
+            startVideo.addEventListener('loadeddata', () => {
+                videosLoaded.start = true;
+                if (videosLoaded.idle && videosLoaded.speaking) {
+                    startButton.classList.add('ready');
+                }
+            });
+
+            idleVideo.load();
+            idleVideo.addEventListener('loadeddata', () => {
+                videosLoaded.idle = true;
+                if (videosLoaded.start && videosLoaded.speaking) {
+                    startButton.classList.add('ready');
+                }
+                if (!startVideoPlayed) {
+                    backgroundImage.style.display = 'none';
+                    idleVideo.classList.add('active');
+                    idleVideo.play().catch(console.error);
+                    currentVideo = idleVideo;
+                }
+            });
+
+            speakingVideo.load();
+            speakingVideo.addEventListener('loadeddata', () => {
+                videosLoaded.speaking = true;
+                if (videosLoaded.start && videosLoaded.idle) {
+                    startButton.classList.add('ready');
+                }
+            });
+        };
+
+        const crossfadeToVideo = async (fromVideo, toVideo) => {
+            if (fromVideo === toVideo) return;
+            
+            if (toVideo) {
+                toVideo.style.display = 'block';
+                try {
+                    await toVideo.play();
+                    toVideo.classList.add('active');
+                } catch (error) {
+                    console.error('Error playing video:', error);
+                }
+            }
+
+            if (fromVideo) {
+                fromVideo.classList.remove('active');
+                setTimeout(() => {
+                    if (fromVideo !== currentVideo) {
+                        fromVideo.pause();
+                        fromVideo.style.display = 'none';
+                    }
+                }, FADE_DURATION);
+            }
+
+            currentVideo = toVideo;
+        };
+
+        const updateBackground = async (mode) => {
+            let targetVideo;
+            
+            if (mode === 'start' && videosLoaded.start && !startVideoPlayed) {
+                targetVideo = startVideo;
+                startVideoPlayed = true;
+            } else if (mode === 'speaking' && videosLoaded.speaking) {
+                targetVideo = speakingVideo;
+            } else if (videosLoaded.idle) {
+                targetVideo = idleVideo;
+            }
+
+            if (targetVideo) {
+                await crossfadeToVideo(currentVideo, targetVideo);
+            }
+        };
+
+        const triggerConfetti = () => {
+            const options = { origin: { y: 0.7 } };
+            const count = 200;
+            
+            [
+                { spread: 26, startVelocity: 55, particleRatio: 0.25 },
+                { spread: 60, particleRatio: 0.2 },
+                { spread: 100, decay: 0.91, scalar: 0.8, particleRatio: 0.35 },
+                { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2, particleRatio: 0.1 },
+                { spread: 120, startVelocity: 45, particleRatio: 0.1 }
+            ].forEach(opts => {
+                confetti({
+                    ...options,
+                    ...opts,
+                    particleCount: Math.floor(count * opts.particleRatio)
+                });
+            });
+        };
+
+        const startConversation = async () => {
+            if (!startButton.classList.contains('ready')) return;
+            
+            try {
+                await navigator.mediaDevices.getUserMedia({ audio: true });
+                triggerConfetti();
+                startButton.classList.add('hidden');
+
+                await updateBackground('start');
+                
+                // Set up the conversation to start when the start video ends
+                startVideo.onended = async () => {
+                    conversation = await Conversation.startSession({
+                        agentId: 'ZWAt4Km480Nn6oHdyNfn',
+                        onModeChange: async (mode) => {
+                            await updateBackground(mode.mode === 'speaking' ? 'speaking' : 'idle');
+                        },
+                        onConnect: async () => {
+                            await updateBackground('idle');
+                        },
+                        onDisconnect: async () => {
+                            await updateBackground('idle');
+                        },
+                        onError: async (error) => {
+                            console.error('Conversation error:', error);
+                            await updateBackground('idle');
+                        }
+                    });
+                };
+
+            } catch (error) {
+                console.error('Error starting conversation:', error);
+                await updateBackground('idle');
+            }
+        };
+
+        startButton.addEventListener('click', startConversation);
+
+        window.shareCharacter = () => {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Chat with pion on Talkidz',
+                    text: 'Come chat with Pion, your new AI friend!',
+                    url: window.location.href
+                }).catch(console.error);
+            }
+        };
+
+        preloadVideos();
+        updateBackground('idle');
+    </script>
 </body>
 </html>
