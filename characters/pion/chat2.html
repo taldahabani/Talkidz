@@ -49,6 +49,7 @@
             height: 100%;
             object-fit: cover;
             display: none;
+            /* Removed transition for immediate switching */
         }
 
         .background.active {
@@ -57,6 +58,7 @@
 
         .background.image {
             background: url('/characters/pion/assets/pion.jpg') center/cover no-repeat;
+            display: block;
         }
 
         .bottom-bar {
@@ -188,17 +190,17 @@
             <div class="background image active"></div>
 
             <!-- Start Video -->
-            <video class="background video" id="startVideo" playsinline disablePictureInPicture>
+            <video class="background video" id="startVideo" playsinline muted disablePictureInPicture>
                 <source src="/characters/pion/assets/pion-start.mp4" type="video/mp4">
             </video>
 
             <!-- Idle (listening) Video -->
-            <video class="background video" id="idleVideo" loop playsinline disablePictureInPicture>
+            <video class="background video" id="idleVideo" loop playsinline muted disablePictureInPicture>
                 <source src="/characters/pion/assets/pion-idle.mp4" type="video/mp4">
             </video>
 
             <!-- Speaking Video (pion-talk.mp4) -->
-            <video class="background video" id="talkVideo" loop playsinline disablePictureInPicture>
+            <video class="background video" id="talkVideo" loop playsinline muted disablePictureInPicture>
                 <source src="/characters/pion/assets/pion-talk.mp4" type="video/mp4">
             </video>
         </div>
@@ -362,8 +364,9 @@
             }
         };
 
+        // User taps the button => hide it => play start video
         startButton.addEventListener('click', async () => {
-            if (!videosLoaded.start) return;
+            if (!videosLoaded.start) return; // If the user clicks too early, do nothing
             startButton.style.display = 'none';
             await updateBackground('start');
         });
@@ -378,6 +381,14 @@
             }
         };
 
+        // Ensure all videos are muted to allow autoplay
+        const muteAllVideos = () => {
+            startVideo.muted = true;
+            idleVideo.muted = true;
+            talkVideo.muted = true;
+        };
+
+        muteAllVideos();
         preloadVideos();
         // Initially, show the idle video if loaded
         idleVideo.addEventListener('play', () => {
