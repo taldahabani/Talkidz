@@ -15,7 +15,6 @@
             --background: #FFFFFF;
             --secondary-bg: #F5F5F5;
             --shadow: rgba(0, 0, 0, 0.08);
-            --fade-duration: 0.5s;
         }
 
         body {
@@ -52,13 +51,11 @@
             height: auto;
             object-fit: contain;
             opacity: 0;
-            transition: opacity var(--fade-duration) ease-in-out;
-            display: none;
         }
 
+        /* Remove the transition to avoid white flickers or delays */
         .background.active {
             opacity: 1;
-            display: block;
         }
 
         .background.video {
@@ -71,7 +68,6 @@
             background: url('/characters/pion/assets/pion.jpg') center/contain no-repeat;
             width: 100%;
             height: 100%;
-            display: block;
         }
 
         .bottom-bar {
@@ -185,18 +181,24 @@
             to { transform: translateX(100%) rotate(45deg); }
         }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/canvas-confetti/1.5.1/confetti.browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 </head>
 <body>
     <div class="main-container">
         <div class="video-wrapper">
             <div class="background image"></div>
+
+            <!-- Start Video -->
             <video class="background video" id="startVideo" playsinline disablePictureInPicture>
                 <source src="/characters/pion/assets/pion-start.mp4" type="video/mp4">
             </video>
+
+            <!-- Idle (listening) Video -->
             <video class="background video" id="idleVideo" loop playsinline disablePictureInPicture>
                 <source src="/characters/pion/assets/pion-idle.mp4" type="video/mp4">
             </video>
+
+            <!-- Speaking Video (pion-talk.mp4) -->
             <video class="background video" id="talkVideo" loop playsinline disablePictureInPicture>
                 <source src="/characters/pion/assets/pion-talk.mp4" type="video/mp4">
             </video>
@@ -211,6 +213,7 @@
                 <a href="/" class="logo">Talkidz</a>
                 <span class="logo-byline">by Playbox</span>
             </div>
+            
             <div class="controls-container">
                 <button id="startButton" class="main-button disabled">Tap to Start</button>
                 <button class="share-button" onclick="shareCharacter()">
@@ -231,7 +234,6 @@
         let videosLoaded = { start: false, idle: false, talk: false };
         let startVideoPlayed = false;
         let currentVideo = null;
-        const FADE_DURATION = 500;
 
         const backgroundImage = document.querySelector('.background.image');
         const startVideo = document.getElementById('startVideo');
@@ -240,12 +242,15 @@
         const startButton = document.getElementById('startButton');
 
         const preloadVideos = () => {
+            // Load start video
             startVideo.load();
             startVideo.addEventListener('loadeddata', () => {
                 videosLoaded.start = true;
+                // Enable the button once the start video is loaded
                 startButton.classList.remove('disabled');
             });
 
+            // Load idle video
             idleVideo.load();
             idleVideo.addEventListener('loadeddata', () => {
                 videosLoaded.idle = true;
@@ -257,15 +262,18 @@
                 }
             });
 
+            // Load talking video
             talkVideo.load();
             talkVideo.addEventListener('loadeddata', () => {
                 videosLoaded.talk = true;
             });
         };
 
-        const crossfadeToVideo = async (fromVideo, toVideo) => {
+        // Simplified function to switch instantly between videos (no fade)
+        const switchVideo = async (fromVideo, toVideo) => {
             if (fromVideo === toVideo) return;
 
+            // Show and play the new video
             if (toVideo) {
                 toVideo.style.display = 'block';
                 try {
@@ -276,14 +284,11 @@
                 }
             }
 
-            if (fromVideo) {
+            // Hide and pause the old video
+            if (fromVideo && fromVideo !== toVideo) {
                 fromVideo.classList.remove('active');
-                setTimeout(() => {
-                    fromVideo.style.display = 'none';
-                    if (fromVideo !== currentVideo) {
-                        fromVideo.pause();
-                    }
-                }, FADE_DURATION);
+                fromVideo.pause();
+                fromVideo.style.display = 'none';
             }
 
             currentVideo = toVideo;
@@ -291,24 +296,29 @@
 
         const updateBackground = async (mode) => {
             let targetVideo;
-            
+
+            // Start video
             if (mode === 'start' && videosLoaded.start && !startVideoPlayed) {
                 targetVideo = startVideo;
                 startVideoPlayed = true;
+
+                // Once the start video ends, go idle + automatically begin conversation
                 startVideo.onended = async () => {
                     await updateBackground('idle');
                     await startConversation();
                 };
             }
+            // Speaking => talkVideo
             else if (mode === 'speaking' && videosLoaded.talk) {
                 targetVideo = talkVideo;
             }
+            // Else, fallback to idle => idleVideo
             else if (videosLoaded.idle) {
                 targetVideo = idleVideo;
             }
 
             if (targetVideo) {
-                await crossfadeToVideo(currentVideo, targetVideo);
+                await switchVideo(currentVideo, targetVideo);
             }
         };
 
@@ -339,6 +349,7 @@
                 conversation = await Conversation.startSession({
                     agentId: 'ZWAt4Km480Nn6oHdyNfn',
                     onModeChange: async (mode) => {
+                        // If conversation says "speaking", show talkVideo. Otherwise, show idleVideo.
                         await updateBackground(mode.mode === 'speaking' ? 'speaking' : 'idle');
                     },
                     onConnect: async () => {
@@ -378,6 +389,7 @@
             }
         };
 
+        // Preload videos and set default background to idle
         preloadVideos();
         updateBackground('idle');
     </script>
