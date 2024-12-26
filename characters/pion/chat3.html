@@ -53,10 +53,12 @@
             object-fit: contain;
             opacity: 0;
             transition: opacity var(--fade-duration) ease-in-out;
+            display: none;
         }
 
         .background.active {
             opacity: 1;
+            display: block;
         }
 
         .background.video {
@@ -69,6 +71,7 @@
             background: url('/characters/pion/assets/pion.jpg') center/contain no-repeat;
             width: 100%;
             height: 100%;
+            display: block;
         }
 
         .bottom-bar {
@@ -152,7 +155,6 @@
             box-shadow: 0 6px 16px rgba(108, 92, 231, 0.3);
         }
 
-        /* Gray out the button (disabled) */
         .main-button.disabled {
             background: grey;
             cursor: not-allowed;
@@ -183,22 +185,20 @@
             to { transform: translateX(100%) rotate(45deg); }
         }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/canvas-confetti/1.5.1/confetti.browser.min.js"></script>
 </head>
 <body>
     <div class="main-container">
         <div class="video-wrapper">
             <div class="background image"></div>
             <video class="background video" id="startVideo" playsinline disablePictureInPicture>
-                <!-- Renamed source to pion-speaking if that’s your actual file -->
                 <source src="/characters/pion/assets/pion-start.mp4" type="video/mp4">
             </video>
             <video class="background video" id="idleVideo" loop playsinline disablePictureInPicture>
                 <source src="/characters/pion/assets/pion-idle.mp4" type="video/mp4">
             </video>
-            <video class="background video" id="speakingVideo" loop playsinline disablePictureInPicture>
-                <!-- Ensure this matches the actual speaking MP4 file -->
-                <source src="/characters/pion/assets/pion-speaking.mp4" type="video/mp4">
+            <video class="background video" id="talkVideo" loop playsinline disablePictureInPicture>
+                <source src="/characters/pion/assets/pion-talk.mp4" type="video/mp4">
             </video>
         </div>
     </div>
@@ -211,9 +211,7 @@
                 <a href="/" class="logo">Talkidz</a>
                 <span class="logo-byline">by Playbox</span>
             </div>
-            
             <div class="controls-container">
-                <!-- Default text changed to "Tap to Start" and disabled by default -->
                 <button id="startButton" class="main-button disabled">Tap to Start</button>
                 <button class="share-button" onclick="shareCharacter()">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -230,27 +228,24 @@
         import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
 
         let conversation = null;
-        let videosLoaded = { start: false, idle: false, speaking: false };
+        let videosLoaded = { start: false, idle: false, talk: false };
         let startVideoPlayed = false;
         let currentVideo = null;
-        const FADE_DURATION = 500; // 500ms, matching CSS var(--fade-duration)
+        const FADE_DURATION = 500;
 
         const backgroundImage = document.querySelector('.background.image');
         const startVideo = document.getElementById('startVideo');
         const idleVideo = document.getElementById('idleVideo');
-        const speakingVideo = document.getElementById('speakingVideo');
+        const talkVideo = document.getElementById('talkVideo');
         const startButton = document.getElementById('startButton');
 
         const preloadVideos = () => {
-            // Load start video
             startVideo.load();
             startVideo.addEventListener('loadeddata', () => {
                 videosLoaded.start = true;
-                // Now enable the button
                 startButton.classList.remove('disabled');
             });
 
-            // Load idle video
             idleVideo.load();
             idleVideo.addEventListener('loadeddata', () => {
                 videosLoaded.idle = true;
@@ -262,17 +257,15 @@
                 }
             });
 
-            // Load speaking video
-            speakingVideo.load();
-            speakingVideo.addEventListener('loadeddata', () => {
-                videosLoaded.speaking = true;
+            talkVideo.load();
+            talkVideo.addEventListener('loadeddata', () => {
+                videosLoaded.talk = true;
             });
         };
 
         const crossfadeToVideo = async (fromVideo, toVideo) => {
             if (fromVideo === toVideo) return;
-            
-            // Start playing the new video before the crossfade
+
             if (toVideo) {
                 toVideo.style.display = 'block';
                 try {
@@ -283,13 +276,12 @@
                 }
             }
 
-            // Remove active class from old video to start fade out
             if (fromVideo) {
                 fromVideo.classList.remove('active');
                 setTimeout(() => {
+                    fromVideo.style.display = 'none';
                     if (fromVideo !== currentVideo) {
                         fromVideo.pause();
-                        fromVideo.style.display = 'none';
                     }
                 }, FADE_DURATION);
             }
@@ -303,15 +295,15 @@
             if (mode === 'start' && videosLoaded.start && !startVideoPlayed) {
                 targetVideo = startVideo;
                 startVideoPlayed = true;
-
-                // When start video ends, we automatically begin conversation
                 startVideo.onended = async () => {
                     await updateBackground('idle');
                     await startConversation();
                 };
-            } else if (mode === 'speaking' && videosLoaded.speaking) {
-                targetVideo = speakingVideo;
-            } else if (videosLoaded.idle) {
+            }
+            else if (mode === 'speaking' && videosLoaded.talk) {
+                targetVideo = talkVideo;
+            }
+            else if (videosLoaded.idle) {
                 targetVideo = idleVideo;
             }
 
@@ -339,7 +331,6 @@
             });
         };
 
-        // Automatically called after start video ends
         const startConversation = async () => {
             try {
                 await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -348,11 +339,9 @@
                 conversation = await Conversation.startSession({
                     agentId: 'ZWAt4Km480Nn6oHdyNfn',
                     onModeChange: async (mode) => {
-                        // Switch to speaking video if speaking, otherwise idle
                         await updateBackground(mode.mode === 'speaking' ? 'speaking' : 'idle');
                     },
                     onConnect: async () => {
-                        // Ensure idle is playing after connect (if start video ended)
                         if (!startVideo.ended && startVideo.style.display === 'block') {
                             startVideo.onended = () => updateBackground('idle');
                         } else {
@@ -373,9 +362,8 @@
             }
         };
 
-        // Remove button once user taps, then play start video
         startButton.addEventListener('click', async () => {
-            if (!videosLoaded.start) return; // Guard if user clicks too fast
+            if (!videosLoaded.start) return;
             startButton.style.display = 'none';
             await updateBackground('start');
         });
@@ -390,7 +378,6 @@
             }
         };
 
-        // Initialize with idle state
         preloadVideos();
         updateBackground('idle');
     </script>
