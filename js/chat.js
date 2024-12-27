@@ -125,13 +125,20 @@ class ChatController {
        this.backgroundImage.style.background = `url('${this.character.assets.preview}') center/contain no-repeat`;
        this.idleVideo.src = this.character.assets.idle;
        this.speakingVideo.src = this.character.assets.talking;
-       this.characterSelectButton.innerHTML = `
-           <div class="character-icon">
-               <img src="${this.character.assets.icon}" alt="${this.character.name}">
-           </div>`;
+this.characterSelectButton.innerHTML = `
+  <div class="character-icon">
+    <img src="${this.character.assets.icon}" alt="${this.character.name}">
+  </div>`;
+
    }
 
    setupCharacterMenu() {
+this.characterSelectButton.innerHTML = `
+  <div class="character-icon">
+    <img src="${this.character.assets.icon}" alt="${this.character.name}">
+  </div>`;
+
+       
        Object.values(characters).forEach(char => {
            const option = document.createElement('div');
            option.className = `character-option ${char.id === this.character.id ? 'active' : ''}`;
@@ -172,13 +179,18 @@ class ChatController {
        document.querySelectorAll('.character-option').forEach(option => {
            option.classList.toggle('active', option.querySelector('img').src.includes(characterId));
        });
+       
+this.characterSelectButton.innerHTML = `
+  <div class="character-icon">
+    <img src="${this.character.assets.icon}" alt="${this.character.name}">
+  </div>`;
 
        this.characterMenu.classList.remove('active');
    }
 
    updateStatus(mode) {
        this.statusDot.classList.remove('listening');
-       switch (mode) {
+       switch(mode) {
            case 'listening':
                this.statusText.textContent = 'Listening...';
                this.statusDot.classList.add('listening');
@@ -229,7 +241,7 @@ class ChatController {
    triggerConfetti() {
        const options = { origin: { y: 0.7 } };
        const count = 200;
-
+       
        [
            { spread: 26, startVelocity: 55, particleRatio: 0.25 },
            { spread: 60, particleRatio: 0.2 },
@@ -259,11 +271,6 @@ class ChatController {
 
            this.conversation = await Conversation.startSession({
                agentId: this.character.agentId,
-               overrides: this.character.id === 'jonny' ? {
-                   agent: {
-                       language: 'es'
-                   }
-               } : {},
                onModeChange: (mode) => this.updateBackground(mode.mode),
                onConnect: () => this.updateBackground('listening'),
                onDisconnect: () => {
