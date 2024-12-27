@@ -18,7 +18,6 @@
             </div>
         </div>
     </div>
-    
     <div class="top-bar">
         <a href="/" class="back-button">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -26,17 +25,14 @@
             </svg>
         </a>
         <div class="character-name"></div>
-        <div class="language-dropdown">
-            <button class="language-select-button">
-                <span class="current-language-flag">🌐</span>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M6 9l6 6 6-6"/>
-                </svg>
-            </button>
+        <!-- Language Selector Start -->
+        <div class="language-selector">
+            <button class="language-button" aria-label="Select Language">🌐</button>
             <div class="language-menu">
-                <!-- Language options will be populated by JavaScript -->
+                <!-- Language options will be dynamically inserted by JavaScript -->
             </div>
         </div>
+        <!-- Language Selector End -->
     </div>
 
     <div class="main-container">
@@ -63,7 +59,7 @@
             <span class="status-text">Ready to chat</span>
         </div>
         <div class="controls-right">
-            <button class="character-select-button">
+            <button class="character-select-button" aria-label="Select Character">
                 <div class="character-icon">
                     <img src="" alt="Selected character">
                 </div>
@@ -71,7 +67,7 @@
             <div class="character-menu">
                 <div class="character-menu-content"></div>
             </div>
-            <button class="share-button" onclick="shareCharacter()">
+            <button class="share-button" onclick="shareCharacter()" aria-label="Share Character">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
                     <polyline points="16 6 12 2 8 6"/>
