@@ -1,7 +1,6 @@
 import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
 
-// Languages Array
-export const languages = [
+const languages = [
     { code: 'en-US', flag: '🇺🇸', name: 'English (USA)' },
     { code: 'en-GB', flag: '🇬🇧', name: 'English (UK)' },
     { code: 'ja-JP', flag: '🇯🇵', name: 'Japanese' },
@@ -130,18 +129,18 @@ const characters = {
 };
 
 class ChatController {
-   constructor(characterId, languageCode) {
+   constructor(characterId) {
        this.character = characters[characterId];
        this.conversation = null;
        this.videosLoaded = { idle: false, speaking: false };
-       this.currentLanguage = languageCode || 'en-US'; // Default language
+       this.language = 'en-US'; // default language
        this.setupElements();
        this.setupCharacter();
+       this.setupLanguageDropdown();
        this.setupEventListeners();
        this.preloadVideos();
        this.updateBackground('idle');
        this.setupCharacterMenu();
-       this.setupLanguageMenu();
        this.loadingScreen.classList.remove('hidden');
    }
 
@@ -157,10 +156,11 @@ class ChatController {
        this.characterMenuContent = document.querySelector('.character-menu-content');
        this.characterSelectButton = document.querySelector('.character-select-button');
        this.loadingScreen = document.querySelector('.character-loading');
-       // Language Selector Elements
-       this.languageSelector = document.querySelector('.language-selector');
-       this.languageButton = this.languageSelector.querySelector('.language-button');
-       this.languageMenu = this.languageSelector.querySelector('.language-menu');
+
+       // Language dropdown elements
+       this.languageDropdown = document.querySelector('.language-dropdown');
+       this.languageSelectButton = this.languageDropdown.querySelector('.language-select-button');
+       this.languageMenu = this.languageDropdown.querySelector('.language-menu');
    }
 
    setupCharacter() {
@@ -170,145 +170,72 @@ class ChatController {
        this.idleVideo.src = this.character.assets.idle;
        this.speakingVideo.src = this.character.assets.talking;
        this.characterSelectButton.innerHTML = `
-         <div class="character-icon">
-           <img src="${this.character.assets.icon}" alt="${this.character.name}">
-         </div>`;
+          <div class="character-icon">
+            <img src="${this.character.assets.icon}" alt="${this.character.name}">
+          </div>`;
    }
 
-   setupCharacterMenu() {
-       this.characterSelectButton.innerHTML = `
-         <div class="character-icon">
-           <img src="${this.character.assets.icon}" alt="${this.character.name}">
-         </div>`;
+   setupLanguageDropdown() {
+       // Read language from URL parameter or default
+       const urlParams = new URLSearchParams(window.location.search);
+       const langParam = urlParams.get('lang');
+       this.language = langParam && languages.some(l => l.code === langParam) ? langParam : 'en-US';
 
-       // Clear existing options to prevent duplicates
-       this.characterMenuContent.innerHTML = '';
-
-       Object.values(characters).forEach(char => {
-           const option = document.createElement('div');
-           option.className = `character-option ${char.id === this.character.id ? 'active' : ''}`;
-           option.innerHTML = `<img src="${char.assets.icon}" alt="${char.name}">`;
-           option.addEventListener('click', () => this.changeCharacter(char.id));
-           this.characterMenuContent.appendChild(option);
-       });
-
-       this.characterSelectButton.addEventListener('click', (e) => {
-           e.stopPropagation();
-           this.characterMenu.classList.toggle('active');
-       });
-
-       document.addEventListener('click', (e) => {
-           if (!this.characterMenu.contains(e.target)) {
-               this.characterMenu.classList.remove('active');
-           }
-       });
-   }
-
-   setupLanguageMenu() {
-       // Populate language menu
+       // Populate the language menu
        languages.forEach(lang => {
-           const langOption = document.createElement('div');
-           langOption.classList.add('language-option');
-           langOption.dataset.code = lang.code;
-           langOption.innerHTML = `
+           const option = document.createElement('div');
+           option.className = 'language-option';
+           option.dataset.code = lang.code;
+           option.innerHTML = `
                <span class="flag">${lang.flag}</span>
-               <span class="language-name">${lang.name}</span>
+               <span class="name">${lang.name}</span>
            `;
-           langOption.addEventListener('click', () => this.selectLanguage(lang.code));
-           this.languageMenu.appendChild(langOption);
+           option.addEventListener('click', () => this.changeLanguage(lang.code));
+           this.languageMenu.appendChild(option);
        });
 
-       // Set default selected language based on currentLanguage
-       this.updateLanguageButton();
-       this.updateSelectedLanguageOption();
+       // Set the current language flag
+       const currentLang = languages.find(l => l.code === this.language) || languages[0];
+       this.languageSelectButton.querySelector('.current-language-flag').textContent = currentLang.flag;
 
-       // Toggle language menu on button click
-       this.languageButton.addEventListener('click', (e) => {
+       // Add event listener to toggle the language menu
+       this.languageSelectButton.addEventListener('click', (e) => {
            e.stopPropagation();
            this.languageMenu.classList.toggle('active');
        });
 
-       // Close language menu when clicking outside
+       // Close the language menu when clicking outside
        document.addEventListener('click', (e) => {
-           if (!this.languageSelector.contains(e.target)) {
+           if (!this.languageDropdown.contains(e.target)) {
                this.languageMenu.classList.remove('active');
            }
        });
    }
 
-   selectLanguage(langCode) {
-       if (this.currentLanguage === langCode) return; // No change
+   async changeLanguage(langCode) {
+       if (this.language === langCode) return; // No change
 
-       this.currentLanguage = langCode;
-       this.updateLanguageButton();
-       this.updateSelectedLanguageOption();
-       this.updateURLParameters();
+       this.language = langCode;
 
-       if (this.conversation) {
-           // End current conversation and restart with new language
-           this.endConversation().then(() => {
-               this.startConversation();
-           });
-       }
-   }
-
-   updateLanguageButton() {
-       const selectedLang = languages.find(lang => lang.code === this.currentLanguage);
+       // Update the language button flag
+       const selectedLang = languages.find(l => l.code === langCode);
        if (selectedLang) {
-           this.languageButton.textContent = selectedLang.flag;
-           this.languageButton.setAttribute('aria-label', selectedLang.name);
-       } else {
-           this.languageButton.textContent = '🌐';
-           this.languageButton.setAttribute('aria-label', 'Select Language');
+           this.languageSelectButton.querySelector('.current-language-flag').textContent = selectedLang.flag;
        }
-   }
 
-   updateSelectedLanguageOption() {
-       const options = this.languageMenu.querySelectorAll('.language-option');
-       options.forEach(option => {
-           if (option.dataset.code === this.currentLanguage) {
-               option.classList.add('selected');
-           } else {
-               option.classList.remove('selected');
-           }
-       });
-   }
-
-   updateURLParameters() {
+       // Update the URL parameter
        const url = new URL(window.location);
-       url.searchParams.set('lang', this.currentLanguage);
+       url.searchParams.set('lang', langCode);
        window.history.pushState({}, '', url);
-   }
 
-   async changeCharacter(characterId) {
+       // Update the conversation language
        if (this.conversation) {
            await this.endConversation();
+           await this.startConversation();
        }
 
-       this.loadingScreen.classList.remove('hidden');
-       this.videosLoaded = { idle: false, speaking: false };
-
-       const url = new URL(window.location);
-       url.searchParams.set('character', characterId);
-       // Preserve the current language in the URL
-       url.searchParams.set('lang', this.currentLanguage);
-       window.history.pushState({}, '', url);
-
-       this.character = characters[characterId];
-       this.setupCharacter();
-       this.preloadVideos();
-       this.updateBackground('idle');
-
-       document.querySelectorAll('.character-option').forEach(option => {
-           option.classList.toggle('active', option.querySelector('img').src.includes(characterId));
-       });
-       
-       this.characterSelectButton.innerHTML = `
-         <div class="character-icon">
-           <img src="${this.character.assets.icon}" alt="${this.character.name}">
-         </div>`;
-
-       this.characterMenu.classList.remove('active');
+       // Close the language menu
+       this.languageMenu.classList.remove('active');
    }
 
    updateStatus(mode) {
@@ -396,7 +323,7 @@ class ChatController {
                agentId: this.character.agentId,
                overrides: {
                    agent: {
-                       language: this.currentLanguage // Override the language
+                       language: this.language.split('-')[0] // e.g., 'en-US' -> 'en'
                    }
                },
                onModeChange: (mode) => this.updateBackground(mode.mode),
@@ -436,6 +363,67 @@ class ChatController {
        }
    }
 
+   setupCharacterMenu() {
+       this.characterSelectButton.innerHTML = `
+          <div class="character-icon">
+            <img src="${this.character.assets.icon}" alt="${this.character.name}">
+          </div>`;
+
+       
+       Object.values(characters).forEach(char => {
+           const option = document.createElement('div');
+           option.className = `character-option ${char.id === this.character.id ? 'active' : ''}`;
+           option.innerHTML = `<img src="${char.assets.icon}" alt="${char.name}">`;
+           option.addEventListener('click', () => this.changeCharacter(char.id));
+           this.characterMenuContent.appendChild(option);
+       });
+
+       this.characterSelectButton.addEventListener('click', (e) => {
+           e.stopPropagation();
+           this.characterMenu.classList.toggle('active');
+       });
+
+       document.addEventListener('click', (e) => {
+           if (!this.characterMenu.contains(e.target)) {
+               this.characterMenu.classList.remove('active');
+           }
+       });
+   }
+
+   async changeCharacter(characterId) {
+       if (this.conversation) {
+           await this.endConversation();
+       }
+
+       this.loadingScreen.classList.remove('hidden');
+       this.videosLoaded = { idle: false, speaking: false };
+
+       const url = new URL(window.location);
+       url.searchParams.set('character', characterId);
+       window.history.pushState({}, '', url);
+
+       this.character = characters[characterId];
+       this.setupCharacter();
+       this.preloadVideos();
+       this.updateBackground('idle');
+
+       document.querySelectorAll('.character-option').forEach(option => {
+           const img = option.querySelector('img');
+           if (img && img.src.includes(characterId)) {
+               option.classList.add('active');
+           } else {
+               option.classList.remove('active');
+           }
+       });
+       
+       this.characterSelectButton.innerHTML = `
+          <div class="character-icon">
+            <img src="${this.character.assets.icon}" alt="${this.character.name}">
+          </div>`;
+
+       this.characterMenu.classList.remove('active');
+   }
+
    setupEventListeners() {
        this.startButton.addEventListener('click', async () => {
            if (this.conversation) {
@@ -457,14 +445,6 @@ window.shareCharacter = () => {
    }
 };
 
-// Function to parse URL parameters
-function getURLParameters() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const characterId = urlParams.get('character') || 'jonny';
-    const languageCode = urlParams.get('lang') || 'en-US';
-    return { characterId, languageCode };
-}
-
-// Initialize ChatController with URL parameters
-const { characterId, languageCode } = getURLParameters();
-const chat = new ChatController(characterId, languageCode);
+const urlParams = new URLSearchParams(window.location.search);
+const characterId = urlParams.get('character') || 'jonny';
+const chat = new ChatController(characterId);
