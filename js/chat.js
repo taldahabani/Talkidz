@@ -4,6 +4,7 @@ const characters = {
    jonny: {
        id: 'jonny',
        name: 'Jonny',
+       language: 'es', 
        agentId: 'xiC8L3SOeHwYyCLLnYxF',
        assets: {
            idle: '/characters/jonny/assets/jonny-idle.mp4',
