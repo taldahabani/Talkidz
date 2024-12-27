@@ -9,15 +9,15 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 </head>
 <body>
-<div class="splash-container character-loading hidden">
-    <div class="splash-content">
-        <div class="loading-circle">
-            <div class="circle circle-1"></div>
-            <div class="circle circle-2"></div>
-            <div class="circle circle-3"></div>
+    <div class="splash-container character-loading hidden">
+        <div class="splash-content">
+            <div class="loading-circle">
+                <div class="circle circle-1"></div>
+                <div class="circle circle-2"></div>
+                <div class="circle circle-3"></div>
+            </div>
         </div>
     </div>
-</div>
     <div class="top-bar">
         <a href="/" class="back-button">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -25,6 +25,14 @@
             </svg>
         </a>
         <div class="character-name"></div>
+        <!-- Language Selector Start -->
+        <div class="language-selector">
+            <button class="language-button" aria-label="Select Language">🌐</button>
+            <div class="language-menu">
+                <!-- Language options will be dynamically inserted by JavaScript -->
+            </div>
+        </div>
+        <!-- Language Selector End -->
     </div>
 
     <div class="main-container">
@@ -50,23 +58,23 @@
             <div class="status-dot"></div>
             <span class="status-text">Ready to chat</span>
         </div>
-<div class="controls-right">
-    <button class="character-select-button">
-        <div class="character-icon">
-            <img src="" alt="Selected character">
+        <div class="controls-right">
+            <button class="character-select-button" aria-label="Select Character">
+                <div class="character-icon">
+                    <img src="" alt="Selected character">
+                </div>
+            </button>
+            <div class="character-menu">
+                <div class="character-menu-content"></div>
+            </div>
+            <button class="share-button" onclick="shareCharacter()" aria-label="Share Character">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+                    <polyline points="16 6 12 2 8 6"/>
+                    <line x1="12" y1="2" x2="12" y2="15"/>
+                </svg>
+            </button>
         </div>
-    </button>
-    <div class="character-menu">
-        <div class="character-menu-content"></div>
-    </div>
-    <button class="share-button" onclick="shareCharacter()">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
-            <polyline points="16 6 12 2 8 6"/>
-            <line x1="12" y1="2" x2="12" y2="15"/>
-        </svg>
-    </button>
-</div>
     </div>
 
     <script type="module" src="/js/chat.js"></script>
