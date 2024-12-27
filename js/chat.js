@@ -1,5 +1,43 @@
 import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
 
+// Languages Array
+export const languages = [
+    { code: 'en-US', flag: '🇺🇸', name: 'English (USA)' },
+    { code: 'en-GB', flag: '🇬🇧', name: 'English (UK)' },
+    { code: 'ja-JP', flag: '🇯🇵', name: 'Japanese' },
+    { code: 'zh-CN', flag: '🇨🇳', name: 'Chinese' },
+    { code: 'de-DE', flag: '🇩🇪', name: 'German' },
+    { code: 'hi-IN', flag: '🇮🇳', name: 'Hindi' },
+    { code: 'fr-FR', flag: '🇫🇷', name: 'French (France)' },
+    { code: 'fr-CA', flag: '🇨🇦', name: 'French (Canada)' },
+    { code: 'ko-KR', flag: '🇰🇷', name: 'Korean' },
+    { code: 'pt-BR', flag: '🇧🇷', name: 'Portuguese (Brazil)' },
+    { code: 'pt-PT', flag: '🇵🇹', name: 'Portuguese (Portugal)' },
+    { code: 'it-IT', flag: '🇮🇹', name: 'Italian' },
+    { code: 'es-ES', flag: '🇪🇸', name: 'Spanish (Spain)' },
+    { code: 'es-MX', flag: '🇲🇽', name: 'Spanish (Mexico)' },
+    { code: 'id-ID', flag: '🇮🇩', name: 'Indonesian' },
+    { code: 'nl-NL', flag: '🇳🇱', name: 'Dutch' },
+    { code: 'tr-TR', flag: '🇹🇷', name: 'Turkish' },
+    { code: 'fil-PH', flag: '🇵🇭', name: 'Filipino' },
+    { code: 'pl-PL', flag: '🇵🇱', name: 'Polish' },
+    { code: 'sv-SE', flag: '🇸🇪', name: 'Swedish' },
+    { code: 'bg-BG', flag: '🇧🇬', name: 'Bulgarian' },
+    { code: 'ro-RO', flag: '🇷🇴', name: 'Romanian' },
+    { code: 'ar-SA', flag: '🇸🇦', name: 'Arabic (Saudi Arabia)' },
+    { code: 'ar-AE', flag: '🇦🇪', name: 'Arabic (UAE)' },
+    { code: 'cs-CZ', flag: '🇨🇿', name: 'Czech' },
+    { code: 'el-GR', flag: '🇬🇷', name: 'Greek' },
+    { code: 'fi-FI', flag: '🇫🇮', name: 'Finnish' },
+    { code: 'hr-HR', flag: '🇭🇷', name: 'Croatian' },
+    { code: 'ms-MY', flag: '🇲🇾', name: 'Malay' },
+    { code: 'sk-SK', flag: '🇸🇰', name: 'Slovak' },
+    { code: 'da-DK', flag: '🇩🇰', name: 'Danish' },
+    { code: 'ta-IN', flag: '🇮🇳', name: 'Tamil' },
+    { code: 'uk-UA', flag: '🇺🇦', name: 'Ukrainian' },
+    { code: 'ru-RU', flag: '🇷🇺', name: 'Russian' }
+];
+
 const characters = {
    jonny: {
        id: 'jonny',
@@ -92,16 +130,18 @@ const characters = {
 };
 
 class ChatController {
-   constructor(characterId) {
+   constructor(characterId, languageCode) {
        this.character = characters[characterId];
        this.conversation = null;
        this.videosLoaded = { idle: false, speaking: false };
+       this.currentLanguage = languageCode || 'en-US'; // Default language
        this.setupElements();
        this.setupCharacter();
        this.setupEventListeners();
        this.preloadVideos();
        this.updateBackground('idle');
        this.setupCharacterMenu();
+       this.setupLanguageMenu();
        this.loadingScreen.classList.remove('hidden');
    }
 
@@ -117,6 +157,10 @@ class ChatController {
        this.characterMenuContent = document.querySelector('.character-menu-content');
        this.characterSelectButton = document.querySelector('.character-select-button');
        this.loadingScreen = document.querySelector('.character-loading');
+       // Language Selector Elements
+       this.languageSelector = document.querySelector('.language-selector');
+       this.languageButton = this.languageSelector.querySelector('.language-button');
+       this.languageMenu = this.languageSelector.querySelector('.language-menu');
    }
 
    setupCharacter() {
@@ -125,20 +169,21 @@ class ChatController {
        this.backgroundImage.style.background = `url('${this.character.assets.preview}') center/contain no-repeat`;
        this.idleVideo.src = this.character.assets.idle;
        this.speakingVideo.src = this.character.assets.talking;
-this.characterSelectButton.innerHTML = `
-  <div class="character-icon">
-    <img src="${this.character.assets.icon}" alt="${this.character.name}">
-  </div>`;
-
+       this.characterSelectButton.innerHTML = `
+         <div class="character-icon">
+           <img src="${this.character.assets.icon}" alt="${this.character.name}">
+         </div>`;
    }
 
    setupCharacterMenu() {
-this.characterSelectButton.innerHTML = `
-  <div class="character-icon">
-    <img src="${this.character.assets.icon}" alt="${this.character.name}">
-  </div>`;
+       this.characterSelectButton.innerHTML = `
+         <div class="character-icon">
+           <img src="${this.character.assets.icon}" alt="${this.character.name}">
+         </div>`;
 
-       
+       // Clear existing options to prevent duplicates
+       this.characterMenuContent.innerHTML = '';
+
        Object.values(characters).forEach(char => {
            const option = document.createElement('div');
            option.className = `character-option ${char.id === this.character.id ? 'active' : ''}`;
@@ -159,6 +204,82 @@ this.characterSelectButton.innerHTML = `
        });
    }
 
+   setupLanguageMenu() {
+       // Populate language menu
+       languages.forEach(lang => {
+           const langOption = document.createElement('div');
+           langOption.classList.add('language-option');
+           langOption.dataset.code = lang.code;
+           langOption.innerHTML = `
+               <span class="flag">${lang.flag}</span>
+               <span class="language-name">${lang.name}</span>
+           `;
+           langOption.addEventListener('click', () => this.selectLanguage(lang.code));
+           this.languageMenu.appendChild(langOption);
+       });
+
+       // Set default selected language based on currentLanguage
+       this.updateLanguageButton();
+       this.updateSelectedLanguageOption();
+
+       // Toggle language menu on button click
+       this.languageButton.addEventListener('click', (e) => {
+           e.stopPropagation();
+           this.languageMenu.classList.toggle('active');
+       });
+
+       // Close language menu when clicking outside
+       document.addEventListener('click', (e) => {
+           if (!this.languageSelector.contains(e.target)) {
+               this.languageMenu.classList.remove('active');
+           }
+       });
+   }
+
+   selectLanguage(langCode) {
+       if (this.currentLanguage === langCode) return; // No change
+
+       this.currentLanguage = langCode;
+       this.updateLanguageButton();
+       this.updateSelectedLanguageOption();
+       this.updateURLParameters();
+
+       if (this.conversation) {
+           // End current conversation and restart with new language
+           this.endConversation().then(() => {
+               this.startConversation();
+           });
+       }
+   }
+
+   updateLanguageButton() {
+       const selectedLang = languages.find(lang => lang.code === this.currentLanguage);
+       if (selectedLang) {
+           this.languageButton.textContent = selectedLang.flag;
+           this.languageButton.setAttribute('aria-label', selectedLang.name);
+       } else {
+           this.languageButton.textContent = '🌐';
+           this.languageButton.setAttribute('aria-label', 'Select Language');
+       }
+   }
+
+   updateSelectedLanguageOption() {
+       const options = this.languageMenu.querySelectorAll('.language-option');
+       options.forEach(option => {
+           if (option.dataset.code === this.currentLanguage) {
+               option.classList.add('selected');
+           } else {
+               option.classList.remove('selected');
+           }
+       });
+   }
+
+   updateURLParameters() {
+       const url = new URL(window.location);
+       url.searchParams.set('lang', this.currentLanguage);
+       window.history.pushState({}, '', url);
+   }
+
    async changeCharacter(characterId) {
        if (this.conversation) {
            await this.endConversation();
@@ -169,6 +290,8 @@ this.characterSelectButton.innerHTML = `
 
        const url = new URL(window.location);
        url.searchParams.set('character', characterId);
+       // Preserve the current language in the URL
+       url.searchParams.set('lang', this.currentLanguage);
        window.history.pushState({}, '', url);
 
        this.character = characters[characterId];
@@ -180,10 +303,10 @@ this.characterSelectButton.innerHTML = `
            option.classList.toggle('active', option.querySelector('img').src.includes(characterId));
        });
        
-this.characterSelectButton.innerHTML = `
-  <div class="character-icon">
-    <img src="${this.character.assets.icon}" alt="${this.character.name}">
-  </div>`;
+       this.characterSelectButton.innerHTML = `
+         <div class="character-icon">
+           <img src="${this.character.assets.icon}" alt="${this.character.name}">
+         </div>`;
 
        this.characterMenu.classList.remove('active');
    }
@@ -271,6 +394,11 @@ this.characterSelectButton.innerHTML = `
 
            this.conversation = await Conversation.startSession({
                agentId: this.character.agentId,
+               overrides: {
+                   agent: {
+                       language: this.currentLanguage // Override the language
+                   }
+               },
                onModeChange: (mode) => this.updateBackground(mode.mode),
                onConnect: () => this.updateBackground('listening'),
                onDisconnect: () => {
@@ -329,6 +457,14 @@ window.shareCharacter = () => {
    }
 };
 
-const urlParams = new URLSearchParams(window.location.search);
-const characterId = urlParams.get('character') || 'jonny';
-const chat = new ChatController(characterId);
+// Function to parse URL parameters
+function getURLParameters() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const characterId = urlParams.get('character') || 'jonny';
+    const languageCode = urlParams.get('lang') || 'en-US';
+    return { characterId, languageCode };
+}
+
+// Initialize ChatController with URL parameters
+const { characterId, languageCode } = getURLParameters();
+const chat = new ChatController(characterId, languageCode);
