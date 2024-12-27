@@ -439,85 +439,6 @@ body {
     100% { transform: scale(1); opacity: 1; }
 }
 
-.language-dropdown {
-    position: absolute;
-    right: 1.5rem;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 100;
-}
-
-.language-select-button {
-    display: flex;
-    align-items: center;
-    background: white;
-    border: 1px solid rgba(108, 92, 231, 0.15);
-    border-radius: 8px;
-    padding: 0.5rem 0.75rem;
-    cursor: pointer;
-    box-shadow: 0 2px 8px rgba(108, 92, 231, 0.1);
-    transition: all 0.3s ease;
-}
-
-.language-select-button:hover {
-    border-color: var(--accent-color);
-}
-
-.language-select-button .current-language-flag {
-    margin-right: 0.5rem;
-    font-size: 1.2rem;
-}
-
-.language-select-button svg {
-    width: 16px;
-    height: 16px;
-}
-
-.language-menu {
-    position: absolute;
-    top: 100%;
-    right: 0;
-    width: 220px;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(10px);
-    transition: all 0.3s ease;
-    max-height: 300px;
-    overflow-y: auto;
-}
-
-.language-menu.active {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-}
-
-.language-option {
-    padding: 0.5rem 1rem;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-    transition: background 0.2s ease;
-}
-
-.language-option:hover {
-    background: var(--secondary-bg);
-}
-
-.language-option .flag {
-    margin-right: 0.5rem;
-    font-size: 1.2rem;
-}
-
-.language-option .name {
-    flex: 1;
-    font-size: 0.9rem;
-    color: var(--text-color);
-}
-
 @media (max-width: 768px) {
     .background {
         width: 100%;
@@ -537,9 +458,6 @@ body {
     .character-menu {
         right: -1rem;
     }
-    .language-dropdown {
-        right: 1rem;
-    }
 }
 
 @media (min-width: 769px) {
@@ -549,4 +467,88 @@ body {
     .video-wrapper {
         max-height: calc(100vh - 140px);
     }
+}
+
+/* Language Selector Styles */
+.language-selector {
+    position: relative;
+    margin-left: auto;
+}
+
+.language-button {
+    background: white;
+    border: 1px solid rgba(108, 92, 231, 0.15);
+    border-radius: 8px;
+    padding: 0.5rem;
+    cursor: pointer;
+    font-size: 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.language-button:hover {
+    border-color: var(--accent-color);
+}
+
+.language-menu {
+    position: absolute;
+    top: 110%;
+    right: 0;
+    width: 220px; /* Increased width for better display */
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.language-menu.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.language-option {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.language-option:hover {
+    background: var(--secondary-bg);
+}
+
+.language-option.selected {
+    background: var(--accent-color);
+    color: white;
+}
+
+.language-option .flag {
+    margin-right: 0.5rem;
+    font-size: 1.25rem;
+}
+
+.language-option .language-name {
+    flex: 1;
+}
+
+/* Scrollbar Styling for Language Menu (optional) */
+.language-menu::-webkit-scrollbar {
+    width: 6px;
+}
+
+.language-menu::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.language-menu::-webkit-scrollbar-thumb {
+    background-color: var(--accent-color);
+    border-radius: 3px;
 }
