@@ -3,7 +3,6 @@ import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
 // Example languages array (you can keep it separate or inline)
 const languages = [
     { code: 'en', flag: '🇺🇸', name: 'English (USA)' },
-    { code: 'en', flag: '🇬🇧', name: 'English (UK)' },
     { code: 'ja', flag: '🇯🇵', name: 'Japanese' },
     { code: 'zh', flag: '🇨🇳', name: 'Chinese' },
     { code: 'de', flag: '🇩🇪', name: 'German' },
