@@ -1,211 +1,291 @@
 import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
 
-// Same languages array, now including a "firstMessage" property for each.
-const languages = [
-  {
-    code: 'en',
-    flag: '🇺🇸',
-    name: 'English (USA)',
-    firstMessage: "Hey, Nice To See You!"
+const firstMessages = {
+  jonny: {
+    en: "Hey it’s Jonny, Woof Woof!. Nice to see you",
+    ja: "やあ、ジョニーだよ、ワンワン！お会いできて嬉しいよ",
+    zh: "嘿，我是乔尼，汪汪！很高兴见到你",
+    de: "Hey, ich bin Jonny, Wau Wau! Schön dich zu sehen",
+    hi: "अरे, मैं जॉनी हूँ, वूफ वूफ! आपको देखकर अच्छा लगा",
+    fr: "Salut, c'est Jonny, Wouf Wouf ! Ravi de te voir",
+    ko: "안녕, 나는 조니야, 멍멍! 만나서 반가워",
+    pt: "Ei, sou o Jonny, au au! Bom te ver",
+    it: "Ehi, sono Jonny, bau bau! Bello vederti",
+    es: "¡Hola, soy Jonny, guau guau! Encantado de verte",
+    id: "Hai, ini Jonny, guk guk! Senang bertemu denganmu",
+    nl: "Hé, ik ben Jonny, woef woef! Leuk je te zien",
+    tr: "Hey, ben Jonny, hav hav! Seni gördüğüme sevindim",
+    fil: "Hoy, ako si Jonny, aw aw! Ikinagagalak kitang makita",
+    pl: "Hej, jestem Jonny, hau hau! Miło cię widzieć",
+    sv: "Hej, jag är Jonny, voff voff! Kul att se dig",
+    bg: "Хей, аз съм Джони, бау бау! Радвам се да те видя",
+    ro: "Hei, sunt Jonny, ham ham! Mă bucur să te văd",
+    ar: "مرحباً، أنا جوني، هوف هوف! سعيد برؤيتك",
+    cs: "Ahoj, tady Jonny, haf haf! Rád tě vidím",
+    el: "Γεια, είμαι ο Jonny, γουφ γουφ! Χαίρομαι που σε βλέπω",
+    fi: "Hei, olen Jonny, hau hau! Kiva nähdä sinua",
+    hr: "Bok, ja sam Jonny, vau vau! Drago mi je što te vidim",
+    ms: "Hai, saya Jonny, gong gong! Gembira bertemu kamu",
+    sk: "Ahoj, tu je Jonny, haf haf! Rád ťa vidím",
+    da: "Hej, jeg er Jonny, vuf vuf! Rart at se dig",
+    ta: "ஹே, நான் ஜொன்னி, வூஃ வூஃ! உங்களை சந்தித்ததில் மகிழ்ச்சி",
+    uk: "Гей, я Джонні, гав гав! Радий тебе бачити",
+    ru: "Привет, я Джонни, гав-гав! Рад тебя видеть"
   },
-  {
-    code: 'en',
-    flag: '🇬🇧',
-    name: 'English (UK)',
-    firstMessage: "Hey, Nice To See You!"
+  duck: {
+    en: "Hey it's quack quack! Nice to see you!",
+    ja: "やあ、ガーガーだよ！会えて嬉しい！",
+    zh: "嘿，是嘎嘎！很高兴见到你！",
+    de: "Hey, hier ist Quack Quack! Schön dich zu sehen!",
+    hi: "अरे, ये क्वैक क्वैक है! आपको देखकर अच्छा लगा!",
+    fr: "Hey, c'est Quack Quack ! Ravi de te voir !",
+    ko: "안녕, 꽥꽥이야! 만나서 반가워!",
+    pt: "Ei, é o Quack Quack! Bom te ver!",
+    it: "Ehi, è Quack Quack! Bello vederti!",
+    es: "¡Hola, es Quack Quack! ¡Encantado de verte!",
+    id: "Hai, ini Quack Quack! Senang bertemu denganmu!",
+    nl: "Hé, dit is Quack Quack! Leuk je te zien!",
+    tr: "Hey, bu Quack Quack! Seni gördüğüme sevindim!",
+    fil: "Hoy, si Quack Quack ito! Ikinagagalak kitang makita!",
+    pl: "Hej, to Quack Quack! Miło cię widzieć!",
+    sv: "Hej, det är Quack Quack! Kul att se dig!",
+    bg: "Хей, това е Куак Куак! Радвам се да те видя!",
+    ro: "Hei, e Quack Quack! Mă bucur să te văd!",
+    ar: "مرحباً، إنه كواك كواك! سعيد برؤيتك!",
+    cs: "Ahoj, to je Quack Quack! Rád tě vidím!",
+    el: "Γεια, είναι ο Quack Quack! Χαίρομαι που σε βλέπω!",
+    fi: "Hei, se on Quack Quack! Kiva nähdä sinua!",
+    hr: "Bok, ovo je Quack Quack! Drago mi je što te vidim!",
+    ms: "Hai, ini Quack Quack! Seronok dapat jumpa kamu!",
+    sk: "Ahoj, to je Quack Quack! Rád ťa vidím!",
+    da: "Hej, det er Quack Quack! Rart at se dig!",
+    ta: "ஹே, இது க்வாக் க்வாக்! உங்களை சந்தித்ததில் சந்தோஷம்!",
+    uk: "Гей, це Квак Квак! Радий тебе бачити!",
+    ru: "Привет, это Квак Квак! Рад тебя видеть!"
   },
-  {
-    code: 'ja',
-    flag: '🇯🇵',
-    name: 'Japanese',
-    firstMessage: "やあ、お会いできて嬉しいです！"
+  eva: {
+    en: "Hey it's Eva! Nice to see you!",
+    ja: "やあ、エヴァです！会えて嬉しい！",
+    zh: "嘿，我是Eva！很高兴见到你！",
+    de: "Hey, hier ist Eva! Schön dich zu sehen!",
+    hi: "अरे, ये ईवा हैं! आपको देखकर अच्छा लगा!",
+    fr: "Hey, c'est Eva ! Ravi de te voir !",
+    ko: "안녕, 에바야! 만나서 반가워!",
+    pt: "Ei, sou a Eva! Bom te ver!",
+    it: "Ehi, sono Eva! Bello vederti!",
+    es: "¡Hola, soy Eva! ¡Encantado de verte!",
+    id: "Hai, ini Eva! Senang bertemu denganmu!",
+    nl: "Hé, ik ben Eva! Leuk je te zien!",
+    tr: "Hey, ben Eva! Seni gördüğüme sevindim!",
+    fil: "Hoy, ako si Eva! Ikinagagalak kitang makita!",
+    pl: "Hej, tu Eva! Miło cię widzieć!",
+    sv: "Hej, det är Eva! Kul att se dig!",
+    bg: "Хей, аз съм Ева! Радвам се да те видя!",
+    ro: "Hei, sunt Eva! Mă bucur să te văd!",
+    ar: "مرحباً، أنا إيفا! سعيد برؤيتك!",
+    cs: "Ahoj, tady Eva! Rád tě vidím!",
+    el: "Γεια, είμαι η Εύα! Χαίρομαι που σε βλέπω!",
+    fi: "Hei, olen Eva! Kiva nähdä sinua!",
+    hr: "Bok, ja sam Eva! Drago mi je što te vidim!",
+    ms: "Hai, saya Eva! Seronok berjumpa kamu!",
+    sk: "Ahoj, tu je Eva! Rád ťa vidím!",
+    da: "Hej, det er Eva! Rart at se dig!",
+    ta: "ஹே, நான் ஈவா! உங்களைப் பார்க்க மகிழ்ச்சி!",
+    uk: "Гей, я Ева! Радий тебе бачити!",
+    ru: "Привет, это Ева! Рад тебя видеть!"
   },
-  {
-    code: 'zh',
-    flag: '🇨🇳',
-    name: 'Chinese',
-    firstMessage: "嘿，很高兴见到你！"
+  fox: {
+    en: "Hello! It’s Foxxy, here to spark your creativity!",
+    ja: "こんにちは！フォクシーです。あなたの創造力を刺激しに来ました！",
+    zh: "你好！我是Foxxy，来激发你的创造力！",
+    de: "Hallo! Ich bin Foxxy, hier um deine Kreativität anzuregen!",
+    hi: "नमस्ते! मैं फॉक्सी हूँ, आपकी रचनात्मकता को जगाने के लिए!",
+    fr: "Bonjour ! C’est Foxxy, ici pour stimuler ta créativité !",
+    ko: "안녕! 폭씨예요, 당신의 창의력을 자극하러 왔어요!",
+    pt: "Olá! Sou a Foxxy, aqui para estimular sua criatividade!",
+    it: "Ciao! Sono Foxxy, qui per stuzzicare la tua creatività!",
+    es: "¡Hola! Soy Foxxy, aquí para estimular tu creatividad!",
+    id: "Halo! Ini Foxxy, siap memicu kreativitasmu!",
+    nl: "Hallo! Ik ben Foxxy, hier om je creativiteit te prikkelen!",
+    tr: "Merhaba! Ben Foxxy, yaratıcılığını ateşlemeye geldim!",
+    fil: "Kumusta! Ako si Foxxy, narito upang pukawin ang iyong pagkamalikhain!",
+    pl: "Cześć! Jestem Foxxy, by pobudzić twoją kreatywność!",
+    sv: "Hej! Jag är Foxxy, här för att stimulera din kreativitet!",
+    bg: "Здравей! Аз съм Фокси, тук съм да ти вдъхновя креативността!",
+    ro: "Salut! Sunt Foxxy, aici să-ți stârnesc creativitatea!",
+    ar: "مرحباً! أنا فوكسّي، جئت لأحفّز إبداعك!",
+    cs: "Ahoj! Tady Foxxy, přišel jsem podnítit tvou kreativitu!",
+    el: "Γεια σου! Είμαι η Foxxy, εδώ για να ενθαρρύνω τη δημιουργικότητά σου!",
+    fi: "Hei! Olen Foxxy, täällä herättämässä luovuuttasi!",
+    hr: "Bok! Ja sam Foxxy, tu sam da potaknem tvoju kreativnost!",
+    ms: "Hai! Saya Foxxy, datang untuk mencetuskan kreativiti anda!",
+    sk: "Ahoj! Tu je Foxxy, aby som rozprúdil tvoju kreativitu!",
+    da: "Hej! Jeg er Foxxy, her for at vække din kreativitet!",
+    ta: "வணக்கம்! இது Foxxy, உங்களின் படைப்பாற்றலைத் தூண்ட வந்துள்ளேன்!",
+    uk: "Привіт! Я Foxxy, тут щоб надихнути твою креативність!",
+    ru: "Привет! Я Фокси, чтобы пробудить твоё творчество!"
   },
-  {
-    code: 'de',
-    flag: '🇩🇪',
-    name: 'German',
-    firstMessage: "Hey, schön dich zu sehen!"
+  whimsy: {
+    en: "Hey it's Whimsy, nice to see you!",
+    ja: "やあ、ウィ姆ジーだよ、会えて嬉しい！",
+    zh: "嘿，我是Whimsy，很高兴见到你！",
+    de: "Hey, hier ist Whimsy, schön dich zu sehen!",
+    hi: "अरे, यह Whimsy है, आपको देखकर अच्छा लगा!",
+    fr: "Hey, c'est Whimsy, ravi de te voir !",
+    ko: "안녕, 나 윔지야, 만나서 반가워!",
+    pt: "Ei, é o Whimsy, bom te ver!",
+    it: "Ehi, sono Whimsy, bello vederti!",
+    es: "¡Hola, soy Whimsy, encantado de verte!",
+    id: "Hai, ini Whimsy, senang bertemu denganmu!",
+    nl: "Hé, hier is Whimsy, leuk je te zien!",
+    tr: "Hey, ben Whimsy, seni gördüğüme sevindim!",
+    fil: "Hoy, ako si Whimsy, ikinagagalak kitang makita!",
+    pl: "Hej, tu Whimsy, miło cię widzieć!",
+    sv: "Hej, det är Whimsy, kul att se dig!",
+    bg: "Хей, аз съм Уимзи, радвам се да те видя!",
+    ro: "Hei, eu sunt Whimsy, mă bucur să te văd!",
+    ar: "مرحباً، أنا ويمزي، سعيد برؤيتك!",
+    cs: "Ahoj, tady Whimsy, rád tě vidím!",
+    el: "Γεια, είμαι ο Whimsy, χαίρομαι που σε βλέπω!",
+    fi: "Hei, olen Whimsy, kiva nähdä sinua!",
+    hr: "Bok, ja sam Whimsy, drago mi je što te vidim!",
+    ms: "Hai, saya Whimsy, seronok bertemu kamu!",
+    sk: "Ahoj, tu je Whimsy, rád ťa vidím!",
+    da: "Hej, det er Whimsy, rart at se dig!",
+    ta: "ஹே, நான் விம்சி, உங்களைச் சந்தித்ததில் சந்தோஷம்!",
+    uk: "Гей, я Whimsy, радий тебе бачити!",
+    ru: "Привет, это Уимзи, рад тебя видеть!"
   },
-  {
-    code: 'hi',
-    flag: '🇮🇳',
-    name: 'Hindi',
-    firstMessage: "अरे, आपसे मिलकर खुशी हुई!"
+  cat: {
+    en: "Hey it's noodles! nice to see you!",
+    ja: "やあ、ヌードルズだよ！会えて嬉しい！",
+    zh: "嘿，是Noodles！很高兴见到你！",
+    de: "Hey, hier sind Noodles! Schön dich zu sehen!",
+    hi: "अरे, ये नूडल्स हैं! आपको देखकर अच्छा लगा!",
+    fr: "Hey, c'est Noodles ! Ravi de te voir !",
+    ko: "안녕, 누들스야! 만나서 반가워!",
+    pt: "Ei, são os Noodles! Bom te ver!",
+    it: "Ehi, sono i Noodles! Bello vederti!",
+    es: "¡Hola, soy Noodles! ¡Encantado de verte!",
+    id: "Hai, ini Noodles! Senang bertemu denganmu!",
+    nl: "Hé, dit is Noodles! Leuk je te zien!",
+    tr: "Hey, bunlar Noodles! Seni gördüğüme sevindim!",
+    fil: "Hoy, Noodles ito! Ikinagagalak kitang makita!",
+    pl: "Hej, to Noodles! Miło cię widzieć!",
+    sv: "Hej, det är Noodles! Kul att se dig!",
+    bg: "Хей, това са Нудълс! Радвам се да те видя!",
+    ro: "Hei, sunt Noodles! Mă bucur să te văd!",
+    ar: "مرحباً، إنه نودلز! سعيد برؤيتك!",
+    cs: "Ahoj, tady Noodles! Rád tě vidím!",
+    el: "Γεια, είμαι o Noodles! Χαίρομαι που σε βλέπω!",
+    fi: "Hei, tässä on Noodles! Kiva nähdä sinua!",
+    hr: "Bok, to je Noodles! Drago mi je što te vidim!",
+    ms: "Hai, ini Noodles! Seronok berjumpa kamu!",
+    sk: "Ahoj, to sú Noodles! Rád ťa vidím!",
+    da: "Hej, det er Noodles! Rart at se dig!",
+    ta: "ஹே, இது நூடுல்ஸ்! உங்களைச் சந்தித்ததில் மகிழ்ச்சி!",
+    uk: "Гей, це Noodles! Радий тебе бачити!",
+    ru: "Привет, это Noodles! Рад тебя видеть!"
   },
-  {
-    code: 'fr',
-    flag: '🇫🇷',
-    name: 'French (France)',
-    firstMessage: "Hey, ravi de te voir !"
+  emma: {
+    en: "Hey It's Emma, I missed you!",
+    ja: "やあ、エマだよ、会えて嬉しい！",
+    zh: "嘿，我是Emma，我想你了！",
+    de: "Hey, hier ist Emma, ich habe dich vermisst!",
+    hi: "अरे, ये एम्मा हैं, मुझे आपकी याद आ रही थी!",
+    fr: "Hey, c'est Emma, tu m'as manqué !",
+    ko: "안녕, 나 에마야, 보고 싶었어!",
+    pt: "Ei, sou a Emma, senti sua falta!",
+    it: "Ehi, sono Emma, mi sei mancato!",
+    es: "¡Hola, soy Emma, te extrañé!",
+    id: "Hai, ini Emma, aku merindukanmu!",
+    nl: "Hé, ik ben Emma, ik heb je gemist!",
+    tr: "Hey, ben Emma, seni özledim!",
+    fil: "Hoy, ako si Emma, namiss kita!",
+    pl: "Hej, tu Emma, tęskniłam za tobą!",
+    sv: "Hej, det är Emma, jag har saknat dig!",
+    bg: "Хей, аз съм Ема, липсваше ми!",
+    ro: "Hei, sunt Emma, mi-a fost dor de tine!",
+    ar: "مرحباً، أنا إيما، لقد اشتقت إليك!",
+    cs: "Ahoj, tady Emma, chyběl jsi mi!",
+    el: "Γεια, είμαι η Emma, μου έλειψες!",
+    fi: "Hei, olen Emma, minulla oli ikävä sinua!",
+    hr: "Bok, ja sam Emma, nedostajao si mi!",
+    ms: "Hai, saya Emma, saya rindu padamu!",
+    sk: "Ahoj, tu je Emma, chýbal si mi!",
+    da: "Hej, det er Emma, jeg har savnet dig!",
+    ta: "ஹே, நான் எம்ம், உங்களைப் பிரிந்திருந்தேன்!",
+    uk: "Гей, я Емма, я сумувала за тобою!",
+    ru: "Привет, я Эмма, я скучала по тебе!"
   },
-  {
-    code: 'fr',
-    flag: '🇨🇦',
-    name: 'French (Canada)',
-    firstMessage: "Hey, content de te voir !"
-  },
-  {
-    code: 'ko',
-    flag: '🇰🇷',
-    name: 'Korean',
-    firstMessage: "안녕, 만나서 반가워!"
-  },
-  {
-    code: 'pt',
-    flag: '🇧🇷',
-    name: 'Portuguese (Brazil)',
-    firstMessage: "Ei, que bom te ver!"
-  },
-  {
-    code: 'pt',
-    flag: '🇵🇹',
-    name: 'Portuguese (Portugal)',
-    firstMessage: "Ei, é bom ver-te!"
-  },
-  {
-    code: 'it',
-    flag: '🇮🇹',
-    name: 'Italian',
-    firstMessage: "Ehi, è bello vederti!"
-  },
-  {
-    code: 'es',
-    flag: '🇪🇸',
-    name: 'Spanish (Spain)',
-    firstMessage: "¡Hola, encantado de verte!"
-  },
-  {
-    code: 'es',
-    flag: '🇲🇽',
-    name: 'Spanish (Mexico)',
-    firstMessage: "¡Hola, qué gusto verte!"
-  },
-  {
-    code: 'id',
-    flag: '🇮🇩',
-    name: 'Indonesian',
-    firstMessage: "Hai, senang bertemu denganmu!"
-  },
-  {
-    code: 'nl',
-    flag: '🇳🇱',
-    name: 'Dutch',
-    firstMessage: "Hé, leuk je te zien!"
-  },
-  {
-    code: 'tr',
-    flag: '🇹🇷',
-    name: 'Turkish',
-    firstMessage: "Hey, seni gördüğüme sevindim!"
-  },
-  {
-    code: 'fil',
-    flag: '🇵🇭',
-    name: 'Filipino',
-    firstMessage: "Hey, ikinagagalak kitang makita!"
-  },
-  {
-    code: 'pl',
-    flag: '🇵🇱',
-    name: 'Polish',
-    firstMessage: "Hej, miło cię widzieć!"
-  },
-  {
-    code: 'sv',
-    flag: '🇸🇪',
-    name: 'Swedish',
-    firstMessage: "Hej, kul att se dig!"
-  },
-  {
-    code: 'bg',
-    flag: '🇧🇬',
-    name: 'Bulgarian',
-    firstMessage: "Хей, радвам се да те видя!"
-  },
-  {
-    code: 'ro',
-    flag: '🇷🇴',
-    name: 'Romanian',
-    firstMessage: "Hei, mă bucur să te văd!"
-  },
-  {
-    code: 'ar',
-    flag: '🇸🇦',
-    name: 'Arabic (Saudi Arabia)',
-    firstMessage: "مرحباً، سعيد برؤيتك!"
-  },
-  {
-    code: 'ar',
-    flag: '🇦🇪',
-    name: 'Arabic (UAE)',
-    firstMessage: "مرحباً، سعيد برؤيتك!"
-  },
-  {
-    code: 'cs',
-    flag: '🇨🇿',
-    name: 'Czech',
-    firstMessage: "Ahoj, rád tě vidím!"
-  },
-  {
-    code: 'el',
-    flag: '🇬🇷',
-    name: 'Greek',
-    firstMessage: "Γεια, χαίρομαι που σε βλέπω!"
-  },
-  {
-    code: 'fi',
-    flag: '🇫🇮',
-    name: 'Finnish',
-    firstMessage: "Hei, kiva nähdä sinua!"
-  },
-  {
-    code: 'hr',
-    flag: '🇭🇷',
-    name: 'Croatian',
-    firstMessage: "Hej, drago mi je što te vidim!"
-  },
-  {
-    code: 'ms',
-    flag: '🇲🇾',
-    name: 'Malay',
-    firstMessage: "Hai, gembira dapat berjumpa kamu!"
-  },
-  {
-    code: 'sk',
-    flag: '🇸🇰',
-    name: 'Slovak',
-    firstMessage: "Ahoj, rád ťa vidím!"
-  },
-  {
-    code: 'da',
-    flag: '🇩🇰',
-    name: 'Danish',
-    firstMessage: "Hej, rart at se dig!"
-  },
-  {
-    code: 'ta',
-    flag: '🇮🇳',
-    name: 'Tamil',
-    firstMessage: "ஹே, உங்களை சந்திப்பதில் சந்தோஷமாக உள்ளது!"
-  },
-  {
-    code: 'uk',
-    flag: '🇺🇦',
-    name: 'Ukrainian',
-    firstMessage: "Гей, радий тебе бачити!"
-  },
-  {
-    code: 'ru',
-    flag: '🇷🇺',
-    name: 'Russian',
-    firstMessage: "Привет, рад тебя видеть!"
+  cupcake: {
+    en: "Hey It's Cupcake! nice to see you",
+    ja: "やあ、カップケーキだよ！会えて嬉しい！",
+    zh: "嘿，我是Cupcake！很高兴见到你",
+    de: "Hey, hier ist Cupcake! Schön dich zu sehen",
+    hi: "अरे, ये कपकेक है! आपको देखकर अच्छा लगा",
+    fr: "Hey, c'est Cupcake ! Ravi de te voir",
+    ko: "안녕, 컵케이크야! 만나서 반가워",
+    pt: "Ei, é a Cupcake! Bom te ver",
+    it: "Ehi, è Cupcake! Bello vederti",
+    es: "¡Hola, soy Cupcake! Encantado de verte",
+    id: "Hai, ini Cupcake! Senang bertemu denganmu",
+    nl: "Hé, dit is Cupcake! Leuk je te zien",
+    tr: "Hey, bu Cupcake! Seni gördüğüme sevindim",
+    fil: "Hoy, ako si Cupcake! Ikinagagalak kitang makita",
+    pl: "Hej, to Cupcake! Miło cię widzieć",
+    sv: "Hej, det är Cupcake! Kul att se dig",
+    bg: "Хей, това е Къпкейк! Радвам се да те видя",
+    ro: "Hei, e Cupcake! Mă bucur să te văd",
+    ar: "مرحباً، إنه كب كيك! سعيد برؤيتك",
+    cs: "Ahoj, to je Cupcake! Rád tě vidím",
+    el: "Γεια, είμαι η Cupcake! Χαίρομαι που σε βλέπω",
+    fi: "Hei, tässä on Cupcake! Kiva nähdä sinua",
+    hr: "Bok, ovo je Cupcake! Drago mi je što te vidim",
+    ms: "Hai, ini Cupcake! Seronok berjumpa kamu",
+    sk: "Ahoj, tu je Cupcake! Rád ťa vidím",
+    da: "Hej, det er Cupcake! Rart at se dig",
+    ta: "ஹே, இது கப் கேக்! உங்களைச் சந்தித்ததில் மகிழ்ச்சி",
+    uk: "Гей, це Cupcake! Радий тебе бачити",
+    ru: "Привет, это Cupcake! Рад тебя видеть"
   }
+};
+
+const languages = [
+  { code: 'en', flag: '🇺🇸', name: 'English (USA)', firstMessage: "Hey, Nice To See You!" },
+  { code: 'en', flag: '🇬🇧', name: 'English (UK)', firstMessage: "Hey, Nice To See You!" },
+  { code: 'ja', flag: '🇯🇵', name: 'Japanese', firstMessage: "やあ、お会いできて嬉しいです！" },
+  { code: 'zh', flag: '🇨🇳', name: 'Chinese', firstMessage: "嘿，很高兴见到你！" },
+  { code: 'de', flag: '🇩🇪', name: 'German', firstMessage: "Hey, schön dich zu sehen!" },
+  { code: 'hi', flag: '🇮🇳', name: 'Hindi', firstMessage: "अरे, आपसे मिलकर खुशी हुई!" },
+  { code: 'fr', flag: '🇫🇷', name: 'French (France)', firstMessage: "Hey, ravi de te voir !" },
+  { code: 'fr', flag: '🇨🇦', name: 'French (Canada)', firstMessage: "Hey, content de te voir !" },
+  { code: 'ko', flag: '🇰🇷', name: 'Korean', firstMessage: "안녕, 만나서 반가워!" },
+  { code: 'pt', flag: '🇧🇷', name: 'Portuguese (Brazil)', firstMessage: "Ei, que bom te ver!" },
+  { code: 'pt', flag: '🇵🇹', name: 'Portuguese (Portugal)', firstMessage: "Ei, é bom ver-te!" },
+  { code: 'it', flag: '🇮🇹', name: 'Italian', firstMessage: "Ehi, è bello vederti!" },
+  { code: 'es', flag: '🇪🇸', name: 'Spanish (Spain)', firstMessage: "¡Hola, encantado de verte!" },
+  { code: 'es', flag: '🇲🇽', name: 'Spanish (Mexico)', firstMessage: "¡Hola, qué gusto verte!" },
+  { code: 'id', flag: '🇮🇩', name: 'Indonesian', firstMessage: "Hai, senang bertemu denganmu!" },
+  { code: 'nl', flag: '🇳🇱', name: 'Dutch', firstMessage: "Hé, leuk je te zien!" },
+  { code: 'tr', flag: '🇹🇷', name: 'Turkish', firstMessage: "Hey, seni gördüğüme sevindim!" },
+  { code: 'fil', flag: '🇵🇭', name: 'Filipino', firstMessage: "Hey, ikinagagalak kitang makita!" },
+  { code: 'pl', flag: '🇵🇱', name: 'Polish', firstMessage: "Hej, miło cię widzieć!" },
+  { code: 'sv', flag: '🇸🇪', name: 'Swedish', firstMessage: "Hej, kul att se dig!" },
+  { code: 'bg', flag: '🇧🇬', name: 'Bulgarian', firstMessage: "Хей, радвам се да те видя!" },
+  { code: 'ro', flag: '🇷🇴', name: 'Romanian', firstMessage: "Hei, mă bucur să te văd!" },
+  { code: 'ar', flag: '🇸🇦', name: 'Arabic (Saudi Arabia)', firstMessage: "مرحباً، سعيد برؤيتك!" },
+  { code: 'ar', flag: '🇦🇪', name: 'Arabic (UAE)', firstMessage: "مرحباً، سعيد برؤيتك!" },
+  { code: 'cs', flag: '🇨🇿', name: 'Czech', firstMessage: "Ahoj, rád tě vidím!" },
+  { code: 'el', flag: '🇬🇷', name: 'Greek', firstMessage: "Γεια, χαίρομαι που σε βλέπω!" },
+  { code: 'fi', flag: '🇫🇮', name: 'Finnish', firstMessage: "Hei, kiva nähdä sinua!" },
+  { code: 'hr', flag: '🇭🇷', name: 'Croatian', firstMessage: "Hej, drago mi je što te vidim!" },
+  { code: 'ms', flag: '🇲🇾', name: 'Malay', firstMessage: "Hai, gembira dapat berjumpa kamu!" },
+  { code: 'sk', flag: '🇸🇰', name: 'Slovak', firstMessage: "Ahoj, rád ťa vidím!" },
+  { code: 'da', flag: '🇩🇰', name: 'Danish', firstMessage: "Hej, rart at se dig!" },
+  { code: 'ta', flag: '🇮🇳', name: 'Tamil', firstMessage: "ஹே, உங்களை சந்திப்பதில் சந்தோஷமாக உள்ளது!" },
+  { code: 'uk', flag: '🇺🇦', name: 'Ukrainian', firstMessage: "Гей, радий тебе бачити!" },
+  { code: 'ru', flag: '🇷🇺', name: 'Russian', firstMessage: "Привет, рад тебя видеть!" }
 ];
 
 const characters = {
@@ -314,7 +394,6 @@ class ChatController {
     this.setupCharacterMenu();
     this.setupLanguageMenu();
     
-    // Show loading screen until at least the idle video is loaded
     this.loadingScreen.classList.remove('hidden');
   }
 
@@ -331,7 +410,6 @@ class ChatController {
     this.characterSelectButton = document.querySelector('.character-select-button');
     this.loadingScreen = document.querySelector('.character-loading');
 
-    // Language dropdown elements
     this.languageSelectButton = document.getElementById('languageSelectButton');
     this.currentLanguageFlag = document.getElementById('currentLanguageFlag');
     this.languageMenu = document.getElementById('languageMenu');
@@ -346,7 +424,6 @@ class ChatController {
     this.idleVideo.src = this.character.assets.idle;
     this.speakingVideo.src = this.character.assets.talking;
 
-    // Update character icon button
     this.characterSelectButton.innerHTML = `
       <div class="character-icon">
         <img src="${this.character.assets.icon}" alt="${this.character.name}">
@@ -354,7 +431,6 @@ class ChatController {
   }
 
   setupCharacterMenu() {
-    // Re-render the character options
     this.characterMenuContent.innerHTML = '';
     Object.values(characters).forEach(char => {
       const option = document.createElement('div');
@@ -378,7 +454,6 @@ class ChatController {
     });
   }
 
-  // Language menu with flags
   setupLanguageMenu() {
     this.languageMenuContent.innerHTML = '';
 
@@ -396,7 +471,6 @@ class ChatController {
       this.languageMenuContent.appendChild(option);
     });
 
-    // Update the main button’s flag
     this.updateLanguageFlag(this.currentLanguage);
 
     this.languageSelectButton.addEventListener('click', (e) => {
@@ -424,11 +498,9 @@ class ChatController {
   }
 
   markActiveLanguage(newCode) {
-    // Clear old 'active' markings
     const allLangOptions = document.querySelectorAll('.language-option');
     allLangOptions.forEach(opt => opt.classList.remove('active'));
 
-    // Mark new one active
     const newActive = Array.from(allLangOptions).find(
       opt => opt.innerText.includes(this.getLangName(newCode))
     );
@@ -442,15 +514,12 @@ class ChatController {
 
   async changeLanguage(newCode) {
     if (this.conversation) {
-      // End current conversation if active
       await this.endConversation();
     }
-    // Update URL param
     const url = new URL(window.location);
     url.searchParams.set('language', newCode);
     window.history.pushState({}, '', url);
 
-    // Update internal reference and UI
     this.currentLanguage = newCode;
     this.updateLanguageFlag(newCode);
     this.markActiveLanguage(newCode);
@@ -464,7 +533,6 @@ class ChatController {
     this.loadingScreen.classList.remove('hidden');
     this.videosLoaded = { idle: false, speaking: false };
 
-    // Update URL param
     const url = new URL(window.location);
     url.searchParams.set('character', characterId);
     window.history.pushState({}, '', url);
@@ -474,12 +542,10 @@ class ChatController {
     this.preloadVideos();
     this.updateBackground('idle');
 
-    // highlight newly active
     document.querySelectorAll('.character-option').forEach(option => {
       option.classList.toggle('active', option.querySelector('img').src.includes(characterId));
     });
 
-    // close menu
     this.characterMenu.classList.remove('active');
   }
 
@@ -556,7 +622,6 @@ class ChatController {
 
   async startConversation() {
     try {
-      // request mic
       await navigator.mediaDevices.getUserMedia({ audio: true });
       this.triggerConfetti();
       this.startButton.classList.add('active');
@@ -568,15 +633,15 @@ class ChatController {
         </svg>
       `;
 
-      // Find the matching language object
-      const selectedLang = languages.find(l => l.code === this.currentLanguage) || {};
+      const charMessages = firstMessages[this.character.id] || {};
+      const selectedMsg = charMessages[this.currentLanguage] || "Hello!";
 
       this.conversation = await Conversation.startSession({
         agentId: this.character.agentId,
         overrides: {
           agent: {
             language: this.currentLanguage || 'en',
-            firstMessage: selectedLang.firstMessage || "Hello!"
+            firstMessage: selectedMsg
           }
         },
         onModeChange: (mode) => this.updateBackground(mode.mode),
@@ -637,7 +702,6 @@ window.shareCharacter = () => {
   }
 };
 
-// Grab URL params
 const urlParams = new URLSearchParams(window.location.search);
 const characterId = urlParams.get('character') || 'jonny';
 const languageCode = urlParams.get('language') || 'en';
