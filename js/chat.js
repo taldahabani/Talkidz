@@ -3,7 +3,7 @@ import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
 // You can keep languages in a separate file or inline them here:
 const languages = [
     { code: 'en', flag: '🇺🇸', name: 'English (USA)' },
-    { code: 'en-uk', flag: '🇬🇧', name: 'English (UK)' },
+    { code: 'en-GB', flag: '🇬🇧', name: 'English (UK)' },
     { code: 'ja', flag: '🇯🇵', name: 'Japanese' },
     { code: 'zh', flag: '🇨🇳', name: 'Chinese' },
     { code: 'de', flag: '🇩🇪', name: 'German' },
