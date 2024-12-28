@@ -36,6 +36,9 @@ const languages = [
     { code: 'ta', flag: '🇮🇳', name: 'Tamil' },
     { code: 'uk', flag: '🇺🇦', name: 'Ukrainian' },
     { code: 'ru', flag: '🇷🇺', name: 'Russian' }
+    { code: 'hu', flag: '🇭🇺', name: 'Hungarian' },
+    { code: 'no', flag: '🇳🇴', name: 'Norwegian' },
+    { code: 'vi', flag: '🇻🇳', name: 'Vietnamese' }
 ];
 
 const characters = {
