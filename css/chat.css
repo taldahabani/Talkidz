@@ -134,6 +134,97 @@ body {
     letter-spacing: -0.5px;
 }
 
+/* ========== NEW: Language Dropdown Styles ========== */
+.language-select-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.language-select-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--secondary-bg);
+    border: 1px solid rgba(108, 92, 231, 0.15);
+    border-radius: 12px;
+    padding: 0 10px;
+    height: 40px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.language-select-button:hover {
+    box-shadow: 0 2px 8px rgba(108, 92, 231, 0.1);
+    background: white;
+}
+
+.language-flag {
+    font-size: 20px; /* big enough for flags */
+    margin-right: 8px;
+}
+
+.language-menu {
+    position: absolute;
+    top: 50px;
+    right: 0;
+    width: 200px;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+    max-height: 300px; /* scrollable if many languages */
+    overflow: hidden;
+    z-index: 200;
+}
+
+.language-menu.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.language-menu-content {
+    max-height: 260px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent-color) transparent;
+}
+
+.language-menu-content::-webkit-scrollbar {
+    width: 6px;
+}
+.language-menu-content::-webkit-scrollbar-track {
+    background: transparent;
+}
+.language-menu-content::-webkit-scrollbar-thumb {
+    background-color: var(--accent-color);
+    border-radius: 3px;
+}
+
+.language-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+.language-option:hover {
+    background: #f0f0f0;
+}
+.language-option.active {
+    background: var(--secondary-bg);
+    font-weight: 600;
+}
+.language-option-flag {
+    font-size: 20px;
+}
+/* ========== END: Language Dropdown Styles ========== */
+
 .main-container {
     position: fixed;
     inset: 0;
@@ -315,10 +406,9 @@ body {
     box-sizing: border-box;
 }
 
-/* Updated: Make the .character-icon also 48×48 to match the button */
 .character-select-button .character-icon {
-    width: 48px;          /* changed from 36px */
-    height: 48px;         /* changed from 36px */
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
     overflow: hidden;
     display: flex;
@@ -329,7 +419,7 @@ body {
 .character-select-button .character-icon img {
     width: 100%;
     height: 100%;
-    object-fit: cover;    /* or "contain" if you prefer the entire image to show */
+    object-fit: cover;
     object-position: center;
 }
 
@@ -394,11 +484,9 @@ body {
 .character-menu-content::-webkit-scrollbar {
     width: 6px;
 }
-
 .character-menu-content::-webkit-scrollbar-track {
     background: transparent;
 }
-
 .character-menu-content::-webkit-scrollbar-thumb {
     background-color: var(--accent-color);
     border-radius: 3px;
@@ -434,8 +522,8 @@ body {
 }
 
 @keyframes pulse {
-    0% { transform: scale(1); opacity: 1; }
-    50% { transform: scale(1.2); opacity: 0.7; }
+    0%   { transform: scale(1); opacity: 1; }
+    50%  { transform: scale(1.2); opacity: 0.7; }
     100% { transform: scale(1); opacity: 1; }
 }
 
