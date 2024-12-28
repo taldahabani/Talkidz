@@ -265,7 +265,9 @@ class ChatController {
 
         // Update internal reference and UI
         this.currentLanguage = newCode;
-        this.setupLanguageMenu(); // re-render to show as active
+        this.updateLanguageFlag(newCode);
+        this.markActiveLanguage(newCode);
+        this.languageMenu.classList.remove('active');
     }
 
     async changeCharacter(characterId) {
