@@ -18,57 +18,72 @@
         </div>
     </div>
 </div>
-    <div class="top-bar">
-        <a href="/" class="back-button">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M19 12H5M12 19l-7-7 7-7"/>
-            </svg>
-        </a>
-        <div class="character-name"></div>
-    </div>
 
-    <div class="main-container">
-        <div class="video-wrapper">
-            <div class="background image"></div>
-            <video class="background video" id="idleVideo" loop muted playsinline disablePictureInPicture></video>
-            <video class="background video" id="speakingVideo" loop muted playsinline disablePictureInPicture></video>
-        </div>
-    </div>
-
-    <div class="main-action-container">
-        <button id="startButton" class="main-button">Start Conversation</button>
-    </div>
-
-    <canvas id="confetti-canvas"></canvas>
-
-    <div class="controls-container">
-        <div class="logo-container">
-            <a href="/" class="logo">Talkidz</a>
-            <span class="logo-byline">by Playbox</span>
-        </div>
-        <div class="status-indicator">
-            <div class="status-dot"></div>
-            <span class="status-text">Ready to chat</span>
-        </div>
-<div class="controls-right">
-    <button class="character-select-button">
-        <div class="character-icon">
-            <img src="" alt="Selected character">
-        </div>
-    </button>
-    <div class="character-menu">
-        <div class="character-menu-content"></div>
-    </div>
-    <button class="share-button" onclick="shareCharacter()">
+<div class="top-bar">
+    <a href="/" class="back-button">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
-            <polyline points="16 6 12 2 8 6"/>
-            <line x1="12" y1="2" x2="12" y2="15"/>
+            <path d="M19 12H5M12 19l-7-7 7-7"/>
         </svg>
-    </button>
-</div>
-    </div>
+    </a>
+    <div class="character-name"></div>
 
-    <script type="module" src="/js/chat.js"></script>
+    <!-- NEW: Language Selector in top-bar right side -->
+    <div class="language-select-container">
+        <button class="language-select-button" id="languageSelectButton">
+            <!-- Current language flag goes here via JS -->
+            <span class="language-flag" id="currentLanguageFlag"></span>
+        </button>
+        <div class="language-menu" id="languageMenu">
+            <div class="language-menu-content" id="languageMenuContent">
+                <!-- Filled dynamically from chat.js -->
+            </div>
+        </div>
+    </div>
+    <!-- END Language Selector -->
+</div>
+
+<div class="main-container">
+    <div class="video-wrapper">
+        <div class="background image"></div>
+        <video class="background video" id="idleVideo" loop muted playsinline disablePictureInPicture></video>
+        <video class="background video" id="speakingVideo" loop muted playsinline disablePictureInPicture></video>
+    </div>
+</div>
+
+<div class="main-action-container">
+    <button id="startButton" class="main-button">Start Conversation</button>
+</div>
+
+<canvas id="confetti-canvas"></canvas>
+
+<div class="controls-container">
+    <div class="logo-container">
+        <a href="/" class="logo">Talkidz</a>
+        <span class="logo-byline">by Playbox</span>
+    </div>
+    <div class="status-indicator">
+        <div class="status-dot"></div>
+        <span class="status-text">Ready to chat</span>
+    </div>
+    <div class="controls-right">
+        <button class="character-select-button">
+            <div class="character-icon">
+                <img src="" alt="Selected character">
+            </div>
+        </button>
+        <div class="character-menu">
+            <div class="character-menu-content"></div>
+        </div>
+        <button class="share-button" onclick="shareCharacter()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+                <polyline points="16 6 12 2 8 6"/>
+                <line x1="12" y1="2" x2="12" y2="15"/>
+            </svg>
+        </button>
+    </div>
+</div>
+
+<script type="module" src="/js/chat.js"></script>
 </body>
 </html>
