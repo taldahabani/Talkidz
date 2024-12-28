@@ -1,5 +1,43 @@
 import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
 
+// You can keep languages in a separate file or inline them here:
+const languages = [
+    { code: 'en', flag: '🇺🇸', name: 'English (USA)' },
+    { code: 'en-uk', flag: '🇬🇧', name: 'English (UK)' },
+    { code: 'ja', flag: '🇯🇵', name: 'Japanese' },
+    { code: 'zh', flag: '🇨🇳', name: 'Chinese' },
+    { code: 'de', flag: '🇩🇪', name: 'German' },
+    { code: 'hi', flag: '🇮🇳', name: 'Hindi' },
+    { code: 'fr', flag: '🇫🇷', name: 'French (France)' },
+    { code: 'fr-ca', flag: '🇨🇦', name: 'French (Canada)' },
+    { code: 'ko', flag: '🇰🇷', name: 'Korean' },
+    { code: 'pt-br', flag: '🇧🇷', name: 'Portuguese (Brazil)' },
+    { code: 'pt-pt', flag: '🇵🇹', name: 'Portuguese (Portugal)' },
+    { code: 'it', flag: '🇮🇹', name: 'Italian' },
+    { code: 'es', flag: '🇪🇸', name: 'Spanish (Spain)' },
+    { code: 'es-mx', flag: '🇲🇽', name: 'Spanish (Mexico)' },
+    { code: 'id', flag: '🇮🇩', name: 'Indonesian' },
+    { code: 'nl', flag: '🇳🇱', name: 'Dutch' },
+    { code: 'tr', flag: '🇹🇷', name: 'Turkish' },
+    { code: 'fil', flag: '🇵🇭', name: 'Filipino' },
+    { code: 'pl', flag: '🇵🇱', name: 'Polish' },
+    { code: 'sv', flag: '🇸🇪', name: 'Swedish' },
+    { code: 'bg', flag: '🇧🇬', name: 'Bulgarian' },
+    { code: 'ro', flag: '🇷🇴', name: 'Romanian' },
+    { code: 'ar-sa', flag: '🇸🇦', name: 'Arabic (Saudi Arabia)' },
+    { code: 'ar-uae', flag: '🇦🇪', name: 'Arabic (UAE)' },
+    { code: 'cs', flag: '🇨🇿', name: 'Czech' },
+    { code: 'el', flag: '🇬🇷', name: 'Greek' },
+    { code: 'fi', flag: '🇫🇮', name: 'Finnish' },
+    { code: 'hr', flag: '🇭🇷', name: 'Croatian' },
+    { code: 'ms', flag: '🇲🇾', name: 'Malay' },
+    { code: 'sk', flag: '🇸🇰', name: 'Slovak' },
+    { code: 'da', flag: '🇩🇰', name: 'Danish' },
+    { code: 'ta', flag: '🇮🇳', name: 'Tamil' },
+    { code: 'uk', flag: '🇺🇦', name: 'Ukrainian' },
+    { code: 'ru', flag: '🇷🇺', name: 'Russian' }
+];
+
 const characters = {
    jonny: {
        id: 'jonny',
@@ -92,8 +130,9 @@ const characters = {
 };
 
 class ChatController {
-   constructor(characterId) {
+   constructor(characterId, languageCode) {
        this.character = characters[characterId];
+       this.currentLanguage = languageCode; // store the current language
        this.conversation = null;
        this.videosLoaded = { idle: false, speaking: false };
        this.setupElements();
@@ -102,6 +141,7 @@ class ChatController {
        this.preloadVideos();
        this.updateBackground('idle');
        this.setupCharacterMenu();
+       this.setupLanguageMenu(); // NEW
        this.loadingScreen.classList.remove('hidden');
    }
 
@@ -117,6 +157,12 @@ class ChatController {
        this.characterMenuContent = document.querySelector('.character-menu-content');
        this.characterSelectButton = document.querySelector('.character-select-button');
        this.loadingScreen = document.querySelector('.character-loading');
+
+       // NEW: Language dropdown elements
+       this.languageSelectButton = document.getElementById('languageSelectButton');
+       this.currentLanguageFlag = document.getElementById('currentLanguageFlag');
+       this.languageMenu = document.getElementById('languageMenu');
+       this.languageMenuContent = document.getElementById('languageMenuContent');
    }
 
    setupCharacter() {
@@ -125,20 +171,22 @@ class ChatController {
        this.backgroundImage.style.background = `url('${this.character.assets.preview}') center/contain no-repeat`;
        this.idleVideo.src = this.character.assets.idle;
        this.speakingVideo.src = this.character.assets.talking;
-this.characterSelectButton.innerHTML = `
-  <div class="character-icon">
-    <img src="${this.character.assets.icon}" alt="${this.character.name}">
-  </div>`;
 
+       // update the character icon in the button
+       this.characterSelectButton.innerHTML = `
+          <div class="character-icon">
+            <img src="${this.character.assets.icon}" alt="${this.character.name}">
+          </div>`;
    }
 
    setupCharacterMenu() {
-this.characterSelectButton.innerHTML = `
-  <div class="character-icon">
-    <img src="${this.character.assets.icon}" alt="${this.character.name}">
-  </div>`;
+       // Re-render the character menu
+       this.characterSelectButton.innerHTML = `
+          <div class="character-icon">
+            <img src="${this.character.assets.icon}" alt="${this.character.name}">
+          </div>`;
 
-       
+       this.characterMenuContent.innerHTML = '';
        Object.values(characters).forEach(char => {
            const option = document.createElement('div');
            option.className = `character-option ${char.id === this.character.id ? 'active' : ''}`;
@@ -153,10 +201,76 @@ this.characterSelectButton.innerHTML = `
        });
 
        document.addEventListener('click', (e) => {
-           if (!this.characterMenu.contains(e.target)) {
+           if (!this.characterMenu.contains(e.target) && !this.characterSelectButton.contains(e.target)) {
                this.characterMenu.classList.remove('active');
            }
        });
+   }
+
+   // NEW: Setup the language menu
+   setupLanguageMenu() {
+       // Fill in the dropdown items
+       this.languageMenuContent.innerHTML = '';
+       languages.forEach(lang => {
+           const option = document.createElement('div');
+           option.className = 'language-option';
+           // highlight if it's the currently selected language code
+           if (lang.code === this.currentLanguage) {
+               option.classList.add('active');
+           }
+           option.innerHTML = `
+               <span class="language-option-flag">${lang.flag}</span>
+               <span>${lang.name}</span>
+           `;
+           option.addEventListener('click', () => this.changeLanguage(lang.code));
+           this.languageMenuContent.appendChild(option);
+       });
+
+       // Update the button’s flag
+       this.updateLanguageFlag(this.currentLanguage);
+
+       // Toggle language menu on button click
+       this.languageSelectButton.addEventListener('click', (e) => {
+           e.stopPropagation();
+           this.languageMenu.classList.toggle('active');
+       });
+
+       // Close menu when clicking outside
+       document.addEventListener('click', (e) => {
+           if (!this.languageMenu.contains(e.target) && !this.languageSelectButton.contains(e.target)) {
+               this.languageMenu.classList.remove('active');
+           }
+       });
+   }
+
+   updateLanguageFlag(langCode) {
+       // find the language object
+       const selectedLang = languages.find(l => l.code === langCode) 
+                         || languages.find(l => l.code === 'en'); 
+       if (selectedLang) {
+           this.currentLanguageFlag.textContent = selectedLang.flag;
+       } else {
+           // fallback
+           this.currentLanguageFlag.textContent = '🇺🇸';
+       }
+   }
+
+   async changeLanguage(newCode) {
+       if (this.conversation) {
+           // end current conversation if it’s active
+           await this.endConversation();
+       }
+
+       // update the URL param
+       const url = new URL(window.location);
+       url.searchParams.set('language', newCode);
+       window.history.pushState({}, '', url);
+
+       // update internal reference and re-render the menu
+       this.currentLanguage = newCode;
+       this.setupLanguageMenu(); // to highlight newly selected language
+
+       // (No need to reload videos, but we do want to ensure "Start Conversation" is visible)
    }
 
    async changeCharacter(characterId) {
@@ -179,11 +293,11 @@ this.characterSelectButton.innerHTML = `
        document.querySelectorAll('.character-option').forEach(option => {
            option.classList.toggle('active', option.querySelector('img').src.includes(characterId));
        });
-       
-this.characterSelectButton.innerHTML = `
-  <div class="character-icon">
-    <img src="${this.character.assets.icon}" alt="${this.character.name}">
-  </div>`;
+
+       this.characterSelectButton.innerHTML = `
+          <div class="character-icon">
+            <img src="${this.character.assets.icon}" alt="${this.character.name}">
+          </div>`;
 
        this.characterMenu.classList.remove('active');
    }
@@ -241,7 +355,7 @@ this.characterSelectButton.innerHTML = `
    triggerConfetti() {
        const options = { origin: { y: 0.7 } };
        const count = 200;
-       
+
        [
            { spread: 26, startVelocity: 55, particleRatio: 0.25 },
            { spread: 60, particleRatio: 0.2 },
@@ -271,6 +385,12 @@ this.characterSelectButton.innerHTML = `
 
            this.conversation = await Conversation.startSession({
                agentId: this.character.agentId,
+               // NEW: override to set language
+               overrides: {
+                   agent: {
+                       language: this.currentLanguage || 'en'
+                   }
+               },
                onModeChange: (mode) => this.updateBackground(mode.mode),
                onConnect: () => this.updateBackground('listening'),
                onDisconnect: () => {
@@ -329,6 +449,10 @@ window.shareCharacter = () => {
    }
 };
 
+// Grab URL params
 const urlParams = new URLSearchParams(window.location.search);
 const characterId = urlParams.get('character') || 'jonny';
-const chat = new ChatController(characterId);
+const languageCode = urlParams.get('language') || 'en';
+
+// Create our chat controller with default or selected values
+const chat = new ChatController(characterId, languageCode);
