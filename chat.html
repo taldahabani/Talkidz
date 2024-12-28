@@ -37,7 +37,6 @@
     <!-- Language Selector -->
     <div class="language-select-container">
         <button class="language-select-button" id="languageSelectButton">
-            <!-- The active language flag is inserted here via JS -->
             <span class="language-flag" id="currentLanguageFlag"></span>
         </button>
         <div class="language-menu" id="languageMenu">
@@ -75,6 +74,7 @@
         <span class="status-text">Ready to chat</span>
     </div>
     <div class="controls-right">
+        <!-- Character Select Button placed above Share Button -->
         <button class="character-select-button">
             <div class="character-icon">
                 <img src="" alt="Selected character"/>
@@ -83,6 +83,7 @@
         <div class="character-menu">
             <div class="character-menu-content"></div>
         </div>
+
         <button class="share-button" onclick="shareCharacter()">
             <svg width="24" height="24" viewBox="0 0 24 24"
                  fill="none" stroke="currentColor" stroke-width="2">
