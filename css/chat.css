@@ -477,7 +477,7 @@ body {
 .character-menu {
     position: absolute;
     bottom: calc(100% - 20px);
-    left: calc(50% + 20px);   
+    left: calc(50% + 35px);   
     transform: translateX(-50%) translateY(10px); /* Center horizontally and add spacing */
     width: 280px;
     background: white;
