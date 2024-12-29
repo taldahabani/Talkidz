@@ -268,13 +268,12 @@ body {
     bottom: 70px;
     left: 0;
     right: 0;
-    height: 60px; /* Adjust height as needed */
     display: flex;
     justify-content: center;
     align-items: center;
+    gap: 1rem; /* Space between buttons */
+    padding: 1rem;
     z-index: 10;
-    /* Added position: relative to contain absolutely positioned children */
-    position: relative;
 }
 
 .main-button {
@@ -288,9 +287,7 @@ body {
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
-    position: absolute; /* Absolute positioning to keep it centered */
-    left: 50%;
-    transform: translateX(-50%);
+    position: relative;
     overflow: hidden;
 }
 
@@ -307,7 +304,7 @@ body {
 }
 
 .main-button:hover {
-    transform: translateX(-50%) translateY(-2px);
+    transform: translateY(-2px);
     box-shadow: 0 6px 16px rgba(108, 92, 231, 0.3);
 }
 
@@ -329,7 +326,6 @@ body {
     justify-content: space-between;
     z-index: 10;
     border-top: 1px solid rgba(108, 92, 231, 0.1);
-    position: relative; /* Ensure .status-indicator is positioned relative to this */
 }
 
 .controls-right {
@@ -368,7 +364,7 @@ body {
 .status-indicator {
     position: absolute;
     left: 50%;
-    transform: translateX(-50%); /* Removed translateX(-10px) to center properly */
+    transform: translateX(-50%) translateX(-10px);
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -387,23 +383,25 @@ body {
     animation: pulse 1.5s infinite;
 }
 
-.character-select-button, .share-button {
-    width: 48px; height: 48px;
-    min-width: 48px; min-height: 48px;
+.character-select-button {
+    position: relative;
+    width: 60px; /* Increased size */
+    height: 60px; /* Increased size */
+    min-width: 60px;
+    min-height: 60px;
     border: none;
     border-radius: 50%;
     cursor: pointer;
     transition: all 0.3s ease;
-    display: flex; align-items: center; justify-content: center;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
     overflow: hidden;
     flex-shrink: 0;
-    position: relative;
     padding: 0;
     box-sizing: border-box;
-}
-
-.character-select-button {
-    /* Additional styles will be added below */
+    background: var(--secondary-bg);
+    color: var(--text-color);
 }
 
 .character-select-button .character-icon {
@@ -411,7 +409,9 @@ body {
     height: 100%;
     border-radius: 50%;
     overflow: hidden;
-    display: flex; align-items: center; justify-content: center;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
 }
 
 .character-select-button .character-icon img {
@@ -441,6 +441,22 @@ body {
 }
 
 .share-button {
+    width: 48px; 
+    height: 48px;
+    min-width: 48px; 
+    min-height: 48px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    overflow: hidden;
+    flex-shrink: 0;
+    position: relative;
+    padding: 0;
+    box-sizing: border-box;
     background: var(--secondary-bg);
     color: var(--text-color);
 }
@@ -456,20 +472,11 @@ body {
     box-shadow: 0 4px 12px var(--shadow);
 }
 
-/* ======== Positioning the Character Select Button ======== */
-.main-action-container .character-select-button {
-    /* Position the character-select-button to the right of the Start button */
-    position: absolute;
-    left: 50%; /* Start button is at 50% */
-    transform: translateX(-50%) translateX(100px); /* Adjust 100px to the right */
-    /* You may need to adjust 100px based on the actual size and desired spacing */
-}
-
-/* ======== Character Menu Positioning ======== */
 .character-menu {
     position: absolute;
     top: -110%; /* Position above the button */
-    right: 0;
+    right: 50%;
+    transform: translateX(50%);
     width: 280px;
     background: white;
     border-radius: 16px;
@@ -561,12 +568,11 @@ body {
     }
     .main-action-container {
         bottom: calc(70px + env(safe-area-inset-bottom));
-        /* Adjusted gap for smaller screens */
+        gap: 0.75rem; /* Adjusted gap for smaller screens */
     }
     .character-select-button {
         width: 50px; /* Slightly smaller on mobile */
         height: 50px;
-        transform: translateX(-50%) translateX(80px); /* Adjust for smaller screens */
     }
     .character-select-button::after {
         font-size: 18px;
