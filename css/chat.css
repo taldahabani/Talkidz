@@ -92,7 +92,7 @@ body {
       rgba(255, 255, 255, 0.98)
     );
     backdrop-filter: blur(10px);
-    z-index: 999; /* ensure on top of everything */
+    z-index: 999;
 }
 
 .back-button {
@@ -134,7 +134,7 @@ body {
     position: relative;
     display: flex;
     align-items: center;
-    z-index: 999; /* ensure button is clickable */
+    z-index: 999;
 }
 
 .language-select-button {
@@ -144,7 +144,7 @@ body {
     background: var(--secondary-bg);
     border: 1px solid rgba(108, 92, 231, 0.15);
     border-radius: 12px;
-    width: 40px; /* same height/width for a perfect square */
+    width: 40px;
     height: 40px;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -159,7 +159,6 @@ body {
 .language-flag {
     font-size: 20px;
     line-height: 1;
-    /* removing extra margin to center the flag better */
     margin: 0;
 }
 
@@ -175,9 +174,9 @@ body {
     visibility: hidden;
     transform: translateY(10px);
     transition: all 0.3s ease;
-    max-height: 300px; /* scrollable if many languages */
+    max-height: 300px;
     overflow: hidden;
-    z-index: 9999; /* ensure it stays above the top-bar */
+    z-index: 9999;
 }
 
 .language-menu.active {
@@ -267,10 +266,12 @@ body {
 .main-action-container {
     position: fixed;
     bottom: 70px;
-    left: 0; right: 0;
+    left: 0;
+    right: 0;
     display: flex;
     justify-content: center;
     align-items: center;
+    gap: 1rem; /* Space between buttons */
     padding: 1rem;
     z-index: 10;
 }
@@ -382,44 +383,50 @@ body {
     animation: pulse 1.5s infinite;
 }
 
-.character-select-button, .share-button {
-    width: 48px; height: 48px;
-    min-width: 48px; min-height: 48px;
+.character-select-button {
+    position: relative;
+    width: 60px; /* Increased size */
+    height: 60px; /* Increased size */
+    min-width: 60px;
+    min-height: 60px;
     border: none;
     border-radius: 50%;
     cursor: pointer;
     transition: all 0.3s ease;
-    display: flex; align-items: center; justify-content: center;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
     overflow: hidden;
     flex-shrink: 0;
-    position: relative;
     padding: 0;
     box-sizing: border-box;
+    background: var(--secondary-bg);
+    color: var(--text-color);
 }
 
 .character-select-button .character-icon {
-    width: 48px; height: 48px;
+    width: 100%;
+    height: 100%;
     border-radius: 50%;
     overflow: hidden;
-    display: flex; align-items: center; justify-content: center;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
 }
 
 .character-select-button .character-icon img {
-    width: 100%; height: 100%;
+    width: 100%; 
+    height: 100%;
     object-fit: cover;
     object-position: center;
-}
-
-.share-button {
-    background: var(--secondary-bg);
-    color: var(--text-color);
 }
 
 .character-select-button::after {
     content: '✨';
     position: absolute;
-    top: -2px; right: -2px;
-    font-size: 16px;
+    top: -2px; 
+    right: -2px;
+    font-size: 20px; /* Increased for larger button */
     background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
     -webkit-background-clip: text;
     background-clip: text;
@@ -427,7 +434,39 @@ body {
     filter: drop-shadow(0 1px 1px rgba(0,0,0,0.2));
 }
 
-.character-select-button:hover, .share-button:hover {
+.character-select-button:hover {
+    transform: translateY(-2px);
+    background: white;
+    box-shadow: 0 4px 12px var(--shadow);
+}
+
+.share-button {
+    width: 48px; 
+    height: 48px;
+    min-width: 48px; 
+    min-height: 48px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    overflow: hidden;
+    flex-shrink: 0;
+    position: relative;
+    padding: 0;
+    box-sizing: border-box;
+    background: var(--secondary-bg);
+    color: var(--text-color);
+}
+
+.share-button svg {
+    width: 24px;
+    height: 24px;
+}
+
+.share-button:hover {
     transform: translateY(-2px);
     background: white;
     box-shadow: 0 4px 12px var(--shadow);
@@ -435,22 +474,26 @@ body {
 
 .character-menu {
     position: absolute;
-    bottom: 100%;
-    right: 0;
+    top: -110%; /* Position above the button */
+    right: 50%;
+    transform: translateX(50%);
     width: 280px;
     background: white;
     border-radius: 16px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    opacity: 0; visibility: hidden;
-    transform: translateY(10px);
+    opacity: 0; 
+    visibility: hidden;
+    transform: translateY(-10px);
     transition: all 0.3s ease;
     max-height: 400px;
     overflow: hidden;
     margin-bottom: 1rem;
+    z-index: 1000;
 }
 
 .character-menu.active {
-    opacity: 1; visibility: visible;
+    opacity: 1; 
+    visibility: visible;
     transform: translateY(0);
 }
 
@@ -487,7 +530,8 @@ body {
 }
 
 .character-option img {
-    width: 100%; height: 100%;
+    width: 100%; 
+    height: 100%;
     object-fit: cover;
 }
 
@@ -524,9 +568,17 @@ body {
     }
     .main-action-container {
         bottom: calc(70px + env(safe-area-inset-bottom));
+        gap: 0.75rem; /* Adjusted gap for smaller screens */
+    }
+    .character-select-button {
+        width: 50px; /* Slightly smaller on mobile */
+        height: 50px;
+    }
+    .character-select-button::after {
+        font-size: 18px;
     }
     .character-menu {
-        right: -1rem;
+        width: 240px; /* Adjust width for mobile */
     }
 }
 
