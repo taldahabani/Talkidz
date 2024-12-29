@@ -476,9 +476,9 @@ body {
 /* ======== CHARACTER DROPDOWN ======== */
 .character-menu {
     position: absolute;
-    bottom: 100%; /* Position above the button */
-    left: 50%;
-    transform: translateX(-35%) translateY(25px); /* Center horizontally and add spacing */
+    bottom: calc(100% - 20px);
+    left: calc(50% + 20px);   
+    transform: translateX(-50%) translateY(10px); /* Center horizontally and add spacing */
     width: 280px;
     background: white;
     border-radius: 16px;
