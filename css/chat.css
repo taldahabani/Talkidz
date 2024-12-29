@@ -289,7 +289,7 @@ body {
     box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
     position: relative;
     overflow: hidden;
-    margin-left: 10px;
+    margin-right: 10px;
 }
 
 .main-button::before {
@@ -365,7 +365,7 @@ body {
 .status-indicator {
     position: absolute;
     left: 50%;
-    transform: translateX(-50%) translateX(0px);
+    transform: translateX(-50%) translateX(-20px);
     display: flex;
     align-items: center;
     gap: 0.5rem;
