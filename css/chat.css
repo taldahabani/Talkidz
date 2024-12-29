@@ -478,7 +478,7 @@ body {
     position: absolute;
     bottom: 100%; /* Position above the button */
     left: 50%;
-    transform: translateX(-45%) translateY(0px); /* Center horizontally and add spacing */
+    transform: translateX(-35%) translateY(25px); /* Center horizontally and add spacing */
     width: 280px;
     background: white;
     border-radius: 16px;
