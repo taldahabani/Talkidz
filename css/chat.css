@@ -266,14 +266,14 @@ body {
 .main-action-container {
     position: fixed;
     bottom: 70px;
-    left: 0;
-    right: 0;
+    left: 50%;
+    transform: translateX(-50%); /* Center horizontally */
     display: flex;
-    justify-content: center;
     align-items: center;
     gap: 1rem; /* Space between buttons */
     padding: 1rem;
     z-index: 10;
+    /* Ensure buttons are aligned properly */
 }
 
 .main-button {
@@ -477,17 +477,17 @@ body {
     position: absolute;
     bottom: 100%; /* Position above the button */
     left: 50%;
-    transform: translateX(-50%) translateY(-10px); /* Center horizontally and add spacing */
-    width: 280px;
+    transform: translateX(-50%) translateY(-5px); /* Adjusted to bring closer */
+    width: 320px; /* Increased width for larger popup */
     background: white;
     border-radius: 16px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     opacity: 0; 
     visibility: hidden;
     transition: all 0.3s ease;
-    max-height: 400px;
+    max-height: 450px; /* Increased max-height */
     overflow: hidden;
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem; /* Reduced margin for closer positioning */
     z-index: 1000;
 }
 
@@ -498,11 +498,11 @@ body {
 }
 
 .character-menu-content {
-    padding: 1rem;
+    padding: 1.5rem; /* Increased padding for better spacing */
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr); /* Adjusted to 4 columns */
     gap: 1rem;
-    max-height: 360px;
+    max-height: 400px; /* Increased max-height */
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: var(--accent-color) transparent;
@@ -544,6 +544,8 @@ body {
     border: 2px solid var(--accent-color);
 }
 
+/* ======== END CHARACTER DROPDOWN ======== */
+
 @keyframes buttonShine {
     to { transform: translateX(100%) rotate(45deg); }
 }
@@ -579,6 +581,11 @@ body {
     }
     .character-menu {
         width: 240px; /* Adjust width for mobile */
+    }
+    .character-menu-content {
+        grid-template-columns: repeat(3, 1fr); /* Fewer columns on mobile */
+        padding: 1rem;
+        max-height: 300px;
     }
 }
 
