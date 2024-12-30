@@ -3,24 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Green Screen Video</title>
+    <title>Enhanced Green Screen Video</title>
     <style>
         body {
             margin: 0;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             background: #000;
+            color: white;
+            font-family: Arial, sans-serif;
         }
-
         .container {
             position: relative;
             width: 450px;
             height: 800px;
             overflow: hidden;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
         }
-
         .background {
             position: absolute;
             top: 0;
@@ -29,7 +31,6 @@
             height: 100%;
             object-fit: cover;
         }
-
         canvas {
             position: absolute;
             top: 0;
@@ -38,14 +39,32 @@
             height: 100%;
             pointer-events: none;
         }
-
         video {
-            position: absolute;
-            top: -9999px;
-            left: -9999px;
-            /* Alternatively, use opacity: 0; */
-            /* opacity: 0; */
-            /* pointer-events: none; */
+            display: none;
+        }
+        .controls {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+        label {
+            font-size: 14px;
+        }
+        input[type="range"] {
+            width: 150px;
+        }
+        .status {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #aaa;
         }
     </style>
 </head>
@@ -62,9 +81,21 @@
             webkit-playsinline
         >
             <source src="character.mp4" type="video/mp4">
-            Your browser does not support the video tag.
         </video>
     </div>
+    <div class="controls">
+        <div class="control-group">
+            <label for="tolerance">Color Tolerance</label>
+            <input type="range" id="tolerance" min="1" max="100" value="60">
+            <span id="toleranceValue">60</span>
+        </div>
+        <div class="control-group">
+            <label for="smoothing">Edge Smoothing</label>
+            <input type="range" id="smoothing" min="0" max="5" value="1" step="0.1">
+            <span id="smoothingValue">1</span>
+        </div>
+    </div>
+    <div class="status" id="status">Loading...</div>
 
     <script>
         const video = document.getElementById('video');
@@ -72,52 +103,136 @@
         const ctx = canvas.getContext('2d', {
             willReadFrequently: true
         });
+        const status = document.getElementById('status');
+        const toleranceSlider = document.getElementById('tolerance');
+        const smoothingSlider = document.getElementById('smoothing');
+        const toleranceValue = document.getElementById('toleranceValue');
+        const smoothingValue = document.getElementById('smoothingValue');
 
         const WIDTH = 450;
         const HEIGHT = 800;
         canvas.width = WIDTH;
         canvas.height = HEIGHT;
 
-        // Adjusted target green color and tolerance
-        const TARGET_COLOR = { r: 0, g: 255, b: 0 }; // Pure green
-        const TOLERANCE = 100;
+        // Default green screen color (RGB)
+        const TARGET_COLOR = { r: 0, g: 154, b: 101 }; // #009A65
+        let TOLERANCE = 60;
+        let SMOOTHING = 1;
 
-        function processVideo() {
-            if (video.paused || video.ended) {
+        // Performance optimization: Create buffers once
+        let frameBuffer;
+        let lastProcessedTime = 0;
+        const PROCESS_INTERVAL = 1000 / 30; // Limit to 30fps
+
+        // Update controls
+        toleranceSlider.addEventListener('input', (e) => {
+            TOLERANCE = parseInt(e.target.value);
+            toleranceValue.textContent = TOLERANCE;
+        });
+
+        smoothingSlider.addEventListener('input', (e) => {
+            SMOOTHING = parseFloat(e.target.value);
+            smoothingValue.textContent = SMOOTHING;
+        });
+
+        function isGreenScreen(r, g, b) {
+            const dr = r - TARGET_COLOR.r;
+            const dg = g - TARGET_COLOR.g;
+            const db = b - TARGET_COLOR.b;
+            
+            // Weight green channel more heavily
+            const distance = Math.sqrt(
+                dr * dr * 0.8 + 
+                dg * dg * 1.2 + 
+                db * db * 0.8
+            );
+            
+            return distance < TOLERANCE;
+        }
+
+        function processVideo(timestamp) {
+            // Limit processing frequency
+            if (timestamp - lastProcessedTime < PROCESS_INTERVAL) {
+                requestAnimationFrame(processVideo);
                 return;
             }
+            lastProcessedTime = timestamp;
 
+            // Draw current video frame
             ctx.drawImage(video, 0, 0, WIDTH, HEIGHT);
+            
+            // Get frame data
             const frame = ctx.getImageData(0, 0, WIDTH, HEIGHT);
             const data = frame.data;
 
-            for (let i = 0; i < data.length; i += 4) {
-                const r = data[i];
-                const g = data[i + 1];
-                const b = data[i + 2];
-
-                // Euclidean distance to target green color
-                const dr = r - TARGET_COLOR.r;
-                const dg = g - TARGET_COLOR.g;
-                const db = b - TARGET_COLOR.b;
-                const distance = dr * dr + dg * dg + db * db;
-
-                if (distance < TOLERANCE * TOLERANCE) {
-                    data[i + 3] = 0; // Set pixel alpha to 0 (transparent)
+            // Process each pixel
+            for (let y = 0; y < HEIGHT; y++) {
+                for (let x = 0; x < WIDTH; x++) {
+                    const i = (y * WIDTH + x) * 4;
+                    
+                    if (isGreenScreen(data[i], data[i + 1], data[i + 2])) {
+                        // Apply smoothing to edges
+                        let alpha = 0;
+                        if (SMOOTHING > 0) {
+                            const dr = data[i] - TARGET_COLOR.r;
+                            const dg = data[i + 1] - TARGET_COLOR.g;
+                            const db = data[i + 2] - TARGET_COLOR.b;
+                            const distance = Math.sqrt(dr * dr + dg * dg + db * db);
+                            alpha = Math.min(255, Math.max(0, 
+                                (distance - TOLERANCE + SMOOTHING * 20) / (SMOOTHING * 20) * 255
+                            ));
+                        }
+                        data[i + 3] = alpha;
+                    }
                 }
             }
 
+            // Update canvas with processed frame
             ctx.putImageData(frame, 0, 0);
             requestAnimationFrame(processVideo);
         }
 
-        // Start processing when video data is loaded
-        video.addEventListener('loadeddata', () => {
-            video.play().catch(err => {
-                console.error('Autoplay failed:', err);
+        // Handle video loading and playback
+        let loadAttempts = 0;
+        const maxAttempts = 5;
+
+        function handleVideoError(error) {
+            console.error('Video error:', error);
+            status.textContent = `Error loading video. Attempt ${loadAttempts + 1}/${maxAttempts}...`;
+            
+            if (loadAttempts < maxAttempts) {
+                loadAttempts++;
+                setTimeout(() => video.load(), 1000);
+            } else {
+                status.textContent = 'Failed to load video. Please check the video source.';
+            }
+        }
+
+        function initializeVideo() {
+            // Set video loading status
+            status.textContent = 'Loading video...';
+            
+            video.addEventListener('error', handleVideoError);
+            
+            video.addEventListener('loadedmetadata', () => {
+                status.textContent = 'Video loaded. Starting processing...';
+                // Start processing when video is ready
+                video.play().then(() => {
+                    requestAnimationFrame(processVideo);
+                    status.textContent = 'Processing...';
+                }).catch(handleVideoError);
             });
-            processVideo();
-        });
+
+            // Handle video end
+            video.addEventListener('ended', () => {
+                if (!video.loop) {
+                    status.textContent = 'Playback completed';
+                }
+            });
+        }
+
+        // Initialize the video processing
+        initializeVideo();
     </script>
 </body>
 </html>
