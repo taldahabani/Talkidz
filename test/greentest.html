@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced Green Screen Removal</title>
+    <title>Green Screen Video</title>
     <style>
         body {
             margin: 0;
@@ -30,13 +30,6 @@
             height: 100%;
             object-fit: cover;
         }
-        .canvas-stack {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
         canvas {
             position: absolute;
             top: 0;
@@ -45,15 +38,24 @@
             height: 100%;
             pointer-events: none;
         }
-        #buffer-canvas {
-            display: none;
-        }
         .controls {
             margin-top: 20px;
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
             justify-content: center;
+        }
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+        label {
+            font-size: 14px;
+        }
+        input[type="range"] {
+            width: 150px;
         }
         .status {
             margin-top: 10px;
@@ -65,10 +67,7 @@
 <body>
     <div class="container">
         <img src="background.jpg" class="background" alt="Background">
-        <div class="canvas-stack">
-            <canvas id="main-canvas"></canvas>
-            <canvas id="buffer-canvas"></canvas>
-        </div>
+        <canvas id="canvas"></canvas>
         <video 
             id="video"
             muted 
@@ -81,259 +80,145 @@
             <source src="character.mp4" type="video/mp4">
         </video>
     </div>
-    <div class="status" id="status">Initializing...</div>
+    <div class="controls">
+        <div class="control-group">
+            <label for="tolerance">Green Tolerance</label>
+            <input type="range" id="tolerance" min="20" max="200" value="100">
+            <span id="toleranceValue">100</span>
+        </div>
+        <div class="control-group">
+            <label for="greenWeight">Green Weight</label>
+            <input type="range" id="greenWeight" min="1" max="50" value="15">
+            <span id="greenWeightValue">15</span>
+        </div>
+    </div>
+    <div class="status" id="status">Loading...</div>
 
     <script>
         const video = document.getElementById('video');
-        const mainCanvas = document.getElementById('main-canvas');
-        const bufferCanvas = document.getElementById('buffer-canvas');
-        const mainCtx = mainCanvas.getContext('2d', { willReadFrequently: true });
-        const bufferCtx = bufferCanvas.getContext('2d', { willReadFrequently: true });
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
         const status = document.getElementById('status');
+        const toleranceSlider = document.getElementById('tolerance');
+        const greenWeightSlider = document.getElementById('greenWeight');
+        const toleranceValue = document.getElementById('toleranceValue');
+        const greenWeightValue = document.getElementById('greenWeightValue');
 
         const WIDTH = 450;
         const HEIGHT = 800;
-        mainCanvas.width = WIDTH;
-        mainCanvas.height = HEIGHT;
-        bufferCanvas.width = WIDTH;
-        bufferCanvas.height = HEIGHT;
-
-        // Create an offscreen canvas for processing
-        const offscreenCanvas = document.createElement('canvas');
-        offscreenCanvas.width = WIDTH;
-        offscreenCanvas.height = HEIGHT;
-        const offscreenCtx = offscreenCanvas.getContext('2d', { willReadFrequently: true });
+        canvas.width = WIDTH;
+        canvas.height = HEIGHT;
 
         let isProcessing = false;
-        let greenScreenProfile = null;
-        const SAMPLE_FRAMES = 5; // Number of frames to analyze for green screen profile
-        let frameCount = 0;
-        let processingStarted = false;
+        let TOLERANCE = 100;
+        let GREEN_WEIGHT = 15;
 
-        // Initialize WebGL for faster processing
-        const glCanvas = document.createElement('canvas');
-        glCanvas.width = WIDTH;
-        glCanvas.height = HEIGHT;
-        const gl = glCanvas.getContext('webgl2');
+        // Update controls
+        toleranceSlider.addEventListener('input', (e) => {
+            TOLERANCE = parseInt(e.target.value);
+            toleranceValue.textContent = TOLERANCE;
+        });
 
-        if (!gl) {
-            console.warn('WebGL2 not available, falling back to canvas rendering');
-        }
+        greenWeightSlider.addEventListener('input', (e) => {
+            GREEN_WEIGHT = parseInt(e.target.value);
+            greenWeightValue.textContent = GREEN_WEIGHT;
+        });
 
-        // WebGL setup
-        if (gl) {
-            const vertexShader = gl.createShader(gl.VERTEX_SHADER);
-            gl.shaderSource(vertexShader, `
-                attribute vec2 position;
-                varying vec2 texCoord;
-                void main() {
-                    texCoord = position * 0.5 + 0.5;
-                    gl_Position = vec4(position, 0.0, 1.0);
-                }
-            `);
-            gl.compileShader(vertexShader);
-
-            const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
-            gl.shaderSource(fragmentShader, `
-                precision highp float;
-                uniform sampler2D texture;
-                uniform vec3 targetColor;
-                uniform float tolerance;
-                varying vec2 texCoord;
-                
-                void main() {
-                    vec4 color = texture2D(texture, texCoord);
-                    float dist = length(color.rgb - targetColor);
-                    float mask = smoothstep(tolerance, tolerance * 1.2, dist);
-                    gl_FragColor = vec4(color.rgb, mask);
-                }
-            `);
-            gl.compileShader(fragmentShader);
-
-            const program = gl.createProgram();
-            gl.attachShader(program, vertexShader);
-            gl.attachShader(program, fragmentShader);
-            gl.linkProgram(program);
-            gl.useProgram(program);
-
-            const buffer = gl.createBuffer();
-            gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-                -1, -1,
-                1, -1,
-                -1, 1,
-                1, 1
-            ]), gl.STATIC_DRAW);
-
-            const positionLocation = gl.getAttribLocation(program, 'position');
-            gl.enableVertexAttribArray(positionLocation);
-            gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
-        }
-
-        function analyzeFrame(imageData) {
-            const data = imageData.data;
-            const pixels = [];
+        function isGreen(r, g, b) {
+            // Check if green is significantly higher than red and blue
+            const greenDominance = g / ((r + b) / 2);
             
-            // Sample pixels for green analysis
+            // Only consider it green if the green component is significantly higher
+            if (greenDominance > GREEN_WEIGHT / 10) {
+                // Calculate overall brightness
+                const brightness = (r + g + b) / 3;
+                
+                // Avoid removing very bright or very dark pixels
+                if (brightness > 30 && brightness < 225) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        function processVideo() {
+            if (!isProcessing) return;
+
+            // Draw the video frame
+            ctx.drawImage(video, 0, 0, WIDTH, HEIGHT);
+            
+            // Get the image data
+            const frame = ctx.getImageData(0, 0, WIDTH, HEIGHT);
+            const data = frame.data;
+
+            // Process each pixel
             for (let i = 0; i < data.length; i += 4) {
                 const r = data[i];
                 const g = data[i + 1];
                 const b = data[i + 2];
-                
-                // Look for potentially green pixels
-                if (g > r && g > b) {
-                    pixels.push({ r, g, b });
+
+                if (isGreen(r, g, b)) {
+                    // Make green pixels transparent
+                    data[i + 3] = 0;
                 }
             }
 
-            // Calculate average green screen color
-            const avgColor = pixels.reduce((acc, pixel) => {
-                acc.r += pixel.r;
-                acc.g += pixel.g;
-                acc.b += pixel.b;
-                return acc;
-            }, { r: 0, g: 0, b: 0 });
-
-            return {
-                r: avgColor.r / pixels.length,
-                g: avgColor.g / pixels.length,
-                b: avgColor.b / pixels.length
-            };
+            // Put the processed frame back
+            ctx.putImageData(frame, 0, 0);
+            
+            // Continue the loop
+            requestAnimationFrame(processVideo);
         }
 
-        function createGreenScreenProfile() {
-            if (frameCount < SAMPLE_FRAMES) {
-                // Draw current frame to buffer
-                bufferCtx.drawImage(video, 0, 0, WIDTH, HEIGHT);
-                const imageData = bufferCtx.getImageData(0, 0, WIDTH, HEIGHT);
-                
-                // Analyze frame
-                const frameProfile = analyzeFrame(imageData);
-                
-                if (!greenScreenProfile) {
-                    greenScreenProfile = frameProfile;
-                } else {
-                    // Average with existing profile
-                    greenScreenProfile.r = (greenScreenProfile.r * frameCount + frameProfile.r) / (frameCount + 1);
-                    greenScreenProfile.g = (greenScreenProfile.g * frameCount + frameProfile.g) / (frameCount + 1);
-                    greenScreenProfile.b = (greenScreenProfile.b * frameCount + frameProfile.b) / (frameCount + 1);
-                }
-                
-                frameCount++;
-                status.textContent = `Analyzing green screen: ${Math.round(frameCount/SAMPLE_FRAMES * 100)}%`;
-                
-                if (frameCount === SAMPLE_FRAMES) {
-                    status.textContent = 'Green screen profile created. Processing...';
-                    startVideoProcessing();
-                }
-            }
-        }
-
-        function processFrameWebGL(sourceCanvas) {
-            if (!gl || !greenScreenProfile) return null;
-
-            const texture = gl.createTexture();
-            gl.bindTexture(gl.TEXTURE_2D, texture);
-            gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, sourceCanvas);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
-
-            const targetColorLocation = gl.getUniformLocation(program, 'targetColor');
-            gl.uniform3f(targetColorLocation, 
-                greenScreenProfile.r / 255,
-                greenScreenProfile.g / 255,
-                greenScreenProfile.b / 255
-            );
-
-            const toleranceLocation = gl.getUniformLocation(program, 'tolerance');
-            gl.uniform1f(toleranceLocation, 0.3);
-
-            gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-
-            return glCanvas;
-        }
-
-        function processFrame() {
-            if (!isProcessing || !greenScreenProfile) return;
-
-            // Draw video to buffer canvas
-            bufferCtx.drawImage(video, 0, 0, WIDTH, HEIGHT);
-
-            if (gl) {
-                // Process using WebGL
-                const processedCanvas = processFrameWebGL(bufferCanvas);
-                if (processedCanvas) {
-                    mainCtx.clearRect(0, 0, WIDTH, HEIGHT);
-                    mainCtx.drawImage(processedCanvas, 0, 0);
-                }
-            } else {
-                // Fallback to Canvas 2D processing
-                const frame = bufferCtx.getImageData(0, 0, WIDTH, HEIGHT);
-                const data = frame.data;
-
-                for (let i = 0; i < data.length; i += 4) {
-                    const r = data[i];
-                    const g = data[i + 1];
-                    const b = data[i + 2];
-
-                    const dr = r - greenScreenProfile.r;
-                    const dg = g - greenScreenProfile.g;
-                    const db = b - greenScreenProfile.b;
-
-                    const distance = Math.sqrt(dr * dr + dg * dg + db * db);
-                    
-                    if (distance < 80 && g > r && g > b) {
-                        data[i + 3] = 0;
-                    }
-                }
-
-                mainCtx.putImageData(frame, 0, 0);
-            }
-
-            requestAnimationFrame(processFrame);
-        }
-
-        function startVideoProcessing() {
-            if (!processingStarted) {
-                processingStarted = true;
+        function startProcessing() {
+            if (!isProcessing) {
                 isProcessing = true;
-                requestAnimationFrame(processFrame);
+                requestAnimationFrame(processVideo);
+                status.textContent = 'Processing video...';
             }
         }
 
-        // Video event handlers
-        video.addEventListener('play', () => {
-            if (!greenScreenProfile) {
-                // Start creating green screen profile
-                frameCount = 0;
-                status.textContent = 'Creating green screen profile...';
-                createGreenScreenProfile();
-            } else {
-                startVideoProcessing();
+        function stopProcessing() {
+            isProcessing = false;
+            status.textContent = 'Processing stopped';
+        }
+
+        // Video event listeners
+        video.addEventListener('loadeddata', () => {
+            status.textContent = 'Video loaded. Starting processing...';
+            startProcessing();
+        });
+
+        video.addEventListener('play', startProcessing);
+        video.addEventListener('pause', stopProcessing);
+        video.addEventListener('ended', () => {
+            if (!video.loop) {
+                stopProcessing();
             }
         });
 
-        video.addEventListener('loadeddata', () => {
-            status.textContent = 'Video loaded. Starting analysis...';
-            // Force video to play frame by frame initially
-            video.playbackRate = 0.5;
-            const processProfile = setInterval(() => {
-                if (frameCount < SAMPLE_FRAMES) {
-                    createGreenScreenProfile();
-                } else {
-                    clearInterval(processProfile);
-                    video.playbackRate = 1.0;
-                }
-            }, 100);
+        // Handle video errors
+        video.addEventListener('error', (e) => {
+            console.error('Video error:', e);
+            status.textContent = 'Error loading video';
+            stopProcessing();
         });
 
-        // Start playback
+        // Start the video
         video.play().catch(error => {
             console.error('Autoplay failed:', error);
-            status.textContent = 'Click to start processing';
+            status.textContent = 'Click to start';
             document.addEventListener('click', () => video.play());
         });
+
+        // Add window focus/blur handlers to manage processing
+        window.addEventListener('focus', () => {
+            if (video.played.length > 0 && !video.paused) {
+                startProcessing();
+            }
+        });
+
+        window.addEventListener('blur', stopProcessing);
     </script>
 </body>
 </html>
