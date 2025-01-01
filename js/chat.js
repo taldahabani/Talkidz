@@ -218,7 +218,7 @@ const firstMessages = {
     uk: "Гей, я Емма, я сумувала за тобою!",
     ru: "Привет, я Эмма, я скучала по тебе!"
   },
-  bongo: {
+  monkey: {
     en: "Hey it's Bongo the monkey! Nice to see you!",
     ja: "やあ、ボンゴという猿だよ！会えて嬉しいな！",
     zh: "嘿，我是猴子Bongo！很高兴见到你！",
