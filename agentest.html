@@ -1,0 +1,160 @@
+I'll help you create a complete HTML webpage that shows the conversation between the user and agent in a textbox. This combines the basic conversation setup with a UI to display messages.
+
+Here's the complete code:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>ElevenLabs Conversational AI</title>
+        <style>
+            .conversation-box {
+                width: 80%;
+                height: 300px;
+                border: 1px solid #ccc;
+                margin: 20px auto;
+                padding: 10px;
+                overflow-y: auto;
+                background: #f9f9f9;
+            }
+            .message {
+                margin: 5px 0;
+                padding: 5px;
+                border-radius: 5px;
+            }
+            .user-message {
+                background: #e3f2fd;
+                margin-left: 20px;
+            }
+            .agent-message {
+                background: #f5f5f5;
+                margin-right: 20px;
+            }
+        </style>
+    </head>
+    <body style="font-family: Arial, sans-serif; text-align: center; padding: 50px;">
+        <h1>ElevenLabs Conversational AI</h1>
+        <div style="margin-bottom: 20px;">
+            <button id="startButton" style="padding: 10px 20px; margin: 5px;">Start Conversation</button>
+            <button id="stopButton" style="padding: 10px 20px; margin: 5px;" disabled>Stop Conversation</button>
+        </div>
+        <div style="font-size: 18px;">
+            <p>Status: <span id="connectionStatus">Disconnected</span></p>
+            <p>Agent is <span id="agentStatus">listening</span></p>
+        </div>
+        <div id="conversationBox" class="conversation-box"></div>
+        <script type="module">
+            import { Conversation } from '@11labs/client';
+
+            const startButton = document.getElementById('startButton');
+            const stopButton = document.getElementById('stopButton');
+            const connectionStatus = document.getElementById('connectionStatus');
+            const agentStatus = document.getElementById('agentStatus');
+            const conversationBox = document.getElementById('conversationBox');
+
+            let conversation;
+
+            function addMessage(text, isUser = false) {
+                const messageDiv = document.createElement('div');
+                messageDiv.className = `message ${isUser ? 'user-message' : 'agent-message'}`;
+                messageDiv.textContent = `${isUser ? 'User' : 'Agent'}: ${text}`;
+                conversationBox.appendChild(messageDiv);
+                conversationBox.scrollTop = conversationBox.scrollHeight;
+            }
+
+            async function startConversation() {
+                try {
+                    // Request microphone permission
+                    await navigator.mediaDevices.getUserMedia({ audio: true });
+
+                    // Start the conversation
+                    conversation = await Conversation.startSession({
+                        agentId: 'xiC8L3SOeHwYyCLLnYxF', // Replace with your agent ID
+                        onConnect: () => {
+                            connectionStatus.textContent = 'Connected';
+                            startButton.disabled = true;
+                            stopButton.disabled = false;
+                        },
+                        onDisconnect: () => {
+                            connectionStatus.textContent = 'Disconnected';
+                            startButton.disabled = false;
+                            stopButton.disabled = true;
+                        },
+                        onError: (error) => {
+                            console.error('Error:', error);
+                            addMessage(`Error: ${error.message}`, false);
+                        },
+                        onModeChange: (mode) => {
+                            agentStatus.textContent = mode.mode === 'speaking' ? 'speaking' : 'listening';
+                        },
+                        // Add message handlers
+                        onUserMessage: (message) => {
+                            addMessage(message.text, true);
+                        },
+                        onAgentMessage: (message) => {
+                            addMessage(message.text, false);
+                        }
+                    });
+                } catch (error) {
+                    console.error('Failed to start conversation:', error);
+                    addMessage(`Failed to start conversation: ${error.message}`, false);
+                }
+            }
+
+            async function stopConversation() {
+                if (conversation) {
+                    await conversation.endSession();
+                    conversation = null;
+                    addMessage('Conversation ended', false);
+                }
+            }
+
+            startButton.addEventListener('click', startConversation);
+            stopButton.addEventListener('click', stopConversation);
+        </script>
+    </body>
+</html>
+```
+
+To use this code, you need to:
+
+1. Replace 'YOUR_AGENT_ID' with your actual agent ID
+2. Make sure you have the @11labs/client package installed
+3. If you're using a private agent, you'll need to implement the signed URL approach using a backend server as shown in previous examples[^1][^2]
+
+This implementation includes:
+- A styled conversation box that displays messages
+- Clear visual distinction between user and agent messages
+- Auto-scrolling to the latest message
+- Status indicators for connection and agent state
+- Error handling with visual feedback
+- Start/Stop conversation controls
+
+If you need to use the signed URL approach for a private agent, you would modify the `startConversation` function to first get the signed URL from your backend:
+
+```javascript
+async function startConversation() {
+    try {
+        await navigator.mediaDevices.getUserMedia({ audio: true });
+
+        const response = await fetch('http://localhost:3001/api/get-signed-url');
+        if (!response.ok) {
+            throw new Error(`Failed to get signed url: ${response.statusText}`);
+        }
+        const { signedUrl } = await response.json();
+
+        conversation = await Conversation.startSession({
+            signedUrl,
+            // ... rest of the configuration ...
+        });
+    } catch (error) {
+        console.error('Failed to start conversation:', error);
+        addMessage(`Failed to start conversation: ${error.message}`, false);
+    }
+}
+```
+
+[^1]: elevenlabs.io/docs/conversational-ai/guides/conversational-ai-guide-vite#implementing-the-voice-chat-interface
+[^2]: elevenlabs.io/docs/conversational-ai/libraries/conversational-ai-sdk-js#session-configuration
