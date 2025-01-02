@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Funny Cupcake - Talkidz</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
         :root {
             --primary-color: #FF4B6E;
@@ -23,6 +24,52 @@
             overflow: hidden;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: var(--background-color);
+        }
+
+        .chat-container {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 600px;
+            max-height: 400px;
+            overflow-y: auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+            z-index: 100;
+            display: none;
+        }
+
+        .message {
+            margin: 8px 0;
+            padding: 12px;
+            border-radius: 8px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+
+        .message.user {
+            background: var(--accent-color);
+            color: white;
+            margin-left: auto;
+        }
+
+        .message.agent {
+            background: var(--secondary-background);
+            margin-right: auto;
+        }
+
+        .tentative-message {
+            opacity: 0.7;
+            font-style: italic;
+            margin: 8px 0;
+            padding: 12px;
+            background: var(--secondary-background);
+            border-radius: 8px;
+            max-width: 80%;
         }
 
         .top-bar {
@@ -109,20 +156,6 @@
             height: auto;
         }
 
-        @media (max-aspect-ratio: 1/1) {
-            .background.video {
-                width: 100%;
-                height: auto;
-            }
-        }
-
-        @media (min-aspect-ratio: 1/1) {
-            .background.video {
-                height: 100%;
-                width: auto;
-            }
-        }
-
         .background.image {
             position: absolute;
             width: 100%;
@@ -134,60 +167,9 @@
             background-repeat: no-repeat;
         }
 
-        /* New Styles for Messages */
-        .messages-container {
-            width: 100%;
-            max-width: 600px;
-            height: 300px;
-            overflow-y: auto;
-            background: var(--secondary-background);
-            border-radius: 12px;
-            padding: 1rem;
-            box-shadow: 0 2px 8px var(--shadow-color);
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .message {
-            max-width: 80%;
-            padding: 0.75rem 1rem;
-            border-radius: 12px;
-            position: relative;
-            word-wrap: break-word;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-        }
-
-        .message.user {
-            align-self: flex-end;
-            background: var(--primary-color);
-            color: white;
-            border-bottom-right-radius: 0;
-        }
-
-        .message.agent {
-            align-self: flex-start;
-            background: var(--secondary-background);
-            color: var(--text-color);
-            border-bottom-left-radius: 0;
-        }
-
-        .message.tentative {
-            font-style: italic;
-            color: var(--accent-color);
-            background: var(--secondary-background);
-        }
-
-        .message .sender {
-            font-size: 0.75rem;
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-        }
-
-        /* Adjust Bottom Container to accommodate messages */
         .bottom-container {
             position: fixed;
-            bottom: 60px; /* Increased to make room for messages */
+            bottom: 0;
             left: 0;
             width: 100%;
             padding: 1.5rem;
@@ -215,6 +197,48 @@
             align-items: center;
             justify-content: center;
             gap: 1rem;
+        }
+
+        .main-button {
+            background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .main-button.active {
+            width: 48px;
+            height: 48px;
+            padding: 0;
+            border-radius: 50%;
+            background: #808080;
+            transform: translateY(1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .share-button {
+            background: var(--secondary-background);
+            border: none;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-color);
         }
 
         .bottom-status-container {
@@ -272,121 +296,6 @@
             box-shadow: 0 0 10px rgba(108, 92, 231, 0.2);
         }
 
-        .main-button {
-            background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
-            color: white;
-            border: none;
-            padding: 1rem 2.5rem;
-            font-size: 1rem;
-            font-weight: 600;
-            border-radius: 999px;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .main-button::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(
-                45deg,
-                transparent,
-                rgba(255, 255, 255, 0.1),
-                transparent
-            );
-            transform: rotate(45deg);
-            animation: buttonShine 3s infinite;
-        }
-
-        @keyframes buttonShine {
-            0% { transform: translateX(-100%) rotate(45deg); }
-            100% { transform: translateX(100%) rotate(45deg); }
-        }
-
-        .main-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(108, 92, 231, 0.3);
-        }
-
-        .main-button.active {
-            width: 48px;
-            height: 48px;
-            padding: 0;
-            border-radius: 50%;
-            background: #808080;
-            transform: translateY(1px);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .particle {
-            position: absolute;
-            pointer-events: none;
-            opacity: 0;
-        }
-
-        @keyframes float {
-            0% { transform: translate(0, 0) rotate(0deg); opacity: 0; }
-            20% { opacity: 0.8; }
-            100% { transform: translate(var(--tx), var(--ty)) rotate(360deg); opacity: 0; }
-        }
-
-        .sparkle {
-            position: absolute;
-            pointer-events: none;
-            background: white;
-            border-radius: 50%;
-            mix-blend-mode: screen;
-        }
-
-        @keyframes sparkle {
-            0%, 100% { transform: scale(0) rotate(0deg); opacity: 0; }
-            50% { transform: scale(1) rotate(180deg); opacity: 1; }
-        }
-
-        .share-button {
-            background: var(--secondary-background);
-            border: none;
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            color: var(--text-color);
-        }
-
-        .share-button:hover {
-            transform: translateY(-2px);
-            background: white;
-            box-shadow: 0 4px 12px var(--shadow-color);
-        }
-
-        /* New Styles for Messages Scrollbar (Optional) */
-        .messages-container::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .messages-container::-webkit-scrollbar-track {
-            background: var(--secondary-background);
-            border-radius: 4px;
-        }
-
-        .messages-container::-webkit-scrollbar-thumb {
-            background-color: var(--accent-color);
-            border-radius: 4px;
-        }
-
         @media (max-width: 768px) {
             .bottom-status-container {
                 padding-bottom: calc(env(safe-area-inset-bottom) + 1rem);
@@ -399,13 +308,12 @@
             .main-button {
                 padding: 1rem 2rem;
             }
-
-            .messages-container {
-                height: 200px;
+            
+            .chat-container {
+                bottom: 120px;
             }
         }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 </head>
 <body>
     <div class="top-bar">
@@ -427,16 +335,13 @@
                 <source src="/characters/cupcake/assets/cupcake-talk.mp4" type="video/mp4">
             </video>
         </div>
+        
+        <div id="chatContainer" class="chat-container">
+            <div id="messagesContainer"></div>
+        </div>
     </div>
 
-    <canvas id="confetti-canvas"></canvas>
-
     <div class="bottom-container">
-        <!-- New Messages Container -->
-        <div id="messagesContainer" class="messages-container">
-            <!-- Messages will appear here -->
-        </div>
-
         <div class="controls-wrapper">
             <div class="controls-container">
                 <button id="startButton" class="main-button">Start Conversation</button>
@@ -464,36 +369,89 @@
     <script type="module">
         import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
 
+        class ChatManager {
+            constructor() {
+                this.messages = [];
+                this.tentativeText = '';
+                this.conversation = null;
+                this.chatContainer = document.getElementById('chatContainer');
+                this.messagesContainer = document.getElementById('messagesContainer');
+            }
+
+            addMessage(text, isUser) {
+                this.messages.push({ text, isUser, isFinal: true });
+                this.renderMessages();
+            }
+
+            setTentativeText(text) {
+                this.tentativeText = text;
+                this.renderMessages();
+            }
+
+            renderMessages() {
+                this.messagesContainer.innerHTML = '';
+                
+                this.messages.forEach(msg => {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = `message ${msg.isUser ? 'user' : 'agent'}`;
+                    messageDiv.textContent = msg.text;
+                    this.messagesContainer.appendChild(messageDiv);
+                });
+
+                if (this.tentativeText) {
+                    const tentativeDiv = document.createElement('div');
+                    tentativeDiv.className = 'tentative-message';
+                    tentativeDiv.textContent = `Agent (typing...): ${this.tentativeText}`;
+                    this.messagesContainer.appendChild(tentativeDiv);
+                }
+
+                this.messagesContainer.scrollTop = this.messagesContainer.scrollHeight;
+            }
+
+            showChat() {
+                this.chatContainer.style.display = 'block';
+            }
+
+            hideChat() {
+                this.chatContainer.style.display = 'none';
+            }
+
+            clear() {
+                this.messages = [];
+                this.tentativeText = '';
+                this.renderMessages();
+            }
+        }
+
+        const chatManager = new ChatManager();
         let conversation = null;
         let currentMode = 'idle';
         let videosLoaded = { idle: false, speaking: false };
         let progressInterval;
-        const CONVERSATION_TIME = 300; // 5 minutes in seconds
+        const CONVERSATION_TIME = 300;
         let currentProgress = 0;
 
         const backgroundImage = document.querySelector('.background.image');
         const idleVideo = document.getElementById('idleVideo');
         const speakingVideo = document.getElementById('speakingVideo');
         const startButton = document.getElementById('startButton');
-        const messagesContainer = document.getElementById('messagesContainer');
 
-        // Create floating particles
-        const createParticles = () => {
+        function createParticles() {
             const container = document.querySelector('.main-container');
             for (let i = 0; i < 20; i++) {
                 const particle = document.createElement('div');
                 particle.className = 'particle';
                 particle.style.width = Math.random() * 10 + 'px';
                 particle.style.height = particle.style.width;
-                particle.style.background = `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 0.5)`;
+                particle.style.background = `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.5)`;
                 particle.style.borderRadius = '50%';
                 particle.style.position = 'absolute';
                 restartParticle(particle);
                 container.appendChild(particle);
             }
-        };
+        }
 
-        const restartParticle = (particle) => {
+        function restartParticle(particle) {
             const startX = Math.random() * window.innerWidth;
             const startY = window.innerHeight + 10;
             const endX = startX + (Math.random() - 0.5) * 200;
@@ -501,16 +459,15 @@
             
             particle.style.left = startX + 'px';
             particle.style.top = startY + 'px';
-            particle.style.setProperty('--tx', (endX - startX) + 'px');
-            particle.style.setProperty('--ty', (endY - startY) + 'px');
+            particle.style.setProperty('--tx', `${endX - startX}px`);
+            particle.style.setProperty('--ty', `${endY - startY}px`);
             
             particle.style.animation = 'none';
-            particle.offsetHeight; // Force reflow
+            particle.offsetHeight;
             particle.style.animation = `float ${Math.random() * 2 + 3}s linear infinite`;
-        };
+        }
 
-        // Add sparkle effect
-        const addSparkleEffect = (element) => {
+        function addSparkleEffect(element) {
             const sparkle = document.createElement('div');
             sparkle.className = 'sparkle';
             sparkle.style.width = Math.random() * 10 + 5 + 'px';
@@ -521,10 +478,9 @@
 
             sparkle.style.animation = `sparkle ${Math.random() * 0.5 + 0.5}s ease-in-out`;
             sparkle.addEventListener('animationend', () => sparkle.remove());
-        };
+        }
 
-        // Preload videos
-        const preloadVideos = () => {
+        function preloadVideos() {
             idleVideo.load();
             idleVideo.addEventListener('loadeddata', () => {
                 videosLoaded.idle = true;
@@ -534,10 +490,9 @@
             speakingVideo.addEventListener('loadeddata', () => {
                 videosLoaded.speaking = true;
             });
-        };
+        }
 
-        // Progress bar functions
-        const startProgress = () => {
+        function startProgress() {
             currentProgress = 0;
             const progressBar = document.getElementById('progressBar');
             progressBar.style.width = '0%';
@@ -552,39 +507,16 @@
                 }
                 progressBar.style.width = `${currentProgress}%`;
             }, 1000);
-        };
+        }
 
-        const resetProgress = () => {
+        function resetProgress() {
             clearInterval(progressInterval);
             const progressBar = document.getElementById('progressBar');
             progressBar.style.width = '0%';
             currentProgress = 0;
-        };
+        }
 
-        // Function to append messages to the UI
-        const appendMessage = (text, isUser, isTentative = false) => {
-            const messageDiv = document.createElement('div');
-            messageDiv.classList.add('message');
-            messageDiv.classList.add(isUser ? 'user' : 'agent');
-            if (isTentative) messageDiv.classList.add('tentative');
-
-            const sender = document.createElement('div');
-            sender.classList.add('sender');
-            sender.textContent = isUser ? 'You' : (isTentative ? 'Agent (typing...)' : 'Agent');
-
-            const messageText = document.createElement('div');
-            messageText.textContent = text;
-
-            messageDiv.appendChild(sender);
-            messageDiv.appendChild(messageText);
-            messagesContainer.appendChild(messageDiv);
-
-            // Scroll to the latest message
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        };
-
-        // Function to update background based on mode
-        const updateBackground = (mode) => {
+        function updateBackground(mode) {
             backgroundImage.style.display = 'none';
             idleVideo.style.display = 'none';
             speakingVideo.style.display = 'none';
@@ -601,102 +533,9 @@
             } else {
                 backgroundImage.style.display = 'block';
             }
-        };
+        }
 
-        // Function to start conversation
-        const startConversation = async () => {
-            try {
-                await navigator.mediaDevices.getUserMedia({ audio: true });
-                triggerConfetti();
-                startButton.classList.add('active');
-                startButton.innerHTML = `
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                `;
-
-                conversation = await Conversation.startSession({
-                    agentId: 'iogofk9qnqvE98RwV1Kk', // Replace with your actual agent ID
-                    onModeChange: (mode) => {
-                        updateBackground(mode.mode);
-                    },
-                    onConnect: () => {
-                        updateBackground('listening');
-                        startProgress();
-                        createParticles();
-                        appendMessage('Conversation started. How can I assist you?', false);
-                    },
-                    onDisconnect: () => {
-                        updateBackground('idle');
-                        startButton.classList.remove('active');
-                        startButton.innerHTML = 'Start Conversation';
-                        resetProgress();
-                        appendMessage('Conversation ended.', false);
-                    },
-                    onError: (error) => {
-                        console.error('Conversation error:', error);
-                        updateBackground('idle');
-                        startButton.classList.remove('active');
-                        startButton.innerHTML = 'Start Conversation';
-                        resetProgress();
-                        appendMessage('An error occurred. Please try again.', false);
-                    },
-                    onMessage: (message) => {
-                        console.log('Agent message:', message);
-                        if (message.type === 'agent_response') {
-                            // Final agent response
-                            appendMessage(message.agent_response_event.agent_response, false);
-                        } else if (message.type === 'internal_tentative_agent_response') {
-                            // Tentative agent response
-                            appendMessage(message.tentative_agent_response_internal_event.tentative_agent_response, false, true);
-                        }
-                    },
-                    onTranscript: (transcript) => {
-                        if (transcript.text) {
-                            appendMessage(transcript.text, true);
-                        }
-                    }
-                });
-
-                // Add sparkle effect to button periodically
-                const sparkleInterval = setInterval(() => {
-                    if (conversation) {
-                        addSparkleEffect(startButton);
-                    } else {
-                        clearInterval(sparkleInterval);
-                    }
-                }, 2000);
-
-            } catch (error) {
-                console.error('Error starting conversation:', error);
-                updateBackground('idle');
-                startButton.classList.remove('active');
-                startButton.innerHTML = 'Start Conversation';
-                resetProgress();
-                appendMessage('Unable to access microphone. Please check your settings.', false);
-            }
-        };
-
-        // Function to end conversation
-        const endConversation = async () => {
-            if (conversation) {
-                try {
-                    await conversation.endSession();
-                } catch (error) {
-                    console.error('Error ending conversation:', error);
-                } finally {
-                    conversation = null;
-                    updateBackground('idle');
-                    startButton.classList.remove('active');
-                    startButton.innerHTML = 'Start Conversation';
-                    resetProgress();
-                }
-            }
-        };
-
-        // Confetti effect function
-        const triggerConfetti = () => {
+        function triggerConfetti() {
             const count = 200;
             const defaults = {
                 origin: { y: 0.7 }
@@ -736,9 +575,104 @@
                 spread: 120,
                 startVelocity: 45,
             });
+        }
+
+        async function startConversation() {
+            try {
+                await navigator.mediaDevices.getUserMedia({ audio: true });
+                triggerConfetti();
+                chatManager.showChat();
+                chatManager.clear();
+                startButton.classList.add('active');
+                startButton.innerHTML = `
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                `;
+
+                conversation = await Conversation.startSession({
+                    agentId: 'iogofk9qnqvE98RwV1Kk',
+                    onMessage: (message) => {
+                        if (message.type === 'agent_response') {
+                            chatManager.addMessage(message.text, false);
+                            chatManager.setTentativeText('');
+                        } else if (message.type === 'internal_tentative_agent_response') {
+                            chatManager.setTentativeText(message.text);
+                        }
+                    },
+                    onTranscript: (transcript) => {
+                        if (transcript.text) {
+                            chatManager.addMessage(transcript.text, true);
+                        }
+                    },
+                    onModeChange: (mode) => {
+                        updateBackground(mode.mode);
+                    },
+                    onConnect: () => {
+                        updateBackground('listening');
+                        startProgress();
+                        createParticles();
+                    },
+                    onDisconnect: () => {
+                        updateBackground('idle');
+                        startButton.classList.remove('active');
+                        startButton.textContent = 'Start Conversation';
+                        resetProgress();
+                    },
+                    onError: (error) => {
+                        console.error('Conversation error:', error);
+                        updateBackground('idle');
+                        startButton.classList.remove('active');
+                        startButton.textContent = 'Start Conversation';
+                        resetProgress();
+                    }
+                });
+
+                const sparkleInterval = setInterval(() => {
+                    if (conversation) {
+                        addSparkleEffect(startButton);
+                    } else {
+                        clearInterval(sparkleInterval);
+                    }
+                }, 2000);
+
+            } catch (error) {
+                console.error('Error starting conversation:', error);
+                updateBackground('idle');
+                startButton.classList.remove('active');
+                startButton.textContent = 'Start Conversation';
+                resetProgress();
+            }
+        }
+
+        async function endConversation() {
+            if (conversation) {
+                try {
+                    await conversation.endSession();
+                } catch (error) {
+                    console.error('Error ending conversation:', error);
+                } finally {
+                    conversation = null;
+                    chatManager.hideChat();
+                    updateBackground('idle');
+                    startButton.classList.remove('active');
+                    startButton.textContent = 'Start Conversation';
+                    resetProgress();
+                }
+            }
+        }
+
+        window.shareCharacter = () => {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Chat with Funny Cupcake on Talkidz',
+                    text: 'Come chat with Funny Cupcake, your new AI friend!',
+                    url: window.location.href
+                }).catch(console.error);
+            }
         };
 
-        // Event listener for Start/Stop Conversation button
         startButton.addEventListener('click', async () => {
             if (conversation) {
                 await endConversation();
@@ -747,21 +681,6 @@
             }
         });
 
-        // Share function
-        window.shareCharacter = () => {
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Chat with Funny Cupcake on Talkidz',
-                    text: 'Come chat with Funny Cupcake, your new AI friend!',
-                    url: window.location.href
-                }).catch(console.error);
-            } else {
-                // Fallback for browsers that do not support the Share API
-                alert('Share is not supported on your browser. Please copy the link manually.');
-            }
-        };
-
-        // Initialize with idle state
         preloadVideos();
         updateBackground('idle');
     </script>
