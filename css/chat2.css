@@ -545,6 +545,79 @@ body {
     border: 2px solid var(--accent-color);
 }
 
+.chat-container {
+    position: absolute;
+    right: 2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 300px;
+    height: 70vh;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    z-index: 5;
+}
+
+.messages-wrapper {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    scrollbar-width: thin;
+    scrollbar-color: var(--accent-color) transparent;
+}
+
+.messages-wrapper::-webkit-scrollbar {
+    width: 6px;
+}
+
+.messages-wrapper::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.messages-wrapper::-webkit-scrollbar-thumb {
+    background-color: var(--accent-color);
+    border-radius: 3px;
+}
+
+.message {
+    max-width: 85%;
+    padding: 0.75rem 1rem;
+    border-radius: 12px;
+    font-size: 0.875rem;
+    line-height: 1.4;
+    animation: messageAppear 0.3s ease-out;
+}
+
+.message.user {
+    background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
+    color: white;
+    align-self: flex-end;
+    border-bottom-right-radius: 4px;
+}
+
+.message.agent {
+    background: var(--secondary-bg);
+    color: var(--text-color);
+    align-self: flex-start;
+    border-bottom-left-radius: 4px;
+}
+
+@keyframes messageAppear {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 @keyframes buttonShine {
     to { transform: translateX(100%) rotate(45deg); }
 }
@@ -560,6 +633,16 @@ body {
         width: 100%; height: auto;
         max-height: none;
         object-fit: cover;
+    }
+    .chat-container {
+        position: fixed;
+        right: 1rem;
+        left: 1rem;
+        width: auto;
+        height: 50vh;
+        bottom: calc(140px + env(safe-area-inset-bottom));
+        top: auto;
+        transform: none;
     }
     .controls-container {
         padding-bottom: env(safe-area-inset-bottom);
