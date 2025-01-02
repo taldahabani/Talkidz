@@ -428,6 +428,7 @@ class ChatController {
     this.conversation = null;
     this.videosLoaded = { idle: false, speaking: false };
     this.messages = [];
+    this.isListening = false;
 
     this.setupElements();
     this.setupCharacter();
@@ -438,7 +439,7 @@ class ChatController {
     this.setupCharacterMenu();
     this.setupLanguageMenu();
     
-    this.loadingScreen.classList.remove('hidden');
+    this.loadingScreen?.classList.remove('hidden');
   }
 
   setupElements() {
@@ -454,7 +455,6 @@ class ChatController {
     this.characterSelectButton = document.querySelector('.character-select-button');
     this.loadingScreen = document.querySelector('.character-loading');
     this.messagesContainer = document.getElementById('messagesContainer');
-
     this.languageSelectButton = document.getElementById('languageSelectButton');
     this.currentLanguageFlag = document.getElementById('currentLanguageFlag');
     this.languageMenu = document.getElementById('languageMenu');
@@ -462,34 +462,37 @@ class ChatController {
   }
 
   setupEventListeners() {
-    this.startButton.addEventListener('click', async () => {
-      if (this.conversation) {
+    this.startButton?.addEventListener('click', async () => {
+      if (this.isListening) {
         await this.endConversation();
+        this.isListening = false;
       } else {
         await this.startConversation();
+        this.isListening = true;
       }
     });
 
-    this.idleVideo.addEventListener('ended', () => {
-      if (this.idleVideo.classList.contains('active')) {
+    this.idleVideo?.addEventListener('ended', () => {
+      if (this.idleVideo?.classList.contains('active')) {
         this.idleVideo.play().catch(console.error);
       }
     });
 
-    this.speakingVideo.addEventListener('ended', () => {
-      if (this.speakingVideo.classList.contains('active')) {
+    this.speakingVideo?.addEventListener('ended', () => {
+      if (this.speakingVideo?.classList.contains('active')) {
         this.speakingVideo.play().catch(console.error);
       }
     });
   }
 
   setupCharacter() {
+    if (!this.character?.assets) return;
+    
     document.title = `${this.character.name} - Talkidz`;
     this.characterName.textContent = this.character.name;
     this.backgroundImage.style.background = `url('${this.character.assets.preview}') center/contain no-repeat`;
     this.idleVideo.src = this.character.assets.idle;
     this.speakingVideo.src = this.character.assets.talking;
-
     this.characterSelectButton.innerHTML = `
       <div class="character-icon">
         <img src="${this.character.assets.icon}" alt="${this.character.name}">
@@ -504,17 +507,16 @@ class ChatController {
   }
 
   addMessage(text, isUser = false) {
-    if (!text || !this.messagesContainer) return;
-    
+    if (!text?.trim() || !this.messagesContainer) return;
+
     const messageDiv = document.createElement('div');
     messageDiv.className = `message ${isUser ? 'user' : 'agent'}`;
     messageDiv.textContent = text;
-    this.messages.push({ text, isUser });
+    this.messages.push({ text, isUser, timestamp: Date.now() });
     this.messagesContainer.appendChild(messageDiv);
-    
-    // Ensure scroll to bottom happens after content is rendered
+
     requestAnimationFrame(() => {
-      this.messagesContainer.scrollTop = this.messagesContainer.scrollHeight;
+      messageDiv.scrollIntoView({ behavior: 'smooth', block: 'end' });
     });
   }
 
@@ -523,6 +525,8 @@ class ChatController {
     
     this.characterMenuContent.innerHTML = '';
     Object.values(characters).forEach(char => {
+      if (!char?.id || !char?.assets?.icon) return;
+      
       const option = document.createElement('div');
       option.className = `character-option ${char.id === this.character.id ? 'active' : ''}`;
       option.innerHTML = `<img src="${char.assets.icon}" alt="${char.name}">`;
@@ -530,16 +534,20 @@ class ChatController {
       this.characterMenuContent.appendChild(option);
     });
 
-    this.characterSelectButton.addEventListener('click', (e) => {
+    const handleCharacterClick = (e) => {
       e.stopPropagation();
-      this.characterMenu.classList.toggle('active');
-    });
+      this.characterMenu?.classList.toggle('active');
+    };
 
-    document.addEventListener('click', (e) => {
-      if (!this.characterMenu.contains(e.target) && !this.characterSelectButton.contains(e.target)) {
-        this.characterMenu.classList.remove('active');
+    const handleDocumentClick = (e) => {
+      if (!this.characterMenu?.contains(e.target) && 
+          !this.characterSelectButton?.contains(e.target)) {
+        this.characterMenu?.classList.remove('active');
       }
-    });
+    };
+
+    this.characterSelectButton?.addEventListener('click', handleCharacterClick);
+    document.addEventListener('click', handleDocumentClick);
   }
 
   setupLanguageMenu() {
@@ -547,6 +555,8 @@ class ChatController {
 
     this.languageMenuContent.innerHTML = '';
     languages.forEach(lang => {
+      if (!lang?.code) return;
+      
       const option = document.createElement('div');
       option.className = `language-option ${lang.code === this.currentLanguage ? 'active' : ''}`;
       option.innerHTML = `
@@ -559,44 +569,51 @@ class ChatController {
 
     this.updateLanguageFlag(this.currentLanguage);
 
-    this.languageSelectButton.addEventListener('click', (e) => {
+    const handleLanguageClick = (e) => {
       e.stopPropagation();
-      this.languageMenu.classList.toggle('active');
-    });
+      this.languageMenu?.classList.toggle('active');
+    };
 
-    document.addEventListener('click', (e) => {
-      if (!this.languageMenu.contains(e.target) && !this.languageSelectButton.contains(e.target)) {
-        this.languageMenu.classList.remove('active');
+    const handleDocumentClick = (e) => {
+      if (!this.languageMenu?.contains(e.target) && 
+          !this.languageSelectButton?.contains(e.target)) {
+        this.languageMenu?.classList.remove('active');
       }
-    });
+    };
+
+    this.languageSelectButton?.addEventListener('click', handleLanguageClick);
+    document.addEventListener('click', handleDocumentClick);
   }
 
   updateLanguageFlag(langCode) {
-    const selectedLang = languages.find(l => l.code === langCode) || languages.find(l => l.code === 'en');
-    if (selectedLang && this.currentLanguageFlag) {
-      this.currentLanguageFlag.textContent = selectedLang.flag;
-    }
+    if (!this.currentLanguageFlag) return;
+    
+    const selectedLang = languages.find(l => l.code === langCode) || 
+                        languages.find(l => l.code === 'en');
+    this.currentLanguageFlag.textContent = selectedLang?.flag || '🇺🇸';
   }
 
   markActiveLanguage(newCode) {
     const allLangOptions = document.querySelectorAll('.language-option');
     allLangOptions.forEach(opt => opt.classList.remove('active'));
 
-    const newActive = Array.from(allLangOptions).find(
-      opt => opt.innerText.includes(this.getLangName(newCode))
-    );
-    if (newActive) newActive.classList.add('active');
+    const newActive = Array.from(allLangOptions)
+      .find(opt => opt.textContent.includes(this.getLangName(newCode)));
+    newActive?.classList.add('active');
   }
 
   getLangName(code) {
     const found = languages.find(l => l.code === code);
-    return found ? found.name : '';
+    return found?.name || '';
   }
 
   async changeLanguage(newCode) {
+    if (!newCode) return;
+    
     if (this.conversation) {
       await this.endConversation();
     }
+    
     const url = new URL(window.location);
     url.searchParams.set('language', newCode);
     window.history.pushState({}, '', url);
@@ -604,14 +621,17 @@ class ChatController {
     this.currentLanguage = newCode;
     this.updateLanguageFlag(newCode);
     this.markActiveLanguage(newCode);
-    this.languageMenu.classList.remove('active');
+    this.languageMenu?.classList.remove('active');
   }
 
   async changeCharacter(characterId) {
+    if (!characterId || !characters[characterId]) return;
+    
     if (this.conversation) {
       await this.endConversation();
     }
-    this.loadingScreen.classList.remove('hidden');
+
+    this.loadingScreen?.classList.remove('hidden');
     this.videosLoaded = { idle: false, speaking: false };
 
     const url = new URL(window.location);
@@ -625,15 +645,18 @@ class ChatController {
     this.setupMessageHandling();
 
     document.querySelectorAll('.character-option').forEach(option => {
-      option.classList.toggle('active', option.querySelector('img').src.includes(characterId));
+      const img = option.querySelector('img');
+      if (img) {
+        option.classList.toggle('active', img.src.includes(characterId));
+      }
     });
 
-    this.characterMenu.classList.remove('active');
+    this.characterMenu?.classList.remove('active');
   }
 
   updateStatus(mode) {
     if (!this.statusDot || !this.statusText) return;
-    
+
     this.statusDot.classList.remove('listening');
     switch (mode) {
       case 'listening':
@@ -654,19 +677,25 @@ class ChatController {
   preloadVideos() {
     if (!this.idleVideo || !this.speakingVideo) return;
 
-    this.idleVideo.load();
-    this.idleVideo.addEventListener('loadeddata', () => {
+    const handleIdleLoad = () => {
       this.videosLoaded.idle = true;
-      this.backgroundImage.style.opacity = '0';
+      if (this.backgroundImage) {
+        this.backgroundImage.style.opacity = '0';
+      }
       this.idleVideo.classList.add('active');
       this.idleVideo.play().catch(console.error);
-      this.loadingScreen.classList.add('hidden');
-    });
+      this.loadingScreen?.classList.add('hidden');
+    };
 
-    this.speakingVideo.load();
-    this.speakingVideo.addEventListener('loadeddata', () => {
+    const handleSpeakingLoad = () => {
       this.videosLoaded.speaking = true;
-    });
+    };
+
+    this.idleVideo.load();
+    this.speakingVideo.load();
+    
+    this.idleVideo.addEventListener('loadeddata', handleIdleLoad, { once: true });
+    this.speakingVideo.addEventListener('loadeddata', handleSpeakingLoad, { once: true });
   }
 
   updateBackground(mode) {
@@ -682,24 +711,27 @@ class ChatController {
       this.idleVideo.play().catch(console.error);
     } else {
       this.backgroundImage.style.opacity = '1';
-      [this.idleVideo, this.speakingVideo].forEach(video =>
-        video.classList.remove('active')
-      );
+      [this.idleVideo, this.speakingVideo].forEach(video => {
+        video.classList.remove('active');
+      });
     }
     this.updateStatus(mode);
   }
 
   triggerConfetti() {
+    if (typeof confetti !== 'function') return;
+    
     const options = { origin: { y: 0.7 } };
     const count = 200;
-
-    [
+    const effects = [
       { spread: 26, startVelocity: 55, particleRatio: 0.25 },
       { spread: 60, particleRatio: 0.2 },
       { spread: 100, decay: 0.91, scalar: 0.8, particleRatio: 0.35 },
       { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2, particleRatio: 0.1 },
       { spread: 120, startVelocity: 45, particleRatio: 0.1 }
-    ].forEach(opts => {
+    ];
+
+    effects.forEach(opts => {
       confetti({
         ...options,
         ...opts,
@@ -709,30 +741,42 @@ class ChatController {
   }
 
   async startConversation() {
+    if (!navigator?.mediaDevices?.getUserMedia) {
+      console.error('Media devices API not available');
+      return;
+    }
+
     try {
       await navigator.mediaDevices.getUserMedia({ audio: true });
       this.triggerConfetti();
-      this.startButton.classList.add('active');
-      this.startButton.innerHTML = `
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-          <line x1="18" y1="6" x2="6" y2="18"></line>
-          <line x1="6" y1="6" x2="18" y2="18"></line>
-        </svg>
-      `;
+      
+      if (this.startButton) {
+        this.startButton.classList.add('active');
+        this.startButton.innerHTML = `
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        `;
+      }
 
-      const charMessages = firstMessages[this.character.id] || {};
+      const charMessages = firstMessages[this.character?.id] || {};
       const selectedMsg = charMessages[this.currentLanguage] || "Hello!";
 
       this.conversation = await Conversation.startSession({
-        agentId: this.character.agentId,
+        agentId: this.character?.agentId,
         overrides: {
           agent: {
             language: this.currentLanguage || 'en',
             firstMessage: selectedMsg
           }
         },
-        onModeChange: (mode) => this.updateBackground(mode.mode),
+        onModeChange: (mode) => {
+          console.log('Mode changed:', mode);
+          this.updateBackground(mode?.mode || 'idle');
+        },
         onConnect: () => {
+          console.log('Connected to conversation');
           this.updateBackground('listening');
           this.addMessage(selectedMsg, false);
         },
@@ -749,49 +793,52 @@ class ChatController {
           }
         },
         onDisconnect: () => {
+          console.log('Disconnected from conversation');
+          this.isListening = false;
           this.updateBackground('idle');
-          this.startButton.classList.remove('active');
-          this.startButton.textContent = 'Start Conversation';
+          if (this.startButton) {
+            this.startButton.classList.remove('active');
+            this.startButton.textContent = 'Start Conversation';
+          }
         },
         onError: (error) => {
           console.error('Conversation error:', error);
+          this.isListening = false;
           this.updateBackground('idle');
-          this.startButton.classList.remove('active');
-          this.startButton.textContent = 'Start Conversation';
+          if (this.startButton) {
+            this.startButton.classList.remove('active');
+            this.startButton.textContent = 'Start Conversation';
+          }
         }
       });
     } catch (error) {
       console.error('Error starting conversation:', error);
+      this.isListening = false;
       this.updateBackground('idle');
-      this.startButton.classList.remove('active');
-      this.startButton.textContent = 'Start Conversation';
-    }
-  }
-
-  async endConversation() {
-    if (this.conversation) {
-      try {
-        await this.conversation.endSession();
-        this.conversation = null;
-        this.updateBackground('idle');
+      if (this.startButton) {
         this.startButton.classList.remove('active');
         this.startButton.textContent = 'Start Conversation';
-      } catch (error) {
-        console.error('Error ending conversation:', error);
       }
     }
   }
-}
 
- setupEventListeners() {
-   this.startButton.addEventListener('click', async () => {
-     if (this.conversation) {
-       await this.endConversation();
-     } else {
-       await this.startConversation();
-     }
-   });
- }
+async endConversation() {
+    if (!this.conversation) return;
+
+    try {
+      await this.conversation.endSession();
+    } catch (error) {
+      console.error('Error ending conversation:', error);
+    } finally {
+      this.conversation = null;
+      this.isListening = false;
+      this.updateBackground('idle');
+      if (this.startButton) {
+        this.startButton.classList.remove('active');
+        this.startButton.textContent = 'Start Conversation';
+      }
+    }
+  }
 }
 
 window.shareCharacter = () => {
