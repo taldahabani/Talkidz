@@ -1,791 +1,149 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Funny Cupcake - Talkidz</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" rel="stylesheet">
-    <style>
-        :root {
-            --primary-color: #FF4B6E;
-            --text-color: #1A1A1A;
-            --background-color: #FFFFFF;
-            --secondary-background: #F5F5F5;
-            --accent-color: #6C5CE7;
-            --shadow-color: rgba(0, 0, 0, 0.08);
-            --message-bg-user: #e3f2fd;
-            --message-bg-agent: #f5f5f5;
+import React, { useState, useEffect, useRef } from 'react';
+import { MessageCircle, X, Share2, ArrowLeft } from 'lucide-react';
+
+const EnhancedChat = () => {
+  const [messages, setMessages] = useState([]);
+  const [isConnected, setIsConnected] = useState(false);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const messagesEndRef = useRef(null);
+  const [progress, setProgress] = useState(0);
+  const progressInterval = useRef(null);
+  const CONVERSATION_TIME = 300; // 5 minutes
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const startProgress = () => {
+    setProgress(0);
+    clearInterval(progressInterval.current);
+    progressInterval.current = setInterval(() => {
+      setProgress(prev => {
+        if (prev >= 100) {
+          clearInterval(progressInterval.current);
+          handleEndConversation();
+          return 100;
         }
+        return prev + (100 / CONVERSATION_TIME);
+      });
+    }, 1000);
+  };
 
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            width: 100%;
-            overflow: hidden;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--background-color);
-        }
+  const handleStartConversation = async () => {
+    try {
+      await navigator.mediaDevices.getUserMedia({ audio: true });
+      setIsConnected(true);
+      startProgress();
+      setMessages(prev => [...prev, {
+        text: "Hi there! I'm your AI friend. How can I help you today?",
+        isUser: false
+      }]);
+    } catch (error) {
+      console.error('Error starting conversation:', error);
+    }
+  };
 
-        .top-bar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 70px;
-            padding: 0 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            z-index: 100;
-            background: linear-gradient(to right, 
-                rgba(245, 245, 245, 0.98),
-                rgba(255, 255, 255, 0.98));
-            backdrop-filter: blur(10px);
-        }
+  const handleEndConversation = () => {
+    setIsConnected(false);
+    clearInterval(progressInterval.current);
+    setProgress(0);
+  };
 
-        .back-button {
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-color);
-            text-decoration: none;
-            font-weight: 600;
-            border-radius: 12px;
-            transition: all 0.3s ease;
-            background: white;
-            border: 1px solid rgba(108, 92, 231, 0.15);
-            box-shadow: 0 2px 8px rgba(108, 92, 231, 0.1);
-        }
+  const shareConversation = () => {
+    if (navigator.share) {
+      navigator.share({
+        title: 'Chat with AI',
+        text: 'Come chat with your new AI friend!',
+        url: window.location.href
+      }).catch(console.error);
+    }
+  };
 
-        .back-button:hover {
-            transform: translateX(-2px);
-            border-color: var(--accent-color);
-            color: var(--accent-color);
-        }
-
-        .character-name {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 1.5rem;
-            font-weight: 700;
-            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            padding: 0.5rem 1rem;
-            white-space: nowrap;
-            letter-spacing: -0.5px;
-        }
-
-        .main-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: var(--background-color);
-        }
-
-        .video-wrapper {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .background.video {
-            position: absolute;
-            display: none;
-            max-width: 100%;
-            max-height: 100%;
-            width: auto;
-            height: auto;
-        }
-
-        @media (max-aspect-ratio: 1/1) {
-            .background.video {
-                width: 100%;
-                height: auto;
-            }
-        }
-
-        @media (min-aspect-ratio: 1/1) {
-            .background.video {
-                height: 100%;
-                width: auto;
-            }
-        }
-
-        .background.image {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            background-image: url('/characters/cupcake/assets/cupcake.png');
-            background-size: contain;
-            background-position: center;
-            background-repeat: no-repeat;
-        }
-/* Continuing the style tag */
-        .bottom-container {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            padding: 1rem;
-            background: linear-gradient(to top, 
-                rgba(255,255,255,0.98) 70%,
-                rgba(255,255,255,0.8) 85%,
-                transparent);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1rem;
-            z-index: 10;
-            backdrop-filter: blur(8px);
-        }
-
-        .messages-container {
-            position: fixed;
-            bottom: 140px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 90%;
-            max-width: 600px;
-            max-height: 50vh;
-            overflow-y: auto;
-            padding: 1rem;
-            border-radius: 12px;
-            background: rgba(255, 255, 255, 0.95);
-            box-shadow: 0 4px 20px rgba(108, 92, 231, 0.1);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            scrollbar-width: thin;
-            scrollbar-color: var(--accent-color) transparent;
-        }
-
-        .messages-container.visible {
-            opacity: 1;
-        }
-
-        .message {
-            margin: 0.5rem 0;
-            padding: 0.75rem 1rem;
-            border-radius: 12px;
-            max-width: 80%;
-            animation: messageAppear 0.3s ease forwards;
-            word-wrap: break-word;
-        }
-
-        .message.user {
-            background: var(--message-bg-user);
-            margin-left: auto;
-            border-bottom-right-radius: 4px;
-        }
-
-        .message.agent {
-            background: var(--message-bg-agent);
-            margin-right: auto;
-            border-bottom-left-radius: 4px;
-        }
-
-        @keyframes messageAppear {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .message-header {
-            font-size: 0.75rem;
-            color: var(--accent-color);
-            margin-bottom: 0.25rem;
-            font-weight: 600;
-        }
-
-        .message-content {
-            font-size: 0.9rem;
-            line-height: 1.4;
-            color: var(--text-color);
-        }
-
-        /* Keep existing styles and add these new ones */
-        .controls-wrapper {
-            width: 100%;
-            max-width: 600px;
-            position: relative;
-            margin-bottom: 1rem;
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .top-bar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 70px;
-            padding: 0 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            z-index: 100;
-            background: linear-gradient(to right, 
-                rgba(245, 245, 245, 0.98),
-                rgba(255, 255, 255, 0.98));
-            backdrop-filter: blur(10px);
-        }
-
-        .back-button {
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-color);
-            text-decoration: none;
-            font-weight: 600;
-            border-radius: 12px;
-            transition: all 0.3s ease;
-            background: white;
-            border: 1px solid rgba(108, 92, 231, 0.15);
-            box-shadow: 0 2px 8px rgba(108, 92, 231, 0.1);
-        }
-
-        .back-button:hover {
-            transform: translateX(-2px);
-            border-color: var(--accent-color);
-            color: var(--accent-color);
-        }
-
-        .character-name {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 1.5rem;
-            font-weight: 700;
-            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            padding: 0.5rem 1rem;
-            white-space: nowrap;
-            letter-spacing: -0.5px;
-        }
-
-        .main-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: var(--background-color);
-        }
-
-        .video-wrapper {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .background.video {
-            position: absolute;
-            display: none;
-            max-width: 100%;
-            max-height: 100%;
-            width: auto;
-            height: auto;
-        }
-
-        .background.image {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            background-image: url('/characters/cupcake/assets/cupcake.png');
-            background-size: contain;
-            background-position: center;
-            background-repeat: no-repeat;
-        }
-
-        .main-button {
-            background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
-            color: white;
-            border: none;
-            padding: 1rem 2.5rem;
-            font-size: 1rem;
-            font-weight: 600;
-            border-radius: 999px;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .main-button::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(
-                45deg,
-                transparent,
-                rgba(255, 255, 255, 0.1),
-                transparent
-            );
-            transform: rotate(45deg);
-            animation: buttonShine 3s infinite;
-        }
-
-        @keyframes buttonShine {
-            0% { transform: translateX(-100%) rotate(45deg); }
-            100% { transform: translateX(100%) rotate(45deg); }
-        }
-
-        .main-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(108, 92, 231, 0.3);
-        }
-
-        .main-button.active {
-            width: 48px;
-            height: 48px;
-            padding: 0;
-            border-radius: 50%;
-            background: #808080;
-            transform: translateY(1px);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .particle {
-            position: absolute;
-            pointer-events: none;
-            opacity: 0;
-        }
-
-        @keyframes float {
-            0% { transform: translate(0, 0) rotate(0deg); opacity: 0; }
-            20% { opacity: 0.8; }
-            100% { transform: translate(var(--tx), var(--ty)) rotate(360deg); opacity: 0; }
-        }
-
-        .sparkle {
-            position: absolute;
-            pointer-events: none;
-            background: white;
-            border-radius: 50%;
-            mix-blend-mode: screen;
-        }
-
-        @keyframes sparkle {
-            0%, 100% { transform: scale(0) rotate(0deg); opacity: 0; }
-            50% { transform: scale(1) rotate(180deg); opacity: 1; }
-        }
-
-        .share-button {
-            background: var(--secondary-background);
-            border: none;
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            color: var(--text-color);
-        }
-
-        .share-button:hover {
-            transform: translateY(-2px);
-            background: white;
-            box-shadow: 0 4px 12px var(--shadow-color);
-        }
-
-        @media (max-width: 768px) {
-            .bottom-status-container {
-                padding-bottom: calc(env(safe-area-inset-bottom) + 1rem);
-            }
-            
-            .bottom-container {
-                padding-bottom: calc(env(safe-area-inset-bottom) + 5rem);
-            }
-
-            .main-button {
-                padding: 1rem 2rem;
-            }
-        }
-
-        @media (max-aspect-ratio: 1/1) {
-            .background.video {
-                width: 100%;
-                height: auto;
-            }
-        }
-
-        @media (min-aspect-ratio: 1/1) {
-            .background.video {
-                height: 100%;
-                width: auto;
-            }
-        
-    </style>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
-</head>
-<body>
-    <!-- Keep existing top-bar and main-container -->
-    <div class="top-bar">
-        <a href="/" class="back-button">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M19 12H5M12 19l-7-7 7-7"/>
-            </svg>
-        </a>
-        <div class="character-name">Funny Cupcake</div>
-    </div>
-
-    <div class="main-container">
-        <div class="video-wrapper">
-            <div class="background image"></div>
-            <video class="background video" id="idleVideo" loop muted playsinline disablePictureInPicture>
-                <source src="/characters/cupcake/assets/cupcake-blinking.mp4" type="video/mp4">
-            </video>
-            <video class="background video" id="speakingVideo" loop muted playsinline disablePictureInPicture>
-                <source src="/characters/cupcake/assets/cupcake-talk.mp4" type="video/mp4">
-            </video>
+  return (
+    <div className="h-screen flex flex-col bg-white">
+      {/* Top Bar */}
+      <div className="fixed top-0 left-0 right-0 h-16 px-6 flex items-center justify-between bg-white/95 backdrop-blur-md z-50 border-b border-gray-100">
+        <button 
+          onClick={handleEndConversation}
+          className="w-10 h-10 flex items-center justify-center rounded-xl bg-white text-gray-700 border border-purple-100 shadow-sm hover:border-purple-400 transition-colors"
+        >
+          <ArrowLeft size={20} />
+        </button>
+        <div className="absolute left-1/2 -translate-x-1/2 text-xl font-bold bg-gradient-to-r from-pink-500 to-purple-600 text-transparent bg-clip-text">
+          AI Friend
         </div>
-    </div>
+      </div>
 
-    <!-- New messages container -->
-    <div id="messagesContainer" class="messages-container">
-        <!-- Messages will be dynamically added here -->
-    </div>
+      {/* Messages Container */}
+      <div className="flex-1 overflow-y-auto pt-20 pb-40 px-4">
+        <div className="max-w-2xl mx-auto space-y-4">
+          {messages.map((msg, index) => (
+            <div
+              key={index}
+              className={`flex ${msg.isUser ? 'justify-end' : 'justify-start'}`}
+            >
+              <div className={`max-w-[80%] p-3 rounded-2xl ${
+                msg.isUser 
+                  ? 'bg-gradient-to-r from-purple-600 to-pink-500 text-white'
+                  : 'bg-gray-100 text-gray-800'
+              }`}>
+                {msg.text}
+              </div>
+            </div>
+          ))}
+          <div ref={messagesEndRef} />
+        </div>
+      </div>
 
-    <!-- Keep existing bottom container and status container -->
-    <div class="bottom-container">
-        <div class="controls-wrapper">
-            <button id="startButton" class="main-button">Start Conversation</button>
-            <button class="share-button" onclick="shareCharacter()">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
-                    <polyline points="16 6 12 2 8 6"/>
-                    <line x1="12" y1="2" x2="12" y2="15"/>
-                </svg>
+      {/* Bottom Controls */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md">
+        <div className="p-6 flex flex-col items-center space-y-4">
+          <div className="w-full max-w-md flex items-center gap-4">
+            <button
+              onClick={isConnected ? handleEndConversation : handleStartConversation}
+              className={`flex-1 h-12 rounded-full font-semibold transition-all ${
+                isConnected
+                  ? 'bg-gray-500 w-12 p-0 flex items-center justify-center'
+                  : 'bg-gradient-to-r from-purple-600 to-pink-500 text-white px-8'
+              }`}
+            >
+              {isConnected ? (
+                <X size={24} className="text-white" />
+              ) : (
+                'Start Conversation'
+              )}
             </button>
+            <button
+              onClick={shareConversation}
+              className="w-12 h-12 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+            >
+              <Share2 size={20} />
+            </button>
+          </div>
         </div>
-    </div>
-
-    <div class="bottom-status-container">
-        <div class="logo-container">
-            <a href="/" class="logo">Talkidz</a>
-            <span class="logo-byline">by Playbox</span>
-        </div>
-        <div class="progress-container">
-            <div id="progressBar" class="progress-bar"></div>
-        </div>
-    </div>
-
-    <script type="module">
-        import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
-
-        let conversation = null;
-        let currentMode = 'idle';
-        let videosLoaded = { idle: false, speaking: false };
-        let progressInterval;
-        const CONVERSATION_TIME = 300;
-        let currentProgress = 0;
         
-        // Message handling
-        const messagesContainer = document.getElementById('messagesContainer');
-        const addMessage = (text, isUser = false) => {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${isUser ? 'user' : 'agent'}`;
-            
-            const header = document.createElement('div');
-            header.className = 'message-header';
-            header.textContent = isUser ? 'You' : 'Funny Cupcake';
-            
-            const content = document.createElement('div');
-            content.className = 'message-content';
-            content.textContent = text;
-            
-            messageDiv.appendChild(header);
-            messageDiv.appendChild(content);
-            
-            messagesContainer.appendChild(messageDiv);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            
-            if (!messagesContainer.classList.contains('visible')) {
-                messagesContainer.classList.add('visible');
-            }
-        };
+        {/* Progress Bar */}
+        <div className="px-6 pb-6 flex items-center gap-4">
+          <div className="flex flex-col">
+            <span className="text-lg font-bold bg-gradient-to-r from-pink-500 to-purple-600 text-transparent bg-clip-text">
+              Talkidz
+            </span>
+            <span className="text-xs text-gray-500 -mt-1 ml-1">by Playbox</span>
+          </div>
+          <div className="flex-1 h-1 bg-gray-100 rounded-full overflow-hidden">
+            <div 
+              className="h-full bg-gradient-to-r from-purple-600 to-pink-500 transition-all duration-1000"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
-        // Keep all existing functions but modify startConversation
-        const startConversation = async () => {
-            try {
-                await navigator.mediaDevices.getUserMedia({ audio: true });
-                triggerConfetti();
-                startButton.classList.add('active');
-                startButton.innerHTML = `
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                `;
-
-                conversation = await Conversation.startSession({
-                    agentId: 'iogofk9qnqvE98RwV1Kk',
-                    onModeChange: (mode) => {
-                        updateBackground(mode.mode);
-                    },
-                    onConnect: () => {
-                        updateBackground('listening');
-                        startProgress();
-                        createParticles();
-                        addMessage("Hi! I'm Funny Cupcake. What would you like to talk about?", false);
-                    },
-                    onMessage: (message) => {
-                        addMessage(message.text, false);
-                    },
-                    onTranscript: (transcript) => {
-                        if (transcript.text) {
-                            addMessage(transcript.text, true);
-                        }
-                    },
-                    onDisconnect: () => {
-                        updateBackground('idle');
-                        startButton.classList.remove('active');
-                        startButton.textContent = 'Start Conversation';
-                        resetProgress();
-                        messagesContainer.classList.remove('visible');
-                        setTimeout(() => {
-                            messagesContainer.innerHTML = '';
-                        }, 300);
-                    },
-                    onError: (error) => {
-                        console.error('Conversation error:', error);
-                        updateBackground('idle');
-                        startButton.classList.remove('active');
-                        startButton.textContent = 'Start Conversation';
-                        resetProgress();
-                        addMessage("Sorry, there was an error. Please try again.", false);
-                    }
-                });
-
-            } catch (error) {
-                console.error('Error starting conversation:', error);
-                updateBackground('idle');
-                startButton.classList.remove('active');
-                startButton.textContent = 'Start Conversation';
-                resetProgress();
-                addMessage("Sorry, I couldn't access the microphone. Please make sure it's enabled and try again.", false);
-            }
-        };
-
-        const preloadVideos = () => {
-            idleVideo.load();
-            idleVideo.addEventListener('loadeddata', () => {
-                videosLoaded.idle = true;
-            });
-
-            speakingVideo.load();
-            speakingVideo.addEventListener('loadeddata', () => {
-                videosLoaded.speaking = true;
-            });
-        };
-
-        const startProgress = () => {
-            currentProgress = 0;
-            const progressBar = document.getElementById('progressBar');
-            progressBar.style.width = '0%';
-            
-            clearInterval(progressInterval);
-            progressInterval = setInterval(() => {
-                currentProgress += (100 / CONVERSATION_TIME);
-                if (currentProgress >= 100) {
-                    clearInterval(progressInterval);
-                    currentProgress = 100;
-                    endConversation();
-                }
-                progressBar.style.width = `${currentProgress}%`;
-            }, 1000);
-        };
-
-        const resetProgress = () => {
-            clearInterval(progressInterval);
-            const progressBar = document.getElementById('progressBar');
-            progressBar.style.width = '0%';
-            currentProgress = 0;
-        };
-
-        const updateBackground = (mode) => {
-            backgroundImage.style.display = 'none';
-            idleVideo.style.display = 'none';
-            speakingVideo.style.display = 'none';
-            
-            idleVideo.pause();
-            speakingVideo.pause();
-
-            if (mode === 'speaking' && videosLoaded.speaking) {
-                speakingVideo.style.display = 'block';
-                speakingVideo.play().catch(console.error);
-            } else if (mode === 'listening' && videosLoaded.idle) {
-                idleVideo.style.display = 'block';
-                idleVideo.play().catch(console.error);
-            } else {
-                backgroundImage.style.display = 'block';
-            }
-        };
-
-        const createParticles = () => {
-            const container = document.querySelector('.main-container');
-            for (let i = 0; i < 20; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'particle';
-                particle.style.width = Math.random() * 10 + 'px';
-                particle.style.height = particle.style.width;
-                particle.style.background = `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.5)`;
-                particle.style.borderRadius = '50%';
-                particle.style.position = 'absolute';
-                restartParticle(particle);
-                container.appendChild(particle);
-            }
-        };
-
-        const restartParticle = (particle) => {
-            const startX = Math.random() * window.innerWidth;
-            const startY = window.innerHeight + 10;
-            const endX = startX + (Math.random() - 0.5) * 200;
-            const endY = -10;
-            
-            particle.style.left = startX + 'px';
-            particle.style.top = startY + 'px';
-            particle.style.setProperty('--tx', (endX - startX) + 'px');
-            particle.style.setProperty('--ty', (endY - startY) + 'px');
-            
-            particle.style.animation = 'none';
-            particle.offsetHeight;
-            particle.style.animation = `float ${Math.random() * 2 + 3}s linear infinite`;
-        };
-
-        const addSparkleEffect = (element) => {
-            const sparkle = document.createElement('div');
-            sparkle.className = 'sparkle';
-            sparkle.style.width = Math.random() * 10 + 5 + 'px';
-            sparkle.style.height = sparkle.style.width;
-            sparkle.style.left = Math.random() * 100 + '%';
-            sparkle.style.top = Math.random() * 100 + '%';
-            element.appendChild(sparkle);
-
-            sparkle.style.animation = `sparkle ${Math.random() * 0.5 + 0.5}s ease-in-out`;
-            sparkle.addEventListener('animationend', () => sparkle.remove());
-        };
-
-        const endConversation = async () => {
-            if (conversation) {
-                try {
-                    await conversation.endSession();
-                } catch (error) {
-                    console.error('Error ending conversation:', error);
-                } finally {
-                    conversation = null;
-                    updateBackground('idle');
-                    startButton.classList.remove('active');
-                    startButton.textContent = 'Start Conversation';
-                    resetProgress();
-                }
-            }
-        };
-
-        const triggerConfetti = () => {
-            const count = 200;
-            const defaults = {
-                origin: { y: 0.7 }
-            };
-
-            function fire(particleRatio, opts) {
-                confetti({
-                    ...defaults,
-                    ...opts,
-                    particleCount: Math.floor(count * particleRatio)
-                });
-            }
-
-            fire(0.25, {
-                spread: 26,
-                startVelocity: 55,
-            });
-
-            fire(0.2, {
-                spread: 60,
-            });
-
-            fire(0.35, {
-                spread: 100,
-                decay: 0.91,
-                scalar: 0.8
-            });
-
-            fire(0.1, {
-                spread: 120,
-                startVelocity: 25,
-                decay: 0.92,
-                scalar: 1.2
-            });
-
-            fire(0.1, {
-                spread: 120,
-                startVelocity: 45,
-            });
-        };
-
-        startButton.addEventListener('click', async () => {
-            if (conversation) {
-                await endConversation();
-            } else {
-                await startConversation();
-            }
-        });
-
-        window.shareCharacter = () => {
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Chat with Funny Cupcake on Talkidz',
-                    text: 'Come chat with Funny Cupcake, your new AI friend!',
-                    url: window.location.href
-                }).catch(console.error);
-            }
-        };
-
-        // Initialize
-        preloadVideos();
-        updateBackground('idle');
-    </script>
-</body>
-</html>
+export default EnhancedChat;
