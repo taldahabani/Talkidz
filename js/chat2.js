@@ -676,60 +676,62 @@ class ChatController {
    });
  }
 
- async startConversation() {
-   try {
-     await navigator.mediaDevices.getUserMedia({ audio: true });
-     this.triggerConfetti();
-     this.startButton.classList.add('active');
-     this.startButton.innerHTML = `
-       <svg width="24" height="24" viewBox="0 0 24 24"
-            fill="none" stroke="white" stroke-width="2">
-         <line x1="18" y1="6" x2="6" y2="18"></line>
-         <line x1="6" y1="6" x2="18" y2="18"></line>
-       </svg>
-     `;
+async startConversation() {
+    try {
+      await navigator.mediaDevices.getUserMedia({ audio: true });
+      this.triggerConfetti();
+      this.startButton.classList.add('active');
+      this.startButton.innerHTML = `
+        <svg width="24" height="24" viewBox="0 0 24 24"
+             fill="none" stroke="white" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      `;
 
-     const charMessages = firstMessages[this.character.id] || {};
-     const selectedMsg = charMessages[this.currentLanguage] || "Hello!";
+      const charMessages = firstMessages[this.character.id] || {};
+      const selectedMsg = charMessages[this.currentLanguage] || "Hello!";
 
-     this.conversation = await Conversation.startSession({
-       agentId: this.character.agentId,
-       overrides: {
-         agent: {
-           language: this.currentLanguage || 'en',
-           firstMessage: selectedMsg
-         }
-       },
-       onModeChange: (mode) => this.updateBackground(mode.mode),
-       onConnect: () => {
-         this.updateBackground('listening');
-         this.addMessage(selectedMsg, false);
-       },
-       onTranscript: (transcript) => {
-         this.addMessage(transcript.text, true);
-       },
-       onResponse: (response) => {
-         this.addMessage(response.text, false);
-       },
-       onDisconnect: () => {
-         this.updateBackground('idle');
-         this.startButton.classList.remove('active');
-         this.startButton.textContent = 'Start Conversation';
-       },
-       onError: (error) => {
-         console.error('Conversation error:', error);
-         this.updateBackground('idle');
-         this.startButton.classList.remove('active');
-         this.startButton.textContent = 'Start Conversation';
-       }
-     });
-   } catch (error) {
-     console.error('Error starting conversation:', error);
-     this.updateBackground('idle');
-     this.startButton.classList.remove('active');
-     this.startButton.textContent = 'Start Conversation';
-   }
- }
+      this.conversation = await Conversation.startSession({
+        agentId: this.character.agentId,
+        overrides: {
+          agent: {
+            language: this.currentLanguage || 'en',
+            firstMessage: selectedMsg
+          }
+        },
+        onModeChange: (mode) => this.updateBackground(mode.mode),
+        onConnect: () => {
+          this.updateBackground('listening');
+          this.addMessage(selectedMsg, false);
+        },
+        onTranscript: (transcript) => {
+          console.log('Transcript:', transcript);
+          this.addMessage(transcript.text || transcript.user_transcript || transcript, true);
+        },
+        onResponse: (response) => {
+          console.log('Response:', response);
+          this.addMessage(response.text || response.agent_response || response, false);
+        },
+        onDisconnect: () => {
+          this.updateBackground('idle');
+          this.startButton.classList.remove('active');
+          this.startButton.textContent = 'Start Conversation';
+        },
+        onError: (error) => {
+          console.error('Conversation error:', error);
+          this.updateBackground('idle');
+          this.startButton.classList.remove('active');
+          this.startButton.textContent = 'Start Conversation';
+        }
+      });
+    } catch (error) {
+      console.error('Error starting conversation:', error);
+      this.updateBackground('idle');
+      this.startButton.classList.remove('active');
+      this.startButton.textContent = 'Start Conversation';
+    }
+}
 
  async endConversation() {
    if (this.conversation) {
