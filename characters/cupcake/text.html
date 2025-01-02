@@ -3,44 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enhanced Funny Cupcake - Talkidz</title>
+    <title>Funny Cupcake - Talkidz</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
-    <script src="https://cdn.skypack.dev/@11labs/client"></script>
     <style>
         :root {
             --primary-color: #FF4B6E;
-            --accent-color: #6C5CE7;
             --text-color: #1A1A1A;
             --background-color: #FFFFFF;
+            --secondary-background: #F5F5F5;
+            --accent-color: #6C5CE7;
+            --shadow-color: rgba(0, 0, 0, 0.08);
+            --user-message-bg: #D1E8FF;
+            --agent-message-bg: #F0F0F0;
         }
 
-        body {
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            overflow: hidden;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: var(--background-color);
-            margin: 0;
-            overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
-        .gradient-text {
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            padding: 0 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 100;
+            background: linear-gradient(to right, 
+                rgba(245, 245, 245, 0.98),
+                rgba(255, 255, 255, 0.98));
+            backdrop-filter: blur(10px);
+        }
+
+        .back-button {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            background: white;
+            border: 1px solid rgba(108, 92, 231, 0.15);
+            box-shadow: 0 2px 8px rgba(108, 92, 231, 0.1);
+        }
+
+        .back-button:hover {
+            transform: translateX(-2px);
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        .character-name {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.5rem;
+            font-weight: 700;
             background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            padding: 0.5rem 1rem;
+            white-space: nowrap;
+            letter-spacing: -0.5px;
         }
 
-        .message-enter {
-            opacity: 0;
-            transform: translateY(20px);
+        .main-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--background-color);
+            z-index: 1;
         }
 
-        .message-enter-active {
-            opacity: 1;
-            transform: translateY(0);
-            transition: opacity 300ms, transform 300ms;
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .background.video {
+            position: absolute;
+            display: none;
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+        }
+
+        @media (max-aspect-ratio: 1/1) {
+            .background.video {
+                width: 100%;
+                height: auto;
+            }
+        }
+
+        @media (min-aspect-ratio: 1/1) {
+            .background.video {
+                height: 100%;
+                width: auto;
+            }
         }
 
         .background.image {
@@ -48,207 +133,686 @@
             width: 100%;
             height: 100%;
             object-fit: contain;
-            background-image: url('/api/placeholder/400/400');
+            background-image: url('/characters/cupcake/assets/cupcake.png');
             background-size: contain;
             background-position: center;
             background-repeat: no-repeat;
-            opacity: 0.1;
+        }
+
+        .bottom-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 1.5rem;
+            background: linear-gradient(to top, 
+                rgba(255,255,255,0.98) 70%,
+                rgba(255,255,255,0.8) 85%,
+                transparent);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+            z-index: 10;
+            backdrop-filter: blur(8px);
+        }
+
+        .controls-wrapper {
+            width: 100%;
+            max-width: 600px;
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        .controls-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .bottom-status-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1rem 1.5rem;
+            background: white;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            border-top: 1px solid rgba(108, 92, 231, 0.1);
+            z-index: 12;
+        }
+
+        .logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-byline {
+            font-size: 0.75rem;
+            color: #666;
+            margin-top: -0.25rem;
+            margin-left: 0.25rem;
+        }
+
+        .progress-container {
+            flex: 1;
+            height: 4px;
+            background: rgba(108, 92, 231, 0.1);
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(to right, var(--accent-color), var(--primary-color));
+            transition: width 1s linear;
+            border-radius: 999px;
+            box-shadow: 0 0 10px rgba(108, 92, 231, 0.2);
+        }
+
+        .main-button {
+            background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .main-button::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent,
+                rgba(255, 255, 255, 0.1),
+                transparent
+            );
+            transform: rotate(45deg);
+            animation: buttonShine 3s infinite;
+        }
+
+        @keyframes buttonShine {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
+        }
+
+        .main-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(108, 92, 231, 0.3);
+        }
+
+        .main-button.active {
+            width: 48px;
+            height: 48px;
+            padding: 0;
+            border-radius: 50%;
+            background: #808080;
+            transform: translateY(1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .particle {
+            position: absolute;
+            pointer-events: none;
+            opacity: 0;
         }
 
         @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
+            0% { transform: translate(0, 0) rotate(0deg); opacity: 0; }
+            20% { opacity: 0.8; }
+            100% { transform: translate(var(--tx), var(--ty)) rotate(360deg); opacity: 0; }
         }
 
-        .floating {
-            animation: float 3s ease-in-out infinite;
+        .sparkle {
+            position: absolute;
+            pointer-events: none;
+            background: white;
+            border-radius: 50%;
+            mix-blend-mode: screen;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { transform: scale(0) rotate(0deg); opacity: 0; }
+            50% { transform: scale(1) rotate(180deg); opacity: 1; }
+        }
+
+        .share-button {
+            background: var(--secondary-background);
+            border: none;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-color);
+        }
+
+        .share-button:hover {
+            transform: translateY(-2px);
+            background: white;
+            box-shadow: 0 4px 12px var(--shadow-color);
+        }
+
+        /* Messaging Area Styles */
+        .message-container {
+            position: fixed;
+            bottom: 80px; /* Adjusted to sit above the bottom container */
+            left: 0;
+            right: 0;
+            max-height: 40%;
+            overflow-y: auto;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 20;
+            display: none; /* Hidden by default */
+        }
+
+        .message {
+            max-width: 80%;
+            margin-bottom: 1rem;
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            position: relative;
+            word-wrap: break-word;
+        }
+
+        .message.user {
+            background: var(--user-message-bg);
+            margin-left: auto;
+            text-align: right;
+        }
+
+        .message.agent {
+            background: var(--agent-message-bg);
+            margin-right: auto;
+            text-align: left;
+        }
+
+        .message .sender {
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        /* Input Area Styles */
+        .input-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1rem;
+            background: var(--background-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+            z-index: 30;
+        }
+
+        .input-container input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 1px solid #ccc;
+            border-radius: 999px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-container input:focus {
+            border-color: var(--accent-color);
+        }
+
+        .input-container button {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .input-container button:hover {
+            background: var(--primary-color);
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .bottom-status-container {
+                padding-bottom: calc(env(safe-area-inset-bottom) + 1rem);
+            }
+            
+            .bottom-container {
+                padding-bottom: calc(env(safe-area-inset-bottom) + 5rem);
+            }
+
+            .main-button {
+                padding: 1rem 2rem;
+            }
+
+            .message-container {
+                max-height: 50%;
+            }
         }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 </head>
 <body>
-    <div id="root"></div>
+    <div class="top-bar">
+        <a href="/" class="back-button">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+        </a>
+        <div class="character-name">Funny Cupcake</div>
+    </div>
+
+    <div class="main-container">
+        <div class="video-wrapper">
+            <div class="background image"></div>
+            <video class="background video" id="idleVideo" loop muted playsinline disablePictureInPicture>
+                <source src="/characters/cupcake/assets/cupcake-blinking.mp4" type="video/mp4">
+            </video>
+            <video class="background video" id="speakingVideo" loop muted playsinline disablePictureInPicture>
+                <source src="/characters/cupcake/assets/cupcake-talk.mp4" type="video/mp4">
+            </video>
+        </div>
+    </div>
+
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- Message Display Area -->
+    <div class="message-container" id="messageContainer">
+        <!-- Messages will be appended here dynamically -->
+    </div>
+
+    <!-- Input Area for User Messages -->
+    <div class="input-container">
+        <input type="text" id="userInput" placeholder="Type your message..." />
+        <button id="sendButton">Send</button>
+    </div>
+
+    <div class="bottom-container">
+        <div class="controls-wrapper">
+            <div class="controls-container">
+                <button id="startButton" class="main-button">Start Conversation</button>
+                <button class="share-button" onclick="shareCharacter()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+                        <polyline points="16 6 12 2 8 6"/>
+                        <line x1="12" y1="2" x2="12" y2="15"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="bottom-status-container">
+        <div class="logo-container">
+            <a href="/" class="logo">Talkidz</a>
+            <span class="logo-byline">by Playbox</span>
+        </div>
+        <div class="progress-container">
+            <div id="progressBar" class="progress-bar"></div>
+        </div>
+    </div>
 
     <script type="module">
-        const { useState, useEffect, useCallback } = React;
+        import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
 
-        function AgentComponent() {
-            const [messages, setMessages] = useState([]);
-            const [isActive, setIsActive] = useState(false);
-            const [progress, setProgress] = useState(0);
-            const [currentMode, setCurrentMode] = useState('idle');
-            const [conversation, setConversation] = useState(null);
+        let conversation = null;
+        let currentMode = 'idle';
+        let videosLoaded = { idle: false, speaking: false };
+        let progressInterval;
+        const CONVERSATION_TIME = 300; // 5 minutes in seconds
+        let currentProgress = 0;
 
-            const CONVERSATION_TIME = 300;
+        const backgroundImage = document.querySelector('.background.image');
+        const idleVideo = document.getElementById('idleVideo');
+        const speakingVideo = document.getElementById('speakingVideo');
+        const startButton = document.getElementById('startButton');
+        const messageContainer = document.getElementById('messageContainer');
+        const userInput = document.getElementById('userInput');
+        const sendButton = document.getElementById('sendButton');
 
-            const addMessage = useCallback((text, isUser) => {
-                setMessages(prev => [...prev, {
-                    id: Date.now(),
-                    text,
-                    isUser,
-                    timestamp: new Date().toISOString()
-                }]);
-            }, []);
+        // Create floating particles
+        const createParticles = () => {
+            const container = document.querySelector('.main-container');
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.width = Math.random() * 10 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.background = `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 0.5)`;
+                particle.style.borderRadius = '50%';
+                particle.style.position = 'absolute';
+                restartParticle(particle);
+                container.appendChild(particle);
+            }
+        };
 
-            const triggerConfetti = () => {
-                confetti({
-                    particleCount: 100,
-                    spread: 70,
-                    origin: { y: 0.7 }
-                });
-            };
+        const restartParticle = (particle) => {
+            const startX = Math.random() * window.innerWidth;
+            const startY = window.innerHeight + 10;
+            const endX = startX + (Math.random() - 0.5) * 200;
+            const endY = -10;
+            
+            particle.style.left = startX + 'px';
+            particle.style.top = startY + 'px';
+            particle.style.setProperty('--tx', (endX - startX) + 'px');
+            particle.style.setProperty('--ty', (endY - startY) + 'px');
+            
+            particle.style.animation = 'none';
+            particle.offsetHeight; // Force reflow
+            particle.style.animation = `float ${Math.random() * 2 + 3}s linear infinite`;
+        };
 
-            const startConversation = async () => {
-                try {
-                    await navigator.mediaDevices.getUserMedia({ audio: true });
-                    triggerConfetti();
-                    setIsActive(true);
-                    
-                    const conv = await Conversation.startSession({
-                        agentId: 'xiC8L3SOeHwYyCLLnYxF',
-                        onModeChange: (mode) => setCurrentMode(mode.mode),
-                        onMessage: (msg) => addMessage(msg.text, false),
-                        onTranscript: (transcript) => {
-                            if (transcript.text) {
-                                addMessage(transcript.text, true);
-                            }
+        // Add sparkle effect
+        const addSparkleEffect = (element) => {
+            const sparkle = document.createElement('div');
+            sparkle.className = 'sparkle';
+            sparkle.style.width = Math.random() * 10 + 5 + 'px';
+            sparkle.style.height = sparkle.style.width;
+            sparkle.style.left = Math.random() * 100 + '%';
+            sparkle.style.top = Math.random() * 100 + '%';
+            element.appendChild(sparkle);
+
+            sparkle.style.animation = `sparkle ${Math.random() * 0.5 + 0.5}s ease-in-out`;
+            sparkle.addEventListener('animationend', () => sparkle.remove());
+        };
+
+        // Preload videos
+        const preloadVideos = () => {
+            idleVideo.load();
+            idleVideo.addEventListener('loadeddata', () => {
+                videosLoaded.idle = true;
+            });
+
+            speakingVideo.load();
+            speakingVideo.addEventListener('loadeddata', () => {
+                videosLoaded.speaking = true;
+            });
+        };
+
+        // Progress bar functions
+        const startProgress = () => {
+            currentProgress = 0;
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = '0%';
+            
+            clearInterval(progressInterval);
+            progressInterval = setInterval(() => {
+                currentProgress += (100 / CONVERSATION_TIME);
+                if (currentProgress >= 100) {
+                    clearInterval(progressInterval);
+                    currentProgress = 100;
+                    endConversation();
+                }
+                progressBar.style.width = `${currentProgress}%`;
+            }, 1000);
+        };
+
+        const resetProgress = () => {
+            clearInterval(progressInterval);
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = '0%';
+            currentProgress = 0;
+        };
+
+        const updateBackground = (mode) => {
+            backgroundImage.style.display = 'none';
+            idleVideo.style.display = 'none';
+            speakingVideo.style.display = 'none';
+            
+            idleVideo.pause();
+            speakingVideo.pause();
+
+            if (mode === 'speaking' && videosLoaded.speaking) {
+                speakingVideo.style.display = 'block';
+                speakingVideo.play().catch(console.error);
+            } else if (mode === 'listening' && videosLoaded.idle) {
+                idleVideo.style.display = 'block';
+                idleVideo.play().catch(console.error);
+            } else {
+                backgroundImage.style.display = 'block';
+            }
+        };
+
+        const startConversation = async () => {
+            try {
+                await navigator.mediaDevices.getUserMedia({ audio: true });
+                triggerConfetti();
+                startButton.classList.add('active');
+                startButton.innerHTML = `
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                `;
+
+                conversation = new Conversation({
+                    agentId: 'iogofk9qnqvE98RwV1Kk',
+                    onModeChange: (mode) => {
+                        updateBackground(mode.mode);
+                    },
+                    onConnect: () => {
+                        updateBackground('listening');
+                        startProgress();
+                        createParticles();
+                        toggleMessageContainer(true);
+                    },
+                    onDisconnect: () => {
+                        updateBackground('idle');
+                        startButton.classList.remove('active');
+                        startButton.innerHTML = 'Start Conversation';
+                        resetProgress();
+                        toggleMessageContainer(false);
+                    },
+                    onMessage: (message) => {
+                        displayMessage(message.text, false);
+                    },
+                    onTranscript: (transcript) => {
+                        if (transcript.text) {
+                            displayMessage(transcript.text, true);
                         }
-                    });
+                    },
+                    onError: (error) => {
+                        console.error('Conversation error:', error);
+                        updateBackground('idle');
+                        startButton.classList.remove('active');
+                        startButton.innerHTML = 'Start Conversation';
+                        resetProgress();
+                        toggleMessageContainer(false);
+                    }
+                });
 
-                    setConversation(conv);
-                    addMessage("Hi! I'm Funny Cupcake. What would you like to talk about?", false);
+                await conversation.startSession();
 
-                } catch (error) {
-                    console.error('Error:', error);
-                    setIsActive(false);
-                }
-            };
+                // Add sparkle effect to button periodically
+                const sparkleInterval = setInterval(() => {
+                    if (conversation) {
+                        addSparkleEffect(startButton);
+                    } else {
+                        clearInterval(sparkleInterval);
+                    }
+                }, 2000);
 
-            const endConversation = async () => {
-                if (conversation) {
+            } catch (error) {
+                console.error('Error starting conversation:', error);
+                updateBackground('idle');
+                startButton.classList.remove('active');
+                startButton.innerHTML = 'Start Conversation';
+                resetProgress();
+            }
+        };
+
+        const endConversation = async () => {
+            if (conversation) {
+                try {
                     await conversation.endSession();
-                    setConversation(null);
+                } catch (error) {
+                    console.error('Error ending conversation:', error);
+                } finally {
+                    conversation = null;
+                    updateBackground('idle');
+                    startButton.classList.remove('active');
+                    startButton.innerHTML = 'Start Conversation';
+                    resetProgress();
+                    toggleMessageContainer(false);
                 }
-                setIsActive(false);
-                addMessage("Thanks for chatting! See you next time!", false);
+            }
+        };
+
+        // Confetti effect function
+        const triggerConfetti = () => {
+            const count = 200;
+            const defaults = {
+                origin: { y: 0.7 }
             };
 
-            useEffect(() => {
-                let progressInterval;
-                if (isActive) {
-                    progressInterval = setInterval(() => {
-                        setProgress(prev => {
-                            if (prev >= 100) {
-                                endConversation();
-                                return 0;
-                            }
-                            return prev + (100 / CONVERSATION_TIME);
-                        });
-                    }, 1000);
-                }
-                return () => clearInterval(progressInterval);
-            }, [isActive]);
+            function fire(particleRatio, opts) {
+                confetti({
+                    ...defaults,
+                    ...opts,
+                    particleCount: Math.floor(count * particleRatio)
+                });
+            }
 
-            return (
-                <div className="h-screen flex flex-col bg-white">
-                    <div className="fixed top-0 left-0 right-0 h-16 px-6 flex items-center justify-between bg-white/90 backdrop-blur-md z-50 border-b">
-                        <button className="p-2 hover:bg-gray-100 rounded-xl transition-colors">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                <path d="M19 12H5M12 19l-7-7 7-7"/>
-                            </svg>
-                        </button>
-                        <h1 className="gradient-text text-xl font-bold">Funny Cupcake</h1>
-                        <div className="w-10" />
-                    </div>
+            fire(0.25, {
+                spread: 26,
+                startVelocity: 55,
+            });
 
-                    <div className="relative flex-1 overflow-hidden">
-                        <div className="background image floating" />
-                        
-                        <div className="absolute inset-0 overflow-y-auto pt-20 pb-40 px-4">
-                            <div className="max-w-2xl mx-auto space-y-4">
-                                {messages.map((msg) => (
-                                    <div key={msg.id}
-                                        className={`flex ${msg.isUser ? 'justify-end' : 'justify-start'}`}>
-                                        <div className={`max-w-[80%] rounded-2xl px-4 py-2 ${
-                                            msg.isUser 
-                                                ? 'bg-gradient-to-r from-purple-600 to-pink-500 text-white' 
-                                                : 'bg-gray-100 text-gray-800'
-                                        }`}>
-                                            <p className="text-sm">{msg.text}</p>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
+            fire(0.2, {
+                spread: 60,
+            });
 
-                    <div className="fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md">
-                        <div className="h-1 bg-gray-100">
-                            <div className="h-full bg-gradient-to-r from-purple-600 to-pink-500 transition-all duration-1000"
-                                style={{ width: `${progress}%` }} />
-                        </div>
-                        
-                        <div className="px-6 py-4 flex items-center gap-4">
-                            <button
-                                onClick={isActive ? endConversation : startConversation}
-                                className={`flex-1 max-w-xs mx-auto h-12 rounded-full font-medium transition-all
-                                    ${isActive 
-                                        ? 'bg-gray-200 hover:bg-gray-300 text-gray-800' 
-                                        : 'bg-gradient-to-r from-purple-600 to-pink-500 hover:opacity-90 text-white'
-                                    }`}>
-                                {isActive ? (
-                                    <svg className="mx-auto" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                                    </svg>
-                                ) : (
-                                    <div className="flex items-center justify-center gap-2">
-                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
-                                        </svg>
-                                        <span>Start Conversation</span>
-                                    </div>
-                                )}
-                            </button>
-                            
-                            <button 
-                                onClick={() => {
-                                    if (navigator.share) {
-                                        navigator.share({
-                                            title: 'Chat with Funny Cupcake',
-                                            text: 'Come chat with your new AI friend!',
-                                            url: window.location.href
-                                        });
-                                    }
-                                }}
-                                className="w-12 h-12 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition-colors">
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                                    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
-                                    <polyline points="16 6 12 2 8 6"/>
-                                    <line x1="12" y1="2" x2="12" y2="15"/>
-                                </svg>
-                            </button>
-                        </div>
+            fire(0.35, {
+                spread: 100,
+                decay: 0.91,
+                scalar: 0.8
+            });
 
-                        <div className="px-6 py-3 border-t flex items-center justify-between">
-                            <div>
-                                <a href="/" className="gradient-text text-lg font-bold">Talkidz</a>
-                                <p className="text-xs text-gray-500 ml-1">by Playbox</p>
-                            </div>
-                            <div className="text-sm text-gray-500">
-                                {currentMode === 'listening' ? 'Listening...' : 
-                                 currentMode === 'speaking' ? 'Speaking...' : ''}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            );
-        }
+            fire(0.1, {
+                spread: 120,
+                startVelocity: 25,
+                decay: 0.92,
+                scalar: 1.2
+            });
 
-        ReactDOM.render(
-            React.createElement(AgentComponent),
-            document.getElementById('root')
-        );
+            fire(0.1, {
+                spread: 120,
+                startVelocity: 45,
+            });
+        };
+
+        startButton.addEventListener('click', async () => {
+            if (conversation) {
+                await endConversation();
+            } else {
+                await startConversation();
+            }
+        });
+
+        // Share function
+        window.shareCharacter = () => {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Chat with Funny Cupcake on Talkidz',
+                    text: 'Come chat with Funny Cupcake, your new AI friend!',
+                    url: window.location.href
+                }).catch(console.error);
+            }
+        };
+
+        // Initialize with idle state
+        preloadVideos();
+        updateBackground('idle');
+
+        // Messaging Functions
+        const displayMessage = (text, isUser) => {
+            const message = document.createElement('div');
+            message.classList.add('message', isUser ? 'user' : 'agent');
+
+            const sender = document.createElement('div');
+            sender.classList.add('sender');
+            sender.textContent = isUser ? 'You' : 'Cupcake';
+
+            const messageText = document.createElement('div');
+            messageText.textContent = text;
+
+            message.appendChild(sender);
+            message.appendChild(messageText);
+            messageContainer.appendChild(message);
+
+            // Scroll to the latest message
+            messageContainer.scrollTop = messageContainer.scrollHeight;
+
+            // Show message container
+            toggleMessageContainer(true);
+        };
+
+        const toggleMessageContainer = (show) => {
+            messageContainer.style.display = show ? 'block' : 'none';
+        };
+
+        const sendMessage = async () => {
+            const text = userInput.value.trim();
+            if (text === '' || !conversation) return;
+
+            displayMessage(text, true);
+            userInput.value = '';
+
+            try {
+                await conversation.sendMessage(text);
+            } catch (error) {
+                console.error('Error sending message:', error);
+            }
+        };
+
+        sendButton.addEventListener('click', sendMessage);
+        userInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
     </script>
 </body>
 </html>
