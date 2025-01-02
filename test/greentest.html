@@ -91,6 +91,11 @@
             <input type="range" id="greenWeight" min="1" max="50" value="18">
             <span id="greenWeightValue">18</span>
         </div>
+        <div class="control-group">
+            <label for="edgeFeather">Edge Feather</label>
+            <input type="range" id="edgeFeather" min="0" max="50" value="10">
+            <span id="edgeFeatherValue">10</span>
+        </div>
     </div>
     <div class="status" id="status">Loading...</div>
 
@@ -101,8 +106,10 @@
         const status = document.getElementById('status');
         const toleranceSlider = document.getElementById('tolerance');
         const greenWeightSlider = document.getElementById('greenWeight');
+        const edgeFeatherSlider = document.getElementById('edgeFeather');
         const toleranceValue = document.getElementById('toleranceValue');
         const greenWeightValue = document.getElementById('greenWeightValue');
+        const edgeFeatherValue = document.getElementById('edgeFeatherValue');
 
         const WIDTH = 450;
         const HEIGHT = 800;
@@ -112,6 +119,7 @@
         let isProcessing = false;
         let TOLERANCE = 100;
         let GREEN_WEIGHT = 18;
+        let EDGE_FEATHER = 10;
 
         // Update controls
         toleranceSlider.addEventListener('input', (e) => {
@@ -124,17 +132,48 @@
             greenWeightValue.textContent = GREEN_WEIGHT;
         });
 
-        function isGreen(r, g, b) {
-            // Check if green is significantly higher than red and blue
-            const greenDominance = g / ((r + b) / 2);
-            
-            // Only consider it green if the green component is significantly higher
-            if (greenDominance > GREEN_WEIGHT / 10) {
-                // Calculate overall brightness
-                const brightness = (r + g + b) / 3;
-                
-                // Avoid removing very bright or very dark pixels
-                if (brightness > 30 && brightness < 225) {
+        edgeFeatherSlider.addEventListener('input', (e) => {
+            EDGE_FEATHER = parseInt(e.target.value);
+            edgeFeatherValue.textContent = EDGE_FEATHER;
+        });
+
+        // Function to convert RGB to HSV
+        function rgbToHsv(r, g, b) {
+            r /= 255;
+            g /= 255;
+            b /= 255;
+            let max = Math.max(r, g, b), min = Math.min(r, g, b);
+            let h, s, v = max;
+
+            let d = max - min;
+            s = max === 0 ? 0 : d / max;
+
+            if(max === min){
+                h = 0; // achromatic
+            } else {
+                switch(max){
+                    case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                    case g: h = (b - r) / d + 2; break;
+                    case b: h = (r - g) / d + 4; break;
+                }
+                h /= 6;
+            }
+
+            return [h, s, v];
+        }
+
+        function isGreenPixel(r, g, b) {
+            const [h, s, v] = rgbToHsv(r, g, b);
+            const hueDeg = h * 360;
+
+            // Define green hue range
+            const lowerHue = 80; // degrees
+            const upperHue = 160; // degrees
+
+            // Check if hue is within green range
+            if (hueDeg >= lowerHue && hueDeg <= upperHue) {
+                // Check saturation and value thresholds
+                if (s * 100 >= 50 && v * 100 >= 50) {
                     return true;
                 }
             }
@@ -156,10 +195,34 @@
                 const r = data[i];
                 const g = data[i + 1];
                 const b = data[i + 2];
+                const a = data[i + 3];
 
-                if (isGreen(r, g, b)) {
-                    // Make green pixels transparent
-                    data[i + 3] = 0;
+                // Calculate how green the pixel is
+                const [h, s, v] = rgbToHsv(r, g, b);
+                const hueDeg = h * 360;
+
+                // Define green hue range
+                const lowerHue = 80 - TOLERANCE / 2; // Adjust based on tolerance
+                const upperHue = 160 + TOLERANCE / 2;
+
+                if (hueDeg >= lowerHue && hueDeg <= upperHue && s * 100 >= 50 && v * 100 >= 50) {
+                    // Calculate distance from pure green
+                    const greenDistance = Math.abs(g - Math.max(r, b));
+
+                    // Normalize distance
+                    const normalizedDistance = Math.min(greenDistance / GREEN_WEIGHT, 1);
+
+                    // Apply edge feathering
+                    let alphaFactor = 1 - normalizedDistance;
+                    alphaFactor = Math.pow(alphaFactor, 2); // Smooth the transition
+
+                    // Blend with existing alpha
+                    data[i + 3] = a * alphaFactor;
+
+                    // Optional: Reduce green spill on edges by adjusting RGB
+                    data[i] = r * alphaFactor;
+                    data[i + 1] = g * alphaFactor;
+                    data[i + 2] = b * alphaFactor;
                 }
             }
 
