@@ -677,64 +677,64 @@ class ChatController {
  }
 
 async startConversation() {
-    try {
-      await navigator.mediaDevices.getUserMedia({ audio: true });
-      this.triggerConfetti();
-      this.startButton.classList.add('active');
-      this.startButton.innerHTML = `
-        <svg width="24" height="24" viewBox="0 0 24 24"
-             fill="none" stroke="white" stroke-width="2">
-          <line x1="18" y1="6" x2="6" y2="18"></line>
-          <line x1="6" y1="6" x2="18" y2="18"></line>
-        </svg>
-      `;
+   try {
+     await navigator.mediaDevices.getUserMedia({ audio: true });
+     this.triggerConfetti();
+     this.startButton.classList.add('active');
+     this.startButton.innerHTML = `
+       <svg width="24" height="24" viewBox="0 0 24 24"
+            fill="none" stroke="white" stroke-width="2">
+         <line x1="18" y1="6" x2="6" y2="18"></line>
+         <line x1="6" y1="6" x2="18" y2="18"></line>
+       </svg>
+     `;
 
-      const charMessages = firstMessages[this.character.id] || {};
-      const selectedMsg = charMessages[this.currentLanguage] || "Hello!";
+     const charMessages = firstMessages[this.character.id] || {};
+     const selectedMsg = charMessages[this.currentLanguage] || "Hello!";
 
-      this.conversation = await Conversation.startSession({
-        agentId: this.character.agentId,
-        overrides: {
-          agent: {
-            language: this.currentLanguage || 'en',
-            firstMessage: selectedMsg
-          }
-        },
-        onModeChange: (mode) => this.updateBackground(mode.mode),
-        onConnect: () => {
-          this.updateBackground('listening');
-          this.addMessage(selectedMsg, false);
-        },
-onTranscript: (transcript) => {
-  console.log('Full transcript object:', transcript);
-  if (transcript.user_transcription_event) {
-    this.addMessage(transcript.user_transcription_event.user_transcript, true);
-  }
-},
-onResponse: (response) => {
-  console.log('Full response object:', response);
-  if (response.agent_response_event) {
-    this.addMessage(response.agent_response_event.agent_response, false);
-  }
-}
-        onDisconnect: () => {
-          this.updateBackground('idle');
-          this.startButton.classList.remove('active');
-          this.startButton.textContent = 'Start Conversation';
-        },
-        onError: (error) => {
-          console.error('Conversation error:', error);
-          this.updateBackground('idle');
-          this.startButton.classList.remove('active');
-          this.startButton.textContent = 'Start Conversation';
-        }
-      });
-    } catch (error) {
-      console.error('Error starting conversation:', error);
-      this.updateBackground('idle');
-      this.startButton.classList.remove('active');
-      this.startButton.textContent = 'Start Conversation';
-    }
+     this.conversation = await Conversation.startSession({
+       agentId: this.character.agentId,
+       overrides: {
+         agent: {
+           language: this.currentLanguage || 'en',
+           firstMessage: selectedMsg
+         }
+       },
+       onModeChange: (mode) => this.updateBackground(mode.mode),
+       onConnect: () => {
+         this.updateBackground('listening');
+         this.addMessage(selectedMsg, false);
+       },
+       onTranscript: (transcript) => {
+         console.log('Full transcript object:', transcript);
+         if (transcript.user_transcription_event) {
+           this.addMessage(transcript.user_transcription_event.user_transcript, true);
+         }
+       },
+       onResponse: (response) => {
+         console.log('Full response object:', response);
+         if (response.agent_response_event) {
+           this.addMessage(response.agent_response_event.agent_response, false);
+         }
+       },
+       onDisconnect: () => {
+         this.updateBackground('idle');
+         this.startButton.classList.remove('active');
+         this.startButton.textContent = 'Start Conversation';
+       },
+       onError: (error) => {
+         console.error('Conversation error:', error);
+         this.updateBackground('idle');
+         this.startButton.classList.remove('active');
+         this.startButton.textContent = 'Start Conversation';
+       }
+     });
+   } catch (error) {
+     console.error('Error starting conversation:', error);
+     this.updateBackground('idle');
+     this.startButton.classList.remove('active');
+     this.startButton.textContent = 'Start Conversation';
+   }
 }
 
  async endConversation() {
