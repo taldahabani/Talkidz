@@ -3,16 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Chat - Talkidz</title>
+    <title>Funny Cupcake - Talkidz</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <style>
         :root {
             --primary-color: #FF4B6E;
-            --accent-color: #6C5CE7;
             --text-color: #1A1A1A;
             --background-color: #FFFFFF;
             --secondary-background: #F5F5F5;
+            --accent-color: #6C5CE7;
             --shadow-color: rgba(0, 0, 0, 0.08);
         }
 
@@ -26,43 +25,6 @@
             background: var(--background-color);
         }
 
-        .gradient-text {
-            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        .message {
-            max-width: 80%;
-            padding: 0.75rem 1rem;
-            border-radius: 1rem;
-            margin-bottom: 1rem;
-            animation: messageAppear 0.3s ease-out;
-        }
-
-        .message.user {
-            background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
-            color: white;
-            margin-left: auto;
-        }
-
-        .message.agent {
-            background: var(--secondary-background);
-            color: var(--text-color);
-        }
-
-        @keyframes messageAppear {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
         .top-bar {
             position: fixed;
             top: 0;
@@ -73,12 +35,11 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
+            z-index: 100;
             background: linear-gradient(to right, 
-                rgba(255, 255, 255, 0.98),
+                rgba(245, 245, 245, 0.98),
                 rgba(255, 255, 255, 0.98));
             backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(108, 92, 231, 0.1);
-            z-index: 100;
         }
 
         .back-button {
@@ -88,35 +49,227 @@
             align-items: center;
             justify-content: center;
             color: var(--text-color);
+            text-decoration: none;
+            font-weight: 600;
             border-radius: 12px;
-            border: 1px solid rgba(108, 92, 231, 0.15);
-            background: white;
             transition: all 0.3s ease;
+            background: white;
+            border: 1px solid rgba(108, 92, 231, 0.15);
+            box-shadow: 0 2px 8px rgba(108, 92, 231, 0.1);
         }
 
         .back-button:hover {
-            transform: translateY(-2px);
+            transform: translateX(-2px);
             border-color: var(--accent-color);
+            color: var(--accent-color);
         }
 
+        .character-name {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            padding: 0.5rem 1rem;
+            white-space: nowrap;
+            letter-spacing: -0.5px;
+        }
+
+        .main-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--background-color);
+        }
+
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .background.video {
+            position: absolute;
+            display: none;
+            max-width: 100%;
+            max-height: 100%;
+            width: auto;
+            height: auto;
+        }
+
+        @media (max-aspect-ratio: 1/1) {
+            .background.video {
+                width: 100%;
+                height: auto;
+            }
+        }
+
+        @media (min-aspect-ratio: 1/1) {
+            .background.video {
+                height: 100%;
+                width: auto;
+            }
+        }
+
+        .background.image {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background-image: url('/characters/cupcake/assets/cupcake.png');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        /* New Styles for Messages */
         .messages-container {
-            height: calc(100vh - 180px);
-            margin-top: 70px;
-            padding: 1rem;
+            width: 100%;
+            max-width: 600px;
+            height: 300px;
             overflow-y: auto;
+            background: var(--secondary-background);
+            border-radius: 12px;
+            padding: 1rem;
+            box-shadow: 0 2px 8px var(--shadow-color);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
         }
 
+        .message {
+            max-width: 80%;
+            padding: 0.75rem 1rem;
+            border-radius: 12px;
+            position: relative;
+            word-wrap: break-word;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .message.user {
+            align-self: flex-end;
+            background: var(--primary-color);
+            color: white;
+            border-bottom-right-radius: 0;
+        }
+
+        .message.agent {
+            align-self: flex-start;
+            background: var(--secondary-background);
+            color: var(--text-color);
+            border-bottom-left-radius: 0;
+        }
+
+        .message.tentative {
+            font-style: italic;
+            color: var(--accent-color);
+            background: var(--secondary-background);
+        }
+
+        .message .sender {
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        /* Adjust Bottom Container to accommodate messages */
         .bottom-container {
             position: fixed;
-            bottom: 0;
+            bottom: 60px; /* Increased to make room for messages */
             left: 0;
-            right: 0;
+            width: 100%;
             padding: 1.5rem;
             background: linear-gradient(to top, 
                 rgba(255,255,255,0.98) 70%,
                 rgba(255,255,255,0.8) 85%,
                 transparent);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+            z-index: 10;
             backdrop-filter: blur(8px);
+        }
+
+        .controls-wrapper {
+            width: 100%;
+            max-width: 600px;
+            position: relative;
+            margin-bottom: 1rem;
+        }
+
+        .controls-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .bottom-status-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1rem 1.5rem;
+            background: white;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            border-top: 1px solid rgba(108, 92, 231, 0.1);
+            z-index: 12;
+        }
+
+        .logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-byline {
+            font-size: 0.75rem;
+            color: #666;
+            margin-top: -0.25rem;
+            margin-left: 0.25rem;
+        }
+
+        .progress-container {
+            flex: 1;
+            height: 4px;
+            background: rgba(108, 92, 231, 0.1);
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(to right, var(--accent-color), var(--primary-color));
+            transition: width 1s linear;
+            border-radius: 999px;
+            box-shadow: 0 0 10px rgba(108, 92, 231, 0.2);
         }
 
         .main-button {
@@ -130,6 +283,30 @@
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .main-button::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent,
+                rgba(255, 255, 255, 0.1),
+                transparent
+            );
+            transform: rotate(45deg);
+            animation: buttonShine 3s infinite;
+        }
+
+        @keyframes buttonShine {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
         }
 
         .main-button:hover {
@@ -143,35 +320,50 @@
             padding: 0;
             border-radius: 50%;
             background: #808080;
+            transform: translateY(1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .progress-container {
-            height: 4px;
-            background: rgba(108, 92, 231, 0.1);
-            border-radius: 999px;
-            overflow: hidden;
-            margin-top: 1rem;
+        .particle {
+            position: absolute;
+            pointer-events: none;
+            opacity: 0;
         }
 
-        .progress-bar {
-            width: 0%;
-            height: 100%;
-            background: linear-gradient(to right, var(--accent-color), var(--primary-color));
-            transition: width 1s linear;
-            border-radius: 999px;
+        @keyframes float {
+            0% { transform: translate(0, 0) rotate(0deg); opacity: 0; }
+            20% { opacity: 0.8; }
+            100% { transform: translate(var(--tx), var(--ty)) rotate(360deg); opacity: 0; }
+        }
+
+        .sparkle {
+            position: absolute;
+            pointer-events: none;
+            background: white;
+            border-radius: 50%;
+            mix-blend-mode: screen;
+        }
+
+        @keyframes sparkle {
+            0%, 100% { transform: scale(0) rotate(0deg); opacity: 0; }
+            50% { transform: scale(1) rotate(180deg); opacity: 1; }
         }
 
         .share-button {
+            background: var(--secondary-background);
+            border: none;
             width: 48px;
             height: 48px;
             border-radius: 50%;
-            background: var(--secondary-background);
-            border: none;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             transition: all 0.3s ease;
+            color: var(--text-color);
         }
 
         .share-button:hover {
@@ -180,97 +372,174 @@
             box-shadow: 0 4px 12px var(--shadow-color);
         }
 
-        .controls-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 1rem;
-            max-width: 600px;
-            margin: 0 auto;
+        /* New Styles for Messages Scrollbar (Optional) */
+        .messages-container::-webkit-scrollbar {
+            width: 8px;
         }
 
-        .bottom-status {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-top: 1rem;
-            padding: 0 1rem;
+        .messages-container::-webkit-scrollbar-track {
+            background: var(--secondary-background);
+            border-radius: 4px;
         }
 
-        .logo-container {
-            display: flex;
-            flex-direction: column;
+        .messages-container::-webkit-scrollbar-thumb {
+            background-color: var(--accent-color);
+            border-radius: 4px;
         }
 
-        .logo {
-            font-size: 1.25rem;
-            font-weight: 800;
-        }
+        @media (max-width: 768px) {
+            .bottom-status-container {
+                padding-bottom: calc(env(safe-area-inset-bottom) + 1rem);
+            }
+            
+            .bottom-container {
+                padding-bottom: calc(env(safe-area-inset-bottom) + 5rem);
+            }
 
-        .logo-byline {
-            font-size: 0.75rem;
-            color: #666;
-            margin-top: -0.25rem;
-            margin-left: 0.25rem;
+            .main-button {
+                padding: 1rem 2rem;
+            }
+
+            .messages-container {
+                height: 200px;
+            }
         }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 </head>
 <body>
     <div class="top-bar">
-        <button class="back-button">
+        <a href="/" class="back-button">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M19 12H5M12 19l-7-7 7-7"/>
             </svg>
-        </button>
-        <div class="gradient-text text-xl font-bold">AI Friend</div>
+        </a>
+        <div class="character-name">Funny Cupcake</div>
     </div>
 
-    <div class="messages-container" id="messagesContainer"></div>
+    <div class="main-container">
+        <div class="video-wrapper">
+            <div class="background image"></div>
+            <video class="background video" id="idleVideo" loop muted playsinline disablePictureInPicture>
+                <source src="/characters/cupcake/assets/cupcake-blinking.mp4" type="video/mp4">
+            </video>
+            <video class="background video" id="speakingVideo" loop muted playsinline disablePictureInPicture>
+                <source src="/characters/cupcake/assets/cupcake-talk.mp4" type="video/mp4">
+            </video>
+        </div>
+    </div>
+
+    <canvas id="confetti-canvas"></canvas>
 
     <div class="bottom-container">
-        <div class="controls-container">
-            <button id="startButton" class="main-button flex-1">Start Conversation</button>
-            <button id="shareButton" class="share-button">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
-                    <polyline points="16 6 12 2 8 6"/>
-                    <line x1="12" y1="2" x2="12" y2="15"/>
-                </svg>
-            </button>
+        <!-- New Messages Container -->
+        <div id="messagesContainer" class="messages-container">
+            <!-- Messages will appear here -->
         </div>
-        
-        <div class="bottom-status">
-            <div class="logo-container">
-                <span class="logo gradient-text">Talkidz</span>
-                <span class="logo-byline">by Playbox</span>
-            </div>
-            <div class="progress-container flex-1">
-                <div id="progressBar" class="progress-bar"></div>
+
+        <div class="controls-wrapper">
+            <div class="controls-container">
+                <button id="startButton" class="main-button">Start Conversation</button>
+                <button class="share-button" onclick="shareCharacter()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+                        <polyline points="16 6 12 2 8 6"/>
+                        <line x1="12" y1="2" x2="12" y2="15"/>
+                    </svg>
+                </button>
             </div>
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/canvas-confetti/1.5.1/confetti.browser.min.js"></script>
-    <script>
+    <div class="bottom-status-container">
+        <div class="logo-container">
+            <a href="/" class="logo">Talkidz</a>
+            <span class="logo-byline">by Playbox</span>
+        </div>
+        <div class="progress-container">
+            <div id="progressBar" class="progress-bar"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
+
         let conversation = null;
+        let currentMode = 'idle';
+        let videosLoaded = { idle: false, speaking: false };
         let progressInterval;
-        const CONVERSATION_TIME = 300;
+        const CONVERSATION_TIME = 300; // 5 minutes in seconds
         let currentProgress = 0;
 
-        const messagesContainer = document.getElementById('messagesContainer');
+        const backgroundImage = document.querySelector('.background.image');
+        const idleVideo = document.getElementById('idleVideo');
+        const speakingVideo = document.getElementById('speakingVideo');
         const startButton = document.getElementById('startButton');
-        const progressBar = document.getElementById('progressBar');
+        const messagesContainer = document.getElementById('messagesContainer');
 
-        function addMessage(text, isUser = false) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${isUser ? 'user' : 'agent'}`;
-            messageDiv.textContent = text;
-            messagesContainer.appendChild(messageDiv);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }
+        // Create floating particles
+        const createParticles = () => {
+            const container = document.querySelector('.main-container');
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.width = Math.random() * 10 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.background = `rgba(${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, ${Math.floor(Math.random() * 255)}, 0.5)`;
+                particle.style.borderRadius = '50%';
+                particle.style.position = 'absolute';
+                restartParticle(particle);
+                container.appendChild(particle);
+            }
+        };
 
-        function startProgress() {
+        const restartParticle = (particle) => {
+            const startX = Math.random() * window.innerWidth;
+            const startY = window.innerHeight + 10;
+            const endX = startX + (Math.random() - 0.5) * 200;
+            const endY = -10;
+            
+            particle.style.left = startX + 'px';
+            particle.style.top = startY + 'px';
+            particle.style.setProperty('--tx', (endX - startX) + 'px');
+            particle.style.setProperty('--ty', (endY - startY) + 'px');
+            
+            particle.style.animation = 'none';
+            particle.offsetHeight; // Force reflow
+            particle.style.animation = `float ${Math.random() * 2 + 3}s linear infinite`;
+        };
+
+        // Add sparkle effect
+        const addSparkleEffect = (element) => {
+            const sparkle = document.createElement('div');
+            sparkle.className = 'sparkle';
+            sparkle.style.width = Math.random() * 10 + 5 + 'px';
+            sparkle.style.height = sparkle.style.width;
+            sparkle.style.left = Math.random() * 100 + '%';
+            sparkle.style.top = Math.random() * 100 + '%';
+            element.appendChild(sparkle);
+
+            sparkle.style.animation = `sparkle ${Math.random() * 0.5 + 0.5}s ease-in-out`;
+            sparkle.addEventListener('animationend', () => sparkle.remove());
+        };
+
+        // Preload videos
+        const preloadVideos = () => {
+            idleVideo.load();
+            idleVideo.addEventListener('loadeddata', () => {
+                videosLoaded.idle = true;
+            });
+
+            speakingVideo.load();
+            speakingVideo.addEventListener('loadeddata', () => {
+                videosLoaded.speaking = true;
+            });
+        };
+
+        // Progress bar functions
+        const startProgress = () => {
             currentProgress = 0;
+            const progressBar = document.getElementById('progressBar');
             progressBar.style.width = '0%';
             
             clearInterval(progressInterval);
@@ -283,15 +552,151 @@
                 }
                 progressBar.style.width = `${currentProgress}%`;
             }, 1000);
-        }
+        };
 
-        function resetProgress() {
+        const resetProgress = () => {
             clearInterval(progressInterval);
+            const progressBar = document.getElementById('progressBar');
             progressBar.style.width = '0%';
             currentProgress = 0;
-        }
+        };
 
-        function triggerConfetti() {
+        // Function to append messages to the UI
+        const appendMessage = (text, isUser, isTentative = false) => {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message');
+            messageDiv.classList.add(isUser ? 'user' : 'agent');
+            if (isTentative) messageDiv.classList.add('tentative');
+
+            const sender = document.createElement('div');
+            sender.classList.add('sender');
+            sender.textContent = isUser ? 'You' : (isTentative ? 'Agent (typing...)' : 'Agent');
+
+            const messageText = document.createElement('div');
+            messageText.textContent = text;
+
+            messageDiv.appendChild(sender);
+            messageDiv.appendChild(messageText);
+            messagesContainer.appendChild(messageDiv);
+
+            // Scroll to the latest message
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        };
+
+        // Function to update background based on mode
+        const updateBackground = (mode) => {
+            backgroundImage.style.display = 'none';
+            idleVideo.style.display = 'none';
+            speakingVideo.style.display = 'none';
+            
+            idleVideo.pause();
+            speakingVideo.pause();
+
+            if (mode === 'speaking' && videosLoaded.speaking) {
+                speakingVideo.style.display = 'block';
+                speakingVideo.play().catch(console.error);
+            } else if (mode === 'listening' && videosLoaded.idle) {
+                idleVideo.style.display = 'block';
+                idleVideo.play().catch(console.error);
+            } else {
+                backgroundImage.style.display = 'block';
+            }
+        };
+
+        // Function to start conversation
+        const startConversation = async () => {
+            try {
+                await navigator.mediaDevices.getUserMedia({ audio: true });
+                triggerConfetti();
+                startButton.classList.add('active');
+                startButton.innerHTML = `
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                `;
+
+                conversation = await Conversation.startSession({
+                    agentId: 'iogofk9qnqvE98RwV1Kk', // Replace with your actual agent ID
+                    onModeChange: (mode) => {
+                        updateBackground(mode.mode);
+                    },
+                    onConnect: () => {
+                        updateBackground('listening');
+                        startProgress();
+                        createParticles();
+                        appendMessage('Conversation started. How can I assist you?', false);
+                    },
+                    onDisconnect: () => {
+                        updateBackground('idle');
+                        startButton.classList.remove('active');
+                        startButton.innerHTML = 'Start Conversation';
+                        resetProgress();
+                        appendMessage('Conversation ended.', false);
+                    },
+                    onError: (error) => {
+                        console.error('Conversation error:', error);
+                        updateBackground('idle');
+                        startButton.classList.remove('active');
+                        startButton.innerHTML = 'Start Conversation';
+                        resetProgress();
+                        appendMessage('An error occurred. Please try again.', false);
+                    },
+                    onMessage: (message) => {
+                        console.log('Agent message:', message);
+                        if (message.type === 'agent_response') {
+                            // Final agent response
+                            appendMessage(message.agent_response_event.agent_response, false);
+                        } else if (message.type === 'internal_tentative_agent_response') {
+                            // Tentative agent response
+                            appendMessage(message.tentative_agent_response_internal_event.tentative_agent_response, false, true);
+                        }
+                    },
+                    onTranscript: (transcript) => {
+                        if (transcript.text) {
+                            appendMessage(transcript.text, true);
+                        }
+                    }
+                });
+
+                // Add sparkle effect to button periodically
+                const sparkleInterval = setInterval(() => {
+                    if (conversation) {
+                        addSparkleEffect(startButton);
+                    } else {
+                        clearInterval(sparkleInterval);
+                    }
+                }, 2000);
+
+            } catch (error) {
+                console.error('Error starting conversation:', error);
+                updateBackground('idle');
+                startButton.classList.remove('active');
+                startButton.innerHTML = 'Start Conversation';
+                resetProgress();
+                appendMessage('Unable to access microphone. Please check your settings.', false);
+            }
+        };
+
+        // Function to end conversation
+        const endConversation = async () => {
+            if (conversation) {
+                try {
+                    await conversation.endSession();
+                } catch (error) {
+                    console.error('Error ending conversation:', error);
+                } finally {
+                    conversation = null;
+                    updateBackground('idle');
+                    startButton.classList.remove('active');
+                    startButton.innerHTML = 'Start Conversation';
+                    resetProgress();
+                }
+            }
+        };
+
+        // Confetti effect function
+        const triggerConfetti = () => {
             const count = 200;
             const defaults = {
                 origin: { y: 0.7 }
@@ -331,60 +736,34 @@
                 spread: 120,
                 startVelocity: 45,
             });
-        }
+        };
 
-        async function startConversation() {
-            try {
-                await navigator.mediaDevices.getUserMedia({ audio: true });
-                triggerConfetti();
-                startButton.classList.add('active');
-                startButton.innerHTML = `
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                `;
-                
-                startProgress();
-                addMessage("Hi there! I'm your AI friend. How can I help you today?", false);
-                
-            } catch (error) {
-                console.error('Error starting conversation:', error);
-            }
-        }
-
-        async function endConversation() {
-            startButton.classList.remove('active');
-            startButton.textContent = 'Start Conversation';
-            resetProgress();
-            addMessage("Goodbye! Thanks for chatting with me.", false);
-        }
-
-        function shareCharacter() {
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Chat with AI Friend',
-                    text: 'Come chat with your new AI friend!',
-                    url: window.location.href
-                }).catch(console.error);
-            }
-        }
-
+        // Event listener for Start/Stop Conversation button
         startButton.addEventListener('click', async () => {
-            if (startButton.classList.contains('active')) {
+            if (conversation) {
                 await endConversation();
             } else {
                 await startConversation();
             }
         });
 
-        document.getElementById('shareButton').addEventListener('click', shareCharacter);
-        
-        document.querySelector('.back-button').addEventListener('click', () => {
-            if (startButton.classList.contains('active')) {
-                endConversation();
+        // Share function
+        window.shareCharacter = () => {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Chat with Funny Cupcake on Talkidz',
+                    text: 'Come chat with Funny Cupcake, your new AI friend!',
+                    url: window.location.href
+                }).catch(console.error);
+            } else {
+                // Fallback for browsers that do not support the Share API
+                alert('Share is not supported on your browser. Please copy the link manually.');
             }
-        });
+        };
+
+        // Initialize with idle state
+        preloadVideos();
+        updateBackground('idle');
     </script>
 </body>
 </html>
