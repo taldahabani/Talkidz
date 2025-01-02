@@ -3,137 +3,375 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Green Screen Video</title>
+    <title>Cupcake Agent with Green Screen</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" rel="stylesheet">
     <style>
-        body {
+        :root {
+            --primary-color: #FF4B6E;
+            --text-color: #1A1A1A;
+            --background-color: #FFFFFF;
+            --secondary-background: #F5F5F5;
+            --accent-color: #6C5CE7;
+            --shadow-color: rgba(0, 0, 0, 0.08);
+        }
+
+        body, html {
             margin: 0;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: #000;
-            color: white;
-            font-family: Arial, sans-serif;
-        }
-        .container {
-            position: relative;
-            width: 450px;
-            height: 800px;
+            padding: 0;
+            height: 100%;
+            width: 100%;
             overflow: hidden;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--background-color);
         }
+
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            padding: 0 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 100;
+            background: linear-gradient(to right, 
+                rgba(245, 245, 245, 0.98),
+                rgba(255, 255, 255, 0.98));
+            backdrop-filter: blur(10px);
+        }
+
+        .back-button {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            background: white;
+            border: 1px solid rgba(108, 92, 231, 0.15);
+            box-shadow: 0 2px 8px rgba(108, 92, 231, 0.1);
+        }
+
+        .character-name {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            padding: 0.5rem 1rem;
+            white-space: nowrap;
+            letter-spacing: -0.5px;
+        }
+
+        .main-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--background-color);
+        }
+
+        .video-wrapper {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         .background {
             position: absolute;
-            top: 0;
-            left: 0;
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
         }
+
         canvas {
             position: absolute;
-            top: 0;
-            left: 0;
             width: 100%;
             height: 100%;
-            pointer-events: none;
+            object-fit: contain;
         }
-        .controls {
-            margin-top: 20px;
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            justify-content: center;
+
+        video {
+            display: none;
         }
-        .control-group {
+
+        .controls-overlay {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 15px;
+            border-radius: 12px;
+            z-index: 1000;
+            display: none;
+        }
+
+        .debug .controls-overlay {
+            display: block;
+        }
+
+        .bottom-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 1.5rem;
+            background: linear-gradient(to top, 
+                rgba(255,255,255,0.98) 70%,
+                rgba(255,255,255,0.8) 85%,
+                transparent);
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 5px;
+            gap: 1.5rem;
+            z-index: 10;
+            backdrop-filter: blur(8px);
         }
-        label {
-            font-size: 14px;
+
+        .controls-wrapper {
+            width: 100%;
+            max-width: 600px;
+            position: relative;
+            margin-bottom: 1rem;
         }
-        input[type="range"] {
+
+        .controls-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .bottom-status-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 1rem 1.5rem;
+            background: white;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            border-top: 1px solid rgba(108, 92, 231, 0.1);
+            z-index: 12;
+        }
+
+        .logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-byline {
+            font-size: 0.75rem;
+            color: #666;
+            margin-top: -0.25rem;
+            margin-left: 0.25rem;
+        }
+
+        .progress-container {
+            flex: 1;
+            height: 4px;
+            background: rgba(108, 92, 231, 0.1);
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            width: 0%;
+            height: 100%;
+            background: linear-gradient(to right, var(--accent-color), var(--primary-color));
+            transition: width 1s linear;
+            border-radius: 999px;
+            box-shadow: 0 0 10px rgba(108, 92, 231, 0.2);
+        }
+
+        .main-button {
+            background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
+        }
+
+        .main-button.active {
+            width: 48px;
+            height: 48px;
+            padding: 0;
+            border-radius: 50%;
+            background: #808080;
+            transform: translateY(1px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .share-button {
+            background: var(--secondary-background);
+            border: none;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-color);
+        }
+
+        @media (max-width: 768px) {
+            .bottom-status-container {
+                padding-bottom: calc(env(safe-area-inset-bottom) + 1rem);
+            }
+            
+            .bottom-container {
+                padding-bottom: calc(env(safe-area-inset-bottom) + 5rem);
+            }
+
+            .main-button {
+                padding: 1rem 2rem;
+            }
+        }
+
+        .control-group {
+            margin-bottom: 10px;
+        }
+
+        .control-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: var(--text-color);
+        }
+
+        .control-group input[type="range"] {
             width: 150px;
-        }
-        .status {
-            margin-top: 10px;
-            font-size: 14px;
-            color: #aaa;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <img src="background.jpg" class="background" alt="Background">
-        <canvas id="canvas"></canvas>
-        <video 
-            id="video"
-            muted 
-            autoplay 
-            loop 
-            playsinline
-            webkit-playsinline
-            style="display: none;"
-        >
-            <source src="character.mp4" type="video/mp4">
-        </video>
+    <div class="top-bar">
+        <a href="/" class="back-button">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+        </a>
+        <div class="character-name">Funny Cupcake</div>
     </div>
-    <div class="controls">
-        <div class="control-group">
-            <label for="tolerance">Green Tolerance</label>
-            <input type="range" id="tolerance" min="20" max="200" value="100">
-            <span id="toleranceValue">100</span>
+
+    <div class="main-container">
+        <div class="video-wrapper">
+            <img src="background.jpg" class="background" alt="Background">
+            <canvas id="idleCanvas"></canvas>
+            <canvas id="speakingCanvas"></canvas>
+            <video id="idleVideo" muted playsinline>
+                <source src="character.mp4" type="video/mp4">
+            </video>
+            <video id="speakingVideo" muted playsinline>
+                <source src="character.mp4" type="video/mp4">
+            </video>
         </div>
-        <div class="control-group">
-            <label for="greenWeight">Green Weight</label>
-            <input type="range" id="greenWeight" min="1" max="50" value="18">
-            <span id="greenWeightValue">18</span>
+        
+        <div class="controls-overlay">
+            <div class="control-group">
+                <label for="tolerance">Green Tolerance</label>
+                <input type="range" id="tolerance" min="20" max="200" value="100">
+                <span id="toleranceValue">100</span>
+            </div>
+            <div class="control-group">
+                <label for="greenWeight">Green Weight</label>
+                <input type="range" id="greenWeight" min="1" max="50" value="18">
+                <span id="greenWeightValue">18</span>
+            </div>
         </div>
     </div>
-    <div class="status" id="status">Loading...</div>
 
-    <script>
-        const video = document.getElementById('video');
-        const canvas = document.getElementById('canvas');
-        const ctx = canvas.getContext('2d', { willReadFrequently: true });
-        const status = document.getElementById('status');
-        const toleranceSlider = document.getElementById('tolerance');
-        const greenWeightSlider = document.getElementById('greenWeight');
-        const toleranceValue = document.getElementById('toleranceValue');
-        const greenWeightValue = document.getElementById('greenWeightValue');
+    <div class="bottom-container">
+        <div class="controls-wrapper">
+            <div class="controls-container">
+                <button id="startButton" class="main-button">Start Conversation</button>
+                <button class="share-button" onclick="shareCharacter()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+                        <polyline points="16 6 12 2 8 6"/>
+                        <line x1="12" y1="2" x2="12" y2="15"/>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
 
-        const WIDTH = 450;
-        const HEIGHT = 800;
-        canvas.width = WIDTH;
-        canvas.height = HEIGHT;
+    <div class="bottom-status-container">
+        <div class="logo-container">
+            <a href="/" class="logo">Talkidz</a>
+            <span class="logo-byline">by Playbox</span>
+        </div>
+        <div class="progress-container">
+            <div id="progressBar" class="progress-bar"></div>
+        </div>
+    </div>
 
-        let isProcessing = false;
+    <script type="module">
+        import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
+
         let TOLERANCE = 100;
         let GREEN_WEIGHT = 18;
+        const WIDTH = 450;
+        const HEIGHT = 800;
+        let isProcessing = { idle: false, speaking: false };
+        let conversation = null;
+        let progressInterval;
+        const CONVERSATION_TIME = 300;
+        let currentProgress = 0;
+        
+        // Setup canvases
+        const setupCanvas = (canvas) => {
+            canvas.width = WIDTH;
+            canvas.height = HEIGHT;
+            return canvas.getContext('2d', { willReadFrequently: true });
+        };
 
-        // Update controls
-        toleranceSlider.addEventListener('input', (e) => {
-            TOLERANCE = parseInt(e.target.value);
-            toleranceValue.textContent = TOLERANCE;
-        });
-
-        greenWeightSlider.addEventListener('input', (e) => {
-            GREEN_WEIGHT = parseInt(e.target.value);
-            greenWeightValue.textContent = GREEN_WEIGHT;
-        });
-
+        const idleCtx = setupCanvas(document.getElementById('idleCanvas'));
+        const speakingCtx = setupCanvas(document.getElementById('speakingCanvas'));
+        
         function isGreen(r, g, b) {
-            // Check if green is significantly higher than red and blue
             const greenDominance = g / ((r + b) / 2);
-            
-            // Only consider it green if the green component is significantly higher
             if (greenDominance > GREEN_WEIGHT / 10) {
-                // Calculate overall brightness
                 const brightness = (r + g + b) / 3;
-                
-                // Avoid removing very bright or very dark pixels
                 if (brightness > 30 && brightness < 225) {
                     return true;
                 }
@@ -141,84 +379,166 @@
             return false;
         }
 
-        function processVideo() {
-            if (!isProcessing) return;
+        function processVideo(video, ctx, type) {
+            if (!isProcessing[type]) return;
 
-            // Draw the video frame
             ctx.drawImage(video, 0, 0, WIDTH, HEIGHT);
-            
-            // Get the image data
             const frame = ctx.getImageData(0, 0, WIDTH, HEIGHT);
             const data = frame.data;
 
-            // Process each pixel
             for (let i = 0; i < data.length; i += 4) {
-                const r = data[i];
-                const g = data[i + 1];
-                const b = data[i + 2];
-
-                if (isGreen(r, g, b)) {
-                    // Make green pixels transparent
+                if (isGreen(data[i], data[i + 1], data[i + 2])) {
                     data[i + 3] = 0;
                 }
             }
 
-            // Put the processed frame back
             ctx.putImageData(frame, 0, 0);
+            requestAnimationFrame(() => processVideo(video, ctx, type));
+        }
+
+        const startProcessing = (type) => {
+            const video = document.getElementById(`${type}Video`);
+            const ctx = type === 'idle' ? idleCtx : speakingCtx;
             
-            // Continue the loop
-            requestAnimationFrame(processVideo);
-        }
-
-        function startProcessing() {
-            if (!isProcessing) {
-                isProcessing = true;
-                requestAnimationFrame(processVideo);
-                status.textContent = 'Processing video...';
+            if (!isProcessing[type]) {
+                isProcessing[type] = true;
+                video.play().catch(console.error);
+                requestAnimationFrame(() => processVideo(video, ctx, type));
             }
-        }
+        };
 
-        function stopProcessing() {
-            isProcessing = false;
-            status.textContent = 'Processing stopped';
-        }
+        const stopProcessing = (type) => {
+            const video = document.getElementById(`${type}Video`);
+            video.pause();
+            isProcessing[type] = false;
+        };
 
-        // Video event listeners
-        video.addEventListener('loadeddata', () => {
-            status.textContent = 'Video loaded. Starting processing...';
-            startProcessing();
+        const startProgress = () => {
+            currentProgress = 0;
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = '0%';
+            
+            clearInterval(progressInterval);
+            progressInterval = setInterval(() => {
+                currentProgress += (100 / CONVERSATION_TIME);
+                if (currentProgress >= 100) {
+                    clearInterval(progressInterval);
+                    currentProgress = 100;
+                    endConversation();
+                }
+                progressBar.style.width = `${currentProgress}%`;
+            }, 1000);
+        };
+
+        const resetProgress = () => {
+            clearInterval(progressInterval);
+            const progressBar = document.getElementById('progressBar');
+            progressBar.style.width = '0%';
+            currentProgress = 0;
+        };
+
+        const updateBackground = (mode) => {
+            document.getElementById('idleCanvas').style.display = 'none';
+            document.getElementById('speakingCanvas').style.display = mode === 'speaking' ? 'block' : 'none';
+            document.getElementById('idleCanvas').style.display = mode === 'speaking' ? 'none' : 'block';
+            
+            if (mode === 'speaking') {
+                startProcessing('speaking');
+                stopProcessing('idle');
+            } else {
+                startProcessing('idle');
+                stopProcessing('speaking');
+            }
+        };
+
+        const startConversation = async () => {
+            try {
+                await navigator.mediaDevices.getUserMedia({ audio: true });
+                const startButton = document.getElementById('startButton');
+                startButton.classList.add('active');
+                startButton.innerHTML = `
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                `;
+
+                conversation = await Conversation.startSession({
+                    agentId: 'iogofk9qnqvE98RwV1Kk',
+                    onModeChange: (mode) => updateBackground(mode.mode),
+                    onConnect: () => {
+                        updateBackground('listening');
+                        startProgress();
+                    },
+                    onDisconnect: () => {
+                        updateBackground('idle');
+                        resetUI();
+                    },
+                    onError: (error) => {
+                        console.error('Conversation error:', error);
+                        resetUI();
+                    }
+                });
+
+            } catch (error) {
+                console.error('Error starting conversation:', error);
+                resetUI();
+            }
+        };
+
+        const endConversation = async () => {
+            if (conversation) {
+                try {
+                    await conversation.endSession();
+                } catch (error) {
+                    console.error('Error ending conversation:', error);
+                } finally {
+                    resetUI();
+                }
+            }
+        };
+
+        const resetUI = () => {
+            const startButton = document.getElementById('startButton');
+            startButton.classList.remove('active');
+            startButton.textContent = 'Start Conversation';
+            resetProgress();
+            updateBackground('idle');
+            conversation = null;
+        };
+
+        // Control event listeners
+        document.getElementById('tolerance').addEventListener('input', (e) => {
+            TOLERANCE = parseInt(e.target.value);
+            document.getElementById('toleranceValue').textContent = TOLERANCE;
         });
 
-        video.addEventListener('play', startProcessing);
-        video.addEventListener('pause', stopProcessing);
-        video.addEventListener('ended', () => {
-            if (!video.loop) {
-                stopProcessing();
+        document.getElementById('greenWeight').addEventListener('input', (e) => {
+            GREEN_WEIGHT = parseInt(e.target.value);
+            document.getElementById('greenWeightValue').textContent = GREEN_WEIGHT;
+        });
+
+        document.getElementById('startButton').addEventListener('click', async () => {
+            if (conversation) {
+                await endConversation();
+            } else {
+                await startConversation();
             }
         });
 
-        // Handle video errors
-        video.addEventListener('error', (e) => {
-            console.error('Video error:', e);
-            status.textContent = 'Error loading video';
-            stopProcessing();
-        });
-
-        // Start the video
-        video.play().catch(error => {
-            console.error('Autoplay failed:', error);
-            status.textContent = 'Click to start';
-            document.addEventListener('click', () => video.play());
-        });
-
-        // Add window focus/blur handlers to manage processing
-        window.addEventListener('focus', () => {
-            if (video.played.length > 0 && !video.paused) {
-                startProcessing();
+        // Share function
+        window.shareCharacter = () => {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Chat with Funny Cupcake on Talkidz',
+                    text: 'Come chat with Funny Cupcake, your new AI friend!',
+                    url: window.location.href
+                }).catch(console.error);
             }
-        });
+        };
 
-        window.addEventListener('blur', stopProcessing);
+        // Initialize
+        updateBackground('idle');
     </script>
 </body>
 </html>
