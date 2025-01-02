@@ -113,6 +113,7 @@
         let TOLERANCE = 100;
         let GREEN_WEIGHT = 18;
 
+        // Update controls
         toleranceSlider.addEventListener('input', (e) => {
             TOLERANCE = parseInt(e.target.value);
             toleranceValue.textContent = TOLERANCE;
@@ -124,17 +125,17 @@
         });
 
         function isGreen(r, g, b) {
+            // Check if green is significantly higher than red and blue
             const greenDominance = g / ((r + b) / 2);
-            const rgDiff = Math.abs(r - g);
-            const gbDiff = Math.abs(g - b);
-            const colorVariance = (rgDiff + gbDiff) / 2;
             
-            const normalizedGreen = (g - Math.min(r, b)) / (Math.max(r, g, b) - Math.min(r, g, b) + 1);
-            
-            if (greenDominance > GREEN_WEIGHT / 10 && normalizedGreen > 0.4) {
+            // Only consider it green if the green component is significantly higher
+            if (greenDominance > GREEN_WEIGHT / 10) {
+                // Calculate overall brightness
                 const brightness = (r + g + b) / 3;
-                if (brightness > 20 && brightness < 235) {
-                    return colorVariance < TOLERANCE;
+                
+                // Avoid removing very bright or very dark pixels
+                if (brightness > 30 && brightness < 225) {
+                    return true;
                 }
             }
             return false;
@@ -143,37 +144,29 @@
         function processVideo() {
             if (!isProcessing) return;
 
+            // Draw the video frame
             ctx.drawImage(video, 0, 0, WIDTH, HEIGHT);
+            
+            // Get the image data
             const frame = ctx.getImageData(0, 0, WIDTH, HEIGHT);
             const data = frame.data;
 
-            const smoothingRadius = 1;
-            for (let y = smoothingRadius; y < HEIGHT - smoothingRadius; y++) {
-                for (let x = smoothingRadius; x < WIDTH - smoothingRadius; x++) {
-                    const i = (y * WIDTH + x) * 4;
-                    const r = data[i];
-                    const g = data[i + 1];
-                    const b = data[i + 2];
+            // Process each pixel
+            for (let i = 0; i < data.length; i += 4) {
+                const r = data[i];
+                const g = data[i + 1];
+                const b = data[i + 2];
 
-                    if (isGreen(r, g, b)) {
-                        let edgeIntensity = 0;
-                        for (let dy = -smoothingRadius; dy <= smoothingRadius; dy++) {
-                            for (let dx = -smoothingRadius; dx <= smoothingRadius; dx++) {
-                                const ni = ((y + dy) * WIDTH + (x + dx)) * 4;
-                                if (isGreen(data[ni], data[ni + 1], data[ni + 2])) {
-                                    edgeIntensity++;
-                                }
-                            }
-                        }
-                        
-                        const totalPixels = (2 * smoothingRadius + 1) ** 2;
-                        const alpha = Math.min(255, (edgeIntensity / totalPixels) * 255);
-                        data[i + 3] = 255 - alpha;
-                    }
+                if (isGreen(r, g, b)) {
+                    // Make green pixels transparent
+                    data[i + 3] = 0;
                 }
             }
 
+            // Put the processed frame back
             ctx.putImageData(frame, 0, 0);
+            
+            // Continue the loop
             requestAnimationFrame(processVideo);
         }
 
@@ -190,6 +183,7 @@
             status.textContent = 'Processing stopped';
         }
 
+        // Video event listeners
         video.addEventListener('loadeddata', () => {
             status.textContent = 'Video loaded. Starting processing...';
             startProcessing();
@@ -203,18 +197,21 @@
             }
         });
 
+        // Handle video errors
         video.addEventListener('error', (e) => {
             console.error('Video error:', e);
             status.textContent = 'Error loading video';
             stopProcessing();
         });
 
+        // Start the video
         video.play().catch(error => {
             console.error('Autoplay failed:', error);
             status.textContent = 'Click to start';
             document.addEventListener('click', () => video.play());
         });
 
+        // Add window focus/blur handlers to manage processing
         window.addEventListener('focus', () => {
             if (video.played.length > 0 && !video.paused) {
                 startProcessing();
