@@ -323,7 +323,7 @@ const characters = {
   jonny: {
     id: 'jonny',
     name: 'Jonny',
-    agentId: 'xiC8L3SOeHwYyCLLnYxF',
+    agentId: 'KkBaB9UtASTL2kD1BPA9',
     assets: {
       idle: '/characters/jonny/assets/jonny-idle.mp4',
       talking: '/characters/jonny/assets/jonny-talk.mp4',
