@@ -705,14 +705,18 @@ async startConversation() {
           this.updateBackground('listening');
           this.addMessage(selectedMsg, false);
         },
-        onTranscript: (transcript) => {
-          console.log('Transcript:', transcript);
-          this.addMessage(transcript.text || transcript.user_transcript || transcript, true);
-        },
-        onResponse: (response) => {
-          console.log('Response:', response);
-          this.addMessage(response.text || response.agent_response || response, false);
-        },
+onTranscript: (transcript) => {
+  console.log('Full transcript object:', transcript);
+  if (transcript.user_transcription_event) {
+    this.addMessage(transcript.user_transcription_event.user_transcript, true);
+  }
+},
+onResponse: (response) => {
+  console.log('Full response object:', response);
+  if (response.agent_response_event) {
+    this.addMessage(response.agent_response_event.agent_response, false);
+  }
+}
         onDisconnect: () => {
           this.updateBackground('idle');
           this.startButton.classList.remove('active');
