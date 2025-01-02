@@ -454,6 +454,14 @@
         const startButton = document.getElementById('startButton');
         const messagesContainer = document.getElementById('messages');
 
+        // Function to get signed URL for the conversation
+        async function getSignedUrl() {
+            // Replace this with your actual signed URL generation logic
+            // For testing, you can return a mock URL
+            return 'https://api.elevenlabs.io/v1/text-to-speech/21m00Tcm4TlvDq8ikWAM';
+        }
+        const messagesContainer = document.getElementById('messages');
+
         // Message handling function
         function addMessage(text, isAgent) {
             const messageDiv = document.createElement('div');
