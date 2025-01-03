@@ -421,6 +421,16 @@ const characters = {
   }
 };
 
+import GreenScreenButton from './GreenScreenButton';
+import { createRoot } from 'react-dom/client';
+
+// Initialize the green screen button
+const greenScreenRoot = createRoot(document.getElementById('greenScreenRoot'));
+greenScreenRoot.render(<GreenScreenButton />);
+
+// Rest of your initialization code
+const chat = new ChatController(characterId, languageCode);
+
 class ChatController {
   constructor(characterId, languageCode) {
     this.character = characters[characterId];
