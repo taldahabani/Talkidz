@@ -93,7 +93,7 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
             // Draw the processed frame with built-in blur
-            ctx.filter = 'blur(1px)';
+            ctx.filter = 'blur(0.1px)';
             ctx.drawImage(tempCanvas, 0, 0);
             ctx.filter = 'none';
             
