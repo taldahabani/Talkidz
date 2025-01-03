@@ -413,8 +413,8 @@ const characters = {
     name: 'Cupcake',
     agentId: 'iogofk9qnqvE98RwV1Kk',
     assets: {
-      idle: '/characters/cupcake/assets/cupcake-blinking.mp4',
-      talking: '/characters/cupcake/assets/cupcake-talk.mp4',
+      idle: '/test/character.mp4',
+      talking: '/test/character.mp4',
       preview: '/characters/cupcake/assets/cupcake.png',
       icon: '/characters/cupcake/assets/cupcake.jpg'
     }
