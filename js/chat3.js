@@ -421,22 +421,15 @@ const characters = {
   }
 };
 
-import GreenScreenButton from './GreenScreenButton';
-import { createRoot } from 'react-dom/client';
-
-// Initialize the green screen button
-const greenScreenRoot = createRoot(document.getElementById('greenScreenRoot'));
-greenScreenRoot.render(<GreenScreenButton />);
-
-// Rest of your initialization code
-const chat = new ChatController(characterId, languageCode);
-
 class ChatController {
   constructor(characterId, languageCode) {
     this.character = characters[characterId];
     this.currentLanguage = languageCode || 'en';
     this.conversation = null;
     this.videosLoaded = { idle: false, speaking: false };
+    this.greenScreenEnabled = false;
+    this.tempCanvas = document.createElement('canvas');
+    this.tempCtx = this.tempCanvas.getContext('2d');
 
     this.setupElements();
     this.setupCharacter();
@@ -445,6 +438,7 @@ class ChatController {
     this.updateBackground('idle');
     this.setupCharacterMenu();
     this.setupLanguageMenu();
+    this.setupGreenScreen();
     
     this.loadingScreen.classList.remove('hidden');
   }
@@ -466,6 +460,90 @@ class ChatController {
     this.currentLanguageFlag = document.getElementById('currentLanguageFlag');
     this.languageMenu = document.getElementById('languageMenu');
     this.languageMenuContent = document.getElementById('languageMenuContent');
+  }
+
+  setupGreenScreen() {
+    const button = document.querySelector('.green-screen-button');
+    button.addEventListener('click', () => {
+      this.greenScreenEnabled = !this.greenScreenEnabled;
+      if (this.greenScreenEnabled) {
+        this.backgroundImage.style.background = 'url("/background.jpg") center/cover no-repeat';
+        this.enableGreenScreen();
+      } else {
+        this.backgroundImage.style.background = `url('${this.character.assets.preview}') center/contain no-repeat`;
+        this.disableGreenScreen();
+      }
+    });
+  }
+
+  isGreen(r, g, b) {
+    const greenDominance = g / ((r + b) / 2);
+    const threshold = 1.6;
+    
+    if (greenDominance > threshold) {
+      const brightness = (r + g + b) / 3;
+      if (brightness > 30 && brightness < 225) {
+        return Math.min((greenDominance - threshold) / 0.4, 1);
+      }
+    }
+    return 0;
+  }
+
+  processGreenScreen(video) {
+    if (!this.greenScreenEnabled) return;
+    
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    
+    ctx.drawImage(video, 0, 0);
+    const frame = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const data = frame.data;
+
+    for (let i = 0; i < data.length; i += 4) {
+      const greenness = this.isGreen(data[i], data[i + 1], data[i + 2]);
+      if (greenness > 0) {
+        data[i + 3] = Math.round(255 * (1 - greenness));
+      }
+    }
+
+    ctx.putImageData(frame, 0, 0);
+    return canvas;
+  }
+
+  enableGreenScreen() {
+    [this.idleVideo, this.speakingVideo].forEach(video => {
+      const originalPlay = video.play;
+      video.play = async () => {
+        await originalPlay.call(video);
+        const processFrame = () => {
+          if (this.greenScreenEnabled && !video.paused) {
+            const processed = this.processGreenScreen(video);
+            if (processed) {
+              video.style.opacity = '0';
+              video.nextElementSibling?.remove();
+              processed.style.position = 'absolute';
+              processed.style.top = '0';
+              processed.style.left = '0';
+              processed.style.width = '100%';
+              processed.style.height = '100%';
+              processed.style.objectFit = 'contain';
+              video.parentElement.appendChild(processed);
+            }
+            requestAnimationFrame(processFrame);
+          }
+        };
+        requestAnimationFrame(processFrame);
+      };
+    });
+  }
+
+  disableGreenScreen() {
+    [this.idleVideo, this.speakingVideo].forEach(video => {
+      video.style.opacity = '';
+      video.nextElementSibling?.remove();
+    });
   }
 
   setupCharacter() {
