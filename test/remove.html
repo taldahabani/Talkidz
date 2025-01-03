@@ -35,11 +35,10 @@
     <div class="container">
         <img src="background.jpg" class="background">
         <canvas id="canvas"></canvas>
-        <video id="video" muted autoplay loop playsinline webkit-playsinline style="display: none;" preload="auto">
+        <video id="video" muted autoplay loop playsinline webkit-playsinline preload="auto" style="display: none;">
             <source src="character.mp4" type="video/mp4">
         </video>
     </div>
-
     <script>
         const video = document.getElementById('video');
         const canvas = document.getElementById('canvas');
@@ -48,39 +47,75 @@
         canvas.width = 450;
         canvas.height = 800;
 
+        const tempCanvas = document.createElement('canvas');
+        const tempCtx = tempCanvas.getContext('2d');
+        tempCanvas.width = canvas.width;
+        tempCanvas.height = canvas.height;
+
+        const edgeCanvas = document.createElement('canvas');
+        const edgeCtx = edgeCanvas.getContext('2d');
+        edgeCanvas.width = canvas.width;
+        edgeCanvas.height = canvas.height;
+
         function isGreen(r, g, b) {
             const greenDominance = g / ((r + b) / 2);
-            if (greenDominance > 1.8) {
+            const threshold = 1.5; // Slightly lower threshold for better edge detection
+            
+            if (greenDominance > threshold) {
                 const brightness = (r + g + b) / 3;
-                if (brightness > 30 && brightness < 225) {
-                    return true;
+                if (brightness > 20 && brightness < 235) {
+                    return Math.min((greenDominance - threshold) / 0.5, 1);
                 }
             }
-            return false;
+            return 0;
         }
 
         function processVideo() {
-            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-            const frame = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            // Draw original frame to temp canvas
+            tempCtx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const frame = tempCtx.getImageData(0, 0, canvas.width, canvas.height);
             const data = frame.data;
-
+            
+            // Create edge detection map
+            const edges = new Uint8ClampedArray(data.length);
+            
             for (let i = 0; i < data.length; i += 4) {
-                if (isGreen(data[i], data[i + 1], data[i + 2])) {
-                    data[i + 3] = 0;
+                const greenness = isGreen(data[i], data[i + 1], data[i + 2]);
+                
+                // Store original alpha
+                const alpha = Math.round(255 * (1 - greenness));
+                data[i + 3] = alpha;
+                
+                // Detect edges (transition areas)
+                if (greenness > 0 && greenness < 1) {
+                    edges[i] = edges[i + 1] = edges[i + 2] = 255;
+                    edges[i + 3] = Math.round(255 * (1 - Math.abs(0.5 - greenness) * 2));
                 }
             }
-
-            ctx.putImageData(frame, 0, 0);
+            
+            // Apply the main frame
+            tempCtx.putImageData(frame, 0, 0);
+            
+            // Apply edge blur
+            const edgeImageData = new ImageData(edges, canvas.width, canvas.height);
+            edgeCtx.putImageData(edgeImageData, 0, 0);
+            edgeCtx.filter = 'blur(2px)';
+            edgeCtx.globalCompositeOperation = 'source-in';
+            edgeCtx.drawImage(tempCanvas, 0, 0);
+            
+            // Combine everything on main canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(tempCanvas, 0, 0);
+            ctx.globalCompositeOperation = 'source-over';
+            ctx.drawImage(edgeCanvas, 0, 0);
+            ctx.globalCompositeOperation = 'source-over';
+            
             requestAnimationFrame(processVideo);
         }
 
         video.addEventListener('loadeddata', () => {
             video.play().catch(e => console.error(e));
             requestAnimationFrame(processVideo);
-        });
-        video.addEventListener('ended', () => {
-            video.currentTime = 0;
-            video.play();
         });
     </script>
 </body>
