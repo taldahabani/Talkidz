@@ -567,6 +567,22 @@ body {
     .main-button {
         padding: 1rem 2rem;
     }
+    .green-screen-button {
+    background: linear-gradient(45deg, #9333ea, #6366f1);
+    color: white;
+    border: none;
+    padding: 1rem 2.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 999px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 12px rgba(147, 51, 234, 0.2);
+    }
+    .green-screen-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(147, 51, 234, 0.3);
+    }
     .main-action-container {
         bottom: calc(70px + env(safe-area-inset-bottom));
         gap: 0.75rem; /* Adjusted gap for smaller screens */
