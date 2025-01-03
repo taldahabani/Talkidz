@@ -467,7 +467,7 @@ class ChatController {
     button.addEventListener('click', () => {
       this.greenScreenEnabled = !this.greenScreenEnabled;
       if (this.greenScreenEnabled) {
-        this.backgroundImage.style.background = 'url("/background.jpg") center/cover no-repeat';
+        this.backgroundImage.style.background = 'url("/test/background.jpg") center/cover no-repeat';
         this.enableGreenScreen();
       } else {
         this.backgroundImage.style.background = `url('${this.character.assets.preview}') center/contain no-repeat`;
