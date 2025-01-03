@@ -28,7 +28,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            filter: drop-shadow(0 0 3px rgba(0,0,0,0.5)) drop-shadow(0 0 2px rgba(0,0,0,0.3));
+            filter: drop-shadow(0 0 2px rgba(0,0,0,0.3));
         }
     </style>
 </head>
@@ -49,86 +49,52 @@
         canvas.width = 450;
         canvas.height = 800;
 
-        // Create two temporary canvases for multi-pass processing
-        const tempCanvas1 = document.createElement('canvas');
-        const tempCtx1 = tempCanvas1.getContext('2d');
-        tempCanvas1.width = canvas.width;
-        tempCanvas1.height = canvas.height;
-
-        const tempCanvas2 = document.createElement('canvas');
-        const tempCtx2 = tempCanvas2.getContext('2d');
-        tempCanvas2.width = canvas.width;
-        tempCanvas2.height = canvas.height;
+        // Create a temporary canvas for processing
+        const tempCanvas = document.createElement('canvas');
+        const tempCtx = tempCanvas.getContext('2d');
+        tempCanvas.width = canvas.width;
+        tempCanvas.height = canvas.height;
 
         function isGreen(r, g, b) {
             const greenDominance = g / ((r + b) / 2);
-            const threshold = 1.5; // Even lower threshold for more aggressive processing
+            // More gradual transition for edge detection
+            const threshold = 1.6; // Lowered from 1.8 for softer edges
             
             if (greenDominance > threshold) {
                 const brightness = (r + g + b) / 3;
-                // Wider brightness range for better edge detection
-                if (brightness > 20 && brightness < 235) {
-                    // More gradual transition
-                    const strength = Math.min((greenDominance - threshold) / 0.5, 1);
+                if (brightness > 30 && brightness < 225) {
+                    // Return an alpha value based on how "green" the pixel is
+                    const strength = Math.min((greenDominance - threshold) / 0.4, 1);
                     return strength;
                 }
             }
             return 0;
         }
 
-        function processEdges(data, width, height) {
-            // Edge refinement pass
-            for (let y = 1; y < height - 1; y++) {
-                for (let x = 1; x < width - 1; x++) {
-                    const idx = (y * width + x) * 4;
-                    const alpha = data[idx + 3];
-                    
-                    if (alpha > 0 && alpha < 255) {
-                        // Sample neighboring pixels
-                        const up = data[idx - width * 4 + 3];
-                        const down = data[idx + width * 4 + 3];
-                        const left = data[idx - 4 + 3];
-                        const right = data[idx + 4 + 3];
-                        
-                        // Smooth alpha based on neighbors
-                        const avgAlpha = (up + down + left + right) / 4;
-                        data[idx + 3] = (alpha + avgAlpha) / 2;
-                    }
-                }
-            }
-        }
-
         function processVideo() {
-            // First pass: Basic green screen removal
-            tempCtx1.drawImage(video, 0, 0, canvas.width, canvas.height);
-            const frame1 = tempCtx1.getImageData(0, 0, canvas.width, canvas.height);
-            const data1 = frame1.data;
+            // Draw to temp canvas first
+            tempCtx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            const frame = tempCtx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = frame.data;
 
-            for (let i = 0; i < data1.length; i += 4) {
-                const greenness = isGreen(data1[i], data1[i + 1], data1[i + 2]);
+            // Process pixels with feathering
+            for (let i = 0; i < data.length; i += 4) {
+                const greenness = isGreen(data[i], data[i + 1], data[i + 2]);
                 if (greenness > 0) {
-                    data1[i + 3] = Math.round(255 * (1 - greenness));
+                    // Apply gradual transparency based on how "green" the pixel is
+                    data[i + 3] = Math.round(255 * (1 - greenness));
                 }
             }
 
-            // Apply first pass result
-            tempCtx1.putImageData(frame1, 0, 0);
-
-            // Second pass: Edge refinement
-            tempCtx2.filter = 'blur(0.75px)';
-            tempCtx2.drawImage(tempCanvas1, 0, 0);
-            tempCtx2.filter = 'none';
+            // Apply the processed frame to the main canvas
+            tempCtx.putImageData(frame, 0, 0);
             
-            const frame2 = tempCtx2.getImageData(0, 0, canvas.width, canvas.height);
-            processEdges(frame2.data, canvas.width, canvas.height);
-            tempCtx2.putImageData(frame2, 0, 0);
-
-            // Final pass: Apply to main canvas with enhanced shadow
+            // Clear the main canvas
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             
-            // Draw with slight color adjustment for better blending
-            ctx.filter = 'contrast(1.05) brightness(1.02)';
-            ctx.drawImage(tempCanvas2, 0, 0);
+            // Draw the processed frame with built-in blur
+            ctx.filter = 'blur(1px)';
+            ctx.drawImage(tempCanvas, 0, 0);
             ctx.filter = 'none';
             
             requestAnimationFrame(processVideo);
