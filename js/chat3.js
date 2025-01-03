@@ -413,8 +413,8 @@ const characters = {
     name: 'Cupcake',
     agentId: 'iogofk9qnqvE98RwV1Kk',
     assets: {
-      idle: '/test/character.mp4',
-      talking: '/test/character.mp4',
+      idle: '/characters/cupcake/assets/cupcake-blinking.mp4',
+      talking: '/characters/cupcake/assets/cupcake-talk.mp4',
       preview: '/characters/cupcake/assets/cupcake.png',
       icon: '/characters/cupcake/assets/cupcake.jpg'
     }
@@ -427,17 +427,17 @@ class ChatController {
     this.currentLanguage = languageCode || 'en';
     this.conversation = null;
     this.videosLoaded = { idle: false, speaking: false };
-    this.greenScreenEnabled = false;
 
     this.setupElements();
-    this.setupCanvases();
     this.setupCharacter();
     this.setupEventListeners();
     this.preloadVideos();
     this.updateBackground('idle');
     this.setupCharacterMenu();
     this.setupLanguageMenu();
-    this.setupGreenScreen();
+    this.greenScreenEnabled = false;
+    this.setupCanvases();
+  }
     
     this.loadingScreen.classList.remove('hidden');
   }
@@ -459,116 +459,6 @@ class ChatController {
     this.currentLanguageFlag = document.getElementById('currentLanguageFlag');
     this.languageMenu = document.getElementById('languageMenu');
     this.languageMenuContent = document.getElementById('languageMenuContent');
-  }
-
-  setupCanvases() {
-    this.idleCanvas = document.getElementById('idleCanvas');
-    this.speakingCanvas = document.getElementById('speakingCanvas');
-    
-    this.idleCtx = this.idleCanvas.getContext('2d', { willReadFrequently: true });
-    this.speakingCtx = this.speakingCanvas.getContext('2d', { willReadFrequently: true });
-    
-    this.idleTempCanvas = document.createElement('canvas');
-    this.speakingTempCanvas = document.createElement('canvas');
-    this.idleTempCtx = this.idleTempCanvas.getContext('2d');
-    this.speakingTempCtx = this.speakingTempCanvas.getContext('2d');
-
-    this.idleCanvas.style.display = 'none';
-    this.speakingCanvas.style.display = 'none';
-  }
-
-  isGreen(r, g, b) {
-    const greenDominance = g / ((r + b) / 2);
-    const threshold = 1.6;
-    
-    if (greenDominance > threshold) {
-      const brightness = (r + g + b) / 3;
-      if (brightness > 30 && brightness < 225) {
-        return Math.min((greenDominance - threshold) / 0.4, 1);
-      }
-    }
-    return 0;
-  }
-
-  processGreenScreen(video, canvas, ctx, tempCanvas, tempCtx) {
-    if (!video.videoWidth) return;
-    
-    if (canvas.width !== video.videoWidth) {
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      tempCanvas.width = video.videoWidth;
-      tempCanvas.height = video.videoHeight;
-    }
-
-    tempCtx.drawImage(video, 0, 0);
-    const frame = tempCtx.getImageData(0, 0, canvas.width, canvas.height);
-    const data = frame.data;
-
-    for (let i = 0; i < data.length; i += 4) {
-      const greenness = this.isGreen(data[i], data[i + 1], data[i + 2]);
-      if (greenness > 0) {
-        data[i + 3] = Math.round(255 * (1 - greenness));
-      }
-    }
-
-    tempCtx.putImageData(frame, 0, 0);
-    
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.filter = 'blur(0.1px)';
-    ctx.drawImage(tempCanvas, 0, 0);
-    ctx.filter = 'none';
-  }
-
-  enableGreenScreen() {
-    const processIdleFrame = () => {
-      if (this.greenScreenEnabled && this.idleVideo.classList.contains('active')) {
-        this.processGreenScreen(
-          this.idleVideo,
-          this.idleCanvas,
-          this.idleCtx,
-          this.idleTempCanvas,
-          this.idleTempCtx
-        );
-        this.idleCanvas.style.display = 'block';
-      }
-      requestAnimationFrame(processIdleFrame);
-    };
-
-    const processSpeakingFrame = () => {
-      if (this.greenScreenEnabled && this.speakingVideo.classList.contains('active')) {
-        this.processGreenScreen(
-          this.speakingVideo,
-          this.speakingCanvas,
-          this.speakingCtx,
-          this.speakingTempCanvas,
-          this.speakingTempCtx
-        );
-        this.speakingCanvas.style.display = 'block';
-      }
-      requestAnimationFrame(processSpeakingFrame);
-    };
-
-    requestAnimationFrame(processIdleFrame);
-    requestAnimationFrame(processSpeakingFrame);
-  }
-
-  disableGreenScreen() {
-    this.idleCanvas.style.display = 'none';
-    this.speakingCanvas.style.display = 'none';
-  }
-
-  setupGreenScreen() {
-    const button = document.querySelector('.green-screen-button');
-    button.addEventListener('click', () => {
-      this.greenScreenEnabled = !this.greenScreenEnabled;
-      if (this.greenScreenEnabled) {
-        this.backgroundImage.style.background = 'url("/background.jpg") center/cover no-repeat';
-        this.enableGreenScreen();
-      } else {
-        this.backgroundImage.style.background = `url('${this.character.assets.preview}') center/contain no-repeat`;
-        this.disableGreenScreen();
-      }
-    });
   }
 
   setupCharacter() {
@@ -641,6 +531,129 @@ class ChatController {
       }
     });
   }
+
+    this.greenScreenEnabled = false;
+    this.setupCanvases();
+  }
+
+  setupCanvases() {
+    this.idleCanvas = document.getElementById('idleCanvas');
+    this.speakingCanvas = document.getElementById('speakingCanvas');
+    
+    // Set up contexts with willReadFrequently
+    this.idleCtx = this.idleCanvas.getContext('2d', { willReadFrequently: true });
+    this.speakingCtx = this.speakingCanvas.getContext('2d', { willReadFrequently: true });
+    
+    // Create temp canvases
+    this.idleTempCanvas = document.createElement('canvas');
+    this.speakingTempCanvas = document.createElement('canvas');
+    this.idleTempCtx = this.idleTempCanvas.getContext('2d');
+    this.speakingTempCtx = this.speakingTempCanvas.getContext('2d');
+
+    // Hide canvases initially
+    this.idleCanvas.style.display = 'none';
+    this.speakingCanvas.style.display = 'none';
+  }
+
+  isGreen(r, g, b) {
+    const greenDominance = g / ((r + b) / 2);
+    const threshold = 1.6;
+    
+    if (greenDominance > threshold) {
+      const brightness = (r + g + b) / 3;
+      if (brightness > 30 && brightness < 225) {
+        return Math.min((greenDominance - threshold) / 0.4, 1);
+      }
+    }
+    return 0;
+  }
+
+  processGreenScreen(video, canvas, ctx, tempCanvas, tempCtx) {
+    if (!video.videoWidth) return;
+    
+    // Set canvas dimensions if needed
+    if (canvas.width !== video.videoWidth) {
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      tempCanvas.width = video.videoWidth;
+      tempCanvas.height = video.videoHeight;
+    }
+
+    // Draw to temp canvas
+    tempCtx.drawImage(video, 0, 0);
+    const frame = tempCtx.getImageData(0, 0, canvas.width, canvas.height);
+    const data = frame.data;
+
+    // Process pixels
+    for (let i = 0; i < data.length; i += 4) {
+      const greenness = this.isGreen(data[i], data[i + 1], data[i + 2]);
+      if (greenness > 0) {
+        data[i + 3] = Math.round(255 * (1 - greenness));
+      }
+    }
+
+    // Apply processed frame
+    tempCtx.putImageData(frame, 0, 0);
+    
+    // Clear and draw with blur
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.filter = 'blur(0.1px)';
+    ctx.drawImage(tempCanvas, 0, 0);
+    ctx.filter = 'none';
+  }
+
+  enableGreenScreen() {
+    const processIdleFrame = () => {
+      if (this.greenScreenEnabled && this.idleVideo.classList.contains('active')) {
+        this.processGreenScreen(
+          this.idleVideo,
+          this.idleCanvas,
+          this.idleCtx,
+          this.idleTempCanvas,
+          this.idleTempCtx
+        );
+        this.idleCanvas.style.display = 'block';
+      }
+      requestAnimationFrame(processIdleFrame);
+    };
+
+    const processSpeakingFrame = () => {
+      if (this.greenScreenEnabled && this.speakingVideo.classList.contains('active')) {
+        this.processGreenScreen(
+          this.speakingVideo,
+          this.speakingCanvas,
+          this.speakingCtx,
+          this.speakingTempCanvas,
+          this.speakingTempCtx
+        );
+        this.speakingCanvas.style.display = 'block';
+      }
+      requestAnimationFrame(processSpeakingFrame);
+    };
+
+    requestAnimationFrame(processIdleFrame);
+    requestAnimationFrame(processSpeakingFrame);
+  }
+
+  disableGreenScreen() {
+    this.idleCanvas.style.display = 'none';
+    this.speakingCanvas.style.display = 'none';
+  }
+
+  setupGreenScreen() {
+    const button = document.querySelector('.green-screen-button');
+    button.addEventListener('click', () => {
+      this.greenScreenEnabled = !this.greenScreenEnabled;
+      if (this.greenScreenEnabled) {
+        this.backgroundImage.style.background = 'url("/background.jpg") center/cover no-repeat';
+        this.enableGreenScreen();
+      } else {
+        this.backgroundImage.style.background = `url('${this.character.assets.preview}') center/contain no-repeat`;
+        this.disableGreenScreen();
+      }
+    });
+  }
+}
 
   updateLanguageFlag(langCode) {
     const selectedLang = languages.find(l => l.code === langCode)
