@@ -413,8 +413,8 @@ const characters = {
     name: 'Cupcake',
     agentId: 'iogofk9qnqvE98RwV1Kk',
     assets: {
-      idle: '/characters/cupcake/assets/cupcake-blinking.mp4',
-      talking: '/characters/cupcake/assets/cupcake-talk.mp4',
+      idle: '/test/character.mp4',
+      talking: '/test/character.mp4',
       preview: '/characters/cupcake/assets/cupcake.png',
       icon: '/characters/cupcake/assets/cupcake.jpg'
     }
@@ -743,7 +743,7 @@ class ChatController {
     button.addEventListener('click', () => {
       this.greenScreenEnabled = !this.greenScreenEnabled;
       if (this.greenScreenEnabled) {
-        this.backgroundImage.style.background = 'url("/background.jpg") center/cover no-repeat';
+        this.backgroundImage.style.background = 'url("/test/background.jpg") center/cover no-repeat';
         this.enableGreenScreen();
       } else {
         this.backgroundImage.style.background = `url('${this.character.assets.preview}') center/contain no-repeat`;
