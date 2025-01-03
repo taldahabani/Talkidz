@@ -75,6 +75,10 @@
         }
 
         video.addEventListener('loadeddata', () => requestAnimationFrame(processVideo));
+        video.addEventListener('ended', () => {
+            video.currentTime = 0;
+            video.play();
+        });
     </script>
 </body>
 </html>
