@@ -148,6 +148,9 @@
             font-size: 1rem;
             color: #666;
             margin-bottom: var(--spacing-unit);
+            text-align: left; /* Align text to the left */
+            padding-left: var(--spacing-unit);
+            padding-right: var(--spacing-unit);
         }
 
         /* Featured Section */
@@ -163,12 +166,14 @@
             overflow: hidden;
             box-shadow: 0 8px 32px rgba(108, 92, 231, 0.08);
             transition: var(--transition);
+            flex-wrap: wrap; /* Allow wrapping if needed */
         }
 
         .featured-section > div:first-child {
             flex: 1;
             padding-right: 48px;
             max-width: 600px;
+            text-align: left; /* Ensure text is left-aligned */
         }
 
         .featured-title {
@@ -201,6 +206,7 @@
             margin: 0 0 6px 0;
             letter-spacing: -1px;
             line-height: 1.2;
+            text-align: left; /* Ensure text is left-aligned */
         }
 
         .featured-description {
@@ -210,6 +216,7 @@
             margin-bottom: 6px;
             font-weight: 400;
             max-width: 540px;
+            text-align: left; /* Ensure text is left-aligned */
         }
 
         .featured-image-container {
@@ -217,6 +224,7 @@
             height: 260px;
             position: relative;
             flex-shrink: 0;
+            margin-left: auto; /* Align image to the right */
         }
 
         .featured-image-wrap {
@@ -400,6 +408,13 @@
         @media (max-width: 768px) {
             .featured-section {
                 padding: 24px 16px; /* Consistent padding */
+                flex-direction: row; /* Maintain row layout */
+                text-align: left; /* Ensure text is left-aligned */
+            }
+
+            .featured-section > div:first-child {
+                padding-right: 24px;
+                text-align: left; /* Ensure text is left-aligned */
             }
 
             .featured-name {
@@ -413,6 +428,7 @@
             .featured-image-container {
                 width: 200px;
                 height: 200px;
+                margin-left: auto; /* Align image to the right */
             }
 
             .featured-image-wrap {
@@ -428,14 +444,7 @@
 
         @media (max-width: 550px) {
             .featured-section {
-                flex-direction: column;
-                text-align: center;
-                padding: 16px;
-            }
-
-            .featured-section > div:first-child {
-                padding-right: 0;
-                margin-bottom: 24px;
+                padding: 16px; /* Further adjust padding */
             }
 
             .featured-name {
@@ -483,6 +492,12 @@
             .badge {
                 font-size: 0.5rem;
                 padding: 0.2rem 0.4rem;
+            }
+
+            .tagline {
+                padding-left: var(--spacing-unit);
+                padding-right: var(--spacing-unit);
+                text-align: left; /* Ensure text is left-aligned */
             }
         }
 
@@ -852,43 +867,6 @@
             }
         }
 
-        /* Particle Background */
-        .particle-background {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -2;
-            overflow: hidden;
-        }
-
-        .particle {
-            position: absolute;
-            width: 6px;
-            height: 6px;
-            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
-            border-radius: 50%;
-            filter: blur(1px);
-            animation: floatParticle 20s infinite linear;
-            opacity: 0.1;
-        }
-
-        @keyframes floatParticle {
-            0% {
-                transform: translateY(0) translateX(0) rotate(0deg);
-                opacity: 0;
-            }
-            50% {
-                opacity: 0.2;
-            }
-            100% {
-                transform: translateY(-1000px) translateX(100px) rotate(360deg);
-                opacity: 0;
-            }
-        }
-
         /* Ensure no extra padding/margin is causing white space */
         main {
             flex: 1 0 auto;
@@ -1181,52 +1159,62 @@
         // Handle smooth scrolling for character carousels
         const initCarousels = () => {
             document.querySelectorAll('.character-carousel').forEach(carousel => {
-                let isScrolling = false;
+                let isDragging = false;
                 let startX;
                 let scrollLeft;
-                let momentum = 0;
-                let animationFrame;
 
-                const startScrolling = (e) => {
-                    isScrolling = true;
-                    startX = e.type.includes('mouse') ? e.pageX : e.touches[0].pageX;
+                carousel.addEventListener('mousedown', (e) => {
+                    isDragging = true;
+                    startX = e.pageX - carousel.offsetLeft;
                     scrollLeft = carousel.scrollLeft;
+                    carousel.style.cursor = 'grabbing';
                     carousel.style.scrollBehavior = 'auto';
-                    cancelAnimationFrame(animationFrame);
-                };
+                });
 
-                const stopScrolling = () => {
-                    isScrolling = false;
+                carousel.addEventListener('mouseleave', () => {
+                    isDragging = false;
+                    carousel.style.cursor = 'grab';
+                });
+
+                carousel.addEventListener('mouseup', () => {
+                    isDragging = false;
+                    carousel.style.cursor = 'grab';
                     carousel.style.scrollBehavior = 'smooth';
-                    
-                    if (Math.abs(momentum) > 1) {
-                        const scroll = () => {
-                            carousel.scrollLeft += momentum;
-                            momentum *= 0.95;
-                            if (Math.abs(momentum) > 0.5) {
-                                animationFrame = requestAnimationFrame(scroll);
-                            }
-                        };
-                        animationFrame = requestAnimationFrame(scroll);
-                    }
-                };
+                });
 
-                const scroll = (e) => {
-                    if (!isScrolling) return;
+                carousel.addEventListener('mousemove', (e) => {
+                    if (!isDragging) return;
                     e.preventDefault();
-                    const x = e.type.includes('mouse') ? e.pageX : e.touches[0].pageX;
+                    const x = e.pageX - carousel.offsetLeft;
+                    const walk = (x - startX) * 2; // scroll-fast
+                    carousel.scrollLeft = scrollLeft - walk;
+                });
+
+                // Touch events for mobile
+                carousel.addEventListener('touchstart', (e) => {
+                    isDragging = true;
+                    startX = e.touches[0].pageX - carousel.offsetLeft;
+                    scrollLeft = carousel.scrollLeft;
+                });
+
+                carousel.addEventListener('touchend', () => {
+                    isDragging = false;
+                });
+
+                carousel.addEventListener('touchmove', (e) => {
+                    if (!isDragging) return;
+                    const x = e.touches[0].pageX - carousel.offsetLeft;
                     const walk = (x - startX) * 2;
                     carousel.scrollLeft = scrollLeft - walk;
-                    momentum = (startX - x) * 0.1;
-                };
+                });
 
-                carousel.addEventListener('mousedown', startScrolling);
-                carousel.addEventListener('touchstart', startScrolling);
-                carousel.addEventListener('mousemove', scroll);
-                carousel.addEventListener('touchmove', scroll);
-                carousel.addEventListener('mouseup', stopScrolling);
-                carousel.addEventListener('touchend', stopScrolling);
-                carousel.addEventListener('mouseleave', stopScrolling);
+                // Prevent default scrolling when interacting with character cards
+                carousel.querySelectorAll('.character-card').forEach(card => {
+                    card.addEventListener('click', (e) => {
+                        // Allow clicks to navigate without interfering with scroll
+                        // If needed, add specific navigation logic here
+                    });
+                });
             });
         };
 
