@@ -1,3 +1,5 @@
+document.querySelector('.splash-container').classList.remove('hidden');
+
 import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
 
 const firstMessages = {
@@ -435,8 +437,6 @@ class ChatController {
     this.updateBackground('idle');
     this.setupCharacterMenu();
     this.setupLanguageMenu();
-    
-    this.loadingScreen.classList.remove('hidden');
   }
 
   setupElements() {
