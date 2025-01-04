@@ -7,45 +7,19 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" rel="stylesheet">
     <style>
         :root {
-            /* Color Palette */
             --primary-color: #FF4B6E;
             --accent-color: #6C5CE7;
             --text-color: #1A1A1A;
             --background-color: #FFFFFF;
             --secondary-background: #F5F5F5;
             --shadow-color: rgba(0, 0, 0, 0.08);
-
-            /* Spacing */
-            --spacing-xs: 0.25rem;
-            --spacing-sm: 0.5rem;
-            --spacing-md: 1rem;
-            --spacing-lg: 2rem;
-
-            /* Typography */
-            --font-size-xs: 0.75rem;
-            --font-size-sm: 0.875rem;
-            --font-size-md: 1rem;
-            --font-size-lg: 1.25rem;
-            --font-size-xl: 1.5rem;
-            --font-size-2xl: 2rem;
-            --font-size-3xl: 3rem;
-
-            --font-weight-normal: 400;
-            --font-weight-medium: 500;
-            --font-weight-semibold: 600;
-            --font-weight-bold: 700;
-            --font-weight-extrabold: 800;
-
-            /* Transitions */
+            --spacing-unit: 1rem;
             --transition: all 0.3s ease;
-
-            /* Header */
             --header-blur: 8px;
             --header-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
-        /* Reset and Base Styles */
-        *, *::before, *::after {
+        * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
@@ -58,15 +32,9 @@
             color: var(--text-color);
             line-height: 1.5;
             overflow-x: hidden;
-            min-height: 100vh;
+            min-height: 100vh; /* Ensure body takes at least full viewport height */
         }
 
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
-
-        /* Gradient Text Utility */
         .gradient-text {
             background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
             -webkit-background-clip: text;
@@ -82,24 +50,25 @@
             background: rgba(255, 255, 255, 0.98);
             backdrop-filter: blur(var(--header-blur));
             -webkit-backdrop-filter: blur(var(--header-blur));
-            padding: var(--spacing-md) 1rem;
+            padding: var(--spacing-unit);
             box-shadow: var(--header-shadow);
-            transition: var(--transition);
+            transition: all 0.3s ease;
         }
 
         .nav {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: var(--spacing-md);
+            margin-bottom: var(--spacing-unit);
         }
 
         .logo-container {
             display: flex;
             flex-direction: column;
             align-items: flex-start;
+            margin-right: auto;
             position: relative;
-            transition: var(--transition);
+            transition: all 0.3s ease;
         }
 
         .logo-container::after {
@@ -131,20 +100,22 @@
         }
 
         .logo {
-            font-size: var(--font-size-xl);
-            font-weight: var(--font-weight-extrabold);
+            font-size: 2rem;
+            font-weight: 800;
             background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            text-decoration: none;
             letter-spacing: -0.5px;
         }
 
         .logo-byline {
-            font-size: var(--font-size-sm);
-            font-weight: var(--font-weight-medium);
+            font-size: 0.75rem;
+            font-weight: 500;
             color: #666;
             margin-top: -0.25rem;
+            margin-left: 0.125rem;
             letter-spacing: 0.5px;
         }
 
@@ -166,8 +137,6 @@
         .share-button svg {
             color: white;
             stroke: white;
-            width: 1rem;
-            height: 1rem;
         }
 
         .share-button:hover {
@@ -176,20 +145,20 @@
         }
 
         .tagline {
-            font-size: var(--font-size-md);
+            font-size: 1rem;
             color: #666;
-            margin-top: var(--spacing-sm);
-            text-align: left;
-            padding-left: var(--spacing-md);
-            padding-right: var(--spacing-md);
+            margin-bottom: var(--spacing-unit);
+            text-align: left; /* Align text to the left */
+            padding-left: var(--spacing-unit);
+            padding-right: var(--spacing-unit);
         }
 
         /* Featured Section */
         .featured-section {
             background: var(--secondary-background);
             border-radius: 24px;
-            padding: var(--spacing-lg);
-            margin: var(--spacing-lg) var(--spacing-md);
+            padding: 20px;
+            margin: 14px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -197,24 +166,24 @@
             overflow: hidden;
             box-shadow: 0 8px 32px rgba(108, 92, 231, 0.08);
             transition: var(--transition);
-            gap: var(--spacing-lg);
-            flex-wrap: wrap;
+            flex-wrap: wrap; /* Allow wrapping if needed */
         }
 
         .featured-section > div:first-child {
             flex: 1;
+            padding-right: 48px;
             max-width: 600px;
-            text-align: left;
+            text-align: left; /* Ensure text is left-aligned */
         }
 
         .featured-title {
-            font-size: var(--font-size-xs);
-            font-weight: var(--font-weight-semibold);
+            font-size: 0.675rem;
+            font-weight: 600;
             color: var(--accent-color);
-            margin-bottom: var(--spacing-xs);
+            margin-bottom: 5px;
             display: flex;
             align-items: center;
-            gap: var(--spacing-sm);
+            gap: 0.75rem;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -228,25 +197,26 @@
         }
 
         .featured-name {
-            font-size: var(--font-size-3xl);
-            font-weight: var(--font-weight-extrabold);
+            font-size: 3rem;
+            font-weight: 800;
             background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            margin: 0 0 var(--spacing-sm) 0;
+            margin: 0 0 6px 0;
             letter-spacing: -1px;
             line-height: 1.2;
+            text-align: left; /* Ensure text is left-aligned */
         }
 
         .featured-description {
             color: #666;
-            font-size: var(--font-size-lg);
+            font-size: 1.125rem;
             line-height: 1.6;
-            margin-bottom: var(--spacing-sm);
-            font-weight: var(--font-weight-normal);
+            margin-bottom: 6px;
+            font-weight: 400;
             max-width: 540px;
-            text-align: left;
+            text-align: left; /* Ensure text is left-aligned */
         }
 
         .featured-image-container {
@@ -254,7 +224,7 @@
             height: 260px;
             position: relative;
             flex-shrink: 0;
-            margin-left: auto;
+            margin-left: auto; /* Align image to the right */
         }
 
         .featured-image-wrap {
@@ -278,33 +248,25 @@
             cursor: pointer;
         }
 
-        .featured-image img {
-            object-fit: cover;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .featured-image:hover img {
+        .featured-image:hover {
             transform: scale(1.05);
             box-shadow: 0 16px 32px rgba(108, 92, 231, 0.2);
         }
 
         /* Genre Section */
         .genre-section {
-            margin: var(--spacing-lg) 0;
-            padding: 0 var(--spacing-md);
+            margin: calc(var(--spacing-unit) * 1) 0;
+            padding: 0 var(--spacing-unit);
             position: relative;
         }
 
         .genre-title {
-            font-size: var(--font-size-lg);
-            margin-bottom: var(--spacing-sm);
-            font-weight: var(--font-weight-bold);
+            font-size: 1.25rem;
+            margin-bottom: var(--spacing-unit);
+            font-weight: 700;
             display: flex;
             align-items: center;
-            gap: var(--spacing-xs);
+            gap: 0.5rem;
         }
 
         .genre-title::after {
@@ -318,9 +280,9 @@
             display: grid;
             grid-auto-flow: column;
             grid-auto-columns: minmax(130px, 1fr);
-            gap: var(--spacing-md);
+            gap: 1.5rem;
             overflow-x: auto;
-            padding: var(--spacing-sm) 0;
+            padding: var(--spacing-unit) 0;
             scroll-snap-type: x mandatory;
             scrollbar-width: none;
             position: relative;
@@ -333,10 +295,11 @@
         .character-card {
             scroll-snap-align: start;
             text-align: center;
+            text-decoration: none;
+            color: inherit;
             transition: var(--transition);
             position: relative;
             cursor: pointer;
-            flex-shrink: 0;
         }
 
         .character-card:hover {
@@ -349,7 +312,7 @@
             border-radius: 50%;
             background-size: cover;
             background-position: center;
-            margin: 0 auto var(--spacing-sm);
+            margin: 0 auto var(--spacing-unit);
             border: 3px solid white;
             box-shadow: 0 4px 12px var(--shadow-color);
             transition: var(--transition);
@@ -364,14 +327,13 @@
         }
 
         .character-name {
-            font-size: var(--font-size-md);
-            font-weight: var(--font-weight-semibold);
-            margin-bottom: var(--spacing-xs);
+            font-weight: 600;
+            margin-bottom: 0.25rem;
             color: var(--text-color);
         }
 
         .character-role {
-            font-size: var(--font-size-sm);
+            font-size: 0.875rem;
             color: #666;
             transition: color 0.2s ease;
         }
@@ -386,14 +348,13 @@
             top: 8px;
             right: 8px;
             color: white;
-            font-size: var(--font-size-xs);
-            padding: var(--spacing-xs) var(--spacing-sm);
+            font-size: 0.625rem;
+            padding: 0.25rem 0.5rem;
             border-radius: 999px;
-            font-weight: var(--font-weight-semibold);
+            font-weight: 600;
             transform: rotate(12deg);
             box-shadow: 0 2px 4px rgba(108, 92, 231, 0.3);
             z-index: 2;
-            transition: transform 0.3s ease;
         }
 
         .new-badge {
@@ -416,21 +377,21 @@
             }
 
             .character-name {
-                font-size: var(--font-size-lg);
+                font-size: 1.2rem;
             }
 
             .character-role {
-                font-size: var(--font-size-md);
+                font-size: 1rem;
             }
 
             .badge {
-                font-size: var(--font-size-sm);
-                padding: var(--spacing-sm) var(--spacing-md);
+                font-size: 0.75rem;
+                padding: 0.3rem 0.6rem;
             }
 
             /* Consistent Padding in Featured Section */
             .featured-section {
-                padding: var(--spacing-lg);
+                padding: 32px; /* Increased padding to match tablet */
             }
 
             .featured-image-container {
@@ -446,29 +407,28 @@
 
         @media (max-width: 768px) {
             .featured-section {
-                padding: var(--spacing-md) var(--spacing-sm);
-                flex-direction: row;
-                text-align: left;
+                padding: 24px 16px; /* Consistent padding */
+                flex-direction: row; /* Maintain row layout */
+                text-align: left; /* Ensure text is left-aligned */
             }
 
             .featured-section > div:first-child {
-                padding-right: var(--spacing-md);
-                text-align: left;
-                max-width: 60%;
+                padding-right: 24px;
+                text-align: left; /* Ensure text is left-aligned */
             }
 
             .featured-name {
-                font-size: var(--font-size-2xl);
+                font-size: 2rem;
             }
 
             .featured-description {
-                font-size: var(--font-size-md);
+                font-size: 1rem;
             }
 
             .featured-image-container {
                 width: 200px;
                 height: 200px;
-                max-width: 40%;
+                margin-left: auto; /* Align image to the right */
             }
 
             .featured-image-wrap {
@@ -477,31 +437,22 @@
             }
 
             .badge {
-                font-size: var(--font-size-xs);
-                padding: var(--spacing-xs) var(--spacing-sm);
+                font-size: 0.7rem;
+                padding: 0.25rem 0.5rem;
             }
         }
 
         @media (max-width: 550px) {
             .featured-section {
-                flex-direction: column;
-                text-align: left;
-                padding: var(--spacing-sm);
-                gap: var(--spacing-sm);
-            }
-
-            .featured-section > div:first-child,
-            .featured-image-container {
-                max-width: 100%;
-                padding-right: 0;
+                padding: 16px; /* Further adjust padding */
             }
 
             .featured-name {
-                font-size: var(--font-size-xl);
+                font-size: 1.75rem;
             }
 
             .featured-description {
-                font-size: var(--font-size-sm);
+                font-size: 0.875rem;
             }
 
             .featured-image-container {
@@ -515,13 +466,8 @@
             }
 
             .badge {
-                font-size: var(--font-size-xs);
-                padding: var(--spacing-xs) var(--spacing-sm);
-            }
-
-            .tagline {
-                padding-left: var(--spacing-sm);
-                padding-right: var(--spacing-sm);
+                font-size: 0.6rem;
+                padding: 0.2rem 0.4rem;
             }
         }
 
@@ -536,16 +482,22 @@
             }
 
             .character-name {
-                font-size: var(--font-size-sm);
+                font-size: 0.875rem;
             }
 
             .character-role {
-                font-size: var(--font-size-xs);
+                font-size: 0.75rem;
             }
 
             .badge {
-                font-size: var(--font-size-xs);
-                padding: var(--spacing-xs) var(--spacing-sm);
+                font-size: 0.5rem;
+                padding: 0.2rem 0.4rem;
+            }
+
+            .tagline {
+                padding-left: var(--spacing-unit);
+                padding-right: var(--spacing-unit);
+                text-align: left; /* Ensure text is left-aligned */
             }
         }
 
@@ -581,6 +533,13 @@
             animation: float 3s infinite ease-in-out;
         }
 
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                visibility: hidden;
+            }
+        }
+
         @keyframes float {
             0%, 100% {
                 transform: translateY(0) translateX(0);
@@ -598,17 +557,17 @@
         }
 
         .splash-logo-text {
-            font-size: var(--font-size-3xl);
-            font-weight: var(--font-weight-extrabold);
+            font-size: 4rem;
+            font-weight: 800;
             opacity: 0;
             transform: translateY(20px);
             animation: fadeInUp 0.5s ease-out 0.5s forwards;
-            margin-bottom: var(--spacing-sm);
+            margin-bottom: 0; 
             line-height: 1.5;
         }
 
         .splash-byline {
-            font-size: var(--font-size-md);
+            font-size: 1.2rem;
             color: #666;
             margin-top: -0.4rem;
             opacity: 0;
@@ -620,13 +579,6 @@
             to {
                 opacity: 1;
                 transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeOut {
-            to {
-                opacity: 0;
-                visibility: hidden;
             }
         }
 
@@ -684,21 +636,10 @@
             margin: 0 auto;
             text-align: center;
             position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2rem;
-        }
-
-        @media (min-width: 768px) {
-            .footer-content {
-                flex-direction: row;
-                justify-content: space-between;
-                text-align: left;
-            }
         }
 
         .footer-logo-container {
+            margin-bottom: 2rem;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -706,15 +647,16 @@
         }
 
         .footer-logo {
-            font-size: var(--font-size-3xl);
-            font-weight: var(--font-weight-extrabold);
+            font-size: 3.5rem;
+            font-weight: 800;
             background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            text-decoration: none;
             letter-spacing: -1px;
             display: inline-block;
-            margin-bottom: var(--spacing-sm);
+            margin-bottom: 1rem;
             position: relative;
             z-index: 1;
         }
@@ -740,8 +682,8 @@
         }
 
         .footer-slogan {
-            font-size: var(--font-size-xl);
-            font-weight: var(--font-weight-bold);
+            font-size: 2.5rem;
+            font-weight: 700;
             margin: 2rem 0;
             padding: 0 1rem;
             position: relative;
@@ -758,7 +700,7 @@
         }
 
         .slogan-secondary {
-            font-size: var(--font-size-lg);
+            font-size: 1.8rem;
             color: #666;
             display: block;
             margin-top: 0.5rem;
@@ -777,7 +719,6 @@
             border-radius: 50%;
             animation: rotate 20s linear infinite;
             pointer-events: none;
-            z-index: 0;
         }
 
         @keyframes rotate {
@@ -794,13 +735,12 @@
         }
 
         .footer-nav-item {
-            font-size: var(--font-size-sm);
             color: #666;
             text-decoration: none;
-            font-weight: var(--font-weight-medium);
+            font-weight: 500;
             transition: var(--transition);
             position: relative;
-            padding: var(--spacing-xs) var(--spacing-sm);
+            padding: 0.5rem 1rem;
         }
 
         .footer-nav-item::after {
@@ -865,21 +805,21 @@
             padding-top: 2rem;
             border-top: 1px solid rgba(0,0,0,0.1);
             color: #666;
-            font-size: var(--font-size-sm);
+            font-size: 0.9rem;
             text-align: center;
         }
 
         @media (min-width: 768px) {
             .footer-logo {
-                font-size: var(--font-size-3xl);
+                font-size: 3.5rem;
             }
 
             .footer-slogan {
-                font-size: var(--font-size-xl);
+                font-size: 2.5rem;
             }
 
             .slogan-secondary {
-                font-size: var(--font-size-lg);
+                font-size: 1.8rem;
             }
 
             .footer-navigation {
@@ -899,15 +839,15 @@
 
         @media (max-width: 768px) {
             .footer-logo {
-                font-size: var(--font-size-xl);
+                font-size: 2.5rem;
             }
 
             .footer-slogan {
-                font-size: var(--font-size-lg);
+                font-size: 2rem;
             }
 
             .slogan-secondary {
-                font-size: var(--font-size-md);
+                font-size: 1.4rem;
             }
 
             .footer-navigation {
@@ -943,6 +883,11 @@
     <div class="splash-container" id="splashScreen">
         <div class="particles"></div>
         <div class="splash-content">
+            <div class="loading-circle">
+                <div class="circle circle-1"></div>
+                <div class="circle circle-2"></div>
+                <div class="circle circle-3"></div>
+            </div>
             <h1 class="splash-logo-text gradient-text">Talkidz</h1>
             <p class="splash-byline">by Playbox</p>
         </div>
@@ -955,8 +900,8 @@
                 <a href="#" class="logo">Talkidz</a>
                 <span class="logo-byline">by Playbox</span>
             </div>
-            <button class="share-button" onclick="shareApp()" aria-label="Share">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <button class="share-button" onclick="shareApp()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
                     <polyline points="16 6 12 2 8 6"></polyline>
                     <line x1="12" y1="2" x2="12" y2="15"></line>
@@ -978,7 +923,7 @@
                 <p class="featured-description">Woof! Your playful and loyal companion, ready to bring joy, share fun stories, and offer friendly support. Whoof!</p>
                 <button class="share-button" onclick="window.location.href='chat.html?character=jonny'">
                     Chat Now
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M5 12h14M12 5l7 7-7 7"></path>
                     </svg>
                 </button>
@@ -986,7 +931,7 @@
             <div class="featured-image-container" onclick="window.location.href='chat.html?character=jonny';" style="cursor: pointer;">
                 <div class="featured-image-wrap">
                     <div class="featured-image">
-                        <img src="characters/jonny/assets/jonny-icon.jpg" alt="Jonny 🐾" loading="lazy">
+                        <img src="characters/jonny/assets/jonny-icon.jpg" alt="Jonny 🐾" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block;">
                     </div>
                 </div>
             </div>
@@ -997,16 +942,18 @@
             <h2 class="genre-title">Funny</h2>
             <div class="character-carousel">
                 <a href="characters/cupcake" class="character-card">
-                    <div class="character-image" style="background-image: url('/characters/cupcake/assets/cupcake.jpg')"></div>
+                    <div class="character-image" style="background-image: url('/characters/cupcake/assets/cupcake.jpg')">
+                        <span class="popular-badge badge">Popular!</span>
+                    </div>
                     <h3 class="character-name">Funny Cupcake</h3>
                     <p class="character-role">Sweet Humor Buddy</p>
-                    <span class="popular-badge badge">Popular!</span>
                 </a>
                 <a href="characters/cat" class="character-card">
-                    <div class="character-image" style="background-image: url('/characters/cat/assets/cat.jpg')"></div>
+                    <div class="character-image" style="background-image: url('/characters/cat/assets/cat.jpg')">
+                        <span class="new-badge badge">New!</span>
+                    </div>
                     <h3 class="character-name">Noodles</h3>
                     <p class="character-role">Funny Companion</p>
-                    <span class="new-badge badge">New!</span>
                 </a>
                 <a href="characters/whimsy" class="character-card">
                     <div class="character-image" style="background-image: url('/characters/whimsy/assets/whimsy.png')"></div>
@@ -1020,10 +967,11 @@
             <h2 class="genre-title">Education</h2>
             <div class="character-carousel">
                 <a href="characters/fox" class="character-card">
-                    <div class="character-image" style="background-image: url('/characters/fox/assets/fox.jpg')"></div>
+                    <div class="character-image" style="background-image: url('/characters/fox/assets/fox.jpg')">
+                        <span class="new-badge badge">New!</span>
+                    </div>
                     <h3 class="character-name">Clever Fox</h3>
                     <p class="character-role">Wise Instructor</p>
-                    <span class="new-badge badge">New!</span>
                 </a>
                 <a href="characters/monkey" class="character-card">
                     <div class="character-image" style="background-image: url('/characters/monkey/assets/monkey.jpg')"></div>
@@ -1031,10 +979,11 @@
                     <p class="character-role">Creative Learner</p>
                 </a>
                 <a href="characters/robo" class="character-card">
-                    <div class="character-image" style="background-image: url('/characters/robo/assets/eva-icon.jpg')"></div>
+                    <div class="character-image" style="background-image: url('/characters/robo/assets/eva-icon.jpg')">
+                        <span class="popular-badge badge">Popular!</span>
+                    </div>
                     <h3 class="character-name">Eva The Robot</h3>
                     <p class="character-role">Calm Educator</p>
-                    <span class="popular-badge badge">Popular!</span>
                 </a>
             </div>
         </section>
@@ -1043,10 +992,11 @@
             <h2 class="genre-title">Personal Growth</h2>
             <div class="character-carousel">
                 <a href="characters/emma" class="character-card">
-                    <div class="character-image" style="background-image: url('/characters/emma/assets/emma.jpg')"></div>
+                    <div class="character-image" style="background-image: url('/characters/emma/assets/emma.jpg')">
+                        <span class="new-badge badge">New!</span>
+                    </div>
                     <h3 class="character-name">Emma</h3>
                     <p class="character-role">Encouraging Counselor</p>
-                    <span class="new-badge badge">New!</span>
                 </a>
                 <a href="characters/duck" class="character-card">
                     <div class="character-image" style="background-image: url('characters/duck/assets/duck.jpg')"></div>
@@ -1054,10 +1004,11 @@
                     <p class="character-role">Mindful Mentor</p>
                 </a>
                 <a href="characters/panda" class="character-card">
-                    <div class="character-image" style="background-image: url('/characters/panda/assets/panda.jpg')"></div>
+                    <div class="character-image" style="background-image: url('/characters/panda/assets/panda.jpg')">
+                        <span class="popular-badge badge">Popular!</span>
+                    </div>
                     <h3 class="character-name">Dr. Panda</h3>
                     <p class="character-role">Calm Listener</p>
-                    <span class="popular-badge badge">Popular!</span>
                 </a>
             </div>
         </section>
@@ -1066,16 +1017,18 @@
             <h2 class="genre-title">Storytellers</h2>
             <div class="character-carousel">
                 <a href="characters/parrot" class="character-card">
-                    <div class="character-image" style="background-image: url('/characters/parrot/assets/parrot.jpg')"></div>
+                    <div class="character-image" style="background-image: url('/characters/parrot/assets/parrot.jpg')">
+                        <span class="popular-badge badge">Popular!</span>
+                    </div>
                     <h3 class="character-name">Parrot</h3>
                     <p class="character-role">Adventurous Narrator</p>
-                    <span class="popular-badge badge">Popular!</span>
                 </a>
                 <a href="characters/wizard" class="character-card">
-                    <div class="character-image" style="background-image: url('characters/wizard/assets/wizard.jpg')"></div>
+                    <div class="character-image" style="background-image: url('characters/wizard/assets/wizard.jpg')">
+                        <span class="new-badge badge">New!</span>
+                    </div>
                     <h3 class="character-name">Winston the Wizard</h3>
                     <p class="character-role">Magical Story Spinner</p>
-                    <span class="new-badge badge">New!</span>
                 </a>
                 <a href="characters/lion" class="character-card">
                     <div class="character-image" style="background-image: url('/characters/lion/assets/lion.jpg')"></div>
@@ -1089,10 +1042,11 @@
             <h2 class="genre-title">Language Tutors</h2>
             <div class="character-carousel">
                 <a href="characters/turtle" class="character-card">
-                    <div class="character-image" style="background-image: url('/characters/turtle/assets/turtle.jpg')"></div>
+                    <div class="character-image" style="background-image: url('/characters/turtle/assets/turtle.jpg')">
+                        <span class="new-badge badge">New!</span>
+                    </div>
                     <h3 class="character-name">Tilly the Turtle</h3>
                     <p class="character-role">Gentle Language Guide</p>
-                    <span class="new-badge badge">New!</span>
                 </a>
                 <a href="characters/world" class="character-card">
                     <div class="character-image" style="background-image: url('/characters/world/assets/world.jpg')"></div>
@@ -1100,10 +1054,11 @@
                     <p class="character-role">Global Language Explorer</p>
                 </a>
                 <a href="characters/pingo" class="character-card">
-                    <div class="character-image" style="background-image: url('/characters/pingo/assets/pingo.jpg')"></div>
+                    <div class="character-image" style="background-image: url('/characters/pingo/assets/pingo.jpg')">
+                        <span class="popular-badge badge">Popular!</span>
+                    </div>
                     <h3 class="character-name">Pingo The Penguin</h3>
                     <p class="character-role">Linguistic Adventurer</p>
-                    <span class="popular-badge badge">Popular!</span>
                 </a>
             </div>
         </section>
@@ -1134,19 +1089,19 @@
             </nav>
 
             <div class="footer-social">
-                <a href="#" class="social-icon" aria-label="Facebook">
+                <a href="#" class="social-icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
                     </svg>
                 </a>
-                <a href="#" class="social-icon" aria-label="Instagram">
+                <a href="#" class="social-icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
                         <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
                         <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
                     </svg>
                 </a>
-                <a href="#" class="social-icon" aria-label="Twitter">
+                <a href="#" class="social-icon">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
                     </svg>
@@ -1217,43 +1172,42 @@
                 let startX;
                 let scrollLeft;
 
-                // Mouse Events
                 carousel.addEventListener('mousedown', (e) => {
                     isDragging = true;
-                    carousel.classList.add('active');
                     startX = e.pageX - carousel.offsetLeft;
                     scrollLeft = carousel.scrollLeft;
+                    carousel.style.cursor = 'grabbing';
+                    carousel.style.scrollBehavior = 'auto';
                 });
 
                 carousel.addEventListener('mouseleave', () => {
                     isDragging = false;
-                    carousel.classList.remove('active');
+                    carousel.style.cursor = 'grab';
                 });
 
                 carousel.addEventListener('mouseup', () => {
                     isDragging = false;
-                    carousel.classList.remove('active');
+                    carousel.style.cursor = 'grab';
+                    carousel.style.scrollBehavior = 'smooth';
                 });
 
                 carousel.addEventListener('mousemove', (e) => {
                     if (!isDragging) return;
                     e.preventDefault();
                     const x = e.pageX - carousel.offsetLeft;
-                    const walk = (x - startX) * 2; // Scroll-fast
+                    const walk = (x - startX) * 2; // scroll-fast
                     carousel.scrollLeft = scrollLeft - walk;
                 });
 
-                // Touch Events for Mobile
+                // Touch events for mobile
                 carousel.addEventListener('touchstart', (e) => {
                     isDragging = true;
-                    carousel.classList.add('active');
                     startX = e.touches[0].pageX - carousel.offsetLeft;
                     scrollLeft = carousel.scrollLeft;
                 });
 
                 carousel.addEventListener('touchend', () => {
                     isDragging = false;
-                    carousel.classList.remove('active');
                 });
 
                 carousel.addEventListener('touchmove', (e) => {
@@ -1261,6 +1215,14 @@
                     const x = e.touches[0].pageX - carousel.offsetLeft;
                     const walk = (x - startX) * 2;
                     carousel.scrollLeft = scrollLeft - walk;
+                });
+
+                // Prevent default scrolling when interacting with character cards
+                carousel.querySelectorAll('.character-card').forEach(card => {
+                    card.addEventListener('click', (e) => {
+                        // Allow clicks to navigate without interfering with scroll
+                        // If needed, add specific navigation logic here
+                    });
                 });
             });
         };
