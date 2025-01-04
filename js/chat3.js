@@ -732,60 +732,52 @@ enableGreenScreen() {
     this.backgroundImage.style.opacity = '1';
     this.backgroundImage.style.background = 'url("/test/background.jpg") center/cover no-repeat';
     
-    this.idleCanvas.style.display = 'block';
-    this.speakingCanvas.style.display = 'none';
     
-    const updateCanvasSize = () => {
-        const container = this.backgroundImage;
-        const containerWidth = container.offsetWidth;
-        const containerHeight = container.offsetHeight;
-        const videoRatio = this.idleVideo.videoWidth / this.idleVideo.videoHeight;
-        
-        let width, height;
-        if (containerWidth / containerHeight > videoRatio) {
-            height = containerHeight;
-            width = height * videoRatio;
-        } else {
-            width = containerWidth;
-            height = width / videoRatio;
+    const processIdleFrame = () => {
+        if (this.greenScreenEnabled && this.idleVideo.classList.contains('active')) {
+            this.processGreenScreen(
+                this.idleVideo,
+                this.idleCanvas,
+                this.idleCtx,
+                this.idleTempCanvas,
+                this.idleTempCtx
+            );
+            this.idleCanvas.style.display = 'block';
+            this.speakingCanvas.style.display = 'none';
         }
-        
-        [this.idleCanvas, this.speakingCanvas].forEach(canvas => {
-            canvas.style.width = `${width}px`;
-            canvas.style.height = `${height}px`;
-            canvas.style.left = `${(containerWidth - width) / 2}px`;
-            canvas.style.top = `${(containerHeight - height) / 2}px`;
-        });
-    };
-    
-    window.addEventListener('resize', updateCanvasSize);
-    updateCanvasSize();
-    
-    const processFrames = () => {
         if (this.greenScreenEnabled) {
-            if (this.speakingVideo.classList.contains('active')) {
-                this.processGreenScreen(this.speakingVideo, this.speakingCanvas, this.speakingCtx);
-                this.speakingCanvas.style.display = 'block';
-                this.idleCanvas.style.display = 'none';
-            } else {
-                this.processGreenScreen(this.idleVideo, this.idleCanvas, this.idleCtx);
-                this.idleCanvas.style.display = 'block';
-                this.speakingCanvas.style.display = 'none';
-            }
-            requestAnimationFrame(processFrames);
+            requestAnimationFrame(processIdleFrame);
         }
     };
-    
-    requestAnimationFrame(processFrames);
+
+    const processSpeakingFrame = () => {
+        if (this.greenScreenEnabled && this.speakingVideo.classList.contains('active')) {
+            this.processGreenScreen(
+                this.speakingVideo,
+                this.speakingCanvas,
+                this.speakingCtx,
+                this.speakingTempCanvas,
+                this.speakingTempCtx
+            );
+            this.speakingCanvas.style.display = 'block';
+            this.idleCanvas.style.display = 'none';
+        }
+        if (this.greenScreenEnabled) {
+            requestAnimationFrame(processSpeakingFrame);
+        }
+    };
+
+    requestAnimationFrame(processIdleFrame);
+    requestAnimationFrame(processSpeakingFrame);
 }
 
 disableGreenScreen() {
+    // Show the original videos
     this.idleVideo.style.opacity = '1';
     this.speakingVideo.style.opacity = '1';
     
     this.backgroundImage.style.opacity = '0';
     this.backgroundImage.style.background = `url('${this.character.assets.preview}') center/contain no-repeat`;
-    
     this.idleCanvas.style.display = 'none';
     this.speakingCanvas.style.display = 'none';
     
@@ -797,38 +789,46 @@ updateBackground(mode) {
         this.idleVideo.classList.remove('active');
         this.speakingVideo.classList.add('active');
         this.speakingVideo.play().catch(console.error);
+        
+        if (this.greenScreenEnabled) {
+            this.idleCanvas.style.display = 'none';
+            this.speakingCanvas.style.display = 'block';
+        }
     } else if (this.videosLoaded.idle) {
         this.speakingVideo.classList.remove('active');
         this.idleVideo.classList.add('active');
         this.idleVideo.play().catch(console.error);
+        
+        if (this.greenScreenEnabled) {
+            this.speakingCanvas.style.display = 'none';
+            this.idleCanvas.style.display = 'block';
+        }
+    } else {
+        this.backgroundImage.style.opacity = '1';
+        [this.idleVideo, this.speakingVideo].forEach(video =>
+            video.classList.remove('active')
+        );
+        if (this.greenScreenEnabled) {
+            this.idleCanvas.style.display = 'none';
+            this.speakingCanvas.style.display = 'none';
+        }
     }
-    
-    if (this.greenScreenEnabled) {
-        this.idleCanvas.style.display = mode === 'speaking' ? 'none' : 'block';
-        this.speakingCanvas.style.display = mode === 'speaking' ? 'block' : 'none';
-    }
-    
     this.updateStatus(mode);
 }
 
-setupGreenScreen() {
+  setupGreenScreen() {
     const button = document.querySelector('.green-screen-button');
-    button.innerHTML = `
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="3" y="3" width="18" height="18" rx="2" />
-            <path d="M3 9h18" />
-        </svg>
-    `;
-    
     button.addEventListener('click', () => {
-        this.greenScreenEnabled = !this.greenScreenEnabled;
-        if (this.greenScreenEnabled) {
-            this.enableGreenScreen();
-        } else {
-            this.disableGreenScreen();
-        }
+      this.greenScreenEnabled = !this.greenScreenEnabled;
+      if (this.greenScreenEnabled) {
+        this.backgroundImage.style.background = 'url("/test/background.jpg") center/cover no-repeat';
+        this.enableGreenScreen();
+      } else {
+        this.backgroundImage.style.background = `url('${this.character.assets.preview}') center/contain no-repeat`;
+        this.disableGreenScreen();
+      }
     });
-}
+  }
 
   triggerConfetti() {
     const options = { origin: { y: 0.7 } };
