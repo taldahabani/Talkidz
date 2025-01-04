@@ -662,10 +662,42 @@ class ChatController {
     });
   }
 
+createParticles() {
+    const container = document.querySelector('.main-container');
+    for (let i = 0; i < 20; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.width = Math.random() * 10 + 'px';
+        particle.style.height = particle.style.width;
+        particle.style.background = `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.5)`;
+        particle.style.borderRadius = '50%';
+        particle.style.position = 'absolute';
+        this.restartParticle(particle);
+        container.appendChild(particle);
+    }
+}
+
+restartParticle(particle) {
+    const startX = Math.random() * window.innerWidth;
+    const startY = window.innerHeight + 10;
+    const endX = startX + (Math.random() - 0.5) * 200;
+    const endY = -10;
+    
+    particle.style.left = startX + 'px';
+    particle.style.top = startY + 'px';
+    particle.style.setProperty('--tx', (endX - startX) + 'px');
+    particle.style.setProperty('--ty', (endY - startY) + 'px');
+    
+    particle.style.animation = 'none';
+    particle.offsetHeight; // Force reflow
+    particle.style.animation = `float ${Math.random() * 2 + 3}s linear infinite`;
+}
+
   async startConversation() {
     try {
       await navigator.mediaDevices.getUserMedia({ audio: true });
       this.triggerConfetti();
+      this.createParticles();
       this.startButton.classList.add('active');
       this.startButton.innerHTML = `
         <svg width="24" height="24" viewBox="0 0 24 24"
