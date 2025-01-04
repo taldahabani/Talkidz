@@ -345,8 +345,8 @@
         /* Badges */
         .badge {
             position: absolute;
-            top: 8px;
-            right: 8px;
+            top: -10px; /* Adjusted to move slightly above */
+            right: -10px; /* Adjusted to move slightly to the right */
             color: white;
             font-size: 0.625rem;
             padding: 0.25rem 0.5rem;
@@ -354,7 +354,8 @@
             font-weight: 600;
             transform: rotate(12deg);
             box-shadow: 0 2px 4px rgba(108, 92, 231, 0.3);
-            z-index: 2;
+            z-index: 3; /* Ensure badges are above all */
+            pointer-events: none; /* Prevent badges from capturing pointer events */
         }
 
         .new-badge {
@@ -365,139 +366,40 @@
             background: var(--accent-color);
         }
 
-        /* Responsive Design */
-        @media (min-width: 768px) {
-            .character-carousel {
-                grid-auto-columns: minmax(180px, 1fr);
-            }
-
-            .character-image {
-                width: 160px;
-                height: 160px;
-            }
-
-            .character-name {
-                font-size: 1.2rem;
-            }
-
-            .character-role {
-                font-size: 1rem;
-            }
-
-            .badge {
-                font-size: 0.75rem;
-                padding: 0.3rem 0.6rem;
-            }
-
-            /* Consistent Padding in Featured Section */
-            .featured-section {
-                padding: 32px; /* Increased padding to match tablet */
-            }
-
-            .featured-image-container {
-                width: 260px;
-                height: 260px;
-            }
-
-            .featured-image-wrap {
-                width: 240px;
-                height: 240px;
-            }
+        /* Particle Background */
+        .particle-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -3; /* Ensure background particles are behind everything */
+            overflow: hidden;
         }
 
-        @media (max-width: 768px) {
-            .featured-section {
-                padding: 24px 16px; /* Consistent padding */
-                flex-direction: row; /* Maintain row layout */
-                text-align: left; /* Ensure text is left-aligned */
-            }
-
-            .featured-section > div:first-child {
-                padding-right: 24px;
-                text-align: left; /* Ensure text is left-aligned */
-            }
-
-            .featured-name {
-                font-size: 2rem;
-            }
-
-            .featured-description {
-                font-size: 1rem;
-            }
-
-            .featured-image-container {
-                width: 200px;
-                height: 200px;
-                margin-left: auto; /* Align image to the right */
-            }
-
-            .featured-image-wrap {
-                width: 180px;
-                height: 180px;
-            }
-
-            .badge {
-                font-size: 0.7rem;
-                padding: 0.25rem 0.5rem;
-            }
+        .particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            border-radius: 50%;
+            filter: blur(1px);
+            animation: floatParticle 20s infinite linear;
+            opacity: 0.1;
         }
 
-        @media (max-width: 550px) {
-            .featured-section {
-                padding: 16px; /* Further adjust padding */
+        @keyframes floatParticle {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 0;
             }
-
-            .featured-name {
-                font-size: 1.75rem;
+            50% {
+                opacity: 0.2;
             }
-
-            .featured-description {
-                font-size: 0.875rem;
-            }
-
-            .featured-image-container {
-                width: 160px;
-                height: 160px;
-            }
-
-            .featured-image-wrap {
-                width: 140px;
-                height: 140px;
-            }
-
-            .badge {
-                font-size: 0.6rem;
-                padding: 0.2rem 0.4rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .character-carousel {
-                grid-auto-columns: minmax(110px, 1fr);
-            }
-
-            .character-image {
-                width: 90px;
-                height: 90px;
-            }
-
-            .character-name {
-                font-size: 0.875rem;
-            }
-
-            .character-role {
-                font-size: 0.75rem;
-            }
-
-            .badge {
-                font-size: 0.5rem;
-                padding: 0.2rem 0.4rem;
-            }
-
-            .tagline {
-                padding-left: var(--spacing-unit);
-                padding-right: var(--spacing-unit);
-                text-align: left; /* Ensure text is left-aligned */
+            100% {
+                transform: translateY(-1000px) translateX(100px) rotate(360deg);
+                opacity: 0;
             }
         }
 
@@ -509,7 +411,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            z-index: 9999;
+            z-index: 1000; /* Above all */
             animation: fadeOut 0.5s ease-in-out 1.5s forwards;
             overflow: hidden;
         }
@@ -582,41 +484,9 @@
             }
         }
 
-        /* Particle Background */
+        /* Particle Background Initialization */
         .particle-background {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -2;
-            overflow: hidden;
-        }
-
-        .particle {
-            position: absolute;
-            width: 6px;
-            height: 6px;
-            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
-            border-radius: 50%;
-            filter: blur(1px);
-            animation: floatParticle 20s infinite linear;
-            opacity: 0.1;
-        }
-
-        @keyframes floatParticle {
-            0% {
-                transform: translateY(0) translateX(0) rotate(0deg);
-                opacity: 0;
-            }
-            50% {
-                opacity: 0.2;
-            }
-            100% {
-                transform: translateY(-1000px) translateX(100px) rotate(360deg);
-                opacity: 0;
-            }
+            /* Already defined above */
         }
 
         /* Footer Styles */
@@ -810,6 +680,43 @@
         }
 
         @media (min-width: 768px) {
+            .character-carousel {
+                grid-auto-columns: minmax(180px, 1fr);
+            }
+
+            .character-image {
+                width: 160px;
+                height: 160px;
+            }
+
+            .character-name {
+                font-size: 1.2rem;
+            }
+
+            .character-role {
+                font-size: 1rem;
+            }
+
+            .badge {
+                font-size: 0.75rem;
+                padding: 0.3rem 0.6rem;
+            }
+
+            /* Consistent Padding in Featured Section */
+            .featured-section {
+                padding: 32px; /* Increased padding to match tablet */
+            }
+
+            .featured-image-container {
+                width: 260px;
+                height: 260px;
+            }
+
+            .featured-image-wrap {
+                width: 240px;
+                height: 240px;
+            }
+
             .footer-logo {
                 font-size: 3.5rem;
             }
@@ -838,6 +745,41 @@
         }
 
         @media (max-width: 768px) {
+            .featured-section {
+                padding: 24px 16px; /* Consistent padding */
+                flex-direction: row; /* Maintain row layout */
+                text-align: left; /* Ensure text is left-aligned */
+            }
+
+            .featured-section > div:first-child {
+                padding-right: 24px;
+                text-align: left; /* Ensure text is left-aligned */
+            }
+
+            .featured-name {
+                font-size: 2rem;
+            }
+
+            .featured-description {
+                font-size: 1rem;
+            }
+
+            .featured-image-container {
+                width: 200px;
+                height: 200px;
+                margin-left: auto; /* Align image to the right */
+            }
+
+            .featured-image-wrap {
+                width: 180px;
+                height: 180px;
+            }
+
+            .badge {
+                font-size: 0.7rem;
+                padding: 0.25rem 0.5rem;
+            }
+
             .footer-logo {
                 font-size: 2.5rem;
             }
@@ -866,6 +808,65 @@
             }
         }
 
+        @media (max-width: 550px) {
+            .featured-section {
+                padding: 16px; /* Further adjust padding */
+            }
+
+            .featured-name {
+                font-size: 1.75rem;
+            }
+
+            .featured-description {
+                font-size: 0.875rem;
+            }
+
+            .featured-image-container {
+                width: 160px;
+                height: 160px;
+            }
+
+            .featured-image-wrap {
+                width: 140px;
+                height: 140px;
+            }
+
+            .badge {
+                font-size: 0.6rem;
+                padding: 0.2rem 0.4rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .character-carousel {
+                grid-auto-columns: minmax(110px, 1fr);
+            }
+
+            .character-image {
+                width: 90px;
+                height: 90px;
+            }
+
+            .character-name {
+                font-size: 0.875rem;
+            }
+
+            .character-role {
+                font-size: 0.75rem;
+            }
+
+            .badge {
+                font-size: 0.5rem;
+                padding: 0.2rem 0.4rem;
+            }
+
+            .tagline {
+                padding-left: var(--spacing-unit);
+                padding-right: var(--spacing-unit);
+                text-align: left; /* Ensure text is left-aligned */
+            }
+        }
+
         /* Ensure no extra padding/margin is causing white space */
         main {
             flex: 1 0 auto;
@@ -879,6 +880,9 @@
     </style>
 </head>
 <body>
+    <!-- Particle Background -->
+    <div class="particle-background"></div>
+
     <!-- Splash Screen -->
     <div class="splash-container" id="splashScreen">
         <div class="particles"></div>
@@ -942,16 +946,14 @@
             <h2 class="genre-title">Funny</h2>
             <div class="character-carousel">
                 <a href="characters/cupcake" class="character-card">
-                    <div class="character-image" style="background-image: url('/characters/cupcake/assets/cupcake.jpg')">
-                        <span class="popular-badge badge">Popular!</span>
-                    </div>
+                    <div class="character-image" style="background-image: url('/characters/cupcake/assets/cupcake.jpg')"></div>
+                    <span class="popular-badge badge">Popular!</span>
                     <h3 class="character-name">Funny Cupcake</h3>
                     <p class="character-role">Sweet Humor Buddy</p>
                 </a>
                 <a href="characters/cat" class="character-card">
-                    <div class="character-image" style="background-image: url('/characters/cat/assets/cat.jpg')">
-                        <span class="new-badge badge">New!</span>
-                    </div>
+                    <div class="character-image" style="background-image: url('/characters/cat/assets/cat.jpg')"></div>
+                    <span class="new-badge badge">New!</span>
                     <h3 class="character-name">Noodles</h3>
                     <p class="character-role">Funny Companion</p>
                 </a>
@@ -967,9 +969,8 @@
             <h2 class="genre-title">Education</h2>
             <div class="character-carousel">
                 <a href="characters/fox" class="character-card">
-                    <div class="character-image" style="background-image: url('/characters/fox/assets/fox.jpg')">
-                        <span class="new-badge badge">New!</span>
-                    </div>
+                    <div class="character-image" style="background-image: url('/characters/fox/assets/fox.jpg')"></div>
+                    <span class="new-badge badge">New!</span>
                     <h3 class="character-name">Clever Fox</h3>
                     <p class="character-role">Wise Instructor</p>
                 </a>
@@ -979,9 +980,8 @@
                     <p class="character-role">Creative Learner</p>
                 </a>
                 <a href="characters/robo" class="character-card">
-                    <div class="character-image" style="background-image: url('/characters/robo/assets/eva-icon.jpg')">
-                        <span class="popular-badge badge">Popular!</span>
-                    </div>
+                    <div class="character-image" style="background-image: url('/characters/robo/assets/eva-icon.jpg')"></div>
+                    <span class="popular-badge badge">Popular!</span>
                     <h3 class="character-name">Eva The Robot</h3>
                     <p class="character-role">Calm Educator</p>
                 </a>
@@ -992,9 +992,8 @@
             <h2 class="genre-title">Personal Growth</h2>
             <div class="character-carousel">
                 <a href="characters/emma" class="character-card">
-                    <div class="character-image" style="background-image: url('/characters/emma/assets/emma.jpg')">
-                        <span class="new-badge badge">New!</span>
-                    </div>
+                    <div class="character-image" style="background-image: url('/characters/emma/assets/emma.jpg')"></div>
+                    <span class="new-badge badge">New!</span>
                     <h3 class="character-name">Emma</h3>
                     <p class="character-role">Encouraging Counselor</p>
                 </a>
@@ -1004,9 +1003,8 @@
                     <p class="character-role">Mindful Mentor</p>
                 </a>
                 <a href="characters/panda" class="character-card">
-                    <div class="character-image" style="background-image: url('/characters/panda/assets/panda.jpg')">
-                        <span class="popular-badge badge">Popular!</span>
-                    </div>
+                    <div class="character-image" style="background-image: url('/characters/panda/assets/panda.jpg')"></div>
+                    <span class="popular-badge badge">Popular!</span>
                     <h3 class="character-name">Dr. Panda</h3>
                     <p class="character-role">Calm Listener</p>
                 </a>
@@ -1017,16 +1015,14 @@
             <h2 class="genre-title">Storytellers</h2>
             <div class="character-carousel">
                 <a href="characters/parrot" class="character-card">
-                    <div class="character-image" style="background-image: url('/characters/parrot/assets/parrot.jpg')">
-                        <span class="popular-badge badge">Popular!</span>
-                    </div>
+                    <div class="character-image" style="background-image: url('/characters/parrot/assets/parrot.jpg')"></div>
+                    <span class="popular-badge badge">Popular!</span>
                     <h3 class="character-name">Parrot</h3>
                     <p class="character-role">Adventurous Narrator</p>
                 </a>
                 <a href="characters/wizard" class="character-card">
-                    <div class="character-image" style="background-image: url('characters/wizard/assets/wizard.jpg')">
-                        <span class="new-badge badge">New!</span>
-                    </div>
+                    <div class="character-image" style="background-image: url('characters/wizard/assets/wizard.jpg')"></div>
+                    <span class="new-badge badge">New!</span>
                     <h3 class="character-name">Winston the Wizard</h3>
                     <p class="character-role">Magical Story Spinner</p>
                 </a>
@@ -1042,9 +1038,8 @@
             <h2 class="genre-title">Language Tutors</h2>
             <div class="character-carousel">
                 <a href="characters/turtle" class="character-card">
-                    <div class="character-image" style="background-image: url('/characters/turtle/assets/turtle.jpg')">
-                        <span class="new-badge badge">New!</span>
-                    </div>
+                    <div class="character-image" style="background-image: url('/characters/turtle/assets/turtle.jpg')"></div>
+                    <span class="new-badge badge">New!</span>
                     <h3 class="character-name">Tilly the Turtle</h3>
                     <p class="character-role">Gentle Language Guide</p>
                 </a>
@@ -1054,9 +1049,8 @@
                     <p class="character-role">Global Language Explorer</p>
                 </a>
                 <a href="characters/pingo" class="character-card">
-                    <div class="character-image" style="background-image: url('/characters/pingo/assets/pingo.jpg')">
-                        <span class="popular-badge badge">Popular!</span>
-                    </div>
+                    <div class="character-image" style="background-image: url('/characters/pingo/assets/pingo.jpg')"></div>
+                    <span class="popular-badge badge">Popular!</span>
                     <h3 class="character-name">Pingo The Penguin</h3>
                     <p class="character-role">Linguistic Adventurer</p>
                 </a>
@@ -1241,23 +1235,23 @@
 
         // Initialize background particles
         function createParticles() {
-            const background = document.createElement('div');
-            background.className = 'particle-background';
-            document.body.appendChild(background);
-
+            const background = document.querySelector('.particle-background');
             const particleCount = 50;
 
             for (let i = 0; i < particleCount; i++) {
                 const particle = document.createElement('div');
                 particle.className = 'particle';
                 
+                // Random starting position
                 particle.style.left = Math.random() * 100 + 'vw';
                 particle.style.top = Math.random() * 100 + 'vh';
                 
+                // Random size
                 const size = Math.random() * 4 + 2;
                 particle.style.width = size + 'px';
                 particle.style.height = size + 'px';
                 
+                // Random animation duration and delay
                 particle.style.animationDuration = (Math.random() * 20 + 10) + 's';
                 particle.style.animationDelay = (Math.random() * 5) + 's';
                 
