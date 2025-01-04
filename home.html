@@ -15,6 +15,8 @@
             --shadow-color: rgba(0, 0, 0, 0.08);
             --spacing-unit: 1rem;
             --transition: all 0.3s ease;
+            --header-blur: 8px;
+            --header-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
         * {
@@ -23,8 +25,9 @@
             padding: 0;
         }
 
-        body {
-            font-family: -apple-system, system-ui, sans-serif;
+        body, html {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+                Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
             background-color: var(--background-color);
             color: var(--text-color);
             line-height: 1.5;
@@ -44,9 +47,11 @@
             top: 0;
             z-index: 100;
             background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(8px);
+            backdrop-filter: blur(var(--header-blur));
+            -webkit-backdrop-filter: blur(var(--header-blur));
             padding: var(--spacing-unit);
-            box-shadow: 0 2px 10px var(--shadow-color);
+            box-shadow: var(--header-shadow);
+            transition: all 0.3s ease;
         }
 
         .nav {
@@ -59,20 +64,58 @@
         .logo-container {
             display: flex;
             flex-direction: column;
+            align-items: flex-start;
             margin-right: auto;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .logo-container::after {
+            content: '';
+            position: absolute;
+            width: 120%;
+            height: 120%;
+            background: radial-gradient(circle, 
+                rgba(255,75,110,0.1) 0%, 
+                rgba(108,92,231,0.1) 50%, 
+                transparent 70%);
+            top: -10%;
+            left: -10%;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .logo-container:hover::after {
+            opacity: 1;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
         }
 
         .logo {
             font-size: 2rem;
             font-weight: 800;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
             text-decoration: none;
             letter-spacing: -0.5px;
         }
 
         .logo-byline {
             font-size: 0.75rem;
+            font-weight: 500;
             color: #666;
             margin-top: -0.25rem;
+            margin-left: 0.125rem;
+            letter-spacing: 0.5px;
         }
 
         .share-button {
@@ -81,13 +124,18 @@
             border: none;
             padding: 0.6rem 1.2rem;
             border-radius: 999px;
-            font-weight: 600;
             cursor: pointer;
+            font-weight: 600;
             display: flex;
             align-items: center;
             gap: 0.5rem;
             transition: var(--transition);
             box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
+        }
+
+        .share-button svg {
+            color: white;
+            stroke: white;
         }
 
         .share-button:hover {
@@ -98,6 +146,7 @@
         .tagline {
             font-size: 1rem;
             color: #666;
+            margin-bottom: var(--spacing-unit);
         }
 
         /* Featured Section */
@@ -112,6 +161,7 @@
             position: relative;
             overflow: hidden;
             box-shadow: 0 8px 32px rgba(108, 92, 231, 0.08);
+            transition: var(--transition);
         }
 
         .featured-section > div:first-child {
@@ -143,9 +193,13 @@
         .featured-name {
             font-size: 3rem;
             font-weight: 800;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin: 0 0 6px 0;
             letter-spacing: -1px;
             line-height: 1.2;
-            margin: 0 0 6px 0;
         }
 
         .featured-description {
@@ -182,6 +236,7 @@
             position: relative;
             overflow: hidden;
             transition: var(--transition);
+            cursor: pointer;
         }
 
         .featured-image:hover {
@@ -193,6 +248,7 @@
         .genre-section {
             margin: calc(var(--spacing-unit) * 1) 0;
             padding: 0 var(--spacing-unit);
+            position: relative;
         }
 
         .genre-title {
@@ -220,6 +276,7 @@
             padding: var(--spacing-unit) 0;
             scroll-snap-type: x mandatory;
             scrollbar-width: none;
+            position: relative;
         }
 
         .character-carousel::-webkit-scrollbar {
@@ -233,6 +290,7 @@
             color: inherit;
             transition: var(--transition);
             position: relative;
+            cursor: pointer;
         }
 
         .character-card:hover {
@@ -249,22 +307,37 @@
             border: 3px solid white;
             box-shadow: 0 4px 12px var(--shadow-color);
             transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .character-card:hover .character-image {
+            box-shadow: 0 8px 24px var(--shadow-color);
+            border-color: var(--primary-color);
+            transform: scale(1.05);
         }
 
         .character-name {
             font-weight: 600;
             margin-bottom: 0.25rem;
+            color: var(--text-color);
         }
 
         .character-role {
             font-size: 0.875rem;
             color: #666;
+            transition: color 0.2s ease;
         }
 
+        .character-card:hover .character-role {
+            color: var(--primary-color);
+        }
+
+        /* Badges */
         .badge {
             position: absolute;
-            top: -8px;
-            right: -8px;
+            top: 8px;
+            right: 8px;
             color: white;
             font-size: 0.625rem;
             padding: 0.25rem 0.5rem;
@@ -272,6 +345,7 @@
             font-weight: 600;
             transform: rotate(12deg);
             box-shadow: 0 2px 4px rgba(108, 92, 231, 0.3);
+            z-index: 2;
         }
 
         .new-badge {
@@ -300,6 +374,11 @@
             .character-role {
                 font-size: 1rem;
             }
+
+            .badge {
+                font-size: 0.75rem;
+                padding: 0.3rem 0.6rem;
+            }
         }
 
         @media (max-width: 480px) {
@@ -319,6 +398,40 @@
             .character-role {
                 font-size: 0.75rem;
             }
+
+            .badge {
+                font-size: 0.5rem;
+                padding: 0.2rem 0.4rem;
+            }
+
+            .featured-section {
+                flex-direction: column;
+                text-align: center;
+                padding: 24px 16px;
+            }
+
+            .featured-section > div:first-child {
+                padding-right: 0;
+                margin-bottom: 24px;
+            }
+
+            .featured-name {
+                font-size: 2rem;
+            }
+
+            .featured-description {
+                font-size: 1rem;
+            }
+
+            .featured-image-container {
+                width: 200px;
+                height: 200px;
+            }
+
+            .featured-image-wrap {
+                width: 180px;
+                height: 180px;
+            }
         }
 
         /* Splash Screen */
@@ -331,6 +444,37 @@
             align-items: center;
             z-index: 9999;
             animation: fadeOut 0.5s ease-in-out 1.5s forwards;
+            overflow: hidden;
+        }
+
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .splash-particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            border-radius: 50%;
+            animation: float 3s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) translateX(0);
+                opacity: 0;
+            }
+            50% {
+                transform: translateY(-100px) translateX(50px);
+                opacity: 0.5;
+            }
         }
 
         .splash-content {
@@ -344,6 +488,8 @@
             opacity: 0;
             transform: translateY(20px);
             animation: fadeInUp 0.5s ease-out 0.5s forwards;
+            margin-bottom: 0; 
+            line-height: 1.5;
         }
 
         .splash-byline {
@@ -353,6 +499,20 @@
             opacity: 0;
             transform: translateY(20px);
             animation: fadeInUp 0.5s ease-out 0.7s forwards;
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                visibility: hidden;
+            }
         }
 
         /* Footer Styles */
@@ -379,14 +539,42 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            position: relative;
         }
 
         .footer-logo {
             font-size: 3.5rem;
             font-weight: 800;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-decoration: none;
+            letter-spacing: -1px;
+            display: inline-block;
             margin-bottom: 1rem;
             position: relative;
             z-index: 1;
+        }
+
+        .logo-shine {
+            position: absolute;
+            top: -20%;
+            left: -20%;
+            right: -20%;
+            bottom: -20%;
+            background: radial-gradient(circle at center, 
+                rgba(255,255,255,0.8) 0%,
+                rgba(255,255,255,0) 70%);
+            opacity: 0;
+            animation: shine-effect 5s infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes shine-effect {
+            0%, 100% { opacity: 0; transform: scale(0.8); }
+            50% { opacity: 0.5; transform: scale(1); }
         }
 
         .footer-slogan {
@@ -399,6 +587,10 @@
         }
 
         .slogan-primary {
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
             margin-bottom: 0.5rem;
             display: block;
         }
@@ -423,6 +615,12 @@
             border-radius: 50%;
             animation: rotate 20s linear infinite;
             pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         .footer-navigation {
@@ -437,9 +635,9 @@
             color: #666;
             text-decoration: none;
             font-weight: 500;
-            padding: 0.5rem 1rem;
-            position: relative;
             transition: var(--transition);
+            position: relative;
+            padding: 0.5rem 1rem;
         }
 
         .footer-nav-item::after {
@@ -479,6 +677,7 @@
             justify-content: center;
             transition: var(--transition);
             box-shadow: 0 4px 12px var(--shadow-color);
+            cursor: pointer;
         }
 
         .social-icon:hover {
@@ -508,17 +707,30 @@
         }
 
         @media (min-width: 768px) {
-            .featured-section {
-                margin: 24px 32px;
-                padding: 32px;
-            }
-
-            .featured-name {
+            .footer-logo {
                 font-size: 3.5rem;
             }
 
-            .featured-description {
-                font-size: 1.25rem;
+            .footer-slogan {
+                font-size: 2.5rem;
+            }
+
+            .slogan-secondary {
+                font-size: 1.8rem;
+            }
+
+            .footer-navigation {
+                gap: 3rem;
+            }
+
+            .social-icon {
+                width: 48px;
+                height: 48px;
+            }
+
+            .social-icon svg {
+                width: 24px;
+                height: 24px;
             }
         }
 
@@ -549,63 +761,19 @@
                 width: 20px;
                 height: 20px;
             }
-
-            .featured-section {
-                flex-direction: column;
-                text-align: center;
-                padding: 24px 16px;
-            }
-
-            .featured-section > div:first-child {
-                padding-right: 0;
-                margin-bottom: 24px;
-            }
-
-            .featured-image-container {
-                width: 200px;
-                height: 200px;
-            }
-
-            .featured-image-wrap {
-                width: 180px;
-                height: 180px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .featured-name {
-                font-size: 2rem;
-            }
-
-            .featured-description {
-                font-size: 1rem;
-            }
-
-            .footer-navigation {
-                flex-direction: column;
-                gap: 1rem;
-            }
-        }
-
-        @keyframes fadeInUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes fadeOut {
-            to {
-                opacity: 0;
-                visibility: hidden;
-            }
         }
     </style>
 </head>
 <body>
     <!-- Splash Screen -->
     <div class="splash-container" id="splashScreen">
+        <div class="particles"></div>
         <div class="splash-content">
+            <div class="loading-circle">
+                <div class="circle circle-1"></div>
+                <div class="circle circle-2"></div>
+                <div class="circle circle-3"></div>
+            </div>
             <h1 class="splash-logo-text gradient-text">Talkidz</h1>
             <p class="splash-byline">by Playbox</p>
         </div>
@@ -615,7 +783,7 @@
     <header class="header">
         <nav class="nav">
             <div class="logo-container">
-                <a href="#" class="logo gradient-text">Talkidz</a>
+                <a href="#" class="logo">Talkidz</a>
                 <span class="logo-byline">by Playbox</span>
             </div>
             <button class="share-button" onclick="shareApp()">
@@ -663,13 +831,13 @@
                     <div class="character-image" style="background-image: url('/characters/cupcake/assets/cupcake.jpg')"></div>
                     <h3 class="character-name">Funny Cupcake</h3>
                     <p class="character-role">Sweet Humor Buddy</p>
-                    <span class="badge popular-badge">Popular!</span>
+                    <span class="popular-badge badge">Popular!</span>
                 </a>
                 <a href="characters/cat" class="character-card">
                     <div class="character-image" style="background-image: url('/characters/cat/assets/cat.jpg')"></div>
                     <h3 class="character-name">Noodles</h3>
                     <p class="character-role">Funny Companion</p>
-                    <span class="badge new-badge">New!</span>
+                    <span class="new-badge badge">New!</span>
                 </a>
                 <a href="characters/whimsy" class="character-card">
                     <div class="character-image" style="background-image: url('/characters/whimsy/assets/whimsy.png')"></div>
@@ -686,7 +854,7 @@
                     <div class="character-image" style="background-image: url('/characters/fox/assets/fox.jpg')"></div>
                     <h3 class="character-name">Clever Fox</h3>
                     <p class="character-role">Wise Instructor</p>
-                    <span class="badge new-badge">New!</span>
+                    <span class="new-badge badge">New!</span>
                 </a>
                 <a href="characters/monkey" class="character-card">
                     <div class="character-image" style="background-image: url('/characters/monkey/assets/monkey.jpg')"></div>
@@ -697,7 +865,7 @@
                     <div class="character-image" style="background-image: url('/characters/robo/assets/eva-icon.jpg')"></div>
                     <h3 class="character-name">Eva The Robot</h3>
                     <p class="character-role">Calm Educator</p>
-                    <span class="badge popular-badge">Popular!</span>
+                    <span class="popular-badge badge">Popular!</span>
                 </a>
             </div>
         </section>
@@ -709,7 +877,7 @@
                     <div class="character-image" style="background-image: url('/characters/emma/assets/emma.jpg')"></div>
                     <h3 class="character-name">Emma</h3>
                     <p class="character-role">Encouraging Counselor</p>
-                    <span class="badge new-badge">New!</span>
+                    <span class="new-badge badge">New!</span>
                 </a>
                 <a href="characters/duck" class="character-card">
                     <div class="character-image" style="background-image: url('characters/duck/assets/duck.jpg')"></div>
@@ -720,7 +888,7 @@
                     <div class="character-image" style="background-image: url('/characters/panda/assets/panda.jpg')"></div>
                     <h3 class="character-name">Dr. Panda</h3>
                     <p class="character-role">Calm Listener</p>
-                    <span class="badge popular-badge">Popular!</span>
+                    <span class="popular-badge badge">Popular!</span>
                 </a>
             </div>
         </section>
@@ -732,13 +900,13 @@
                     <div class="character-image" style="background-image: url('/characters/parrot/assets/parrot.jpg')"></div>
                     <h3 class="character-name">Parrot</h3>
                     <p class="character-role">Adventurous Narrator</p>
-                    <span class="badge popular-badge">Popular!</span>
+                    <span class="popular-badge badge">Popular!</span>
                 </a>
                 <a href="characters/wizard" class="character-card">
                     <div class="character-image" style="background-image: url('characters/wizard/assets/wizard.jpg')"></div>
                     <h3 class="character-name">Winston the Wizard</h3>
                     <p class="character-role">Magical Story Spinner</p>
-                    <span class="badge new-badge">New!</span>
+                    <span class="new-badge badge">New!</span>
                 </a>
                 <a href="characters/lion" class="character-card">
                     <div class="character-image" style="background-image: url('/characters/lion/assets/lion.jpg')"></div>
@@ -755,7 +923,7 @@
                     <div class="character-image" style="background-image: url('/characters/turtle/assets/turtle.jpg')"></div>
                     <h3 class="character-name">Tilly the Turtle</h3>
                     <p class="character-role">Gentle Language Guide</p>
-                    <span class="badge new-badge">New!</span>
+                    <span class="new-badge badge">New!</span>
                 </a>
                 <a href="characters/world" class="character-card">
                     <div class="character-image" style="background-image: url('/characters/world/assets/world.jpg')"></div>
@@ -766,17 +934,19 @@
                     <div class="character-image" style="background-image: url('/characters/pingo/assets/pingo.jpg')"></div>
                     <h3 class="character-name">Pingo The Penguin</h3>
                     <p class="character-role">Linguistic Adventurer</p>
-                    <span class="badge popular-badge">Popular!</span>
+                    <span class="popular-badge badge">Popular!</span>
                 </a>
             </div>
         </section>
     </main>
 
+    <!-- Footer -->
     <footer class="talkidz-footer">
         <div class="footer-content">
             <div class="footer-logo-container">
-                <a href="#" class="footer-logo gradient-text">Talkidz</a>
+                <a href="#" class="footer-logo">Talkidz</a>
                 <span class="logo-byline">by Playbox</span>
+                <div class="logo-shine"></div>
             </div>
 
             <div class="footer-slogan">
@@ -820,6 +990,7 @@
         </div>
     </footer>
 
+    <!-- Scripts -->
     <script>
         // Share functionality
         function shareApp() {
@@ -828,57 +999,140 @@
                     title: 'Talkidz - AI Friends to Chat With',
                     text: 'Check out Talkidz, where you can chat with AI friends!',
                     url: window.location.href
-                }).catch(console.error);
+                }).catch(err => {
+                    console.warn('Error sharing:', err.message);
+                    showShareFallback();
+                });
+            } else {
+                showShareFallback();
             }
         }
 
+        // Fallback share functionality
+        function showShareFallback() {
+            const tempInput = document.createElement('input');
+            tempInput.value = window.location.href;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            alert('Link copied to clipboard!');
+        }
+
+        // Initialize splash screen particles
+        const initSplashParticles = () => {
+            const particlesContainer = document.querySelector('.particles');
+            const particleCount = 20;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'splash-particle';
+                
+                const size = Math.random() * 3 + 3;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                
+                particle.style.left = Math.random() * 100 + 'vw';
+                particle.style.top = Math.random() * 100 + 'vh';
+                particle.style.animationDelay = (Math.random() * 2) + 's';
+                particle.style.opacity = Math.random() * 0.5 + 0.5;
+                
+                particlesContainer.appendChild(particle);
+            }
+        };
+
         // Handle smooth scrolling for character carousels
-        document.querySelectorAll('.character-carousel').forEach(carousel => {
-            let isScrolling = false;
-            let startX;
-            let scrollLeft;
+        const initCarousels = () => {
+            document.querySelectorAll('.character-carousel').forEach(carousel => {
+                let isScrolling = false;
+                let startX;
+                let scrollLeft;
+                let momentum = 0;
+                let animationFrame;
 
-            carousel.addEventListener('mousedown', (e) => {
-                isScrolling = true;
-                startX = e.pageX - carousel.offsetLeft;
-                scrollLeft = carousel.scrollLeft;
+                const startScrolling = (e) => {
+                    isScrolling = true;
+                    startX = e.type.includes('mouse') ? e.pageX : e.touches[0].pageX;
+                    scrollLeft = carousel.scrollLeft;
+                    carousel.style.scrollBehavior = 'auto';
+                    cancelAnimationFrame(animationFrame);
+                };
+
+                const stopScrolling = () => {
+                    isScrolling = false;
+                    carousel.style.scrollBehavior = 'smooth';
+                    
+                    if (Math.abs(momentum) > 1) {
+                        const scroll = () => {
+                            carousel.scrollLeft += momentum;
+                            momentum *= 0.95;
+                            if (Math.abs(momentum) > 0.5) {
+                                animationFrame = requestAnimationFrame(scroll);
+                            }
+                        };
+                        animationFrame = requestAnimationFrame(scroll);
+                    }
+                };
+
+                const scroll = (e) => {
+                    if (!isScrolling) return;
+                    e.preventDefault();
+                    const x = e.type.includes('mouse') ? e.pageX : e.touches[0].pageX;
+                    const walk = (x - startX) * 2;
+                    carousel.scrollLeft = scrollLeft - walk;
+                    momentum = (startX - x) * 0.1;
+                };
+
+                carousel.addEventListener('mousedown', startScrolling);
+                carousel.addEventListener('touchstart', startScrolling);
+                carousel.addEventListener('mousemove', scroll);
+                carousel.addEventListener('touchmove', scroll);
+                carousel.addEventListener('mouseup', stopScrolling);
+                carousel.addEventListener('touchend', stopScrolling);
+                carousel.addEventListener('mouseleave', stopScrolling);
             });
+        };
 
-            carousel.addEventListener('mouseleave', () => {
-                isScrolling = false;
-            });
-
-            carousel.addEventListener('mouseup', () => {
-                isScrolling = false;
-            });
-
-            carousel.addEventListener('mousemove', (e) => {
-                if (!isScrolling) return;
-                e.preventDefault();
-                const x = e.pageX - carousel.offsetLeft;
-                const walk = (x - startX) * 2;
-                carousel.scrollLeft = scrollLeft - walk;
-            });
-        });
-
-        // Remove splash screen after animation
+        // Initialize everything when the page loads
         window.addEventListener('load', () => {
+            initSplashParticles();
+            initCarousels();
+            
+            // Remove splash screen after animation
             const splashScreen = document.getElementById('splashScreen');
             setTimeout(() => {
                 splashScreen.remove();
             }, 2000);
         });
-    </script>
-        // Simplified share function
-        function shareApp() {
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Talkidz - AI Friends to Chat With',
-                    text: 'Check out Talkidz, where you can chat with AI friends!',
-                    url: window.location.href
-                }).catch(console.error);
+
+        // Initialize background particles
+        function createParticles() {
+            const background = document.createElement('div');
+            background.className = 'particle-background';
+            document.body.appendChild(background);
+
+            const particleCount = 50;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                particle.style.left = Math.random() * 100 + 'vw';
+                particle.style.top = Math.random() * 100 + 'vh';
+                
+                const size = Math.random() * 4 + 2;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                
+                particle.style.animationDuration = (Math.random() * 20 + 10) + 's';
+                particle.style.animationDelay = (Math.random() * 5) + 's';
+                
+                background.appendChild(particle);
             }
         }
+
+        // Initialize background particles when the DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', createParticles);
     </script>
 </body>
 </html>
