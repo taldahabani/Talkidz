@@ -32,6 +32,7 @@
             color: var(--text-color);
             line-height: 1.5;
             overflow-x: hidden;
+            min-height: 100vh; /* Ensure body takes at least full viewport height */
         }
 
         .gradient-text {
@@ -379,6 +380,86 @@
                 font-size: 0.75rem;
                 padding: 0.3rem 0.6rem;
             }
+
+            /* Consistent Padding in Featured Section */
+            .featured-section {
+                padding: 32px; /* Increased padding to match tablet */
+            }
+
+            .featured-image-container {
+                width: 260px;
+                height: 260px;
+            }
+
+            .featured-image-wrap {
+                width: 240px;
+                height: 240px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .featured-section {
+                padding: 24px 16px; /* Consistent padding */
+            }
+
+            .featured-name {
+                font-size: 2rem;
+            }
+
+            .featured-description {
+                font-size: 1rem;
+            }
+
+            .featured-image-container {
+                width: 200px;
+                height: 200px;
+            }
+
+            .featured-image-wrap {
+                width: 180px;
+                height: 180px;
+            }
+
+            .badge {
+                font-size: 0.7rem;
+                padding: 0.25rem 0.5rem;
+            }
+        }
+
+        @media (max-width: 550px) {
+            .featured-section {
+                flex-direction: column;
+                text-align: center;
+                padding: 16px;
+            }
+
+            .featured-section > div:first-child {
+                padding-right: 0;
+                margin-bottom: 24px;
+            }
+
+            .featured-name {
+                font-size: 1.75rem;
+            }
+
+            .featured-description {
+                font-size: 0.875rem;
+            }
+
+            .featured-image-container {
+                width: 160px;
+                height: 160px;
+            }
+
+            .featured-image-wrap {
+                width: 140px;
+                height: 140px;
+            }
+
+            .badge {
+                font-size: 0.6rem;
+                padding: 0.2rem 0.4rem;
+            }
         }
 
         @media (max-width: 480px) {
@@ -402,35 +483,6 @@
             .badge {
                 font-size: 0.5rem;
                 padding: 0.2rem 0.4rem;
-            }
-
-            .featured-section {
-                flex-direction: column;
-                text-align: center;
-                padding: 24px 16px;
-            }
-
-            .featured-section > div:first-child {
-                padding-right: 0;
-                margin-bottom: 24px;
-            }
-
-            .featured-name {
-                font-size: 2rem;
-            }
-
-            .featured-description {
-                font-size: 1rem;
-            }
-
-            .featured-image-container {
-                width: 200px;
-                height: 200px;
-            }
-
-            .featured-image-wrap {
-                width: 180px;
-                height: 180px;
             }
         }
 
@@ -512,6 +564,43 @@
             to {
                 opacity: 0;
                 visibility: hidden;
+            }
+        }
+
+        /* Particle Background */
+        .particle-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -2;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            border-radius: 50%;
+            filter: blur(1px);
+            animation: floatParticle 20s infinite linear;
+            opacity: 0.1;
+        }
+
+        @keyframes floatParticle {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            50% {
+                opacity: 0.2;
+            }
+            100% {
+                transform: translateY(-1000px) translateX(100px) rotate(360deg);
+                opacity: 0;
             }
         }
 
@@ -762,6 +851,54 @@
                 height: 20px;
             }
         }
+
+        /* Particle Background */
+        .particle-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -2;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            border-radius: 50%;
+            filter: blur(1px);
+            animation: floatParticle 20s infinite linear;
+            opacity: 0.1;
+        }
+
+        @keyframes floatParticle {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            50% {
+                opacity: 0.2;
+            }
+            100% {
+                transform: translateY(-1000px) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Ensure no extra padding/margin is causing white space */
+        main {
+            flex: 1 0 auto;
+        }
+
+        /* Remove any default margins that might cause overflow */
+        body, html {
+            margin: 0;
+            padding: 0;
+        }
     </style>
 </head>
 <body>
@@ -992,7 +1129,7 @@
 
     <!-- Scripts -->
     <script>
-        // Share functionality
+        // Share functionality with fallback
         function shareApp() {
             if (navigator.share) {
                 navigator.share({
