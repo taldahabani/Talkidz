@@ -434,10 +434,15 @@ class ChatController {
     this.greenScreenEnabled = false;
     this.tempCanvas = document.createElement('canvas');
     this.tempCtx = this.tempCanvas.getContext('2d');
-    this.videoCanvas = document.getElementById('videoCanvas');
-    this.ctx = this.videoCanvas.getContext('2d', { willReadFrequently: true });
-    this.backgroundImage = document.getElementById('backgroundImage');
     this.greenScreenButton = document.getElementById('greenScreenButton');
+    
+    // Background options
+    this.backgrounds = [
+      { id: 'bg1', url: '/assets/backgrounds/background1.jpg' },
+      { id: 'bg2', url: '/assets/backgrounds/background2.jpg' },
+      { id: 'bg3', url: '/assets/backgrounds/background3.jpg' }
+    ];
+    this.currentBackgroundIndex = 0;
 
     this.setupElements();
     this.setupCharacter();
@@ -482,6 +487,78 @@ class ChatController {
       <div class="character-icon">
         <img src="${this.character.assets.icon}" alt="${this.character.name}">
       </div>`;
+  }
+
+  setupGreenScreen() {
+    this.greenScreenButton.addEventListener('click', () => this.toggleGreenScreen());
+  }
+
+  toggleGreenScreen() {
+    this.greenScreenEnabled = !this.greenScreenEnabled;
+    this.greenScreenButton.classList.toggle('active');
+
+    if (this.greenScreenEnabled) {
+      this.processVideo();
+    }
+  }
+
+  isGreen(r, g, b) {
+    const greenDominance = g / ((r + b) / 2);
+    const threshold = 1.6;
+    
+    if (greenDominance > threshold) {
+      const brightness = (r + g + b) / 3;
+      if (brightness > 30 && brightness < 225) {
+        const strength = Math.min((greenDominance - threshold) / 0.4, 1);
+        return strength;
+      }
+    }
+    return 0;
+  }
+
+  processVideo() {
+    if (!this.greenScreenEnabled) return;
+
+    const video = this.idleVideo.classList.contains('active') ? 
+                 this.idleVideo : this.speakingVideo;
+
+    // Initialize canvas if needed
+    if (!this.tempCanvas.width || !this.tempCanvas.height) {
+      this.tempCanvas.width = video.videoWidth;
+      this.tempCanvas.height = video.videoHeight;
+    }
+
+    // Draw current frame to temp canvas
+    this.tempCtx.drawImage(video, 0, 0);
+    const frame = this.tempCtx.getImageData(0, 0, this.tempCanvas.width, this.tempCanvas.height);
+    const data = frame.data;
+
+    // Process pixels with feathering
+    for (let i = 0; i < data.length; i += 4) {
+      const greenness = this.isGreen(data[i], data[i + 1], data[i + 2]);
+      if (greenness > 0) {
+        // Set background
+        const bgImage = new Image();
+        bgImage.src = this.backgrounds[this.currentBackgroundIndex].url;
+        this.tempCtx.drawImage(bgImage, 0, 0, this.tempCanvas.width, this.tempCanvas.height);
+        
+        // Apply alpha to green areas
+        data[i + 3] = Math.round(255 * (1 - greenness));
+      }
+    }
+
+    // Apply processed frame back to video
+    video.style.webkitBackdropFilter = `url(${this.backgrounds[this.currentBackgroundIndex].url})`;
+    video.style.backdropFilter = `url(${this.backgrounds[this.currentBackgroundIndex].url})`;
+    
+    requestAnimationFrame(() => this.processVideo());
+  }
+
+  changeBackground() {
+    this.currentBackgroundIndex = (this.currentBackgroundIndex + 1) % this.backgrounds.length;
+    if (this.greenScreenEnabled) {
+      this.processVideo();
+    }
   }
 
   setupCharacterMenu() {
@@ -539,75 +616,6 @@ class ChatController {
         this.languageMenu.classList.remove('active');
       }
     });
-  }
-
-  setupGreenScreen() {
-    // Set canvas dimensions
-    this.videoCanvas.width = 450;
-    this.videoCanvas.height = 800;
-    this.tempCanvas.width = this.videoCanvas.width;
-    this.tempCanvas.height = this.videoCanvas.height;
-
-    // Add click handler for green screen toggle
-    this.greenScreenButton.addEventListener('click', () => this.toggleGreenScreen());
-  }
-
-  toggleGreenScreen() {
-    this.greenScreenEnabled = !this.greenScreenEnabled;
-    this.greenScreenButton.classList.toggle('active');
-    this.videoCanvas.classList.toggle('active');
-    this.backgroundImage.classList.toggle('active');
-
-    if (this.greenScreenEnabled) {
-      this.processVideo();
-    }
-  }
-
-  isGreen(r, g, b) {
-    const greenDominance = g / ((r + b) / 2);
-    const threshold = 1.6;
-    
-    if (greenDominance > threshold) {
-      const brightness = (r + g + b) / 3;
-      if (brightness > 30 && brightness < 225) {
-        const strength = Math.min((greenDominance - threshold) / 0.4, 1);
-        return strength;
-      }
-    }
-    return 0;
-  }
-
-  processVideo() {
-    if (!this.greenScreenEnabled) return;
-
-    const video = this.idleVideo.classList.contains('active') ? 
-                 this.idleVideo : this.speakingVideo;
-
-    // Draw to temp canvas first
-    this.tempCtx.drawImage(video, 0, 0, this.videoCanvas.width, this.videoCanvas.height);
-    const frame = this.tempCtx.getImageData(0, 0, this.videoCanvas.width, this.videoCanvas.height);
-    const data = frame.data;
-
-    // Process pixels with feathering
-    for (let i = 0; i < data.length; i += 4) {
-      const greenness = this.isGreen(data[i], data[i + 1], data[i + 2]);
-      if (greenness > 0) {
-        data[i + 3] = Math.round(255 * (1 - greenness));
-      }
-    }
-
-    // Apply the processed frame to the temp canvas
-    this.tempCtx.putImageData(frame, 0, 0);
-    
-    // Clear the main canvas
-    this.ctx.clearRect(0, 0, this.videoCanvas.width, this.videoCanvas.height);
-    
-    // Draw the processed frame with built-in blur
-    this.ctx.filter = 'blur(0.1px)';
-    this.ctx.drawImage(this.tempCanvas, 0, 0);
-    this.ctx.filter = 'none';
-    
-    requestAnimationFrame(() => this.processVideo());
   }
 
   updateLanguageFlag(langCode) {
@@ -715,12 +723,8 @@ class ChatController {
       this.speakingVideo.classList.remove('active');
       this.idleVideo.classList.add('active');
       this.idleVideo.play().catch(console.error);
-    } else {
-      this.backgroundImage.style.opacity = '1';
-      [this.idleVideo, this.speakingVideo].forEach(video =>
-        video.classList.remove('active')
-      );
     }
+    
     this.updateStatus(mode);
 
     if (this.greenScreenEnabled) {
@@ -776,20 +780,20 @@ class ChatController {
         onDisconnect: () => {
           this.updateBackground('idle');
           this.startButton.classList.remove('active');
-          this.startButton.textContent = 'Start Conversation';
+          this.startButton.textContent = 'Start';
         },
         onError: (error) => {
           console.error('Conversation error:', error);
           this.updateBackground('idle');
           this.startButton.classList.remove('active');
-          this.startButton.textContent = 'Start Conversation';
+          this.startButton.textContent = 'Start';
         }
       });
     } catch (error) {
       console.error('Error starting conversation:', error);
       this.updateBackground('idle');
       this.startButton.classList.remove('active');
-      this.startButton.textContent = 'Start Conversation';
+      this.startButton.textContent = 'Start';
     }
   }
 
