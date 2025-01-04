@@ -429,6 +429,15 @@ class ChatController {
     this.currentLanguage = languageCode || 'en';
     this.conversation = null;
     this.videosLoaded = { idle: false, speaking: false };
+    
+    // Green screen properties
+    this.greenScreenEnabled = false;
+    this.tempCanvas = document.createElement('canvas');
+    this.tempCtx = this.tempCanvas.getContext('2d');
+    this.videoCanvas = document.getElementById('videoCanvas');
+    this.ctx = this.videoCanvas.getContext('2d', { willReadFrequently: true });
+    this.backgroundImage = document.getElementById('backgroundImage');
+    this.greenScreenButton = document.getElementById('greenScreenButton');
 
     this.setupElements();
     this.setupCharacter();
@@ -437,6 +446,9 @@ class ChatController {
     this.updateBackground('idle');
     this.setupCharacterMenu();
     this.setupLanguageMenu();
+    this.setupGreenScreen();
+    
+    this.loadingScreen.classList.remove('hidden');
   }
 
   setupElements() {
@@ -527,6 +539,75 @@ class ChatController {
         this.languageMenu.classList.remove('active');
       }
     });
+  }
+
+  setupGreenScreen() {
+    // Set canvas dimensions
+    this.videoCanvas.width = 450;
+    this.videoCanvas.height = 800;
+    this.tempCanvas.width = this.videoCanvas.width;
+    this.tempCanvas.height = this.videoCanvas.height;
+
+    // Add click handler for green screen toggle
+    this.greenScreenButton.addEventListener('click', () => this.toggleGreenScreen());
+  }
+
+  toggleGreenScreen() {
+    this.greenScreenEnabled = !this.greenScreenEnabled;
+    this.greenScreenButton.classList.toggle('active');
+    this.videoCanvas.classList.toggle('active');
+    this.backgroundImage.classList.toggle('active');
+
+    if (this.greenScreenEnabled) {
+      this.processVideo();
+    }
+  }
+
+  isGreen(r, g, b) {
+    const greenDominance = g / ((r + b) / 2);
+    const threshold = 1.6;
+    
+    if (greenDominance > threshold) {
+      const brightness = (r + g + b) / 3;
+      if (brightness > 30 && brightness < 225) {
+        const strength = Math.min((greenDominance - threshold) / 0.4, 1);
+        return strength;
+      }
+    }
+    return 0;
+  }
+
+  processVideo() {
+    if (!this.greenScreenEnabled) return;
+
+    const video = this.idleVideo.classList.contains('active') ? 
+                 this.idleVideo : this.speakingVideo;
+
+    // Draw to temp canvas first
+    this.tempCtx.drawImage(video, 0, 0, this.videoCanvas.width, this.videoCanvas.height);
+    const frame = this.tempCtx.getImageData(0, 0, this.videoCanvas.width, this.videoCanvas.height);
+    const data = frame.data;
+
+    // Process pixels with feathering
+    for (let i = 0; i < data.length; i += 4) {
+      const greenness = this.isGreen(data[i], data[i + 1], data[i + 2]);
+      if (greenness > 0) {
+        data[i + 3] = Math.round(255 * (1 - greenness));
+      }
+    }
+
+    // Apply the processed frame to the temp canvas
+    this.tempCtx.putImageData(frame, 0, 0);
+    
+    // Clear the main canvas
+    this.ctx.clearRect(0, 0, this.videoCanvas.width, this.videoCanvas.height);
+    
+    // Draw the processed frame with built-in blur
+    this.ctx.filter = 'blur(0.1px)';
+    this.ctx.drawImage(this.tempCanvas, 0, 0);
+    this.ctx.filter = 'none';
+    
+    requestAnimationFrame(() => this.processVideo());
   }
 
   updateLanguageFlag(langCode) {
@@ -641,6 +722,10 @@ class ChatController {
       );
     }
     this.updateStatus(mode);
+
+    if (this.greenScreenEnabled) {
+      this.processVideo();
+    }
   }
 
   triggerConfetti() {
@@ -662,42 +747,10 @@ class ChatController {
     });
   }
 
-createParticles() {
-    const container = document.querySelector('.main-container');
-    for (let i = 0; i < 20; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'particle';
-        particle.style.width = Math.random() * 10 + 'px';
-        particle.style.height = particle.style.width;
-        particle.style.background = `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.5)`;
-        particle.style.borderRadius = '50%';
-        particle.style.position = 'absolute';
-        this.restartParticle(particle);
-        container.appendChild(particle);
-    }
-}
-
-restartParticle(particle) {
-    const startX = Math.random() * window.innerWidth;
-    const startY = window.innerHeight + 10;
-    const endX = startX + (Math.random() - 0.5) * 200;
-    const endY = -10;
-    
-    particle.style.left = startX + 'px';
-    particle.style.top = startY + 'px';
-    particle.style.setProperty('--tx', (endX - startX) + 'px');
-    particle.style.setProperty('--ty', (endY - startY) + 'px');
-    
-    particle.style.animation = 'none';
-    particle.offsetHeight; // Force reflow
-    particle.style.animation = `float ${Math.random() * 2 + 3}s linear infinite`;
-}
-
   async startConversation() {
     try {
       await navigator.mediaDevices.getUserMedia({ audio: true });
       this.triggerConfetti();
-      this.createParticles();
       this.startButton.classList.add('active');
       this.startButton.innerHTML = `
         <svg width="24" height="24" viewBox="0 0 24 24"
