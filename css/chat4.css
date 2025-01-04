@@ -113,10 +113,15 @@ body {
   width: 100%;
   height: 100%;
   object-fit: contain;
+  max-height: 90vh; /* Limit height on large screens */
 }
 
 .background.video {
   opacity: 0;
+  width: auto; /* Allow natural video width */
+  height: auto; /* Allow natural video height */
+  max-width: 100%; /* Prevent overflow */
+  max-height: 90vh; /* Limit height on large screens */
 }
 
 .background.video.active {
@@ -128,6 +133,44 @@ body {
   background-position: center;
   background-repeat: no-repeat;
   opacity: 1;
+}
+
+/* Responsive video sizing */
+@media (min-width: 768px) {
+  .video-wrapper {
+    padding: 2rem;
+    min-height: 500px; /* Minimum height on desktop */
+  }
+
+  .background.video {
+    min-height: 500px; /* Minimum video height */
+    height: 80vh; /* Take up most of the viewport height */
+    width: auto; /* Maintain aspect ratio */
+  }
+}
+
+/* Extra large screens */
+@media (min-width: 1200px) {
+  .video-wrapper {
+    min-height: 600px;
+  }
+
+  .background.video {
+    min-height: 600px;
+    height: 85vh;
+  }
+}
+
+/* Ultra-wide screens */
+@media (min-width: 1600px) {
+  .video-wrapper {
+    min-height: 700px;
+  }
+
+  .background.video {
+    min-height: 700px;
+    height: 90vh;
+  }
 }
 
 /* Loading Animation */
