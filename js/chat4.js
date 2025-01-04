@@ -1,6 +1,10 @@
-document.querySelector('.splash-container').classList.remove('hidden');
-
 import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
+
+const LOADING_STATES = {
+  READY: { text: 'Ready to chat', color: '#22c55e' },
+  LISTENING: { text: 'Listening...', color: '#22c55e', isListening: true },
+  SPEAKING: { text: 'Speaking...', color: '#3b82f6' }
+};
 
 const firstMessages = {
   jonny: {
@@ -424,339 +428,331 @@ const characters = {
 };
 
 class ChatController {
-  constructor(characterId, languageCode) {
+  constructor(characterId = 'jonny', languageCode = 'en') {
     this.character = characters[characterId];
-    this.currentLanguage = languageCode || 'en';
-    this.conversation = null;
+    this.currentLanguage = languageCode;
     this.videosLoaded = { idle: false, speaking: false };
-
-    this.setupElements();
+    this.conversation = null;
+    
+    this.initializeElements();
     this.setupCharacter();
     this.setupEventListeners();
     this.preloadVideos();
     this.updateBackground('idle');
-    this.setupCharacterMenu();
-    this.setupLanguageMenu();
+    this.setupMenus();
   }
 
-  setupElements() {
-    this.backgroundImage = document.querySelector('.background.image');
-    this.idleVideo = document.getElementById('idleVideo');
-    this.speakingVideo = document.getElementById('speakingVideo');
-    this.startButton = document.getElementById('startButton');
-    this.statusDot = document.querySelector('.status-dot');
-    this.statusText = document.querySelector('.status-text');
-    this.characterName = document.querySelector('.character-name');
-    this.characterMenu = document.querySelector('.character-menu');
-    this.characterMenuContent = document.querySelector('.character-menu-content');
-    this.characterSelectButton = document.querySelector('.character-select-button');
-    this.loadingScreen = document.querySelector('.character-loading');
+  initializeElements() {
+    const elements = {
+      backgroundImage: '.background.image',
+      idleVideo: '#idleVideo',
+      speakingVideo: '#speakingVideo',
+      startButton: '#startButton',
+      statusDot: '.status-dot',
+      statusText: '.status-text',
+      characterName: '.character-name',
+      characterMenu: '.character-menu',
+      characterMenuContent: '.character-menu-content',
+      characterSelectButton: '.character-select-button',
+      loadingScreen: '.character-loading',
+      languageSelectButton: '#languageSelectButton',
+      currentLanguageFlag: '#currentLanguageFlag',
+      languageMenu: '#languageMenu',
+      languageMenuContent: '#languageMenuContent'
+    };
 
-    this.languageSelectButton = document.getElementById('languageSelectButton');
-    this.currentLanguageFlag = document.getElementById('currentLanguageFlag');
-    this.languageMenu = document.getElementById('languageMenu');
-    this.languageMenuContent = document.getElementById('languageMenuContent');
+    // Convert selectors to DOM elements
+    this.elements = Object.fromEntries(
+      Object.entries(elements).map(([key, selector]) => [
+        key,
+        document.querySelector(selector)
+      ])
+    );
   }
 
   setupCharacter() {
     document.title = `${this.character.name} - Talkidz`;
-    this.characterName.textContent = this.character.name;
-    this.backgroundImage.style.background =
+    this.elements.characterName.textContent = this.character.name;
+    this.elements.backgroundImage.style.background = 
       `url('${this.character.assets.preview}') center/contain no-repeat`;
-    this.idleVideo.src = this.character.assets.idle;
-    this.speakingVideo.src = this.character.assets.talking;
+    this.elements.idleVideo.src = this.character.assets.idle;
+    this.elements.speakingVideo.src = this.character.assets.talking;
+    this.elements.characterSelectButton.innerHTML = 
+      `<div class="character-icon"><img src="${this.character.assets.icon}" alt="${this.character.name}"></div>`;
+  }
 
-    this.characterSelectButton.innerHTML = `
-      <div class="character-icon">
-        <img src="${this.character.assets.icon}" alt="${this.character.name}">
-      </div>`;
+  setupMenus() {
+    this.setupCharacterMenu();
+    this.setupLanguageMenu();
+    this.setupMenuClickHandlers();
   }
 
   setupCharacterMenu() {
-    this.characterMenuContent.innerHTML = '';
-    Object.values(characters).forEach(char => {
-      const option = document.createElement('div');
-      option.className = `character-option ${char.id === this.character.id ? 'active' : ''}`;
-      option.innerHTML = `<img src="${char.assets.icon}" alt="${char.name}">`;
-      option.addEventListener('click', () => this.changeCharacter(char.id));
-      this.characterMenuContent.appendChild(option);
-    });
-
-    this.characterSelectButton.addEventListener('click', (e) => {
-      e.stopPropagation();
-      this.characterMenu.classList.toggle('active');
-    });
-
-    document.addEventListener('click', (e) => {
-      const insideMenu = this.characterMenu.contains(e.target);
-      const clickedButton = this.characterSelectButton.contains(e.target);
-      if (!insideMenu && !clickedButton) {
-        this.characterMenu.classList.remove('active');
+    const characterOptions = Object.values(characters)
+      .map(char => `
+        <div class="character-option ${char.id === this.character.id ? 'active' : ''}">
+          <img src="${char.assets.icon}" alt="${char.name}">
+        </div>
+      `)
+      .join('');
+    
+    this.elements.characterMenuContent.innerHTML = characterOptions;
+    
+    this.elements.characterMenuContent.addEventListener('click', e => {
+      const option = e.target.closest('.character-option');
+      if (option) {
+        const newCharId = Object.values(characters)
+          .find(char => option.querySelector('img').src.includes(char.id))?.id;
+        if (newCharId) this.changeCharacter(newCharId);
       }
     });
   }
 
   setupLanguageMenu() {
-    this.languageMenuContent.innerHTML = '';
-
-    languages.forEach(lang => {
-      const option = document.createElement('div');
-      option.className = 'language-option';
-      if (lang.code === this.currentLanguage) {
-        option.classList.add('active');
-      }
-      option.innerHTML = `
+    const languageOptions = translations.languages
+      .map(lang => `
+        <div class="language-option ${lang.code === this.currentLanguage ? 'active' : ''}">
           <span class="language-option-flag">${lang.flag}</span>
           <span>${lang.name}</span>
-      `;
-      option.addEventListener('click', () => this.changeLanguage(lang.code));
-      this.languageMenuContent.appendChild(option);
-    });
-
+        </div>
+      `)
+      .join('');
+    
+    this.elements.languageMenuContent.innerHTML = languageOptions;
     this.updateLanguageFlag(this.currentLanguage);
+  }
 
-    this.languageSelectButton.addEventListener('click', (e) => {
+  setupMenuClickHandlers() {
+    // Global click handler for closing menus
+    document.addEventListener('click', e => {
+      const clickedLanguageMenu = this.elements.languageMenu.contains(e.target) ||
+                                 this.elements.languageSelectButton.contains(e.target);
+      const clickedCharacterMenu = this.elements.characterMenu.contains(e.target) ||
+                                  this.elements.characterSelectButton.contains(e.target);
+      
+      if (!clickedLanguageMenu) this.elements.languageMenu.classList.remove('active');
+      if (!clickedCharacterMenu) this.elements.characterMenu.classList.remove('active');
+    });
+
+    // Toggle menu handlers
+    this.elements.languageSelectButton.addEventListener('click', e => {
       e.stopPropagation();
-      this.languageMenu.classList.toggle('active');
+      this.elements.languageMenu.classList.toggle('active');
     });
 
-    document.addEventListener('click', (e) => {
-      const insideMenu = this.languageMenu.contains(e.target);
-      const clickedButton = this.languageSelectButton.contains(e.target);
-      if (!insideMenu && !clickedButton) {
-        this.languageMenu.classList.remove('active');
-      }
+    this.elements.characterSelectButton.addEventListener('click', e => {
+      e.stopPropagation();
+      this.elements.characterMenu.classList.toggle('active');
     });
-  }
-
-  updateLanguageFlag(langCode) {
-    const selectedLang = languages.find(l => l.code === langCode)
-                       || languages.find(l => l.code === 'en');
-    if (selectedLang) {
-      this.currentLanguageFlag.textContent = selectedLang.flag;
-    } else {
-      this.currentLanguageFlag.textContent = '🇺🇸';
-    }
-  }
-
-  markActiveLanguage(newCode) {
-    const allLangOptions = document.querySelectorAll('.language-option');
-    allLangOptions.forEach(opt => opt.classList.remove('active'));
-
-    const newActive = Array.from(allLangOptions).find(
-      opt => opt.innerText.includes(this.getLangName(newCode))
-    );
-    if (newActive) newActive.classList.add('active');
-  }
-
-  getLangName(code) {
-    const found = languages.find(l => l.code === code);
-    return found ? found.name : '';
-  }
-
-  async changeLanguage(newCode) {
-    if (this.conversation) {
-      await this.endConversation();
-    }
-    const url = new URL(window.location);
-    url.searchParams.set('language', newCode);
-    window.history.pushState({}, '', url);
-
-    this.currentLanguage = newCode;
-    this.updateLanguageFlag(newCode);
-    this.markActiveLanguage(newCode);
-    this.languageMenu.classList.remove('active');
   }
 
   async changeCharacter(characterId) {
-    if (this.conversation) {
-      await this.endConversation();
-    }
-    this.loadingScreen.classList.remove('hidden');
+    if (this.conversation) await this.endConversation();
+    
+    this.elements.loadingScreen.classList.remove('hidden');
     this.videosLoaded = { idle: false, speaking: false };
-
-    const url = new URL(window.location);
-    url.searchParams.set('character', characterId);
-    window.history.pushState({}, '', url);
-
+    
+    this.updateURL('character', characterId);
     this.character = characters[characterId];
     this.setupCharacter();
     this.preloadVideos();
     this.updateBackground('idle');
-
+    
     document.querySelectorAll('.character-option').forEach(option => {
       option.classList.toggle('active', option.querySelector('img').src.includes(characterId));
     });
+    
+    this.elements.characterMenu.classList.remove('active');
+  }
 
-    this.characterMenu.classList.remove('active');
+  async changeLanguage(newCode) {
+    if (this.conversation) await this.endConversation();
+    
+    this.updateURL('language', newCode);
+    this.currentLanguage = newCode;
+    this.updateLanguageFlag(newCode);
+    this.markActiveLanguage(newCode);
+    this.elements.languageMenu.classList.remove('active');
+  }
+
+  updateURL(param, value) {
+    const url = new URL(window.location);
+    url.searchParams.set(param, value);
+    window.history.pushState({}, '', url);
+  }
+
+  updateLanguageFlag(langCode) {
+    const lang = translations.languages.find(l => l.code === langCode) || 
+                translations.languages.find(l => l.code === 'en');
+    this.elements.currentLanguageFlag.textContent = lang?.flag || '🇺🇸';
+  }
+
+  markActiveLanguage(newCode) {
+    const options = document.querySelectorAll('.language-option');
+    options.forEach(opt => opt.classList.remove('active'));
+    
+    const newActive = Array.from(options)
+      .find(opt => opt.innerText.includes(this.getLangName(newCode)));
+    if (newActive) newActive.classList.add('active');
+  }
+
+  getLangName(code) {
+    return translations.languages.find(l => l.code === code)?.name || '';
   }
 
   updateStatus(mode) {
-    this.statusDot.classList.remove('listening');
-    switch (mode) {
-      case 'listening':
-        this.statusText.textContent = 'Listening...';
-        this.statusDot.classList.add('listening');
-        this.statusDot.style.background = '#22c55e';
-        break;
-      case 'speaking':
-        this.statusText.textContent = 'Speaking...';
-        this.statusDot.style.background = '#3b82f6';
-        break;
-      default:
-        this.statusText.textContent = 'Ready to chat';
-        this.statusDot.style.background = '#22c55e';
-    }
+    const state = LOADING_STATES[mode.toUpperCase()] || LOADING_STATES.READY;
+    this.elements.statusDot.classList.toggle('listening', state.isListening);
+    this.elements.statusDot.style.background = state.color;
+    this.elements.statusText.textContent = state.text;
   }
 
   preloadVideos() {
-    this.idleVideo.load();
-    this.idleVideo.addEventListener('loadeddata', () => {
-      this.videosLoaded.idle = true;
-      this.backgroundImage.style.opacity = '0';
-      this.idleVideo.classList.add('active');
-      this.idleVideo.play().catch(console.error);
-      this.loadingScreen.classList.add('hidden');
-    });
-
-    this.speakingVideo.load();
-    this.speakingVideo.addEventListener('loadeddata', () => {
-      this.videosLoaded.speaking = true;
-    });
-  }
-
-  updateBackground(mode) {
-    if (mode === 'speaking' && this.videosLoaded.speaking) {
-      this.idleVideo.classList.remove('active');
-      this.speakingVideo.classList.add('active');
-      this.speakingVideo.play().catch(console.error);
-    } else if (this.videosLoaded.idle) {
-      this.speakingVideo.classList.remove('active');
-      this.idleVideo.classList.add('active');
-      this.idleVideo.play().catch(console.error);
-    } else {
-      this.backgroundImage.style.opacity = '1';
-      [this.idleVideo, this.speakingVideo].forEach(video =>
-        video.classList.remove('active')
-      );
-    }
-    this.updateStatus(mode);
-  }
-
-  triggerConfetti() {
-    const options = { origin: { y: 0.7 } };
-    const count = 200;
-
-    [
-      { spread: 26, startVelocity: 55, particleRatio: 0.25 },
-      { spread: 60, particleRatio: 0.2 },
-      { spread: 100, decay: 0.91, scalar: 0.8, particleRatio: 0.35 },
-      { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2, particleRatio: 0.1 },
-      { spread: 120, startVelocity: 45, particleRatio: 0.1 }
-    ].forEach(opts => {
-      confetti({
-        ...options,
-        ...opts,
-        particleCount: Math.floor(count * opts.particleRatio)
+    ['idle', 'speaking'].forEach(type => {
+      const video = this.elements[`${type}Video`];
+      video.load();
+      video.addEventListener('loadeddata', () => {
+        this.videosLoaded[type] = true;
+        if (type === 'idle') {
+          this.elements.backgroundImage.style.opacity = '0';
+          video.classList.add('active');
+          video.play().catch(console.error);
+          this.elements.loadingScreen.classList.add('hidden');
+        }
       });
     });
   }
 
-createParticles() {
-    const container = document.querySelector('.main-container');
-    for (let i = 0; i < 20; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'particle';
-        particle.style.width = Math.random() * 10 + 'px';
-        particle.style.height = particle.style.width;
-        particle.style.background = `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.5)`;
-        particle.style.borderRadius = '50%';
-        particle.style.position = 'absolute';
-        this.restartParticle(particle);
-        container.appendChild(particle);
-    }
-}
+  updateBackground(mode) {
+    const videos = {
+      speaking: this.elements.speakingVideo,
+      idle: this.elements.idleVideo
+    };
 
-restartParticle(particle) {
+    if (mode === 'speaking' && this.videosLoaded.speaking) {
+      videos.idle.classList.remove('active');
+      videos.speaking.classList.add('active');
+      videos.speaking.play().catch(console.error);
+    } else if (this.videosLoaded.idle) {
+      videos.speaking.classList.remove('active');
+      videos.idle.classList.add('active');
+      videos.idle.play().catch(console.error);
+    } else {
+      this.elements.backgroundImage.style.opacity = '1';
+      Object.values(videos).forEach(video => video.classList.remove('active'));
+    }
+    
+    this.updateStatus(mode);
+  }
+
+  createParticles() {
+    const container = document.querySelector('.main-container');
+    Array.from({ length: 20 }).forEach(() => {
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      const size = Math.random() * 10;
+      particle.style.cssText = `
+        width: ${size}px;
+        height: ${size}px;
+        background: rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.5);
+        border-radius: 50%;
+        position: absolute;
+      `;
+      this.restartParticle(particle);
+      container.appendChild(particle);
+    });
+  }
+
+  restartParticle(particle) {
     const startX = Math.random() * window.innerWidth;
     const startY = window.innerHeight + 10;
     const endX = startX + (Math.random() - 0.5) * 200;
     const endY = -10;
     
-    particle.style.left = startX + 'px';
-    particle.style.top = startY + 'px';
-    particle.style.setProperty('--tx', (endX - startX) + 'px');
-    particle.style.setProperty('--ty', (endY - startY) + 'px');
+    particle.style.cssText += `
+      left: ${startX}px;
+      top: ${startY}px;
+      --tx: ${endX - startX}px;
+      --ty: ${endY - startY}px;
+      animation: float ${Math.random() * 2 + 3}s linear infinite;
+    `;
+  }
+
+  triggerStartEffects() {
+    confetti({
+      particleCount: 200,
+      spread: 70,
+      origin: { y: 0.7 }
+    });
     
-    particle.style.animation = 'none';
-    particle.offsetHeight; // Force reflow
-    particle.style.animation = `float ${Math.random() * 2 + 3}s linear infinite`;
-}
+    this.createParticles();
+    this.elements.startButton.classList.add('active');
+    this.elements.startButton.innerHTML = `
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    `;
+  }
+
+  getInitialMessage() {
+    return translations.firstMessages[this.character.id]?.[this.currentLanguage] || "Hello!";
+  }
 
   async startConversation() {
     try {
       await navigator.mediaDevices.getUserMedia({ audio: true });
-      this.triggerConfetti();
-      this.createParticles();
-      this.startButton.classList.add('active');
-      this.startButton.innerHTML = `
-        <svg width="24" height="24" viewBox="0 0 24 24"
-             fill="none" stroke="white" stroke-width="2">
-          <line x1="18" y1="6" x2="6" y2="18"></line>
-          <line x1="6" y1="6" x2="18" y2="18"></line>
-        </svg>
-      `;
-
-      const charMessages = firstMessages[this.character.id] || {};
-      const selectedMsg = charMessages[this.currentLanguage] || "Hello!";
+      this.triggerStartEffects();
 
       this.conversation = await Conversation.startSession({
         agentId: this.character.agentId,
         overrides: {
           agent: {
-            language: this.currentLanguage || 'en',
-            firstMessage: selectedMsg
+            language: this.currentLanguage,
+            firstMessage: this.getInitialMessage()
           }
         },
-        onModeChange: (mode) => this.updateBackground(mode.mode),
+        onModeChange: mode => this.updateBackground(mode.mode),
         onConnect: () => this.updateBackground('listening'),
-        onDisconnect: () => {
-          this.updateBackground('idle');
-          this.startButton.classList.remove('active');
-          this.startButton.textContent = 'Start Conversation';
-        },
-        onError: (error) => {
-          console.error('Conversation error:', error);
-          this.updateBackground('idle');
-          this.startButton.classList.remove('active');
-          this.startButton.textContent = 'Start Conversation';
-        }
+        onDisconnect: () => this.handleSessionEnd(),
+        onError: error => this.handleSessionError(error)
       });
     } catch (error) {
-      console.error('Error starting conversation:', error);
-      this.updateBackground('idle');
-      this.startButton.classList.remove('active');
-      this.startButton.textContent = 'Start Conversation';
+      this.handleSessionError(error);
     }
   }
 
+  handleSessionEnd(error = null) {
+    if (error) console.error('Session error:', error);
+    this.updateBackground('idle');
+    this.resetStartButton();
+  }
+
+  handleSessionError(error) {
+    this.handleSessionEnd(error);
+  }
+
+  resetStartButton() {
+    const button = this.elements.startButton;
+    button.classList.remove('active');
+    button.textContent = 'Start Conversation';
+  }
+
   async endConversation() {
-    if (this.conversation) {
-      try {
-        await this.conversation.endSession();
-      } catch (error) {
-        console.error('Error ending conversation:', error);
-      } finally {
-        this.conversation = null;
-        this.updateBackground('idle');
-        this.startButton.classList.remove('active');
-        this.startButton.textContent = 'Start Conversation';
-      }
+    if (!this.conversation) return;
+    
+    try {
+      await this.conversation.endSession();
+    } catch (error) {
+      console.error('Error ending conversation:', error);
+    } finally {
+      this.conversation = null;
+      this.handleSessionEnd();
     }
   }
 
   setupEventListeners() {
-    this.startButton.addEventListener('click', async () => {
+    this.elements.startButton.addEventListener('click', async () => {
       if (this.conversation) {
         await this.endConversation();
       } else {
@@ -766,6 +762,7 @@ restartParticle(particle) {
   }
 }
 
+// Share functionality
 window.shareCharacter = () => {
   if (navigator.share) {
     navigator.share({
@@ -776,8 +773,9 @@ window.shareCharacter = () => {
   }
 };
 
+// Initialize chat
 const urlParams = new URLSearchParams(window.location.search);
-const characterId = urlParams.get('character') || 'jonny';
-const languageCode = urlParams.get('language') || 'en';
-
-const chat = new ChatController(characterId, languageCode);
+const chat = new ChatController(
+  urlParams.get('character') || 'jonny',
+  urlParams.get('language') || 'en'
+);
