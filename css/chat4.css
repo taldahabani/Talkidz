@@ -322,7 +322,6 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 1rem; /* Space between buttons */
     padding: 1rem;
     z-index: 10;
 }
@@ -331,7 +330,7 @@ body {
     background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
     color: white;
     border: none;
-    padding: 1rem 2.5rem;
+    padding: 0.75rem 2rem;
     font-size: 1rem;
     font-weight: 600;
     border-radius: 999px;
@@ -340,7 +339,6 @@ body {
     box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
     position: relative;
     overflow: hidden;
-    margin-left: 70px;
 }
 
 .main-button::before {
@@ -436,24 +434,18 @@ body {
 }
 
 .character-select-button {
-    position: relative;
-    width: 60px; /* Increased size */
-    height: 60px; /* Increased size */
-    min-width: 60px;
-    min-height: 60px;
+    width: 48px;
+    height: 48px;
     border: none;
     border-radius: 50%;
     cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex; 
-    align-items: center; 
+    display: flex;
+    align-items: center;
     justify-content: center;
-    overflow: hidden;
-    flex-shrink: 0;
-    padding: 0;
-    box-sizing: border-box;
+    transition: all 0.3s ease;
+    position: absolute;
+    right: calc(50% - 120px);
     background: var(--secondary-bg);
-    color: var(--text-color);
 }
 
 .character-select-button .character-icon {
@@ -600,6 +592,45 @@ body {
     position: absolute;
     pointer-events: none;
     opacity: 0;
+}
+
+.green-screen-button {
+    width: 48px;
+    height: 48px;
+    border: none;
+    border-radius: 50%;
+    background: #9333ea;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    position: absolute;
+    left: calc(50% - 120px);
+}
+
+.green-screen-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(147, 51, 234, 0.3);
+}
+
+.green-screen-button.active {
+    background: #6b21a8;
+}
+
+@media (max-width: 768px) {
+    .main-button {
+        padding: 0.75rem 1.5rem;
+    }
+    
+    .green-screen-button {
+        left: calc(50% - 100px);
+    }
+    
+    .character-select-button {
+        right: calc(50% - 100px);
+    }
 }
 
 @keyframes float {
