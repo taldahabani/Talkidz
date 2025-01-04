@@ -702,41 +702,95 @@ class ChatController {
     ctx.filter = 'none';
   }
 
-  enableGreenScreen() {
+enableGreenScreen() {
+    // Hide the original videos
+    this.idleVideo.style.opacity = '0';
+    this.speakingVideo.style.opacity = '0';
+    
+    this.backgroundImage.style.background = 'url("/test/background.jpg") center/cover no-repeat';
+    
     const processIdleFrame = () => {
-      if (this.greenScreenEnabled && this.idleVideo.classList.contains('active')) {
-        this.processGreenScreen(
-          this.idleVideo,
-          this.idleCanvas,
-          this.idleCtx,
-          this.idleTempCanvas,
-          this.idleTempCtx
-        );
-        this.idleCanvas.style.display = 'block';
-      }
-      requestAnimationFrame(processIdleFrame);
+        if (this.greenScreenEnabled && this.idleVideo.classList.contains('active')) {
+            this.processGreenScreen(
+                this.idleVideo,
+                this.idleCanvas,
+                this.idleCtx,
+                this.idleTempCanvas,
+                this.idleTempCtx
+            );
+            this.idleCanvas.style.display = 'block';
+            this.speakingCanvas.style.display = 'none';
+        }
+        if (this.greenScreenEnabled) {
+            requestAnimationFrame(processIdleFrame);
+        }
     };
+
     const processSpeakingFrame = () => {
-      if (this.greenScreenEnabled && this.speakingVideo.classList.contains('active')) {
-        this.processGreenScreen(
-          this.speakingVideo,
-          this.speakingCanvas,
-          this.speakingCtx,
-          this.speakingTempCanvas,
-          this.speakingTempCtx
-        );
-        this.speakingCanvas.style.display = 'block';
-      }
-      requestAnimationFrame(processSpeakingFrame);
+        if (this.greenScreenEnabled && this.speakingVideo.classList.contains('active')) {
+            this.processGreenScreen(
+                this.speakingVideo,
+                this.speakingCanvas,
+                this.speakingCtx,
+                this.speakingTempCanvas,
+                this.speakingTempCtx
+            );
+            this.speakingCanvas.style.display = 'block';
+            this.idleCanvas.style.display = 'none';
+        }
+        if (this.greenScreenEnabled) {
+            requestAnimationFrame(processSpeakingFrame);
+        }
     };
+
     requestAnimationFrame(processIdleFrame);
     requestAnimationFrame(processSpeakingFrame);
-  }
+}
 
-  disableGreenScreen() {
+disableGreenScreen() {
+    // Show the original videos
+    this.idleVideo.style.opacity = '1';
+    this.speakingVideo.style.opacity = '1';
+    
+    this.backgroundImage.style.background = `url('${this.character.assets.preview}') center/contain no-repeat`;
     this.idleCanvas.style.display = 'none';
     this.speakingCanvas.style.display = 'none';
-  }
+    
+    // Cancel any ongoing green screen processing
+    this.greenScreenEnabled = false;
+}
+
+updateBackground(mode) {
+    if (mode === 'speaking' && this.videosLoaded.speaking) {
+        this.idleVideo.classList.remove('active');
+        this.speakingVideo.classList.add('active');
+        this.speakingVideo.play().catch(console.error);
+        
+        if (this.greenScreenEnabled) {
+            this.idleCanvas.style.display = 'none';
+            this.speakingCanvas.style.display = 'block';
+        }
+    } else if (this.videosLoaded.idle) {
+        this.speakingVideo.classList.remove('active');
+        this.idleVideo.classList.add('active');
+        this.idleVideo.play().catch(console.error);
+        
+        if (this.greenScreenEnabled) {
+            this.speakingCanvas.style.display = 'none';
+            this.idleCanvas.style.display = 'block';
+        }
+    } else {
+        this.backgroundImage.style.opacity = '1';
+        [this.idleVideo, this.speakingVideo].forEach(video =>
+            video.classList.remove('active')
+        );
+        if (this.greenScreenEnabled) {
+            this.idleCanvas.style.display = 'none';
+            this.speakingCanvas.style.display = 'none';
+        }
+    }
+    this.updateStatus(mode);
+}
 
   setupGreenScreen() {
     const button = document.querySelector('.green-screen-button');
