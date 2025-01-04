@@ -675,39 +675,63 @@ class ChatController {
     return 0;
   }
 
-  processGreenScreen(video, canvas, ctx, tempCanvas, tempCtx) {
+processGreenScreen(video, canvas, ctx, tempCanvas, tempCtx) {
     if (!video.videoWidth) return;
     
-    if (canvas.width !== video.videoWidth) {
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      tempCanvas.width = video.videoWidth;
-      tempCanvas.height = video.videoHeight;
+    // Calculate size maintaining aspect ratio
+    const containerWidth = this.backgroundImage.offsetWidth;
+    const containerHeight = this.backgroundImage.offsetHeight;
+    const videoRatio = video.videoWidth / video.videoHeight;
+    const containerRatio = containerWidth / containerHeight;
+    
+    let width, height;
+    if (containerRatio > videoRatio) {
+        height = containerHeight;
+        width = height * videoRatio;
+    } else {
+        width = containerWidth;
+        height = width / videoRatio;
     }
+    
+    // Set canvas dimensions to match video
+    if (canvas.width !== video.videoWidth || canvas.height !== video.videoHeight) {
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        tempCanvas.width = video.videoWidth;
+        tempCanvas.height = video.videoHeight;
+    }
+
+    // Draw and process the frame
     tempCtx.drawImage(video, 0, 0);
     const frame = tempCtx.getImageData(0, 0, canvas.width, canvas.height);
     const data = frame.data;
     
     for (let i = 0; i < data.length; i += 4) {
-      const greenness = this.isGreen(data[i], data[i + 1], data[i + 2]);
-      if (greenness > 0) {
-        data[i + 3] = Math.round(255 * (1 - greenness));
-      }
+        const greenness = this.isGreen(data[i], data[i + 1], data[i + 2]);
+        if (greenness > 0) {
+            data[i + 3] = Math.round(255 * (1 - greenness));
+        }
     }
+    
     tempCtx.putImageData(frame, 0, 0);
     
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.filter = 'blur(0.1px)';
     ctx.drawImage(tempCanvas, 0, 0);
     ctx.filter = 'none';
-  }
+    
+    // Set the canvas CSS dimensions
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
+}
 
 enableGreenScreen() {
-    // Hide the original videos
     this.idleVideo.style.opacity = '0';
     this.speakingVideo.style.opacity = '0';
     
+    this.backgroundImage.style.opacity = '1';
     this.backgroundImage.style.background = 'url("/test/background.jpg") center/cover no-repeat';
+    
     
     const processIdleFrame = () => {
         if (this.greenScreenEnabled && this.idleVideo.classList.contains('active')) {
@@ -752,11 +776,11 @@ disableGreenScreen() {
     this.idleVideo.style.opacity = '1';
     this.speakingVideo.style.opacity = '1';
     
+    this.backgroundImage.style.opacity = '0';
     this.backgroundImage.style.background = `url('${this.character.assets.preview}') center/contain no-repeat`;
     this.idleCanvas.style.display = 'none';
     this.speakingCanvas.style.display = 'none';
     
-    // Cancel any ongoing green screen processing
     this.greenScreenEnabled = false;
 }
 
