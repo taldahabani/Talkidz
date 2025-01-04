@@ -7,19 +7,45 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" rel="stylesheet">
     <style>
         :root {
+            /* Color Palette */
             --primary-color: #FF4B6E;
             --accent-color: #6C5CE7;
             --text-color: #1A1A1A;
             --background-color: #FFFFFF;
             --secondary-background: #F5F5F5;
             --shadow-color: rgba(0, 0, 0, 0.08);
-            --spacing-unit: 1rem;
+
+            /* Spacing */
+            --spacing-xs: 0.25rem;
+            --spacing-sm: 0.5rem;
+            --spacing-md: 1rem;
+            --spacing-lg: 2rem;
+
+            /* Typography */
+            --font-size-xs: 0.75rem;
+            --font-size-sm: 0.875rem;
+            --font-size-md: 1rem;
+            --font-size-lg: 1.25rem;
+            --font-size-xl: 1.5rem;
+            --font-size-2xl: 2rem;
+            --font-size-3xl: 3rem;
+
+            --font-weight-normal: 400;
+            --font-weight-medium: 500;
+            --font-weight-semibold: 600;
+            --font-weight-bold: 700;
+            --font-weight-extrabold: 800;
+
+            /* Transitions */
             --transition: all 0.3s ease;
+
+            /* Header */
             --header-blur: 8px;
             --header-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
-        * {
+        /* Reset and Base Styles */
+        *, *::before, *::after {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
@@ -32,9 +58,15 @@
             color: var(--text-color);
             line-height: 1.5;
             overflow-x: hidden;
-            min-height: 100vh; /* Ensure body takes at least full viewport height */
+            min-height: 100vh;
         }
 
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* Gradient Text Utility */
         .gradient-text {
             background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
             -webkit-background-clip: text;
@@ -50,25 +82,24 @@
             background: rgba(255, 255, 255, 0.98);
             backdrop-filter: blur(var(--header-blur));
             -webkit-backdrop-filter: blur(var(--header-blur));
-            padding: var(--spacing-unit);
+            padding: var(--spacing-md) 1rem;
             box-shadow: var(--header-shadow);
-            transition: all 0.3s ease;
+            transition: var(--transition);
         }
 
         .nav {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: var(--spacing-unit);
+            gap: var(--spacing-md);
         }
 
         .logo-container {
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            margin-right: auto;
             position: relative;
-            transition: all 0.3s ease;
+            transition: var(--transition);
         }
 
         .logo-container::after {
@@ -100,22 +131,20 @@
         }
 
         .logo {
-            font-size: 2rem;
-            font-weight: 800;
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-extrabold);
             background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            text-decoration: none;
             letter-spacing: -0.5px;
         }
 
         .logo-byline {
-            font-size: 0.75rem;
-            font-weight: 500;
+            font-size: var(--font-size-sm);
+            font-weight: var(--font-weight-medium);
             color: #666;
             margin-top: -0.25rem;
-            margin-left: 0.125rem;
             letter-spacing: 0.5px;
         }
 
@@ -137,6 +166,8 @@
         .share-button svg {
             color: white;
             stroke: white;
+            width: 1rem;
+            height: 1rem;
         }
 
         .share-button:hover {
@@ -145,20 +176,20 @@
         }
 
         .tagline {
-            font-size: 1rem;
+            font-size: var(--font-size-md);
             color: #666;
-            margin-bottom: var(--spacing-unit);
-            text-align: left; /* Align text to the left */
-            padding-left: var(--spacing-unit);
-            padding-right: var(--spacing-unit);
+            margin-top: var(--spacing-sm);
+            text-align: left;
+            padding-left: var(--spacing-md);
+            padding-right: var(--spacing-md);
         }
 
         /* Featured Section */
         .featured-section {
             background: var(--secondary-background);
             border-radius: 24px;
-            padding: 20px;
-            margin: 14px 16px;
+            padding: var(--spacing-lg);
+            margin: var(--spacing-lg) var(--spacing-md);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -166,24 +197,24 @@
             overflow: hidden;
             box-shadow: 0 8px 32px rgba(108, 92, 231, 0.08);
             transition: var(--transition);
-            flex-wrap: wrap; /* Allow wrapping if needed */
+            gap: var(--spacing-lg);
+            flex-wrap: wrap;
         }
 
         .featured-section > div:first-child {
             flex: 1;
-            padding-right: 48px;
             max-width: 600px;
-            text-align: left; /* Ensure text is left-aligned */
+            text-align: left;
         }
 
         .featured-title {
-            font-size: 0.675rem;
-            font-weight: 600;
+            font-size: var(--font-size-xs);
+            font-weight: var(--font-weight-semibold);
             color: var(--accent-color);
-            margin-bottom: 5px;
+            margin-bottom: var(--spacing-xs);
             display: flex;
             align-items: center;
-            gap: 0.75rem;
+            gap: var(--spacing-sm);
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -197,26 +228,25 @@
         }
 
         .featured-name {
-            font-size: 3rem;
-            font-weight: 800;
+            font-size: var(--font-size-3xl);
+            font-weight: var(--font-weight-extrabold);
             background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            margin: 0 0 6px 0;
+            margin: 0 0 var(--spacing-sm) 0;
             letter-spacing: -1px;
             line-height: 1.2;
-            text-align: left; /* Ensure text is left-aligned */
         }
 
         .featured-description {
             color: #666;
-            font-size: 1.125rem;
+            font-size: var(--font-size-lg);
             line-height: 1.6;
-            margin-bottom: 6px;
-            font-weight: 400;
+            margin-bottom: var(--spacing-sm);
+            font-weight: var(--font-weight-normal);
             max-width: 540px;
-            text-align: left; /* Ensure text is left-aligned */
+            text-align: left;
         }
 
         .featured-image-container {
@@ -224,7 +254,7 @@
             height: 260px;
             position: relative;
             flex-shrink: 0;
-            margin-left: auto; /* Align image to the right */
+            margin-left: auto;
         }
 
         .featured-image-wrap {
@@ -248,25 +278,33 @@
             cursor: pointer;
         }
 
-        .featured-image:hover {
+        .featured-image img {
+            object-fit: cover;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .featured-image:hover img {
             transform: scale(1.05);
             box-shadow: 0 16px 32px rgba(108, 92, 231, 0.2);
         }
 
         /* Genre Section */
         .genre-section {
-            margin: calc(var(--spacing-unit) * 1) 0;
-            padding: 0 var(--spacing-unit);
+            margin: var(--spacing-lg) 0;
+            padding: 0 var(--spacing-md);
             position: relative;
         }
 
         .genre-title {
-            font-size: 1.25rem;
-            margin-bottom: var(--spacing-unit);
-            font-weight: 700;
+            font-size: var(--font-size-lg);
+            margin-bottom: var(--spacing-sm);
+            font-weight: var(--font-weight-bold);
             display: flex;
             align-items: center;
-            gap: 0.5rem;
+            gap: var(--spacing-xs);
         }
 
         .genre-title::after {
@@ -280,9 +318,9 @@
             display: grid;
             grid-auto-flow: column;
             grid-auto-columns: minmax(130px, 1fr);
-            gap: 1.5rem;
+            gap: var(--spacing-md);
             overflow-x: auto;
-            padding: var(--spacing-unit) 0;
+            padding: var(--spacing-sm) 0;
             scroll-snap-type: x mandatory;
             scrollbar-width: none;
             position: relative;
@@ -295,11 +333,10 @@
         .character-card {
             scroll-snap-align: start;
             text-align: center;
-            text-decoration: none;
-            color: inherit;
             transition: var(--transition);
             position: relative;
             cursor: pointer;
+            flex-shrink: 0;
         }
 
         .character-card:hover {
@@ -312,7 +349,7 @@
             border-radius: 50%;
             background-size: cover;
             background-position: center;
-            margin: 0 auto var(--spacing-unit);
+            margin: 0 auto var(--spacing-sm);
             border: 3px solid white;
             box-shadow: 0 4px 12px var(--shadow-color);
             transition: var(--transition);
@@ -327,13 +364,14 @@
         }
 
         .character-name {
-            font-weight: 600;
-            margin-bottom: 0.25rem;
+            font-size: var(--font-size-md);
+            font-weight: var(--font-weight-semibold);
+            margin-bottom: var(--spacing-xs);
             color: var(--text-color);
         }
 
         .character-role {
-            font-size: 0.875rem;
+            font-size: var(--font-size-sm);
             color: #666;
             transition: color 0.2s ease;
         }
@@ -348,13 +386,14 @@
             top: 8px;
             right: 8px;
             color: white;
-            font-size: 0.625rem;
-            padding: 0.25rem 0.5rem;
+            font-size: var(--font-size-xs);
+            padding: var(--spacing-xs) var(--spacing-sm);
             border-radius: 999px;
-            font-weight: 600;
+            font-weight: var(--font-weight-semibold);
             transform: rotate(12deg);
             box-shadow: 0 2px 4px rgba(108, 92, 231, 0.3);
             z-index: 2;
+            transition: transform 0.3s ease;
         }
 
         .new-badge {
@@ -377,21 +416,21 @@
             }
 
             .character-name {
-                font-size: 1.2rem;
+                font-size: var(--font-size-lg);
             }
 
             .character-role {
-                font-size: 1rem;
+                font-size: var(--font-size-md);
             }
 
             .badge {
-                font-size: 0.75rem;
-                padding: 0.3rem 0.6rem;
+                font-size: var(--font-size-sm);
+                padding: var(--spacing-sm) var(--spacing-md);
             }
 
             /* Consistent Padding in Featured Section */
             .featured-section {
-                padding: 32px; /* Increased padding to match tablet */
+                padding: var(--spacing-lg);
             }
 
             .featured-image-container {
@@ -407,28 +446,29 @@
 
         @media (max-width: 768px) {
             .featured-section {
-                padding: 24px 16px; /* Consistent padding */
-                flex-direction: row; /* Maintain row layout */
-                text-align: left; /* Ensure text is left-aligned */
+                padding: var(--spacing-md) var(--spacing-sm);
+                flex-direction: row;
+                text-align: left;
             }
 
             .featured-section > div:first-child {
-                padding-right: 24px;
-                text-align: left; /* Ensure text is left-aligned */
+                padding-right: var(--spacing-md);
+                text-align: left;
+                max-width: 60%;
             }
 
             .featured-name {
-                font-size: 2rem;
+                font-size: var(--font-size-2xl);
             }
 
             .featured-description {
-                font-size: 1rem;
+                font-size: var(--font-size-md);
             }
 
             .featured-image-container {
                 width: 200px;
                 height: 200px;
-                margin-left: auto; /* Align image to the right */
+                max-width: 40%;
             }
 
             .featured-image-wrap {
@@ -437,22 +477,31 @@
             }
 
             .badge {
-                font-size: 0.7rem;
-                padding: 0.25rem 0.5rem;
+                font-size: var(--font-size-xs);
+                padding: var(--spacing-xs) var(--spacing-sm);
             }
         }
 
         @media (max-width: 550px) {
             .featured-section {
-                padding: 16px; /* Further adjust padding */
+                flex-direction: column;
+                text-align: left;
+                padding: var(--spacing-sm);
+                gap: var(--spacing-sm);
+            }
+
+            .featured-section > div:first-child,
+            .featured-image-container {
+                max-width: 100%;
+                padding-right: 0;
             }
 
             .featured-name {
-                font-size: 1.75rem;
+                font-size: var(--font-size-xl);
             }
 
             .featured-description {
-                font-size: 0.875rem;
+                font-size: var(--font-size-sm);
             }
 
             .featured-image-container {
@@ -466,8 +515,13 @@
             }
 
             .badge {
-                font-size: 0.6rem;
-                padding: 0.2rem 0.4rem;
+                font-size: var(--font-size-xs);
+                padding: var(--spacing-xs) var(--spacing-sm);
+            }
+
+            .tagline {
+                padding-left: var(--spacing-sm);
+                padding-right: var(--spacing-sm);
             }
         }
 
@@ -482,22 +536,16 @@
             }
 
             .character-name {
-                font-size: 0.875rem;
+                font-size: var(--font-size-sm);
             }
 
             .character-role {
-                font-size: 0.75rem;
+                font-size: var(--font-size-xs);
             }
 
             .badge {
-                font-size: 0.5rem;
-                padding: 0.2rem 0.4rem;
-            }
-
-            .tagline {
-                padding-left: var(--spacing-unit);
-                padding-right: var(--spacing-unit);
-                text-align: left; /* Ensure text is left-aligned */
+                font-size: var(--font-size-xs);
+                padding: var(--spacing-xs) var(--spacing-sm);
             }
         }
 
@@ -550,17 +598,17 @@
         }
 
         .splash-logo-text {
-            font-size: 4rem;
-            font-weight: 800;
+            font-size: var(--font-size-3xl);
+            font-weight: var(--font-weight-extrabold);
             opacity: 0;
             transform: translateY(20px);
             animation: fadeInUp 0.5s ease-out 0.5s forwards;
-            margin-bottom: 0; 
+            margin-bottom: var(--spacing-sm);
             line-height: 1.5;
         }
 
         .splash-byline {
-            font-size: 1.2rem;
+            font-size: var(--font-size-md);
             color: #666;
             margin-top: -0.4rem;
             opacity: 0;
@@ -636,10 +684,21 @@
             margin: 0 auto;
             text-align: center;
             position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .footer-content {
+                flex-direction: row;
+                justify-content: space-between;
+                text-align: left;
+            }
         }
 
         .footer-logo-container {
-            margin-bottom: 2rem;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -647,16 +706,15 @@
         }
 
         .footer-logo {
-            font-size: 3.5rem;
-            font-weight: 800;
+            font-size: var(--font-size-3xl);
+            font-weight: var(--font-weight-extrabold);
             background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            text-decoration: none;
             letter-spacing: -1px;
             display: inline-block;
-            margin-bottom: 1rem;
+            margin-bottom: var(--spacing-sm);
             position: relative;
             z-index: 1;
         }
@@ -682,8 +740,8 @@
         }
 
         .footer-slogan {
-            font-size: 2.5rem;
-            font-weight: 700;
+            font-size: var(--font-size-xl);
+            font-weight: var(--font-weight-bold);
             margin: 2rem 0;
             padding: 0 1rem;
             position: relative;
@@ -700,7 +758,7 @@
         }
 
         .slogan-secondary {
-            font-size: 1.8rem;
+            font-size: var(--font-size-lg);
             color: #666;
             display: block;
             margin-top: 0.5rem;
@@ -736,12 +794,13 @@
         }
 
         .footer-nav-item {
+            font-size: var(--font-size-sm);
             color: #666;
             text-decoration: none;
-            font-weight: 500;
+            font-weight: var(--font-weight-medium);
             transition: var(--transition);
             position: relative;
-            padding: 0.5rem 1rem;
+            padding: var(--spacing-xs) var(--spacing-sm);
         }
 
         .footer-nav-item::after {
@@ -806,21 +865,21 @@
             padding-top: 2rem;
             border-top: 1px solid rgba(0,0,0,0.1);
             color: #666;
-            font-size: 0.9rem;
+            font-size: var(--font-size-sm);
             text-align: center;
         }
 
         @media (min-width: 768px) {
             .footer-logo {
-                font-size: 3.5rem;
+                font-size: var(--font-size-3xl);
             }
 
             .footer-slogan {
-                font-size: 2.5rem;
+                font-size: var(--font-size-xl);
             }
 
             .slogan-secondary {
-                font-size: 1.8rem;
+                font-size: var(--font-size-lg);
             }
 
             .footer-navigation {
@@ -840,15 +899,15 @@
 
         @media (max-width: 768px) {
             .footer-logo {
-                font-size: 2.5rem;
+                font-size: var(--font-size-xl);
             }
 
             .footer-slogan {
-                font-size: 2rem;
+                font-size: var(--font-size-lg);
             }
 
             .slogan-secondary {
-                font-size: 1.4rem;
+                font-size: var(--font-size-md);
             }
 
             .footer-navigation {
@@ -884,11 +943,6 @@
     <div class="splash-container" id="splashScreen">
         <div class="particles"></div>
         <div class="splash-content">
-            <div class="loading-circle">
-                <div class="circle circle-1"></div>
-                <div class="circle circle-2"></div>
-                <div class="circle circle-3"></div>
-            </div>
             <h1 class="splash-logo-text gradient-text">Talkidz</h1>
             <p class="splash-byline">by Playbox</p>
         </div>
@@ -901,8 +955,8 @@
                 <a href="#" class="logo">Talkidz</a>
                 <span class="logo-byline">by Playbox</span>
             </div>
-            <button class="share-button" onclick="shareApp()">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <button class="share-button" onclick="shareApp()" aria-label="Share">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
                     <polyline points="16 6 12 2 8 6"></polyline>
                     <line x1="12" y1="2" x2="12" y2="15"></line>
@@ -924,7 +978,7 @@
                 <p class="featured-description">Woof! Your playful and loyal companion, ready to bring joy, share fun stories, and offer friendly support. Whoof!</p>
                 <button class="share-button" onclick="window.location.href='chat.html?character=jonny'">
                     Chat Now
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M5 12h14M12 5l7 7-7 7"></path>
                     </svg>
                 </button>
@@ -932,7 +986,7 @@
             <div class="featured-image-container" onclick="window.location.href='chat.html?character=jonny';" style="cursor: pointer;">
                 <div class="featured-image-wrap">
                     <div class="featured-image">
-                        <img src="characters/jonny/assets/jonny-icon.jpg" alt="Jonny 🐾" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block;">
+                        <img src="characters/jonny/assets/jonny-icon.jpg" alt="Jonny 🐾" loading="lazy">
                     </div>
                 </div>
             </div>
@@ -1080,19 +1134,19 @@
             </nav>
 
             <div class="footer-social">
-                <a href="#" class="social-icon">
+                <a href="#" class="social-icon" aria-label="Facebook">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
                     </svg>
                 </a>
-                <a href="#" class="social-icon">
+                <a href="#" class="social-icon" aria-label="Instagram">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
                         <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
                         <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
                     </svg>
                 </a>
-                <a href="#" class="social-icon">
+                <a href="#" class="social-icon" aria-label="Twitter">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
                     </svg>
@@ -1163,42 +1217,43 @@
                 let startX;
                 let scrollLeft;
 
+                // Mouse Events
                 carousel.addEventListener('mousedown', (e) => {
                     isDragging = true;
+                    carousel.classList.add('active');
                     startX = e.pageX - carousel.offsetLeft;
                     scrollLeft = carousel.scrollLeft;
-                    carousel.style.cursor = 'grabbing';
-                    carousel.style.scrollBehavior = 'auto';
                 });
 
                 carousel.addEventListener('mouseleave', () => {
                     isDragging = false;
-                    carousel.style.cursor = 'grab';
+                    carousel.classList.remove('active');
                 });
 
                 carousel.addEventListener('mouseup', () => {
                     isDragging = false;
-                    carousel.style.cursor = 'grab';
-                    carousel.style.scrollBehavior = 'smooth';
+                    carousel.classList.remove('active');
                 });
 
                 carousel.addEventListener('mousemove', (e) => {
                     if (!isDragging) return;
                     e.preventDefault();
                     const x = e.pageX - carousel.offsetLeft;
-                    const walk = (x - startX) * 2; // scroll-fast
+                    const walk = (x - startX) * 2; // Scroll-fast
                     carousel.scrollLeft = scrollLeft - walk;
                 });
 
-                // Touch events for mobile
+                // Touch Events for Mobile
                 carousel.addEventListener('touchstart', (e) => {
                     isDragging = true;
+                    carousel.classList.add('active');
                     startX = e.touches[0].pageX - carousel.offsetLeft;
                     scrollLeft = carousel.scrollLeft;
                 });
 
                 carousel.addEventListener('touchend', () => {
                     isDragging = false;
+                    carousel.classList.remove('active');
                 });
 
                 carousel.addEventListener('touchmove', (e) => {
@@ -1206,14 +1261,6 @@
                     const x = e.touches[0].pageX - carousel.offsetLeft;
                     const walk = (x - startX) * 2;
                     carousel.scrollLeft = scrollLeft - walk;
-                });
-
-                // Prevent default scrolling when interacting with character cards
-                carousel.querySelectorAll('.character-card').forEach(card => {
-                    card.addEventListener('click', (e) => {
-                        // Allow clicks to navigate without interfering with scroll
-                        // If needed, add specific navigation logic here
-                    });
                 });
             });
         };
