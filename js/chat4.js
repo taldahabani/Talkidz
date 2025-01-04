@@ -429,20 +429,6 @@ class ChatController {
     this.currentLanguage = languageCode || 'en';
     this.conversation = null;
     this.videosLoaded = { idle: false, speaking: false };
-    
-    // Green screen properties
-    this.greenScreenEnabled = false;
-    this.tempCanvas = document.createElement('canvas');
-    this.tempCtx = this.tempCanvas.getContext('2d');
-    this.greenScreenButton = document.getElementById('greenScreenButton');
-    
-    // Background options
-    this.backgrounds = [
-      { id: 'bg1', url: '/assets/backgrounds/background1.jpg' },
-      { id: 'bg2', url: '/assets/backgrounds/background2.jpg' },
-      { id: 'bg3', url: '/assets/backgrounds/background3.jpg' }
-    ];
-    this.currentBackgroundIndex = 0;
 
     this.setupElements();
     this.setupCharacter();
@@ -451,9 +437,6 @@ class ChatController {
     this.updateBackground('idle');
     this.setupCharacterMenu();
     this.setupLanguageMenu();
-    this.setupGreenScreen();
-    
-    this.loadingScreen.classList.remove('hidden');
   }
 
   setupElements() {
@@ -487,78 +470,6 @@ class ChatController {
       <div class="character-icon">
         <img src="${this.character.assets.icon}" alt="${this.character.name}">
       </div>`;
-  }
-
-  setupGreenScreen() {
-    this.greenScreenButton.addEventListener('click', () => this.toggleGreenScreen());
-  }
-
-  toggleGreenScreen() {
-    this.greenScreenEnabled = !this.greenScreenEnabled;
-    this.greenScreenButton.classList.toggle('active');
-
-    if (this.greenScreenEnabled) {
-      this.processVideo();
-    }
-  }
-
-  isGreen(r, g, b) {
-    const greenDominance = g / ((r + b) / 2);
-    const threshold = 1.6;
-    
-    if (greenDominance > threshold) {
-      const brightness = (r + g + b) / 3;
-      if (brightness > 30 && brightness < 225) {
-        const strength = Math.min((greenDominance - threshold) / 0.4, 1);
-        return strength;
-      }
-    }
-    return 0;
-  }
-
-  processVideo() {
-    if (!this.greenScreenEnabled) return;
-
-    const video = this.idleVideo.classList.contains('active') ? 
-                 this.idleVideo : this.speakingVideo;
-
-    // Initialize canvas if needed
-    if (!this.tempCanvas.width || !this.tempCanvas.height) {
-      this.tempCanvas.width = video.videoWidth;
-      this.tempCanvas.height = video.videoHeight;
-    }
-
-    // Draw current frame to temp canvas
-    this.tempCtx.drawImage(video, 0, 0);
-    const frame = this.tempCtx.getImageData(0, 0, this.tempCanvas.width, this.tempCanvas.height);
-    const data = frame.data;
-
-    // Process pixels with feathering
-    for (let i = 0; i < data.length; i += 4) {
-      const greenness = this.isGreen(data[i], data[i + 1], data[i + 2]);
-      if (greenness > 0) {
-        // Set background
-        const bgImage = new Image();
-        bgImage.src = this.backgrounds[this.currentBackgroundIndex].url;
-        this.tempCtx.drawImage(bgImage, 0, 0, this.tempCanvas.width, this.tempCanvas.height);
-        
-        // Apply alpha to green areas
-        data[i + 3] = Math.round(255 * (1 - greenness));
-      }
-    }
-
-    // Apply processed frame back to video
-    video.style.webkitBackdropFilter = `url(${this.backgrounds[this.currentBackgroundIndex].url})`;
-    video.style.backdropFilter = `url(${this.backgrounds[this.currentBackgroundIndex].url})`;
-    
-    requestAnimationFrame(() => this.processVideo());
-  }
-
-  changeBackground() {
-    this.currentBackgroundIndex = (this.currentBackgroundIndex + 1) % this.backgrounds.length;
-    if (this.greenScreenEnabled) {
-      this.processVideo();
-    }
   }
 
   setupCharacterMenu() {
@@ -723,13 +634,13 @@ class ChatController {
       this.speakingVideo.classList.remove('active');
       this.idleVideo.classList.add('active');
       this.idleVideo.play().catch(console.error);
+    } else {
+      this.backgroundImage.style.opacity = '1';
+      [this.idleVideo, this.speakingVideo].forEach(video =>
+        video.classList.remove('active')
+      );
     }
-    
     this.updateStatus(mode);
-
-    if (this.greenScreenEnabled) {
-      this.processVideo();
-    }
   }
 
   triggerConfetti() {
@@ -751,10 +662,42 @@ class ChatController {
     });
   }
 
+createParticles() {
+    const container = document.querySelector('.main-container');
+    for (let i = 0; i < 20; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'particle';
+        particle.style.width = Math.random() * 10 + 'px';
+        particle.style.height = particle.style.width;
+        particle.style.background = `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.5)`;
+        particle.style.borderRadius = '50%';
+        particle.style.position = 'absolute';
+        this.restartParticle(particle);
+        container.appendChild(particle);
+    }
+}
+
+restartParticle(particle) {
+    const startX = Math.random() * window.innerWidth;
+    const startY = window.innerHeight + 10;
+    const endX = startX + (Math.random() - 0.5) * 200;
+    const endY = -10;
+    
+    particle.style.left = startX + 'px';
+    particle.style.top = startY + 'px';
+    particle.style.setProperty('--tx', (endX - startX) + 'px');
+    particle.style.setProperty('--ty', (endY - startY) + 'px');
+    
+    particle.style.animation = 'none';
+    particle.offsetHeight; // Force reflow
+    particle.style.animation = `float ${Math.random() * 2 + 3}s linear infinite`;
+}
+
   async startConversation() {
     try {
       await navigator.mediaDevices.getUserMedia({ audio: true });
       this.triggerConfetti();
+      this.createParticles();
       this.startButton.classList.add('active');
       this.startButton.innerHTML = `
         <svg width="24" height="24" viewBox="0 0 24 24"
@@ -780,20 +723,20 @@ class ChatController {
         onDisconnect: () => {
           this.updateBackground('idle');
           this.startButton.classList.remove('active');
-          this.startButton.textContent = 'Start';
+          this.startButton.textContent = 'Start Conversation';
         },
         onError: (error) => {
           console.error('Conversation error:', error);
           this.updateBackground('idle');
           this.startButton.classList.remove('active');
-          this.startButton.textContent = 'Start';
+          this.startButton.textContent = 'Start Conversation';
         }
       });
     } catch (error) {
       console.error('Error starting conversation:', error);
       this.updateBackground('idle');
       this.startButton.classList.remove('active');
-      this.startButton.textContent = 'Start';
+      this.startButton.textContent = 'Start Conversation';
     }
   }
 
