@@ -545,6 +545,26 @@ body {
     border: 2px solid var(--accent-color);
 }
 
+.particle {
+    position: absolute;
+    pointer-events: none;
+    opacity: 0;
+}
+
+@keyframes float {
+    0% { 
+        transform: translate(0, 0) rotate(0deg); 
+        opacity: 0; 
+    }
+    20% { 
+        opacity: 0.8; 
+    }
+    100% { 
+        transform: translate(var(--tx), var(--ty)) rotate(360deg); 
+        opacity: 0; 
+    }
+}
+
 @keyframes buttonShine {
     to { transform: translateX(100%) rotate(45deg); }
 }
