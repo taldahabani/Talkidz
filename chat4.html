@@ -8,13 +8,13 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
       rel="stylesheet"
     />
-    <link href="/css/chat4.css" rel="stylesheet"/>
+    <link href="/css/chat.css" rel="stylesheet"/>
     <script
       src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js">
     </script>
 </head>
 <body>
-<div class="splash-container character-loading hidden">
+<div class="splash-container character-loading">
     <div class="splash-content">
         <div class="loading-circle">
             <div class="circle circle-1"></div>
@@ -52,19 +52,11 @@
                loop muted playsinline disablePictureInPicture></video>
         <video class="background video" id="speakingVideo"
                loop muted playsinline disablePictureInPicture></video>
-        <canvas id="videoCanvas" class="video-canvas"></canvas>
-        <img id="backgroundImage" class="background-image" src="test/background.jpg" alt="Background">
     </div>
 </div>
 <div class="main-action-container">
-    <button id="greenScreenButton" class="circle-button left">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-            <circle cx="12" cy="12" r="3"/>
-        </svg>
-    </button>
-    <button id="startButton" class="main-button">Start</button>
-    <button class="character-select-button circle-button right">
+    <button id="startButton" class="main-button">Start Conversation</button>
+    <button class="character-select-button">
         <div class="character-icon">
             <img src="" alt="Selected character"/>
         </div>
@@ -95,6 +87,6 @@
         </button>
     </div>
 </div>
-<script type="module" src="/js/chat4.js"></script>
+<script type="module" src="/js/chat.js"></script>
 </body>
 </html>
