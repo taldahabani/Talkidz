@@ -147,7 +147,7 @@
         .tagline {
             font-size: 1rem;
             color: #666;
-            margin-bottom: var(--spacing-unit);
+            margin-top: var(--spacing-unit);
             text-align: left; /* Align text to the left */
             padding-left: var(--spacing-unit);
             padding-right: var(--spacing-unit);
@@ -280,7 +280,7 @@
             display: grid;
             grid-auto-flow: column;
             grid-auto-columns: minmax(130px, 1fr);
-            gap: 1.5rem;
+            gap: 1rem; /* Reduced gap for closer profiles */
             overflow-x: auto;
             padding: var(--spacing-unit) 0;
             scroll-snap-type: x mandatory;
@@ -345,11 +345,11 @@
         /* Badges */
         .badge {
             position: absolute;
-            top: -10px; /* Adjusted to move slightly above */
-            right: -10px; /* Adjusted to move slightly to the right */
+            top: -5px; /* Closer to the image */
+            right: -5px; /* Closer to the image */
             color: white;
-            font-size: 0.625rem;
-            padding: 0.25rem 0.5rem;
+            font-size: 0.6rem; /* Slightly smaller font */
+            padding: 0.2rem 0.4rem; /* Reduced padding */
             border-radius: 999px;
             font-weight: 600;
             transform: rotate(12deg);
@@ -401,6 +401,20 @@
                 transform: translateY(-1000px) translateX(100px) rotate(360deg);
                 opacity: 0;
             }
+        }
+
+        /* Enhanced Particle Effect on Scroll */
+        @keyframes moveParticles {
+            0% {
+                transform: translateY(0px) translateX(0px);
+            }
+            100% {
+                transform: translateY(-1000px) translateX(1000px);
+            }
+        }
+
+        .particle {
+            animation: floatParticle 20s infinite linear, moveParticles 60s infinite linear;
         }
 
         /* Splash Screen */
@@ -903,6 +917,8 @@
             <div class="logo-container">
                 <a href="#" class="logo">Talkidz</a>
                 <span class="logo-byline">by Playbox</span>
+                <!-- Tagline moved inside logo-container for alignment -->
+                <p class="tagline">Explore AI Friends to Chat With</p>
             </div>
             <button class="share-button" onclick="shareApp()">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -913,7 +929,6 @@
                 Share
             </button>
         </nav>
-        <p class="tagline">Explore AI Friends to Chat With</p>
     </header>
 
     <main>
