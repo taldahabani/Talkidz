@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Emma - Talkidz</title> <!-- Updated Title -->
+    <title>Emma - Talkidz</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" rel="stylesheet">
     <style>
         :root {
@@ -13,14 +13,6 @@
             --secondary-background: #F5F5F5;
             --accent-color: #6C5CE7;
             --shadow-color: rgba(0, 0, 0, 0.08);
-            --affiliate-box-bg: #f9f9f9;
-            --affiliate-box-border: #ddd;
-            --affiliate-box-border-radius: 8px;
-            --affiliate-box-padding: 1rem;
-            --affiliate-box-width: 320px;
-            --affiliate-box-z-index: 1000;
-            --affiliate-button-bg: #FF9900; /* Amazon-like button color */
-            --affiliate-button-hover-bg: #e68a00;
         }
 
         body, html {
@@ -136,13 +128,12 @@
             width: 100%;
             height: 100%;
             object-fit: contain;
-            background-image: url('assets/bella.jpg'); /* Updated Background Image */
+            background-image: url('assets/emma.png');
             background-size: contain;
             background-position: center;
             background-repeat: no-repeat;
         }
 
-        /* Continuing the style tag */
         .bottom-container {
             position: fixed;
             bottom: 0;
@@ -330,115 +321,17 @@
             box-shadow: 0 4px 12px var(--shadow-color);
         }
 
-        /* Affiliate Box Styles */
-        .affiliate-box {
-            position: fixed;
-            bottom: 120px; /* Adjusted for better positioning */
-            right: 20px;
-            width: var(--affiliate-box-width);
-            background: var(--affiliate-box-bg);
-            border: 1px solid var(--affiliate-box-border);
-            border-radius: var(--affiliate-box-border-radius);
-            padding: var(--affiliate-box-padding);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            z-index: var(--affiliate-box-z-index);
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.5s ease, transform 0.5s ease;
-            max-width: 90%;
-        }
-
-        .affiliate-box.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .affiliate-box img {
-            width: 50px; /* Reduced image size */
-            height: 50px; /* Maintained aspect ratio */
-            object-fit: contain;
-            border-radius: 4px;
-        }
-
-        .affiliate-details {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .affiliate-title {
-            font-size: 0.95rem;
-            font-weight: 600;
-            color: var(--text-color);
-            margin: 0 0 0.5rem 0;
-        }
-
-        .affiliate-button {
-            background: var(--affiliate-button-bg);
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            font-size: 0.9rem;
-            font-weight: 500;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background 0.3s ease;
-            text-decoration: none;
-            display: inline-block;
-            text-align: center;
-        }
-
-        .affiliate-button:hover {
-            background: var(--affiliate-button-hover-bg);
-        }
-
-        /* Responsive adjustments for Affiliate Box */
         @media (max-width: 768px) {
-            .affiliate-box {
-                width: 90%;
-                right: 5%;
-                bottom: 140px;
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.8rem;
+            .bottom-status-container {
+                padding-bottom: calc(env(safe-area-inset-bottom) + 1rem);
+            }
+            
+            .bottom-container {
+                padding-bottom: calc(env(safe-area-inset-bottom) + 5rem);
             }
 
-            .affiliate-box img {
-                width: 45px;
-                height: 45px;
-            }
-
-            .affiliate-title {
-                font-size: 0.9rem;
-            }
-
-            .affiliate-button {
-                padding: 0.4rem 0.8rem;
-                font-size: 0.8rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .affiliate-box {
-                bottom: 160px;
-            }
-
-            .affiliate-box img {
-                width: 40px;
-                height: 40px;
-            }
-
-            .affiliate-title {
-                font-size: 0.85rem;
-            }
-
-            .affiliate-button {
-                padding: 0.3rem 0.6rem;
-                font-size: 0.75rem;
+            .main-button {
+                padding: 1rem 2rem;
             }
         }
     </style>
@@ -446,22 +339,22 @@
 </head>
 <body>
     <div class="top-bar">
-        <a href="/" class="back-button" aria-label="Go Back">
+        <a href="/" class="back-button">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M19 12H5M12 19l-7-7 7-7"/>
             </svg>
         </a>
-        <div class="character-name">Emma</div> <!-- Updated Character Name -->
+        <div class="character-name">Emma</div>
     </div>
 
     <div class="main-container">
         <div class="video-wrapper">
             <div class="background image"></div>
             <video class="background video" id="idleVideo" loop muted playsinline disablePictureInPicture>
-                <source src="assets/bella-idle.mp4" type="video/mp4"> <!-- Updated Idle Video -->
+                <source src="assets/bella-idle.mp4" type="video/mp4">
             </video>
             <video class="background video" id="speakingVideo" loop muted playsinline disablePictureInPicture>
-                <source src="assets/bella-talk.mp4" type="video/mp4"> <!-- Updated Speaking Video -->
+                <source src="assets/bella-talk.mp4" type="video/mp4">
             </video>
         </div>
     </div>
@@ -472,7 +365,7 @@
         <div class="controls-wrapper">
             <div class="controls-container">
                 <button id="startButton" class="main-button">Start Conversation</button>
-                <button class="share-button" onclick="shareCharacter()" aria-label="Share">
+                <button class="share-button" onclick="shareCharacter()">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
                         <polyline points="16 6 12 2 8 6"/>
@@ -493,24 +386,19 @@
         </div>
     </div>
 
-    <!-- Affiliate Product Suggestion Box -->
-    <div id="affiliateBox" class="affiliate-box" aria-labelledby="affiliateTitle" role="region">
-        <img src="https://via.placeholder.com/60" alt="Product Image" id="affiliateImage">
-        <div class="affiliate-details">
-            <h4 class="affiliate-title" id="affiliateTitle">Product Title</h4>
-            <a href="#" target="_blank" class="affiliate-button" id="affiliateButton">Buy Now</a>
-        </div>
-    </div>
-    <!-- End of Affiliate Product Suggestion Box -->
+    <!-- Add the affiliate root div here -->
+    <div id="affiliate-root"></div>
 
     <script type="module">
         import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
+        import { createRoot } from 'https://cdn.skypack.dev/react-dom';
+        import AffiliateBox from './AffiliateBox.js';
 
         let conversation = null;
         let currentMode = 'idle';
         let videosLoaded = { idle: false, speaking: false };
         let progressInterval;
-        const CONVERSATION_TIME = 300; // 5 minutes in seconds
+        const CONVERSATION_TIME = 300;
         let currentProgress = 0;
 
         const backgroundImage = document.querySelector('.background.image');
@@ -518,40 +406,6 @@
         const speakingVideo = document.getElementById('speakingVideo');
         const startButton = document.getElementById('startButton');
 
-        // Affiliate Box Elements
-        const affiliateBox = document.getElementById('affiliateBox');
-        const affiliateImage = document.getElementById('affiliateImage');
-        const affiliateTitle = document.getElementById('affiliateTitle');
-        const affiliateButton = document.getElementById('affiliateButton');
-
-        // Configuration for Affiliate Product
-        const affiliateProduct = {
-            image: 'https://images-na.ssl-images-amazon.com/images/I/61o8xC2rjjL._AC_SL1001_.jpg', // Replace with your product image URL
-            title: 'Wireless Bluetooth Headphones', // Replace with your product title
-            link: 'https://www.amazon.com/dp/YOUR-AFFILIATE-LINK', // Replace with your affiliate link
-            buttonText: 'Buy Now'
-        };
-
-        // Function to populate affiliate product details
-        const populateAffiliateBox = () => {
-            affiliateImage.src = affiliateProduct.image;
-            affiliateImage.alt = affiliateProduct.title;
-            affiliateTitle.textContent = affiliateProduct.title;
-            affiliateButton.href = affiliateProduct.link;
-            affiliateButton.textContent = affiliateProduct.buttonText;
-        };
-
-        // Function to show affiliate box
-        const showAffiliateBox = () => {
-            affiliateBox.classList.add('visible');
-        };
-
-        // Function to hide affiliate box (optional)
-        const hideAffiliateBox = () => {
-            affiliateBox.classList.remove('visible');
-        };
-
-        // Create floating particles
         const createParticles = () => {
             const container = document.querySelector('.main-container');
             for (let i = 0; i < 20; i++) {
@@ -559,7 +413,7 @@
                 particle.className = 'particle';
                 particle.style.width = Math.random() * 10 + 'px';
                 particle.style.height = particle.style.width;
-                particle.style.background = `rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, 0.5)`;
+                particle.style.background = `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.5)`;
                 particle.style.borderRadius = '50%';
                 particle.style.position = 'absolute';
                 restartParticle(particle);
@@ -579,11 +433,10 @@
             particle.style.setProperty('--ty', (endY - startY) + 'px');
             
             particle.style.animation = 'none';
-            particle.offsetHeight; // Force reflow
+            particle.offsetHeight;
             particle.style.animation = `float ${Math.random() * 2 + 3}s linear infinite`;
         };
 
-        // Add sparkle effect
         const addSparkleEffect = (element) => {
             const sparkle = document.createElement('div');
             sparkle.className = 'sparkle';
@@ -597,7 +450,6 @@
             sparkle.addEventListener('animationend', () => sparkle.remove());
         };
 
-        // Preload videos
         const preloadVideos = () => {
             idleVideo.load();
             idleVideo.addEventListener('loadeddata', () => {
@@ -610,7 +462,6 @@
             });
         };
 
-        // Progress bar functions
         const startProgress = () => {
             const progressBar = document.getElementById('progressBar');
             
@@ -665,7 +516,7 @@
                 `;
 
                 conversation = await Conversation.startSession({
-                    agentId: 'vR9GImTMzUmbD5STlLcG', // Updated Agent ID
+                    agentId: 'vR9GImTMzUmbD5STlLcG',
                     onModeChange: (mode) => {
                         updateBackground(mode.mode);
                     },
@@ -673,29 +524,20 @@
                         updateBackground('listening');
                         startProgress();
                         createParticles();
-                        // Start affiliate timer
-                        setTimeout(showAffiliateBox, 15000); // 15 seconds
                     },
                     onDisconnect: () => {
                         updateBackground('idle');
                         startButton.classList.remove('active');
-                        startButton.innerHTML = 'Start Conversation';
-                        hideAffiliateBox(); // Hide affiliate box when disconnected
+                        startButton.textContent = 'Start Conversation';
                     },
                     onError: (error) => {
                         console.error('Conversation error:', error);
                         updateBackground('idle');
                         startButton.classList.remove('active');
-                        startButton.innerHTML = 'Start Conversation';
-                        resetProgress();
-                        hideAffiliateBox(); // Hide affiliate box on error
+                        startButton.textContent = 'Start Conversation';
                     }
                 });
 
-                // Populate affiliate box with product details
-                populateAffiliateBox();
-
-                // Add sparkle effect to button periodically
                 const sparkleInterval = setInterval(() => {
                     if (conversation) {
                         addSparkleEffect(startButton);
@@ -708,7 +550,7 @@
                 console.error('Error starting conversation:', error);
                 updateBackground('idle');
                 startButton.classList.remove('active');
-                startButton.innerHTML = 'Start Conversation';
+                startButton.textContent = 'Start Conversation';
                 resetProgress();
             }
         };
@@ -723,13 +565,11 @@
                     conversation = null;
                     updateBackground('idle');
                     startButton.classList.remove('active');
-                    startButton.innerHTML = 'Start Conversation';
-                    hideAffiliateBox(); // Hide affiliate box when conversation ends
+                    startButton.textContent = 'Start Conversation';
                 }
             }
         };
 
-        // Confetti effect function
         const triggerConfetti = () => {
             const count = 200;
             const defaults = {
@@ -780,16 +620,19 @@
             }
         });
 
-        // Share function
         window.shareCharacter = () => {
             if (navigator.share) {
                 navigator.share({
-                    title: 'Chat with Emma on Talkidz', // Updated Share Text
+                    title: 'Chat with Emma on Talkidz',
                     text: 'Come chat with Emma, your new Encouraging Counselor!',
                     url: window.location.href
                 }).catch(console.error);
             }
         };
+
+        // Initialize affiliate box
+        const affiliateRoot = createRoot(document.getElementById('affiliate-root'));
+        affiliateRoot.render(<AffiliateBox />);
 
         // Initialize with idle state
         preloadVideos();
