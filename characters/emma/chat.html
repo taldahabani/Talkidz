@@ -384,9 +384,10 @@
         </div>
         <div class="progress-container">
             <div id="progressBar" class="progress-bar"></div>
-                <div id="affiliate-root"></div>
         </div>
     </div>
+
+    <div id="affiliate-root"></div>
 
     <script type="module">
         import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
@@ -643,7 +644,6 @@
         // Initialize affiliate box
     const affiliateRoot = createRoot(document.getElementById('affiliate-root'));
     affiliateRoot.render(<AffiliateBox />);
-</script>
     </script>
 </body>
 </html>
