@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Emma - Talkidz</title>
+    <title>Emma - Talkidz</title> <!-- Updated Title -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" rel="stylesheet">
     <style>
         :root {
@@ -128,12 +128,13 @@
             width: 100%;
             height: 100%;
             object-fit: contain;
-            background-image: url('assets/emma.png');
+            background-image: url('assets/bella.jpg'); /* Updated Background Image */
             background-size: contain;
             background-position: center;
             background-repeat: no-repeat;
         }
 
+        /* Continuing the style tag */
         .bottom-container {
             position: fixed;
             bottom: 0;
@@ -344,17 +345,17 @@
                 <path d="M19 12H5M12 19l-7-7 7-7"/>
             </svg>
         </a>
-        <div class="character-name">Emma</div>
+        <div class="character-name">Emma</div> <!-- Updated Character Name -->
     </div>
 
     <div class="main-container">
         <div class="video-wrapper">
             <div class="background image"></div>
             <video class="background video" id="idleVideo" loop muted playsinline disablePictureInPicture>
-                <source src="assets/bella-idle.mp4" type="video/mp4">
+                <source src="assets/bella-idle.mp4" type="video/mp4"> <!-- Updated Idle Video -->
             </video>
             <video class="background video" id="speakingVideo" loop muted playsinline disablePictureInPicture>
-                <source src="assets/bella-talk.mp4" type="video/mp4">
+                <source src="assets/bella-talk.mp4" type="video/mp4"> <!-- Updated Speaking Video -->
             </video>
         </div>
     </div>
@@ -383,10 +384,9 @@
         </div>
         <div class="progress-container">
             <div id="progressBar" class="progress-bar"></div>
+                <div id="affiliate-root"></div>
         </div>
     </div>
-
-    <div id="affiliate-root"></div>
 
     <script type="module">
         import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
@@ -397,7 +397,7 @@
         let currentMode = 'idle';
         let videosLoaded = { idle: false, speaking: false };
         let progressInterval;
-        const CONVERSATION_TIME = 300;
+        const CONVERSATION_TIME = 300; // 5 minutes in seconds
         let currentProgress = 0;
 
         const backgroundImage = document.querySelector('.background.image');
@@ -405,6 +405,7 @@
         const speakingVideo = document.getElementById('speakingVideo');
         const startButton = document.getElementById('startButton');
 
+        // Create floating particles
         const createParticles = () => {
             const container = document.querySelector('.main-container');
             for (let i = 0; i < 20; i++) {
@@ -432,10 +433,11 @@
             particle.style.setProperty('--ty', (endY - startY) + 'px');
             
             particle.style.animation = 'none';
-            particle.offsetHeight;
+            particle.offsetHeight; // Force reflow
             particle.style.animation = `float ${Math.random() * 2 + 3}s linear infinite`;
         };
 
+        // Add sparkle effect
         const addSparkleEffect = (element) => {
             const sparkle = document.createElement('div');
             sparkle.className = 'sparkle';
@@ -449,6 +451,7 @@
             sparkle.addEventListener('animationend', () => sparkle.remove());
         };
 
+        // Preload videos
         const preloadVideos = () => {
             idleVideo.load();
             idleVideo.addEventListener('loadeddata', () => {
@@ -461,6 +464,7 @@
             });
         };
 
+        // Progress bar functions
         const startProgress = () => {
             const progressBar = document.getElementById('progressBar');
             
@@ -515,7 +519,7 @@
                 `;
 
                 conversation = await Conversation.startSession({
-                    agentId: 'vR9GImTMzUmbD5STlLcG',
+                    agentId: 'vR9GImTMzUmbD5STlLcG', // Updated Agent ID
                     onModeChange: (mode) => {
                         updateBackground(mode.mode);
                     },
@@ -537,6 +541,7 @@
                     }
                 });
 
+                // Add sparkle effect to button periodically
                 const sparkleInterval = setInterval(() => {
                     if (conversation) {
                         addSparkleEffect(startButton);
@@ -569,6 +574,7 @@
             }
         };
 
+        // Confetti effect function
         const triggerConfetti = () => {
             const count = 200;
             const defaults = {
@@ -619,23 +625,25 @@
             }
         });
 
+        // Share function
         window.shareCharacter = () => {
             if (navigator.share) {
                 navigator.share({
-                    title: 'Chat with Emma on Talkidz',
+                    title: 'Chat with Emma on Talkidz', // Updated Share Text
                     text: 'Come chat with Emma, your new Encouraging Counselor!',
                     url: window.location.href
                 }).catch(console.error);
             }
         };
 
-        // Initialize affiliate box
-        const affiliateRoot = createRoot(document.getElementById('affiliate-root'));
-        affiliateRoot.render(<AffiliateBox />);
-
         // Initialize with idle state
         preloadVideos();
         updateBackground('idle');
+
+        // Initialize affiliate box
+    const affiliateRoot = createRoot(document.getElementById('affiliate-root'));
+    affiliateRoot.render(<AffiliateBox />);
+</script>
     </script>
 </body>
 </html>
