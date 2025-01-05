@@ -13,6 +13,12 @@
             --secondary-background: #F5F5F5;
             --accent-color: #6C5CE7;
             --shadow-color: rgba(0, 0, 0, 0.08);
+            --affiliate-box-bg: rgba(245, 245, 245, 0.95);
+            --affiliate-box-border: #ddd;
+            --affiliate-box-border-radius: 12px;
+            --affiliate-box-padding: 1rem;
+            --affiliate-box-width: 300px;
+            --affiliate-box-z-index: 1000;
         }
 
         body, html {
@@ -322,17 +328,109 @@
             box-shadow: 0 4px 12px var(--shadow-color);
         }
 
+        /* Affiliate Box Styles */
+        .affiliate-box {
+            position: fixed;
+            bottom: 100px; /* Adjust as needed to position above other elements */
+            right: 20px;
+            width: var(--affiliate-box-width);
+            background: var(--affiliate-box-bg);
+            border: 1px solid var(--affiliate-box-border);
+            border-radius: var(--affiliate-box-border-radius);
+            padding: var(--affiliate-box-padding);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            z-index: var(--affiliate-box-z-index);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .affiliate-box.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .affiliate-box img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .affiliate-details {
+            flex: 1;
+        }
+
+        .affiliate-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin: 0 0 0.5rem 0;
+        }
+
+        .affiliate-button {
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .affiliate-button:hover {
+            background: darken(var(--accent-color), 10%);
+        }
+
+        /* Responsive adjustments for Affiliate Box */
         @media (max-width: 768px) {
-            .bottom-status-container {
-                padding-bottom: calc(env(safe-area-inset-bottom) + 1rem);
-            }
-            
-            .bottom-container {
-                padding-bottom: calc(env(safe-area-inset-bottom) + 5rem);
+            .affiliate-box {
+                width: 90%;
+                right: 5%;
+                bottom: 120px;
             }
 
-            .main-button {
-                padding: 1rem 2rem;
+            .affiliate-box img {
+                width: 50px;
+                height: 50px;
+            }
+
+            .affiliate-title {
+                font-size: 0.9rem;
+            }
+
+            .affiliate-button {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.8rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .affiliate-box {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .affiliate-box img {
+                width: 100%;
+                height: auto;
+            }
+
+            .affiliate-details {
+                width: 100%;
+            }
+
+            .affiliate-button {
+                width: 100%;
+                text-align: center;
             }
         }
     </style>
@@ -387,6 +485,16 @@
         </div>
     </div>
 
+    <!-- Affiliate Product Suggestion Box -->
+    <div id="affiliateBox" class="affiliate-box">
+        <img src="https://via.placeholder.com/60" alt="Product Image" id="affiliateImage">
+        <div class="affiliate-details">
+            <h4 class="affiliate-title" id="affiliateTitle">Product Title</h4>
+            <a href="#" target="_blank" class="affiliate-button" id="affiliateButton">Buy Now</a>
+        </div>
+    </div>
+    <!-- End of Affiliate Product Suggestion Box -->
+
     <script type="module">
         import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
 
@@ -401,6 +509,39 @@
         const idleVideo = document.getElementById('idleVideo');
         const speakingVideo = document.getElementById('speakingVideo');
         const startButton = document.getElementById('startButton');
+
+        // Affiliate Box Elements
+        const affiliateBox = document.getElementById('affiliateBox');
+        const affiliateImage = document.getElementById('affiliateImage');
+        const affiliateTitle = document.getElementById('affiliateTitle');
+        const affiliateButton = document.getElementById('affiliateButton');
+
+        // Configuration for Affiliate Product
+        const affiliateProduct = {
+            image: 'https://via.placeholder.com/60', // Replace with your product image URL
+            title: 'Awesome Product', // Replace with your product title
+            link: 'https://www.amazon.com/dp/your-affiliate-link', // Replace with your affiliate link
+            buttonText: 'Buy Now'
+        };
+
+        // Function to populate affiliate product details
+        const populateAffiliateBox = () => {
+            affiliateImage.src = affiliateProduct.image;
+            affiliateImage.alt = affiliateProduct.title;
+            affiliateTitle.textContent = affiliateProduct.title;
+            affiliateButton.href = affiliateProduct.link;
+            affiliateButton.textContent = affiliateProduct.buttonText;
+        };
+
+        // Function to show affiliate box
+        const showAffiliateBox = () => {
+            affiliateBox.classList.add('visible');
+        };
+
+        // Function to hide affiliate box (optional)
+        const hideAffiliateBox = () => {
+            affiliateBox.classList.remove('visible');
+        };
 
         // Create floating particles
         const createParticles = () => {
@@ -524,19 +665,27 @@
                         updateBackground('listening');
                         startProgress();
                         createParticles();
+                        // Start affiliate timer
+                        setTimeout(showAffiliateBox, 15000); // 15 seconds
                     },
                     onDisconnect: () => {
                         updateBackground('idle');
                         startButton.classList.remove('active');
                         startButton.textContent = 'Start Conversation';
+                        hideAffiliateBox(); // Hide affiliate box when disconnected
                     },
                     onError: (error) => {
                         console.error('Conversation error:', error);
                         updateBackground('idle');
                         startButton.classList.remove('active');
                         startButton.textContent = 'Start Conversation';
+                        resetProgress();
+                        hideAffiliateBox(); // Hide affiliate box on error
                     }
                 });
+
+                // Populate affiliate box with product details
+                populateAffiliateBox();
 
                 // Add sparkle effect to button periodically
                 const sparkleInterval = setInterval(() => {
@@ -567,6 +716,7 @@
                     updateBackground('idle');
                     startButton.classList.remove('active');
                     startButton.textContent = 'Start Conversation';
+                    hideAffiliateBox(); // Hide affiliate box when conversation ends
                 }
             }
         };
