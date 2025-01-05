@@ -13,12 +13,14 @@
             --secondary-background: #F5F5F5;
             --accent-color: #6C5CE7;
             --shadow-color: rgba(0, 0, 0, 0.08);
-            --affiliate-box-bg: rgba(245, 245, 245, 0.95);
+            --affiliate-box-bg: #f9f9f9;
             --affiliate-box-border: #ddd;
-            --affiliate-box-border-radius: 12px;
+            --affiliate-box-border-radius: 8px;
             --affiliate-box-padding: 1rem;
-            --affiliate-box-width: 300px;
+            --affiliate-box-width: 320px;
             --affiliate-box-z-index: 1000;
+            --affiliate-button-bg: #FF9900; /* Amazon-like button color */
+            --affiliate-button-hover-bg: #e68a00;
         }
 
         body, html {
@@ -331,7 +333,7 @@
         /* Affiliate Box Styles */
         .affiliate-box {
             position: fixed;
-            bottom: 100px; /* Adjust as needed to position above other elements */
+            bottom: 120px; /* Adjusted for better positioning */
             right: 20px;
             width: var(--affiliate-box-width);
             background: var(--affiliate-box-bg);
@@ -346,6 +348,7 @@
             opacity: 0;
             transform: translateY(20px);
             transition: opacity 0.5s ease, transform 0.5s ease;
+            max-width: 90%;
         }
 
         .affiliate-box.visible {
@@ -354,39 +357,43 @@
         }
 
         .affiliate-box img {
-            width: 60px;
-            height: 60px;
-            object-fit: cover;
-            border-radius: 8px;
+            width: 50px; /* Reduced image size */
+            height: 50px; /* Maintained aspect ratio */
+            object-fit: contain;
+            border-radius: 4px;
         }
 
         .affiliate-details {
             flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         .affiliate-title {
-            font-size: 1rem;
+            font-size: 0.95rem;
             font-weight: 600;
             color: var(--text-color);
             margin: 0 0 0.5rem 0;
         }
 
         .affiliate-button {
-            background: var(--accent-color);
+            background: var(--affiliate-button-bg);
             color: white;
             border: none;
             padding: 0.5rem 1rem;
             font-size: 0.9rem;
             font-weight: 500;
-            border-radius: 8px;
+            border-radius: 4px;
             cursor: pointer;
             transition: background 0.3s ease;
             text-decoration: none;
             display: inline-block;
+            text-align: center;
         }
 
         .affiliate-button:hover {
-            background: darken(var(--accent-color), 10%);
+            background: var(--affiliate-button-hover-bg);
         }
 
         /* Responsive adjustments for Affiliate Box */
@@ -394,12 +401,15 @@
             .affiliate-box {
                 width: 90%;
                 right: 5%;
-                bottom: 120px;
+                bottom: 140px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.8rem;
             }
 
             .affiliate-box img {
-                width: 50px;
-                height: 50px;
+                width: 45px;
+                height: 45px;
             }
 
             .affiliate-title {
@@ -414,23 +424,21 @@
 
         @media (max-width: 480px) {
             .affiliate-box {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.5rem;
+                bottom: 160px;
             }
 
             .affiliate-box img {
-                width: 100%;
-                height: auto;
+                width: 40px;
+                height: 40px;
             }
 
-            .affiliate-details {
-                width: 100%;
+            .affiliate-title {
+                font-size: 0.85rem;
             }
 
             .affiliate-button {
-                width: 100%;
-                text-align: center;
+                padding: 0.3rem 0.6rem;
+                font-size: 0.75rem;
             }
         }
     </style>
@@ -438,7 +446,7 @@
 </head>
 <body>
     <div class="top-bar">
-        <a href="/" class="back-button">
+        <a href="/" class="back-button" aria-label="Go Back">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M19 12H5M12 19l-7-7 7-7"/>
             </svg>
@@ -464,7 +472,7 @@
         <div class="controls-wrapper">
             <div class="controls-container">
                 <button id="startButton" class="main-button">Start Conversation</button>
-                <button class="share-button" onclick="shareCharacter()">
+                <button class="share-button" onclick="shareCharacter()" aria-label="Share">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
                         <polyline points="16 6 12 2 8 6"/>
@@ -486,7 +494,7 @@
     </div>
 
     <!-- Affiliate Product Suggestion Box -->
-    <div id="affiliateBox" class="affiliate-box">
+    <div id="affiliateBox" class="affiliate-box" aria-labelledby="affiliateTitle" role="region">
         <img src="https://via.placeholder.com/60" alt="Product Image" id="affiliateImage">
         <div class="affiliate-details">
             <h4 class="affiliate-title" id="affiliateTitle">Product Title</h4>
@@ -518,9 +526,9 @@
 
         // Configuration for Affiliate Product
         const affiliateProduct = {
-            image: 'https://via.placeholder.com/60', // Replace with your product image URL
-            title: 'Awesome Product', // Replace with your product title
-            link: 'https://www.amazon.com/Barbie-Playset-Puppy-Accessories-Floats/dp/B08HFVTF4M?ref_=ast_sto_dp', // Replace with your affiliate link
+            image: 'https://images-na.ssl-images-amazon.com/images/I/61o8xC2rjjL._AC_SL1001_.jpg', // Replace with your product image URL
+            title: 'Wireless Bluetooth Headphones', // Replace with your product title
+            link: 'https://www.amazon.com/dp/YOUR-AFFILIATE-LINK', // Replace with your affiliate link
             buttonText: 'Buy Now'
         };
 
@@ -551,7 +559,7 @@
                 particle.className = 'particle';
                 particle.style.width = Math.random() * 10 + 'px';
                 particle.style.height = particle.style.width;
-                particle.style.background = `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.5)`;
+                particle.style.background = `rgba(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, 0.5)`;
                 particle.style.borderRadius = '50%';
                 particle.style.position = 'absolute';
                 restartParticle(particle);
@@ -671,14 +679,14 @@
                     onDisconnect: () => {
                         updateBackground('idle');
                         startButton.classList.remove('active');
-                        startButton.textContent = 'Start Conversation';
+                        startButton.innerHTML = 'Start Conversation';
                         hideAffiliateBox(); // Hide affiliate box when disconnected
                     },
                     onError: (error) => {
                         console.error('Conversation error:', error);
                         updateBackground('idle');
                         startButton.classList.remove('active');
-                        startButton.textContent = 'Start Conversation';
+                        startButton.innerHTML = 'Start Conversation';
                         resetProgress();
                         hideAffiliateBox(); // Hide affiliate box on error
                     }
@@ -700,7 +708,7 @@
                 console.error('Error starting conversation:', error);
                 updateBackground('idle');
                 startButton.classList.remove('active');
-                startButton.textContent = 'Start Conversation';
+                startButton.innerHTML = 'Start Conversation';
                 resetProgress();
             }
         };
@@ -715,7 +723,7 @@
                     conversation = null;
                     updateBackground('idle');
                     startButton.classList.remove('active');
-                    startButton.textContent = 'Start Conversation';
+                    startButton.innerHTML = 'Start Conversation';
                     hideAffiliateBox(); // Hide affiliate box when conversation ends
                 }
             }
