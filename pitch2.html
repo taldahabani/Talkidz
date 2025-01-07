@@ -172,22 +172,20 @@
             padding-top: 80px;
             min-height: 100vh;
             position: relative;
+            overflow: hidden; /* Prevent accidental overflow */
         }
 
         .slide {
             min-height: calc(100vh - 80px);
-            display: none;
+            display: none; /* Hide all slides by default */
             padding: 2rem;
             opacity: 0;
             transition: opacity 0.8s ease, transform 0.8s ease;
             transform: translateY(20px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
         }
 
         .slide.active {
-            display: flex;
+            display: flex; /* Show active slide as flex container */
             flex-direction: column;
             justify-content: center;
             align-items: center;
@@ -621,7 +619,7 @@
                     </div>
                 </div>
                 <p style="margin-top: 1.5rem;">
-                    There is a gap for relatable, AI-driven characters that blend entertainment with education.
+                    The market lacks relatable, AI-driven companions for kids.
                 </p>
             </div>
         </div>
@@ -649,7 +647,7 @@
                         <p>Wise Educator</p>
                     </div>
                     <div class="character-card">
-                        <div class="character-image" style="background-image: url('/characters/turtle/assets/turtle.jpg')"></div>
+                        <div class="character-image" style="background-image: url('/characters/robo/assets/eva-icon.jpg')"></div>
                         <h3>Tilly the Turtle</h3>
                         <p>Language Tutor</p>
                     </div>
@@ -747,16 +745,17 @@
         <div class="slide" id="slide-10">
             <div class="slide-content">
                 <h2>Market Opportunity</h2>
-                <p>Edutainment Market Growth & Merchandise Potential</p>
+                <p>Edutainment Market Growth</p>
                 <ul class="feature-list">
                     <li>The edutainment market will grow from $6.3B in 2023 to $14.5B by 2030.</li>
                     <li>Parents of kids aged 4-12 seek safe, educational tools.</li>
-                    <li>Merchandise & Licensing Potential:</li>
-                    <ul>
-                        <li>The global kids' toys and games market exceeds $135B, driven by tech-integrated products.</li>
-                        <li>IP licensing for toys, books, and media is valued at $40B annually.</li>
-                        <li>QR-enabled toys connect physical products to apps, creating unique, engaging experiences for kids.</li>
-                    </ul>
+                    <li>Merchandise & Licensing Potential:
+                        <ul>
+                            <li>The global kids' toys and games market exceeds $135B, driven by tech-integrated products.</li>
+                            <li>IP licensing for toys, books, and media is valued at $40B annually.</li>
+                            <li>QR-enabled toys connect physical products to apps, creating unique, engaging experiences for kids.</li>
+                        </ul>
+                    </li>
                 </ul>
                 <div class="chart-container">
                     <canvas id="marketChart"></canvas>
@@ -776,15 +775,15 @@
                         <h3>Tal Dahabani</h3>
                         <p>Visionary Entrepreneur</p>
                         <p>
-                            <strong>Gaming Success:</strong> Creator of globally downloaded mobile games and early investor in Communix, scaling Poker Face into a social gaming phenomenon.<br><br>
-                            <strong>Food Innovation:</strong> Developed "Shake It," best-selling frozen fruit kits under Baladi, and launched market-leading products like Minute Steak and Carpaccio.<br><br>
-                            <strong>Brand Leader:</strong> As CMO of Baladi, led product development, marketing, and technological innovation, achieving multimillion-dollar sales and brand recognition.<br><br>
-                            <strong>Animation Visionary:</strong> Creator of "Frutiz," an animated series bringing fruit characters to life, merging entertainment with education.<br><br>
-                            <strong>Experience:</strong> Over 14 years of impactful innovations, global market success, and a passion for creating transformative experiences.
+                            Gaming Success: Creator of globally downloaded mobile games and early investor in Communix, scaling Poker Face into a social gaming phenomenon.<br>
+                            Food Innovation: Developed "Shake It," best-selling frozen fruit kits under Baladi, and launched market-leading products like Minute Steak and Carpaccio.<br>
+                            Brand Leader: As CMO of Baladi, led product development, marketing, and technological innovation, achieving multimillion-dollar sales and brand recognition.<br>
+                            Animation Visionary: Creator of "Frutiz," an animated series bringing fruit characters to life, merging entertainment with education.<br>
+                            With over 14 years of experience, Tal's entrepreneurial journey is marked by impactful innovations, global market success, and a passion for creating transformative experiences.
                         </p>
                     </div>
                 </div>
-                <img src="/characters/founder/assets/tal-dahabani.jpg" alt="Tal Dahabani" style="margin-top: 2rem; border-radius: 1rem; box-shadow: 0 4px 12px var(--shadow-color); width: 300px; height: auto;">
+                <img src="/characters/robo/assets/eva-icon.jpg" alt="Tal Dahabani" style="margin-top: 2rem; border-radius: 1rem; box-shadow: 0 4px 12px var(--shadow-color); width: 300px; height: auto;">
             </div>
         </div>
 
@@ -885,7 +884,7 @@
 
         // Slide functionality
         let currentSlideIndex = 1;
-        const totalSlides = 14;
+        const totalSlides = 14; // Updated to match the number of slides
 
         function updateSlideIndicator() {
             document.getElementById('currentSlide').textContent = currentSlideIndex;
@@ -999,7 +998,7 @@
             new Chart(marketingCtx, {
                 type: 'pie',
                 data: {
-                    labels: ['YouTube', 'TikTok', 'Instagram', 'Virtual Influencers', 'QR-Enabled Toys'],
+                    labels: ['YouTube', 'TikTok', 'Instagram', 'Virtual Influencers', 'In-App Virality'],
                     datasets: [{
                         data: [30, 25, 20, 15, 10],
                         backgroundColor: [
@@ -1055,14 +1054,15 @@
             new Chart(monetizationCtx, {
                 type: 'pie',
                 data: {
-                    labels: ['Subscriptions', 'In-App Purchases', 'Merchandise', 'Licensing'],
+                    labels: ['Subscriptions', 'In-App Purchases', 'Licensing', 'Merchandise', 'Content Licensing'],
                     datasets: [{
-                        data: [30, 25, 25, 20],
+                        data: [30, 25, 20, 15, 10],
                         backgroundColor: [
                             '#6C5CE7',
                             '#FF4B6E',
                             '#2D98DA',
-                            '#EAB543'
+                            '#EAB543',
+                            '#6C5CE7'
                         ],
                         hoverOffset: 4
                     }]
