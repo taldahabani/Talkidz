@@ -17,6 +17,7 @@
             --shadow-color: rgba(0, 0, 0, 0.08);
             --spacing-unit: 1rem;
             --font-family: 'Montserrat', sans-serif;
+            --gradient-title: linear-gradient(45deg, var(--primary-color), var(--accent-color));
         }
 
         * {
@@ -97,7 +98,7 @@
         .splash-logo-text {
             font-size: 3rem;
             font-weight: 800;
-            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            background: var(--gradient-title);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -149,7 +150,7 @@
         .logo {
             font-size: 1.8rem;
             font-weight: 800;
-            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            background: var(--gradient-title);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
@@ -180,6 +181,9 @@
             opacity: 0;
             transition: opacity 0.8s ease, transform 0.8s ease;
             transform: translateY(20px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .slide.active {
@@ -203,13 +207,19 @@
             font-size: 2.5rem;
             font-weight: 700;
             margin-bottom: 1rem;
-            color: var(--primary-color);
+            background: var(--gradient-title);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
 
         .slide-content p {
             font-size: 1.1rem;
             color: #444;
             margin-bottom: 1.5rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         /* Buttons and Controls */
@@ -406,6 +416,10 @@
             .slide-content p {
                 font-size: 1rem;
             }
+
+            .cta-buttons {
+                flex-direction: column;
+            }
         }
 
         @media (max-width: 480px) {
@@ -430,6 +444,9 @@
             margin-top: 1rem;
             list-style: none;
             padding-left: 0;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         .feature-list li::before {
@@ -515,6 +532,7 @@
         .calculator-result {
             font-weight: 600;
             margin-top: 1rem;
+            text-align: center;
         }
     </style>
 </head>
@@ -555,12 +573,10 @@
         <!-- 1. Welcome Section (Hero Slide) -->
         <div class="slide active" id="slide-1">
             <div class="slide-content">
-                <h1 class="splash-logo-text">Playbox Presents: Talkidz</h1>
-                <p class="splash-byline">
-                    AI-Powered Playtime. Endless Discovery.
-                </p>
-                <p style="margin-top: 1rem;">
-                    Shaping the future of kids' entertainment with safe, interactive AI companions.
+                <h1 class="splash-logo-text">AI-Powered Playtime,<br>Endless Discovery</h1>
+                <p class="splash-byline" style="margin-top: 1rem;">
+                    Revolutionizing kids' entertainment with interactive AI characters<br>
+                    that educate, entertain, and inspire.
                 </p>
                 <div class="cta-buttons">
                     <a href="#" class="cta-button" onclick="nextSlide()">Explore Our Vision</a>
@@ -572,9 +588,7 @@
         <div class="slide" id="slide-2">
             <div class="slide-content">
                 <h2>The Vision</h2>
-                <p>
-                    The Next Big IP for Kids’ Entertainment
-                </p>
+                <p>The Next Big IP for Kids’ Entertainment</p>
                 <ul class="feature-list">
                     <li>Build beloved, memorable characters that resonate with kids globally.</li>
                     <li>Expand into merchandise, toys, animations, and series.</li>
@@ -616,9 +630,7 @@
         <div class="slide" id="slide-4">
             <div class="slide-content">
                 <h2>The Solution</h2>
-                <p>
-                    Talkidz: Where Play Meets Purpose
-                </p>
+                <p>Talkidz: Where Play Meets Purpose</p>
                 <ul class="feature-list">
                     <li>Relatable AI Characters: Boost confidence, social skills, and learning.</li>
                     <li>Safe Environment: Age-appropriate, moderated, and parent-approved.</li>
@@ -627,17 +639,17 @@
                 </ul>
                 <div class="character-grid">
                     <div class="character-card">
-                        <div class="character-image" style="background-image: url('https://via.placeholder.com/120')"></div>
+                        <div class="character-image" style="background-image: url('/characters/cat/assets/cat.jpg')"></div>
                         <h3>Noodles the Cat</h3>
                         <p>Funny Companion</p>
                     </div>
                     <div class="character-card">
-                        <div class="character-image" style="background-image: url('https://via.placeholder.com/120')"></div>
+                        <div class="character-image" style="background-image: url('/characters/fox/assets/fox.jpg')"></div>
                         <h3>Clever Fox</h3>
                         <p>Wise Educator</p>
                     </div>
                     <div class="character-card">
-                        <div class="character-image" style="background-image: url('https://via.placeholder.com/120')"></div>
+                        <div class="character-image" style="background-image: url('/characters/robo/assets/eva-icon.jpg')"></div>
                         <h3>Tilly the Turtle</h3>
                         <p>Language Tutor</p>
                     </div>
@@ -645,8 +657,80 @@
             </div>
         </div>
 
-        <!-- 5. Achievements So Far -->
+        <!-- 5. Core Value Proposition + Key Features -->
         <div class="slide" id="slide-5">
+            <div class="slide-content">
+                <h2>Core Value Proposition</h2>
+                <p>Empowering Children Through Interactive and Safe AI Companions</p>
+                <ul class="feature-list">
+                    <li>Personalized Learning Experiences</li>
+                    <li>Enhanced Social Interaction Skills</li>
+                    <li>Safe and Moderated Digital Environment</li>
+                    <li>Engaging and Educational Content</li>
+                </ul>
+                <div class="cta-buttons">
+                    <a href="#" class="cta-button" onclick="nextSlide()">Learn More</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. Launch Strategy -->
+        <div class="slide" id="slide-6">
+            <div class="slide-content">
+                <h2>Launch Strategy</h2>
+                <ul class="feature-list">
+                    <li>Launch Talking Tutti on App Store and Google Play</li>
+                    <li>Introduce Talking Noodles - Funny Companion</li>
+                    <li>Release additional mobile apps to establish a strong presence on app stores</li>
+                </ul>
+                <div class="chart-container">
+                    <canvas id="launchStrategyChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- 7. Marketing Strategy -->
+        <div class="slide" id="slide-7">
+            <div class="slide-content">
+                <h2>Marketing Strategy</h2>
+                <ul class="feature-list">
+                    <li>Leverage social networks: YouTube, TikTok, Instagram</li>
+                    <li>Create virtual influencers to engage with the target audience</li>
+                    <li>Enhance in-app virality by allowing users to record interactions and upload UGC</li>
+                </ul>
+                <div class="chart-container">
+                    <canvas id="marketingStrategyChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- 8. Competitive Advantage -->
+        <div class="slide" id="slide-8">
+            <div class="slide-content">
+                <h2>Competitive Advantage</h2>
+                <ul class="feature-list">
+                    <li>Beautifully crafted characters and compelling stories</li>
+                    <li>Unique combination of physical and digital integration</li>
+                    <li>Strong IP strategy with scalability potential</li>
+                    <li>Expert team with proven success in gaming and AI development</li>
+                </ul>
+                <div class="character-grid">
+                    <div class="character-card">
+                        <div class="character-image" style="background-image: url('/characters/cat/assets/cat.jpg')"></div>
+                        <h3>Beautifully Crafted Characters</h3>
+                        <p>Designed to resonate with children and foster engagement.</p>
+                    </div>
+                    <div class="character-card">
+                        <div class="character-image" style="background-image: url('/characters/fox/assets/fox.jpg')"></div>
+                        <h3>Compelling Stories</h3>
+                        <p>Stories that educate, entertain, and inspire creativity.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 9. Achievements So Far -->
+        <div class="slide" id="slide-9">
             <div class="slide-content">
                 <h2>Achievements So Far</h2>
                 <ul class="feature-list">
@@ -661,8 +745,8 @@
             </div>
         </div>
 
-        <!-- 6. Monetization Strategy -->
-        <div class="slide" id="slide-6">
+        <!-- 10. Monetization Strategy -->
+        <div class="slide" id="slide-10">
             <div class="slide-content">
                 <h2>Monetization Strategy</h2>
                 <ul class="feature-list">
@@ -678,13 +762,11 @@
             </div>
         </div>
 
-        <!-- 7. Market Opportunity -->
-        <div class="slide" id="slide-7">
+        <!-- 11. Market Opportunity -->
+        <div class="slide" id="slide-11">
             <div class="slide-content">
                 <h2>Market Opportunity</h2>
-                <p>
-                    Tapping Into a $14.5 Billion Opportunity
-                </p>
+                <p>Tapping Into a $14.5 Billion Opportunity</p>
                 <ul class="feature-list">
                     <li>Global Edutainment Market: $6.3B in 2023, growing to $14.5B by 2030.</li>
                     <li>Target Audience: Parents of kids aged 3–8, seeking safe, educational tools.</li>
@@ -705,8 +787,8 @@
             </div>
         </div>
 
-        <!-- 8. The Founder -->
-        <div class="slide" id="slide-8">
+        <!-- 12. The Founder -->
+        <div class="slide" id="slide-12">
             <div class="slide-content">
                 <h2>The Founder</h2>
                 <div class="character-grid">
@@ -723,12 +805,12 @@
                     </div>
                     <!-- Add more team members if needed -->
                 </div>
-                <img src="https://via.placeholder.com/300x200" alt="Tal Dahabani" style="margin-top: 2rem; border-radius: 1rem; box-shadow: 0 4px 12px var(--shadow-color);">
+                <img src="/characters/robo/assets/eva-icon.jpg" alt="Tal Dahabani" style="margin-top: 2rem; border-radius: 1rem; box-shadow: 0 4px 12px var(--shadow-color); width: 300px; height: auto;">
             </div>
         </div>
 
-        <!-- 9. Funding Ask -->
-        <div class="slide" id="slide-9">
+        <!-- 13. Funding Ask -->
+        <div class="slide" id="slide-13">
             <div class="slide-content">
                 <h2>Funding Ask</h2>
                 <ul class="feature-list">
@@ -745,8 +827,8 @@
             </div>
         </div>
 
-        <!-- 10. The Future Vision -->
-        <div class="slide" id="slide-10">
+        <!-- 14. The Future Vision -->
+        <div class="slide" id="slide-14">
             <div class="slide-content">
                 <h2>The Future Vision</h2>
                 <ul class="feature-list">
@@ -762,8 +844,8 @@
             </div>
         </div>
 
-        <!-- 11. Call to Action -->
-        <div class="slide" id="slide-11">
+        <!-- 15. Call to Action -->
+        <div class="slide" id="slide-15">
             <div class="slide-content">
                 <h2>Join Us in Building the Future of Kids' Entertainment</h2>
                 <div class="cta-buttons">
@@ -782,7 +864,7 @@
             </svg>
         </button>
         <div class="slide-indicator">
-            <span id="currentSlide">1</span> / <span id="totalSlides">11</span>
+            <span id="currentSlide">1</span> / <span id="totalSlides">15</span>
         </div>
         <button class="nav-button" id="nextButton" onclick="nextSlide()">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -826,7 +908,7 @@
 
         // Slide functionality
         let currentSlideIndex = 1;
-        const totalSlides = 11;
+        const totalSlides = 15;
 
         function updateSlideIndicator() {
             document.getElementById('currentSlide').textContent = currentSlideIndex;
@@ -868,33 +950,6 @@
 
         // Initialize charts
         function initializeCharts() {
-            // Market Chart
-            const marketCtx = document.getElementById('marketChart').getContext('2d');
-            new Chart(marketCtx, {
-                type: 'bar',
-                data: {
-                    labels: ['2023', '2024', '2025', '2026', '2027', '2028', '2029', '2030'],
-                    datasets: [{
-                        label: 'Global Edutainment Market Size (B USD)',
-                        data: [6.3, 7.0, 8.0, 9.5, 11.0, 12.5, 13.5, 14.5],
-                        backgroundColor: 'rgba(108, 92, 231, 0.6)',
-                        borderColor: 'rgba(108, 92, 231, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: { enabled: true }
-                    },
-                    scales: {
-                        y: { beginAtZero: true }
-                    }
-                }
-            });
-
             // Vision Timeline Chart
             const visionCtx = document.getElementById('visionTimelineChart').getContext('2d');
             new Chart(visionCtx, {
@@ -923,6 +978,69 @@
                     scales: {
                         y: { display: false },
                         x: { display: true }
+                    }
+                }
+            });
+
+            // Launch Strategy Chart
+            const launchCtx = document.getElementById('launchStrategyChart').getContext('2d');
+            new Chart(launchCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Talking Tutti', 'Talking Noodles', 'Additional Apps'],
+                    datasets: [{
+                        label: 'Launch Milestones',
+                        data: [1, 2, 3],
+                        backgroundColor: [
+                            '#6C5CE7',
+                            '#FF4B6E',
+                            '#2D98DA'
+                        ],
+                        borderColor: [
+                            '#6C5CE7',
+                            '#FF4B6E',
+                            '#2D98DA'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: { enabled: true }
+                    },
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+
+            // Marketing Strategy Chart
+            const marketingCtx = document.getElementById('marketingStrategyChart').getContext('2d');
+            new Chart(marketingCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['YouTube', 'TikTok', 'Instagram', 'Virtual Influencers', 'In-App Virality'],
+                    datasets: [{
+                        data: [30, 25, 20, 15, 10],
+                        backgroundColor: [
+                            '#6C5CE7',
+                            '#FF4B6E',
+                            '#2D98DA',
+                            '#EAB543',
+                            '#6C5CE7'
+                        ],
+                        hoverOffset: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'right' },
+                        tooltip: { enabled: true }
                     }
                 }
             });
