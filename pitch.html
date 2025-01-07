@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talkidz Pitch Deck - AI-Powered Playtime</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-color: #FF4B6E;
+            --text-color: #1A1A1A;
+            --background-color: #FFFFFF;
+            --secondary-background: #F5F5F5;
+            --accent-color: #6C5CE7;
+            --shadow-color: rgba(0, 0, 0, 0.08);
+            --spacing-unit: 1rem;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        /* Splash Screen */
+        .splash-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--background-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            animation: fadeOut 0.5s ease-in-out 2s forwards;
+        }
+
+        .splash-content {
+            text-align: center;
+            position: relative;
+        }
+
+        .loading-circle {
+            width: 300px;
+            height: 300px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            width: 100%;
+            height: 100%;
+            animation: rotate 2s linear infinite;
+        }
+
+        .circle-1 {
+            border-top-color: var(--primary-color);
+            animation-duration: 1s;
+        }
+
+        .circle-2 {
+            border-right-color: var(--accent-color);
+            animation-duration: 0.9s;
+            width: 80%;
+            height: 80%;
+            top: 10%;
+            left: 10%;
+        }
+
+        .circle-3 {
+            border-bottom-color: var(--primary-color);
+            animation-duration: 0.8s;
+            width: 60%;
+            height: 60%;
+            top: 20%;
+            left: 20%;
+        }
+
+        .splash-logo-text {
+            font-size: 4rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.5s ease-out 0.5s forwards;
+            margin-bottom: 0;
+            line-height: 1.5;
+        }
+
+        .splash-byline {
+            font-size: 1.2rem;
+            color: #666;
+            margin-top: -0.4rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.5s ease-out 0.7s forwards;
+        }
+
+        /* Navigation */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            z-index: 100;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem var(--spacing-unit);
+        }
+
+        .logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-byline {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #666;
+            margin-top: -0.25rem;
+            margin-left: 0.125rem;
+            letter-spacing: 0.5px;
+        }
+
+        /* Slides */
+        .slides-container {
+            padding-top: 80px;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .slide {
+            min-height: calc(100vh - 80px);
+            display: none;
+            padding: 2rem;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .slide.active {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 1;
+        }
+
+        .slide-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        /* Buttons and Controls */
+        .share-button {
+            background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 999px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
+        }
+
+        .share-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(108, 92, 231, 0.3);
+        }
+
+        .nav-controls {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 1rem;
+            z-index: 100;
+        }
+
+        .nav-button {
+            background: white;
+            border: none;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .nav-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .slide-indicator {
+            background: white;
+            padding: 0.5rem 1rem;
+            border-radius: 999px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            font-weight: 500;
+        }
+
+        /* Character Cards */
+        .character-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .character-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 12px var(--shadow-color);
+            transition: all 0.3s ease;
+        }
+
+        .character-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px var(--shadow-color);
+        }
+
+        .character-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            background-size: cover;
+            background-position: center;
+            border: 3px solid white;
+            box-shadow: 0 4px 12px var(--shadow-color);
+        }
+
+        /* Charts */
+        .chart-container {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 4px 12px var(--shadow-color);
+            margin-top: 2rem;
+            height: 400px;
+        }
+
+        /* Animations */
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                visibility: hidden;
+            }
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Particle Background */
+        .particle-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            border-radius: 50%;
+            filter: blur(1px);
+            animation: floatParticle 20s infinite linear;
+            opacity: 0.1;
+        }
+
+        @keyframes floatParticle {
+            0% {
+                transform: translateY(0) translateX(0) rotate(0deg);
+                opacity: 0;
+            }
+            50% {
+                opacity: 0.2;
+            }
+            100% {
+                transform: translateY(-1000px) translateX(100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .splash-logo-text {
+                font-size: 3rem;
+            }
+
+            .slide {
+                padding: 1rem;
+            }
+
+            .character-grid {
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Splash Screen -->
+    <div class="splash-container" id="splashScreen">
+        <div class="splash-content">
+            <div class="loading-circle">
+                <div class="circle circle-1"></div>
+                <div class="circle circle-2"></div>
+                <div class="circle circle-3"></div>
+            </div>
+            <h1 class="splash-logo-text">Talkidz</h1>
+            <p class="splash-byline">by Playbox</p>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <header class="header">
+        <nav class="nav">
+            <div class="logo-container">
+                <a href="/" class="logo">Talkidz</a>
+                <span class="logo-byline">by Playbox</span>
+            </div>
+            <button class="share-button" onclick="downloadPitch()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                Download Deck
+            </button>
+        </nav>
+    </header>
+
+    <!-- Slides Container -->
+    <div class="slides-container">
+        <!-- Hero Slide -->
+        <div class="slide active" id="slide-1">
+            <div class="slide-content">
+                <h1 class="splash-logo-text">AI-Powered Playtime,<br>Endless Discovery</h1>
+                <p class="splash-byline" style="margin-top: 1rem;">
+                    Revolutionizing kids' entertainment with interactive AI characters<br>
+                    that educate, entertain, and inspire.
+                </p>
+            </div>
+        </div>
+
+        <!-- Problem Slide -->
+        <div class="slide" id="slide-2">
+            <div class="slide-content">
+                <h2 class="logo" style="font-size: 2.5rem; margin-bottom: 2rem;">The Problem</h2>
+                <div class="character-grid">
+                    <div class="character-card">
+                        <h3>Parents' Concerns</h3>
+                        <ul style="text-align: left; margin-top: 1rem;">
+                            <li>Lack of peace of mind with unregulated online content</li>
+                            <li>Difficulty finding educational yet engaging content</li>
+                        </ul>
+                    </div>
+                    <div class="character-card">
+                        <h3>Kids' Needs</h3>
+                        <ul style="text-align: left; margin-top: 1rem;">
+                            <li>Safe, engaging, and relatable learning tools</li>
+                            <li>Interactive content that makes learning fun</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Solution Slide -->
+        <div class="slide" id="slide-3">
+            <div class="slide-content">
+                <h2 class="logo" style="font-size: 2.5rem; margin-bottom: 2rem;">Our Solution</h2>
+                <div class="character-grid">
+                    <div class="character-card">
+                        <div class="character-image" style="background-image: url('/characters/cat/assets/cat.jpg')"></div>
+                        <h3>Noodles</h3>
+                        <p>Funny Companion</p>
+                    </div>
+                    <div class="character-card">
+                        <div class="character-image" style="background-image: url('/characters/fox/assets/fox.jpg')"></div>
+                        <h3>Clever Fox</h3>
+                        <p>Wise Instructor</p>
+                    </div>
+                    <div class="character-card">
+                        <div class="character-image" style="background-image: url('/characters/robo/assets/eva-icon.jpg')"></div>
+                        <h3>Eva The Robot</h3>
+                        <p>Calm Educator</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Market Opportunity Slide -->
+        <div class="slide" id="slide-4">
+            <div class="slide-content">
+                <h2 class="logo" style="font-size: 2.5rem; margin-bottom: 2rem;">Market Opportunity</h2>
+                <div class="chart-container">
+                    <canvas id="marketChart"></canvas>
+                </div>
+                <div class="character-grid" style="margin-top: 2rem;">
+                    <div class="character-card">
+                        <h3>$6.3B</h3>
+                        <p>Current Market Size (2023)</p>
+                    </div>
+                    <div class="character-card">
+                        <h3>$14.5B</h3>
+                        <p>Projected by 2030</p>
+                    </div>
+                    <div class="character-card">
+                        <h3>3-8 Years</h3>
+                        <p>Target Age Group</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Team Slide -->
+        <div class="slide" id="slide-5">
+            <div class="slide-content">
+                <h2 class="logo" style="font-size: 2.5rem; margin-bottom: 2rem;">Our Team</h2>
+                <div class="character-grid">
+                    <div class="character-card">
+                        <h3>Tal Dahabani</h3>
+                        <p>Co-Founder & CEO</p>
+                        <p style="margin-top: 1rem;">14 years in gaming, Creator of Poker Face and several multi-million-download apps</p>
+                    </div>
+                    <div class="character-card">
+                        <h3>Or Ben Shimon</h3>
+                        <p>Co-Founder & President</p>
+                        <p style="margin-top: 1rem;">Raised $40M for gaming ventures, Expert in fundraising and partnerships</p>
+                    </div>
+                    <div class="character-card">
+                        <h3>Gal Yosef</h3>
+                        <p>Art Director</p>
+                        <p style="margin-top: 1rem;">Award-winning 3D designer, creating visually stunning characters</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Funding Ask Slide -->
+        <div class="slide" id="slide-6">
+            <div class="slide-content">
+                <h2 class="logo" style="font-size: 2.5rem; margin-bottom: 2rem;">Investment Opportunity</h2>
+                <div class="character-grid">
+                    <div class="character-card">
+                        <h3>$750K - $1M</h3>
+                        <p>Target Raise</p>
+                        <ul style="text-align: left; margin-top: 1rem;">
+                            <li>Up to $500K: $5M cap</li>
+                            <li>$500K-$750K: $6M cap</li>
+                            <li>$750K-$1M: $7M cap</li>
+                        </ul>
+                    </div>
+                    <div class="character-card">
+                        <h3>$150,000</h3>
+                        <p>Committed Funds</p>
+                        <p style="margin-top: 1rem;">From top-tier gaming CEOs</p>
+                    </div>
+                    <div class="character-card">
+                        <h3>$25,000</h3>
+                        <p>Minimum Investment</p>
+                        <button class="share-button" style="margin-top: 1rem;" onclick="contactUs()">Contact Us</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Controls -->
+    <div class="nav-controls">
+        <button class="nav-button" id="prevButton" onclick="prevSlide()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+        </button>
+        <div class="slide-indicator">
+            <span id="currentSlide">1</span> / <span id="totalSlides">6</span>
+        </div>
+        <button class="nav-button" id="nextButton" onclick="nextSlide()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+        </button>
+    </div>
+
+    <script>
+        // Create particle background
+        function createParticles() {
+            const background = document.createElement('div');
+            background.className = 'particle-background';
+            document.body.appendChild(background);
+
+            const particleCount = 50;
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + 'vw';
+                particle.style.top = Math.random() * 100 + 'vh';
+                particle.style.animationDuration = (Math.random() * 20 + 10) + 's';
+                particle.style.animationDelay = (Math.random() * 5) + 's';
+                background.appendChild(particle);
+            }
+        }
+
+        // Slide functionality
+        let currentSlideIndex = 1;
+        const totalSlides = 6;
+
+        function updateSlideIndicator() {
+            document.getElementById('currentSlide').textContent = currentSlideIndex;
+            document.getElementById('totalSlides').textContent = totalSlides;
+            document.getElementById('prevButton').disabled = currentSlideIndex === 1;
+            document.getElementById('nextButton').disabled = currentSlideIndex === totalSlides;
+        }
+
+        function showSlide(index) {
+            const slides = document.querySelectorAll('.slide');
+            slides.forEach(slide => {
+                slide.classList.remove('active');
+            });
+            document.getElementById(`slide-${index}`).classList.add('active');
+            currentSlideIndex = index;
+            updateSlideIndicator();
+        }
+
+        function nextSlide() {
+            if (currentSlideIndex < totalSlides) {
+                showSlide(currentSlideIndex + 1);
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlideIndex > 1) {
+                showSlide(currentSlideIndex - 1);
+            }
+        }
+
+        function downloadPitch() {
+            // Implement download functionality
+            alert('Download functionality to be implemented');
+        }
+
+        function contactUs() {
+            window.location.href = 'mailto:invest@talkidz.com';
+        }
+
+        // Initialize market chart
+        function initializeChart() {
+            const ctx = document.getElementById('marketChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['2023', '2024', '2025', '2026', '2027', '2028', '2029', '2030'],
+                    datasets: [{
+                        label: 'Market Size (Billions USD)',
+                        data: [6.3, 7.5, 8.8, 10.2, 11.5, 12.8, 13.6, 14.5],
+                        borderColor: '#6C5CE7',
+                        backgroundColor: 'rgba(108, 92, 231, 0.1)',
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        }
+                    }
+                }
+            });
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            createParticles();
+            setTimeout(() => {
+                document.getElementById('splashScreen').style.display = 'none';
+                initializeChart();
+            }, 2500);
+            updateSlideIndicator();
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'Space') {
+                nextSlide();
+            } else if (e.key === 'ArrowLeft') {
+                prevSlide();
+            }
+        });
+    </script>
+</body>
+</html>
