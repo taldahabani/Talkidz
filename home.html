@@ -6,43 +6,175 @@
     <title>Talkidz - AI Friends to Chat With</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" rel="stylesheet">
     <style>
+        /* Root Variables */
         :root {
             --primary-color: #FF4B6E;
-            --accent-color: #6C5CE7;
             --text-color: #1A1A1A;
             --background-color: #FFFFFF;
             --secondary-background: #F5F5F5;
+            --accent-color: #6C5CE7;
             --shadow-color: rgba(0, 0, 0, 0.08);
             --spacing-unit: 1rem;
-            --transition: all 0.3s ease;
-            --header-blur: 8px;
-            --header-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            --header-blur: 10px; /* Added for backdrop-filter */
+            --header-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Added for header shadow */
         }
 
-        * {
+        /* Reset and Base Styles */
+        *, *::before, *::after {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
 
         body, html {
+            overflow-x: hidden;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
                 Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
             background-color: var(--background-color);
             color: var(--text-color);
             line-height: 1.5;
-            overflow-x: hidden;
-            min-height: 100vh; /* Ensure body takes at least full viewport height */
+            position: relative;
+            min-height: 100vh;
         }
 
-        .gradient-text {
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* Splash Screen */
+        .splash-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--background-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            animation: fadeOut 0.5s ease-in-out 1.5s forwards;
+        }
+
+        .splash-hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .splash-content {
+            text-align: center;
+            position: relative;
+        }
+
+        .splash-logo-text {
+            font-size: 4rem;
+            font-weight: 800;
             background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.5s ease-out 0.5s forwards;
+            margin-bottom: 0; 
+            line-height: 1.5;
         }
 
-        /* Header Styles */
+        .splash-byline {
+            font-size: 1.2rem;
+            color: #666;
+            margin-top: -0.4rem;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.5s ease-out 0.7s forwards;
+        }
+
+        .loading-circle {
+            width: 300px;
+            height: 300px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            border: 2px solid transparent;
+            width: 100%;
+            height: 100%;
+            animation: rotate 2s linear infinite;
+        }
+
+        .circle-1 {
+            border-top-color: var(--primary-color);
+            animation-duration: 1s;
+        }
+
+        .circle-2 {
+            border-right-color: var(--accent-color);
+            animation-duration: 0.9s;
+            width: 80%;
+            height: 80%;
+            top: 10%;
+            left: 10%;
+        }
+
+        .circle-3 {
+            border-bottom-color: var(--primary-color);
+            animation-duration: 0.8s;
+            width: 60%;
+            height: 60%;
+            top: 20%;
+            left: 20%;
+        }
+
+        /* Animations */
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                visibility: hidden;
+            }
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) translateX(0);
+                opacity: 0;
+            }
+            50% {
+                transform: translateY(-100px) translateX(50px);
+                opacity: 0.5;
+            }
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) rotate(45deg); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* Header */
         .header {
             position: sticky;
             top: 0;
@@ -53,21 +185,22 @@
             padding: var(--spacing-unit);
             box-shadow: var(--header-shadow);
             transition: all 0.3s ease;
-        }
-
-        .nav {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: var(--spacing-unit);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
         }
 
         .logo-container {
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            margin-right: auto;
-            position: relative;
             transition: all 0.3s ease;
         }
 
@@ -93,12 +226,6 @@
             animation: pulse 2s infinite;
         }
 
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
-        }
-
         .logo {
             font-size: 2rem;
             font-weight: 800;
@@ -106,7 +233,6 @@
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            text-decoration: none;
             letter-spacing: -0.5px;
         }
 
@@ -119,24 +245,32 @@
             letter-spacing: 0.5px;
         }
 
+        .tagline {
+            font-size: 1rem;
+            color: #666;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Share Button */
         .share-button {
             background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
-            color: white;
+            color: white !important; 
             border: none;
             padding: 0.6rem 1.2rem;
-            border-radius: 999px;
+            border-radius: 999px;  
             cursor: pointer;
             font-weight: 600;
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            transition: var(--transition);
+            transition: all 0.3s ease;
             box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
         }
 
         .share-button svg {
-            color: white;
-            stroke: white;
+            color: white !important; 
+            stroke: white !important; 
         }
 
         .share-button:hover {
@@ -144,118 +278,31 @@
             box-shadow: 0 6px 16px rgba(108, 92, 231, 0.3);
         }
 
-        .tagline {
-            font-size: 1rem;
-            color: #666;
-            margin-top: 5px;
-            text-align: left; /* Align text to the left */
-            padding-left: 2px
-            padding-right: var(--spacing-unit);
-        }
-
-        /* Featured Section */
-        .featured-section {
-            background: var(--secondary-background);
-            border-radius: 24px;
-            padding: 20px;
-            margin: 14px 16px;
+        /* Navigation Icons (if any additional icons are present) */
+        .nav-icons {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 8px 32px rgba(108, 92, 231, 0.08);
-            transition: var(--transition);
-            flex-wrap: wrap; /* Allow wrapping if needed */
+            gap: calc(var(--spacing-unit) * 2);
         }
 
-        .featured-section > div:first-child {
-            flex: 1;
-            padding-right: 48px;
-            max-width: 600px;
-            text-align: left; /* Ensure text is left-aligned */
-        }
-
-        .featured-title {
-            font-size: 0.675rem;
-            font-weight: 600;
-            color: var(--accent-color);
-            margin-bottom: 5px;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .featured-title::after {
-            content: '';
-            height: 2px;
-            flex: 1;
-            background: linear-gradient(to right, var(--accent-color) 0%, transparent 100%);
-            opacity: 0.3;
-        }
-
-        .featured-name {
-            font-size: 3rem;
-            font-weight: 800;
-            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            margin: 0 0 6px 0;
-            letter-spacing: -1px;
-            line-height: 1.2;
-            text-align: left; /* Ensure text is left-aligned */
-        }
-
-        .featured-description {
-            color: #666;
-            font-size: 1.125rem;
-            line-height: 1.6;
-            margin-bottom: 6px;
-            font-weight: 400;
-            max-width: 540px;
-            text-align: left; /* Ensure text is left-aligned */
-        }
-
-        .featured-image-container {
-            width: 260px;
-            height: 260px;
-            position: relative;
-            flex-shrink: 0;
-            margin-left: auto; /* Align image to the right */
-        }
-
-        .featured-image-wrap {
-            width: 240px;
-            height: 240px;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-        }
-
-        .featured-image {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            border: 4px solid white;
-            box-shadow: 0 12px 24px rgba(108, 92, 231, 0.15);
-            position: relative;
-            overflow: hidden;
-            transition: var(--transition);
+        .nav-icon {
+            width: 24px;
+            height: 24px;
+            color: var(--text-color);
             cursor: pointer;
+            transition: color 0.2s ease;
         }
 
-        .featured-image:hover {
-            transform: scale(1.05);
-            box-shadow: 0 16px 32px rgba(108, 92, 231, 0.2);
+        .nav-icon:hover {
+            color: var(--primary-color);
         }
 
-        /* Genre Section */
+        /* Main Content */
+        main {
+            padding: var(--spacing-unit);
+        }
+
         .genre-section {
-            margin: calc(var(--spacing-unit) * 1) 0;
+            margin: var(--spacing-unit) 0;
             padding: 0 var(--spacing-unit);
             position: relative;
         }
@@ -277,15 +324,25 @@
         }
 
         .character-carousel {
-            display: grid;
-            grid-auto-flow: column;
-            grid-auto-columns: minmax(130px, 1fr);
-            gap: 1rem; /* Reduced gap for closer profiles */
+            display: flex;
             overflow-x: auto;
-            padding: var(--spacing-unit) 0;
             scroll-snap-type: x mandatory;
+            gap: 1.5rem;
+            padding: var(--spacing-unit) 0;
+            -webkit-overflow-scrolling: touch;
             scrollbar-width: none;
             position: relative;
+        }
+
+        .character-carousel::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: 0;
+            height: 100%;
+            width: 40px;
+            background: linear-gradient(to left, var(--background-color), transparent);
+            pointer-events: none;
         }
 
         .character-carousel::-webkit-scrollbar {
@@ -293,16 +350,18 @@
         }
 
         .character-card {
+            flex: 0 0 auto;
+            width: 130px;
             scroll-snap-align: start;
             text-align: center;
-            text-decoration: none;
-            color: inherit;
-            transition: var(--transition);
-            position: relative;
+            transition: all 0.3s ease;
             cursor: pointer;
+            position: relative;
+            color: inherit;
         }
 
-        .character-card:hover {
+        .character-card:hover,
+        .character-card:active {
             transform: translateY(-5px);
         }
 
@@ -313,17 +372,31 @@
             background-size: cover;
             background-position: center;
             margin: 0 auto var(--spacing-unit);
+            transition: all 0.3s ease;
             border: 3px solid white;
             box-shadow: 0 4px 12px var(--shadow-color);
-            transition: var(--transition);
             position: relative;
             overflow: hidden;
         }
 
-        .character-card:hover .character-image {
+        .character-card:hover .character-image,
+        .character-card:active .character-image {
             box-shadow: 0 8px 24px var(--shadow-color);
             border-color: var(--primary-color);
             transform: scale(1.05);
+        }
+
+        .character-image::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transform: rotate(45deg);
+            animation: shine 2s infinite;
+            pointer-events: none;
         }
 
         .character-name {
@@ -343,167 +416,198 @@
         }
 
         /* Badges */
-        .badge {
+        .new-badge, .popular-badge {
             position: absolute;
-            top: -5px; /* Closer to the image */
-            right: -5px; /* Closer to the image */
-            color: white;
-            font-size: 0.6rem; /* Slightly smaller font */
-            padding: 0.2rem 0.4rem; /* Reduced padding */
+            top: -8px;
+            right: -8px;
+            font-size: 0.625rem;
+            padding: 0.25rem 0.5rem;
             border-radius: 999px;
             font-weight: 600;
             transform: rotate(12deg);
             box-shadow: 0 2px 4px rgba(108, 92, 231, 0.3);
-            z-index: 3; /* Ensure badges are above all */
-            pointer-events: none; /* Prevent badges from capturing pointer events */
         }
 
         .new-badge {
             background: var(--primary-color);
+            color: white;
         }
 
         .popular-badge {
             background: var(--accent-color);
+            color: white;
+        }
+
+        /* Category Pills */
+        .category-pill {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.4rem 1rem;
+            background: var(--secondary-background);
+            border-radius: 999px; 
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #666;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+
+        .category-pill:hover {
+            background: white;
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .category-pill.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        /* Featured Section */
+        .featured-section {
+            background: var(--secondary-background);
+            border-radius: 24px;
+            padding: 20px; 
+            margin: 14px 16px; 
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 32px rgba(108, 92, 231, 0.08); 
+        }
+
+        .featured-section > div:first-child {
+            flex: 1;
+            padding-right: 48px;
+            max-width: 600px;
+        }
+
+        .featured-title {
+            font-size: 0.675rem; 
+            font-weight: 600;
+            color: var(--accent-color);
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .featured-title::after {
+            content: '';
+            height: 2px;
+            flex: 1;
+            background: linear-gradient(to right, var(--accent-color) 0%, transparent 100%);
+            opacity: 0.3;
+        }
+
+        .featured-name {
+            font-size: 3rem; 
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin: 0 0 6px 0;
+            letter-spacing: -1px;
+            line-height: 1.2;
+        }
+
+        .featured-description {
+            color: #666;
+            font-size: 1.125rem;
+            line-height: 1.6;
+            margin-bottom: 6px;
+            font-weight: 400;
+            max-width: 540px; 
+        }
+
+        .featured-image-container {
+            width: 260px;
+            height: 260px;
+            position: relative;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+
+        .featured-image-wrap {
+            width: 240px;
+            height: 240px;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .featured-image {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 4px solid white;
+            box-shadow: 0 12px 24px rgba(108, 92, 231, 0.15);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .featured-image:hover {
+            transform: scale(1.05);
+            box-shadow: 0 16px 32px rgba(108, 92, 231, 0.2);
+        }
+
+        .featured-section .share-button {
+            padding: 1rem 2rem;
+            font-size: 1.125rem;
+            transition: all 0.3s ease;
+        }
+
+        .featured-section .share-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(108, 92, 231, 0.25);
         }
 
         /* Particle Background */
-        .particle-background {
-            position: fixed;
-            top: 0;
-            left: 0;
+        .particles, .particle-background {
+            position: absolute;
             width: 100%;
             height: 100%;
-            pointer-events: none;
-            z-index: -3; /* Ensure background particles are behind everything */
+            top: 0;
+            left: 0;
             overflow: hidden;
+            pointer-events: none;
+            z-index: -1;
         }
 
-        .particle {
+        .splash-particle, .particle {
             position: absolute;
             width: 6px;
             height: 6px;
             background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
             border-radius: 50%;
             filter: blur(1px);
+        }
+
+        .splash-particle {
+            animation: float 3s infinite ease-in-out;
+        }
+
+        .particle {
+            filter: blur(1px);
             animation: floatParticle 20s infinite linear;
             opacity: 0.1;
         }
 
-        @keyframes floatParticle {
-            0% {
-                transform: translateY(0) translateX(0) rotate(0deg);
-                opacity: 0;
-            }
-            50% {
-                opacity: 0.2;
-            }
-            100% {
-                transform: translateY(-1000px) translateX(100px) rotate(360deg);
-                opacity: 0;
-            }
-        }
-
-        /* Enhanced Particle Effect on Scroll */
-        @keyframes moveParticles {
-            0% {
-                transform: translateY(0px) translateX(0px);
-            }
-            100% {
-                transform: translateY(-1000px) translateX(1000px);
-            }
-        }
-
-        .particle {
-            animation: floatParticle 20s infinite linear, moveParticles 60s infinite linear;
-        }
-
-        /* Splash Screen */
-        .splash-container {
-            position: fixed;
-            inset: 0;
-            background: var(--background-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000; /* Above all */
-            animation: fadeOut 0.5s ease-in-out 1.5s forwards;
-            overflow: hidden;
-        }
-
-        .particles {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            overflow: hidden;
-            z-index: -1;
-        }
-
-        .splash-particle {
-            position: absolute;
-            width: 6px;
-            height: 6px;
-            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
-            border-radius: 50%;
-            animation: float 3s infinite ease-in-out;
-        }
-
-        @keyframes fadeOut {
-            to {
-                opacity: 0;
-                visibility: hidden;
-            }
-        }
-
-        @keyframes float {
-            0%, 100% {
-                transform: translateY(0) translateX(0);
-                opacity: 0;
-            }
-            50% {
-                transform: translateY(-100px) translateX(50px);
-                opacity: 0.5;
-            }
-        }
-
-        .splash-content {
-            text-align: center;
-            position: relative;
-        }
-
-        .splash-logo-text {
-            font-size: 4rem;
-            font-weight: 800;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeInUp 0.5s ease-out 0.5s forwards;
-            margin-bottom: 0; 
-            line-height: 1.5;
-        }
-
-        .splash-byline {
-            font-size: 1.2rem;
-            color: #666;
-            margin-top: -0.4rem;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeInUp 0.5s ease-out 0.7s forwards;
-        }
-
-        @keyframes fadeInUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* Particle Background Initialization */
-        .particle-background {
+        .circle-1, .circle-2, .circle-3 {
             /* Already defined above */
         }
 
-        /* Footer Styles */
+        /* Footer */
         .talkidz-footer {
             background: linear-gradient(180deg, 
                 rgba(255,255,255,0) 0%,
@@ -524,9 +628,9 @@
 
         .footer-logo-container {
             margin-bottom: 2rem;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            display: flex;      
+            flex-direction: column; 
+            align-items: center;    
             position: relative;
         }
 
@@ -537,9 +641,7 @@
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            text-decoration: none;
             letter-spacing: -1px;
-            display: inline-block;
             margin-bottom: 1rem;
             position: relative;
             z-index: 1;
@@ -551,13 +653,12 @@
             left: -20%;
             right: -20%;
             bottom: -20%;
-            background: radial-gradient(circle at center, 
+            background: radial-gradient(circle at 50% 50%, 
                 rgba(255,255,255,0.8) 0%,
                 rgba(255,255,255,0) 70%);
             opacity: 0;
             animation: shine-effect 5s infinite;
             pointer-events: none;
-            z-index: 0;
         }
 
         @keyframes shine-effect {
@@ -605,11 +706,6 @@
             pointer-events: none;
         }
 
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
         .footer-navigation {
             display: flex;
             justify-content: center;
@@ -622,7 +718,7 @@
             color: #666;
             text-decoration: none;
             font-weight: 500;
-            transition: var(--transition);
+            transition: all 0.3s ease;
             position: relative;
             padding: 0.5rem 1rem;
         }
@@ -647,6 +743,15 @@
             transform: scaleX(1);
         }
 
+        .footer-bottom {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(0,0,0,0.1);
+            color: #666;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
         .footer-social {
             display: flex;
             justify-content: center;
@@ -662,9 +767,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: var(--transition);
+            transition: all 0.3s ease;
             box-shadow: 0 4px 12px var(--shadow-color);
-            cursor: pointer;
         }
 
         .social-icon:hover {
@@ -684,116 +788,8 @@
             color: white;
         }
 
-        .footer-bottom {
-            margin-top: 3rem;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(0,0,0,0.1);
-            color: #666;
-            font-size: 0.9rem;
-            text-align: center;
-        }
-
-        @media (min-width: 768px) {
-            .character-carousel {
-                grid-auto-columns: minmax(180px, 1fr);
-            }
-
-            .character-image {
-                width: 160px;
-                height: 160px;
-            }
-
-            .character-name {
-                font-size: 1.2rem;
-            }
-
-            .character-role {
-                font-size: 1rem;
-            }
-
-            .badge {
-                font-size: 0.75rem;
-                padding: 0.3rem 0.6rem;
-            }
-
-            /* Consistent Padding in Featured Section */
-            .featured-section {
-                padding: 32px; /* Increased padding to match tablet */
-            }
-
-            .featured-image-container {
-                width: 260px;
-                height: 260px;
-            }
-
-            .featured-image-wrap {
-                width: 240px;
-                height: 240px;
-            }
-
-            .footer-logo {
-                font-size: 3.5rem;
-            }
-
-            .footer-slogan {
-                font-size: 2.5rem;
-            }
-
-            .slogan-secondary {
-                font-size: 1.8rem;
-            }
-
-            .footer-navigation {
-                gap: 3rem;
-            }
-
-            .social-icon {
-                width: 48px;
-                height: 48px;
-            }
-
-            .social-icon svg {
-                width: 24px;
-                height: 24px;
-            }
-        }
-
+        /* Responsive Styles */
         @media (max-width: 768px) {
-            .featured-section {
-                padding: 24px 16px; /* Consistent padding */
-                flex-direction: row; /* Maintain row layout */
-                text-align: left; /* Ensure text is left-aligned */
-            }
-
-            .featured-section > div:first-child {
-                padding-right: 24px;
-                text-align: left; /* Ensure text is left-aligned */
-            }
-
-            .featured-name {
-                font-size: 2rem;
-            }
-
-            .featured-description {
-                font-size: 1rem;
-            }
-
-            .featured-image-container {
-                width: 200px;
-                height: 200px;
-                margin-left: auto; /* Align image to the right */
-            }
-
-            .featured-image-wrap {
-                width: 180px;
-                height: 180px;
-            }
-
-            .badge {
-                font-size: 0.7rem;
-                padding: 0.25rem 0.5rem;
-            }
-
             .footer-logo {
                 font-size: 2.5rem;
             }
@@ -808,7 +804,6 @@
 
             .footer-navigation {
                 gap: 1.5rem;
-                padding: 0 1rem;
             }
 
             .social-icon {
@@ -820,83 +815,94 @@
                 width: 20px;
                 height: 20px;
             }
+
+            .featured-section {
+                padding: 17px;
+                margin: 2px 10px;
+            }
+            
+            .featured-section > div:first-child {
+                padding-right: 24px;
+            }
+            
+            .featured-name {
+                font-size: 2rem;
+            }
+            
+            .featured-description {
+                font-size: 1rem;
+                margin-bottom: 10px;
+            }
+            
+            .featured-image-container {
+                width: 220px;
+                height: 220px;
+            }
+            
+            .featured-image-wrap {
+                width: 200px;
+                height: 200px;
+            }
         }
 
         @media (max-width: 550px) {
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .header-left {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.25rem;
+            }
+
+            .share-button {
+                align-self: flex-end;
+            }
+
             .featured-section {
-                padding: 16px; /* Further adjust padding */
+                padding: 14px 14px;
+                flex-direction: column;
+                align-items: flex-start;
             }
-
-            .featured-name {
-                font-size: 1.75rem;
+            
+            .featured-section > div:first-child {
+                padding-right: 8px;
+                text-align: left; 
             }
-
+            
+            .featured-title {
+                justify-content: flex-start;
+            }
+            
             .featured-description {
+                margin-left: 0;
+                margin-right: 0;
                 font-size: 0.875rem;
             }
-
+            
             .featured-image-container {
-                width: 160px;
-                height: 160px;
-            }
-
-            .featured-image-wrap {
-                width: 140px;
+                width: 140px; 
                 height: 140px;
+                margin-bottom: 0px;
             }
-
-            .badge {
-                font-size: 0.6rem;
-                padding: 0.2rem 0.4rem;
+            
+            .featured-image-wrap {
+                width: 120px;
+                height: 120px;
             }
-        }
-
-        @media (max-width: 480px) {
-            .character-carousel {
-                grid-auto-columns: minmax(110px, 1fr);
-            }
-
-            .character-image {
-                width: 90px;
-                height: 90px;
-            }
-
-            .character-name {
+            
+            .featured-section .share-button {
+                margin: 0;
+                padding: 0.75rem 1.5rem;
                 font-size: 0.875rem;
             }
-
-            .character-role {
-                font-size: 0.75rem;
-            }
-
-            .badge {
-                font-size: 0.5rem;
-                padding: 0.2rem 0.4rem;
-            }
-
-            .tagline {
-                padding-left: var(--spacing-unit);
-                padding-right: var(--spacing-unit);
-                text-align: left; /* Ensure text is left-aligned */
-            }
-        }
-
-        /* Ensure no extra padding/margin is causing white space */
-        main {
-            flex: 1 0 auto;
-        }
-
-        /* Remove any default margins that might cause overflow */
-        body, html {
-            margin: 0;
-            padding: 0;
         }
     </style>
 </head>
 <body>
-    <!-- Particle Background -->
-    <div class="particle-background"></div>
-
     <!-- Splash Screen -->
     <div class="splash-container" id="splashScreen">
         <div class="particles"></div>
@@ -906,31 +912,31 @@
                 <div class="circle circle-2"></div>
                 <div class="circle circle-3"></div>
             </div>
-            <h1 class="splash-logo-text gradient-text">Talkidz</h1>
+            <h1 class="splash-logo-text">Talkidz</h1>
             <p class="splash-byline">by Playbox</p>
         </div>
     </div>
 
     <!-- Header -->
     <header class="header">
-        <nav class="nav">
+        <div class="header-left">
             <div class="logo-container">
                 <a href="#" class="logo">Talkidz</a>
                 <span class="logo-byline">by Playbox</span>
-                <!-- Tagline moved inside logo-container for alignment -->
-                <p class="tagline">Explore AI Friends to Chat With</p>
             </div>
-            <button class="share-button" onclick="shareApp()">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
-                    <polyline points="16 6 12 2 8 6"></polyline>
-                    <line x1="12" y1="2" x2="12" y2="15"></line>
-                </svg>
-                Share
-            </button>
-        </nav>
+            <p class="tagline">Explore AI Friends to Chat With</p>
+        </div>
+        <button class="share-button" onclick="shareApp()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                <polyline points="16 6 12 2 8 6"></polyline>
+                <line x1="12" y1="2" x2="12" y2="15"></line>
+            </svg>
+            Share
+        </button>
     </header>
 
+    <!-- Main Content -->
     <main>
         <!-- Featured Section -->
         <section class="featured-section">
@@ -938,7 +944,7 @@
                 <div class="featured-title">
                     Featured Character:
                 </div>
-                <h2 class="featured-name gradient-text">Meet Jonny 🐾</h2>
+                <h2 class="featured-name">Meet Jonny 🐾</h2>
                 <p class="featured-description">Woof! Your playful and loyal companion, ready to bring joy, share fun stories, and offer friendly support. Whoof!</p>
                 <button class="share-button" onclick="window.location.href='chat.html?character=jonny'">
                     Chat Now
@@ -947,7 +953,7 @@
                     </svg>
                 </button>
             </div>
-            <div class="featured-image-container" onclick="window.location.href='chat.html?character=jonny';" style="cursor: pointer;">
+            <div class="featured-image-container" onclick="window.location.href='chat.html?character=jonny';">
                 <div class="featured-image-wrap">
                     <div class="featured-image">
                         <img src="characters/jonny/assets/jonny-icon.jpg" alt="Jonny 🐾" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block;">
@@ -962,15 +968,15 @@
             <div class="character-carousel">
                 <a href="characters/cupcake" class="character-card">
                     <div class="character-image" style="background-image: url('/characters/cupcake/assets/cupcake.jpg')"></div>
-                    <span class="popular-badge badge">Popular!</span>
                     <h3 class="character-name">Funny Cupcake</h3>
                     <p class="character-role">Sweet Humor Buddy</p>
+                    <span class="popular-badge">Popular!</span>
                 </a>
                 <a href="characters/cat" class="character-card">
                     <div class="character-image" style="background-image: url('/characters/cat/assets/cat.jpg')"></div>
-                    <span class="new-badge badge">New!</span>
                     <h3 class="character-name">Noodles</h3>
                     <p class="character-role">Funny Companion</p>
+                    <span class="new-badge">New!</span>
                 </a>
                 <a href="characters/whimsy" class="character-card">
                     <div class="character-image" style="background-image: url('/characters/whimsy/assets/whimsy.png')"></div>
@@ -985,9 +991,9 @@
             <div class="character-carousel">
                 <a href="characters/fox" class="character-card">
                     <div class="character-image" style="background-image: url('/characters/fox/assets/fox.jpg')"></div>
-                    <span class="new-badge badge">New!</span>
                     <h3 class="character-name">Clever Fox</h3>
                     <p class="character-role">Wise Instructor</p>
+                    <span class="new-badge">New!</span>
                 </a>
                 <a href="characters/monkey" class="character-card">
                     <div class="character-image" style="background-image: url('/characters/monkey/assets/monkey.jpg')"></div>
@@ -996,9 +1002,9 @@
                 </a>
                 <a href="characters/robo" class="character-card">
                     <div class="character-image" style="background-image: url('/characters/robo/assets/eva-icon.jpg')"></div>
-                    <span class="popular-badge badge">Popular!</span>
                     <h3 class="character-name">Eva The Robot</h3>
                     <p class="character-role">Calm Educator</p>
+                    <span class="popular-badge">Popular!</span>
                 </a>
             </div>
         </section>
@@ -1008,9 +1014,9 @@
             <div class="character-carousel">
                 <a href="characters/emma" class="character-card">
                     <div class="character-image" style="background-image: url('/characters/emma/assets/emma.jpg')"></div>
-                    <span class="new-badge badge">New!</span>
                     <h3 class="character-name">Emma</h3>
                     <p class="character-role">Encouraging Counselor</p>
+                    <span class="new-badge">New!</span>
                 </a>
                 <a href="characters/duck" class="character-card">
                     <div class="character-image" style="background-image: url('characters/duck/assets/duck.jpg')"></div>
@@ -1019,9 +1025,9 @@
                 </a>
                 <a href="characters/panda" class="character-card">
                     <div class="character-image" style="background-image: url('/characters/panda/assets/panda.jpg')"></div>
-                    <span class="popular-badge badge">Popular!</span>
                     <h3 class="character-name">Dr. Panda</h3>
                     <p class="character-role">Calm Listener</p>
+                    <span class="popular-badge">Popular!</span>
                 </a>
             </div>
         </section>
@@ -1031,15 +1037,15 @@
             <div class="character-carousel">
                 <a href="characters/parrot" class="character-card">
                     <div class="character-image" style="background-image: url('/characters/parrot/assets/parrot.jpg')"></div>
-                    <span class="popular-badge badge">Popular!</span>
                     <h3 class="character-name">Parrot</h3>
                     <p class="character-role">Adventurous Narrator</p>
+                    <span class="popular-badge">Popular!</span>
                 </a>
                 <a href="characters/wizard" class="character-card">
                     <div class="character-image" style="background-image: url('characters/wizard/assets/wizard.jpg')"></div>
-                    <span class="new-badge badge">New!</span>
                     <h3 class="character-name">Winston the Wizard</h3>
                     <p class="character-role">Magical Story Spinner</p>
+                    <span class="new-badge">New!</span>
                 </a>
                 <a href="characters/lion" class="character-card">
                     <div class="character-image" style="background-image: url('/characters/lion/assets/lion.jpg')"></div>
@@ -1054,9 +1060,9 @@
             <div class="character-carousel">
                 <a href="characters/turtle" class="character-card">
                     <div class="character-image" style="background-image: url('/characters/turtle/assets/turtle.jpg')"></div>
-                    <span class="new-badge badge">New!</span>
                     <h3 class="character-name">Tilly the Turtle</h3>
                     <p class="character-role">Gentle Language Guide</p>
+                    <span class="new-badge">New!</span>
                 </a>
                 <a href="characters/world" class="character-card">
                     <div class="character-image" style="background-image: url('/characters/world/assets/world.jpg')"></div>
@@ -1065,12 +1071,12 @@
                 </a>
                 <a href="characters/pingo" class="character-card">
                     <div class="character-image" style="background-image: url('/characters/pingo/assets/pingo.jpg')"></div>
-                    <span class="popular-badge badge">Popular!</span>
                     <h3 class="character-name">Pingo The Penguin</h3>
                     <p class="character-role">Linguistic Adventurer</p>
+                    <span class="popular-badge">Popular!</span>
                 </a>
             </div>
-        </section>
+        </section>  
     </main>
 
     <!-- Footer -->
@@ -1083,7 +1089,7 @@
             </div>
 
             <div class="footer-slogan">
-                <span class="slogan-primary gradient-text">AI-Powered Playtime</span>
+                <span class="slogan-primary">AI-Powered Playtime</span>
                 <span class="slogan-secondary">Endless discovery</span>
             </div>
 
@@ -1123,134 +1129,31 @@
         </div>
     </footer>
 
-    <!-- Scripts -->
+    <!-- Particle Scripts -->
     <script>
-        // Share functionality with fallback
-        function shareApp() {
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Talkidz - AI Friends to Chat With',
-                    text: 'Check out Talkidz, where you can chat with AI friends!',
-                    url: window.location.href
-                }).catch(err => {
-                    console.warn('Error sharing:', err.message);
-                    showShareFallback();
-                });
-            } else {
-                showShareFallback();
-            }
+        // Splash Screen Particles
+        const particlesContainer = document.querySelector('.particles');
+        for (let i = 0; i < 20; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'splash-particle';
+            particle.style.left = Math.random() * 100 + 'vw';
+            particle.style.top = Math.random() * 100 + 'vh';
+            particle.style.animationDelay = (Math.random() * 2) + 's';
+            
+            // Add random size variation
+            const size = Math.random() * 3 + 3; // Sizes between 3-6px
+            particle.style.width = size + 'px';
+            particle.style.height = size + 'px';
+            
+            particlesContainer.appendChild(particle);
         }
 
-        // Fallback share functionality
-        function showShareFallback() {
-            const tempInput = document.createElement('input');
-            tempInput.value = window.location.href;
-            document.body.appendChild(tempInput);
-            tempInput.select();
-            document.execCommand('copy');
-            document.body.removeChild(tempInput);
-            alert('Link copied to clipboard!');
-        }
-
-        // Initialize splash screen particles
-        const initSplashParticles = () => {
-            const particlesContainer = document.querySelector('.particles');
-            const particleCount = 20;
-            
-            for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'splash-particle';
-                
-                const size = Math.random() * 3 + 3;
-                particle.style.width = size + 'px';
-                particle.style.height = size + 'px';
-                
-                particle.style.left = Math.random() * 100 + 'vw';
-                particle.style.top = Math.random() * 100 + 'vh';
-                particle.style.animationDelay = (Math.random() * 2) + 's';
-                particle.style.opacity = Math.random() * 0.5 + 0.5;
-                
-                particlesContainer.appendChild(particle);
-            }
-        };
-
-        // Handle smooth scrolling for character carousels
-        const initCarousels = () => {
-            document.querySelectorAll('.character-carousel').forEach(carousel => {
-                let isDragging = false;
-                let startX;
-                let scrollLeft;
-
-                carousel.addEventListener('mousedown', (e) => {
-                    isDragging = true;
-                    startX = e.pageX - carousel.offsetLeft;
-                    scrollLeft = carousel.scrollLeft;
-                    carousel.style.cursor = 'grabbing';
-                    carousel.style.scrollBehavior = 'auto';
-                });
-
-                carousel.addEventListener('mouseleave', () => {
-                    isDragging = false;
-                    carousel.style.cursor = 'grab';
-                });
-
-                carousel.addEventListener('mouseup', () => {
-                    isDragging = false;
-                    carousel.style.cursor = 'grab';
-                    carousel.style.scrollBehavior = 'smooth';
-                });
-
-                carousel.addEventListener('mousemove', (e) => {
-                    if (!isDragging) return;
-                    e.preventDefault();
-                    const x = e.pageX - carousel.offsetLeft;
-                    const walk = (x - startX) * 2; // scroll-fast
-                    carousel.scrollLeft = scrollLeft - walk;
-                });
-
-                // Touch events for mobile
-                carousel.addEventListener('touchstart', (e) => {
-                    isDragging = true;
-                    startX = e.touches[0].pageX - carousel.offsetLeft;
-                    scrollLeft = carousel.scrollLeft;
-                });
-
-                carousel.addEventListener('touchend', () => {
-                    isDragging = false;
-                });
-
-                carousel.addEventListener('touchmove', (e) => {
-                    if (!isDragging) return;
-                    const x = e.touches[0].pageX - carousel.offsetLeft;
-                    const walk = (x - startX) * 2;
-                    carousel.scrollLeft = scrollLeft - walk;
-                });
-
-                // Prevent default scrolling when interacting with character cards
-                carousel.querySelectorAll('.character-card').forEach(card => {
-                    card.addEventListener('click', (e) => {
-                        // Allow clicks to navigate without interfering with scroll
-                        // If needed, add specific navigation logic here
-                    });
-                });
-            });
-        };
-
-        // Initialize everything when the page loads
-        window.addEventListener('load', () => {
-            initSplashParticles();
-            initCarousels();
-            
-            // Remove splash screen after animation
-            const splashScreen = document.getElementById('splashScreen');
-            setTimeout(() => {
-                splashScreen.remove();
-            }, 2000);
-        });
-
-        // Initialize background particles
+        // Particle Background Creation
         function createParticles() {
-            const background = document.querySelector('.particle-background');
+            const background = document.createElement('div');
+            background.className = 'particle-background';
+            document.body.appendChild(background);
+
             const particleCount = 50;
 
             for (let i = 0; i < particleCount; i++) {
@@ -1274,8 +1177,35 @@
             }
         }
 
-        // Initialize background particles when the DOM is fully loaded
+        // Initialize particles when the page loads
         document.addEventListener('DOMContentLoaded', createParticles);
+
+        // Handle category pill selection
+        const pills = document.querySelectorAll('.category-pill');
+        pills.forEach(pill => {
+            pill.addEventListener('click', () => {
+                pills.forEach(p => p.classList.remove('active'));
+                pill.classList.add('active');
+            });
+        });
+
+        // Handle share button
+        function shareApp() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Talkidz - AI Friends to Chat With',
+                    text: 'Check out Talkidz, where you can chat with AI friends!',
+                    url: window.location.href
+                })
+                .catch(console.error);
+            }
+        }
+
+        // Hide splash screen after animation
+        const splashScreen = document.getElementById('splashScreen');
+        splashScreen.addEventListener('animationend', () => {
+            splashScreen.classList.add('splash-hidden');
+        });
     </script>
 </body>
 </html>
