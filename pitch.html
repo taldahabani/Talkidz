@@ -52,7 +52,6 @@
         .splash-content {
             text-align: center;
             position: relative;
-            overflow: hidden;
         }
 
         .loading-circle {
@@ -108,8 +107,6 @@
             animation: fadeInUp 0.5s ease-out 0.5s forwards;
             margin-bottom: 0;
             line-height: 1.2;
-            position: relative;
-            z-index: 1;
         }
 
         .splash-byline {
@@ -119,58 +116,6 @@
             opacity: 0;
             transform: translateY(20px);
             animation: fadeInUp 0.5s ease-out 0.7s forwards;
-            position: relative;
-            z-index: 1;
-        }
-
-        /* Character Bubbles on Splash Screen */
-        .character-bubble {
-            position: absolute;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background-size: cover;
-            background-position: center;
-            box-shadow: 0 4px 12px var(--shadow-color);
-            animation: floatBubble 10s infinite ease-in-out;
-            opacity: 0.8;
-        }
-
-        /* Positioning Bubbles Around Title and Subtitle */
-        .bubble-1 {
-            top: 10%;
-            left: 15%;
-            animation-delay: 0s;
-        }
-
-        .bubble-2 {
-            top: 20%;
-            left: 70%;
-            animation-delay: 2s;
-        }
-
-        .bubble-3 {
-            top: 60%;
-            left: 25%;
-            animation-delay: 4s;
-        }
-
-        .bubble-4 {
-            top: 65%;
-            left: 80%;
-            animation-delay: 6s;
-        }
-
-        .bubble-5 {
-            top: 40%;
-            left: 50%;
-            animation-delay: 1s;
-        }
-
-        @keyframes floatBubble {
-            0% { transform: translateY(0) scale(1); opacity: 0.8; }
-            50% { transform: translateY(-20px) scale(1.1); opacity: 1; }
-            100% { transform: translateY(0) scale(1); opacity: 0.8; }
         }
 
         /* Navigation */
@@ -253,6 +198,7 @@
             margin: 0 auto;
             width: 100%;
             text-align: center;
+            position: relative;
         }
 
         .slide-content h1,
@@ -588,11 +534,57 @@
             text-align: center;
         }
 
-        /* New Slide: Character Categories */
-        .slide.character-categories {
-            padding: 2rem;
+        /* Character Bubbles on First Slide */
+        .character-bubble {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-size: cover;
+            background-position: center;
+            box-shadow: 0 4px 12px var(--shadow-color);
+            animation: floatBubble 10s infinite ease-in-out;
+            opacity: 0.8;
         }
 
+        /* Positioning Bubbles Around Title and Subtitle */
+        .bubble-1 {
+            top: 10%;
+            left: 15%;
+            animation-delay: 0s;
+        }
+
+        .bubble-2 {
+            top: 20%;
+            left: 70%;
+            animation-delay: 2s;
+        }
+
+        .bubble-3 {
+            top: 60%;
+            left: 25%;
+            animation-delay: 4s;
+        }
+
+        .bubble-4 {
+            top: 65%;
+            left: 80%;
+            animation-delay: 6s;
+        }
+
+        .bubble-5 {
+            top: 40%;
+            left: 50%;
+            animation-delay: 1s;
+        }
+
+        @keyframes floatBubble {
+            0% { transform: translateY(0) scale(1); opacity: 0.8; }
+            50% { transform: translateY(-20px) scale(1.1); opacity: 1; }
+            100% { transform: translateY(0) scale(1); opacity: 0.8; }
+        }
+
+        /* Category Pill Styles */
         .category-list {
             display: flex;
             flex-wrap: wrap;
@@ -606,7 +598,7 @@
             padding: 1rem 2rem;
             border-radius: 999px;
             box-shadow: 0 4px 12px var(--shadow-color);
-            transition: background 0.3s ease, transform 0.3s ease;
+            transition: background 0.3s ease, transform 0.3s ease, color 0.3s ease;
             font-weight: 600;
             cursor: default;
         }
@@ -631,12 +623,6 @@
             </div>
             <h1 class="splash-logo-text">Talkidz</h1>
             <p class="splash-byline">by Playbox</p>
-            <!-- Character Bubbles -->
-            <div class="character-bubble bubble-1" style="background-image: url('/characters/cat/assets/cat.jpg');"></div>
-            <div class="character-bubble bubble-2" style="background-image: url('/characters/fox/assets/fox.jpg');"></div>
-            <div class="character-bubble bubble-3" style="background-image: url('/characters/robo/assets/eva-icon.jpg');"></div>
-            <div class="character-bubble bubble-4" style="background-image: url('/characters/cupcake/assets/cupcake.jpg');"></div>
-            <div class="character-bubble bubble-5" style="background-image: url('/characters/whimsy/assets/whimsy.png');"></div>
         </div>
     </div>
 
@@ -668,8 +654,26 @@
                     Revolutionizing kids' entertainment with interactive AI characters<br>
                     that educate, entertain, and inspire.
                 </p>
+                <!-- Character Bubbles around Title and Subtitle -->
+                <div class="character-bubble bubble-1" style="background-image: url('/characters/cat/assets/cat.jpg');"></div>
+                <div class="character-bubble bubble-2" style="background-image: url('/characters/fox/assets/fox.jpg');"></div>
+                <div class="character-bubble bubble-3" style="background-image: url('/characters/robo/assets/eva-icon.jpg');"></div>
+                <div class="character-bubble bubble-4" style="background-image: url('/characters/cupcake/assets/cupcake.jpg');"></div>
+                <div class="character-bubble bubble-5" style="background-image: url('/characters/whimsy/assets/whimsy.png');"></div>
                 <div class="cta-buttons">
                     <a href="#" class="cta-button" onclick="nextSlide()">Explore Our Vision</a>
+                </div>
+                <!-- Categories Highlight -->
+                <div style="margin-top: 2rem;">
+                    <h3>Our Characters Help With:</h3>
+                    <div class="category-list">
+                        <div class="category-item">Funny</div>
+                        <div class="category-item">Education</div>
+                        <div class="category-item">Personal Growth</div>
+                        <div class="category-item">Storytellers</div>
+                        <div class="category-item">Language Tutors</div>
+                        <div class="category-item">And More</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -905,22 +909,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- 15. Character Categories -->
-        <div class="slide character-categories" id="slide-15">
-            <div class="slide-content">
-                <h2>How Our Characters Help</h2>
-                <p>Our AI-powered characters are designed to support children in various aspects of their growth and learning.</p>
-                <div class="category-list">
-                    <div class="category-item">Funny</div>
-                    <div class="category-item">Education</div>
-                    <div class="category-item">Personal Growth</div>
-                    <div class="category-item">Storytellers</div>
-                    <div class="category-item">Language Tutors</div>
-                    <div class="category-item">And More</div>
-                </div>
-            </div>
-        </div>
     </div>
 
     <!-- Navigation Controls -->
@@ -931,7 +919,7 @@
             </svg>
         </button>
         <div class="slide-indicator">
-            <span id="currentSlide">1</span> / <span id="totalSlides">15</span>
+            <span id="currentSlide">1</span> / <span id="totalSlides">14</span>
         </div>
         <button class="nav-button" id="nextButton" onclick="nextSlide()">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -975,7 +963,7 @@
 
         // Slide functionality
         let currentSlideIndex = 1;
-        const totalSlides = 15; // Updated to match the number of slides
+        const totalSlides = 14; // Updated to match the number of slides
 
         function updateSlideIndicator() {
             document.getElementById('currentSlide').textContent = currentSlideIndex;
@@ -1253,15 +1241,6 @@
             }
         }
 
-        // Handle category pill selection
-        const pills = document.querySelectorAll('.category-pill');
-        pills.forEach(pill => {
-            pill.addEventListener('click', () => {
-                pills.forEach(p => p.classList.remove('active'));
-                pill.classList.add('active');
-            });
-        });
-
         // Handle share button
         function shareApp() {
             if (navigator.share) {
@@ -1274,6 +1253,20 @@
             }
         }
 
+        // Create particle background
+        function createParticles() {
+            const background = document.querySelector('.particle-background');
+            const particleCount = 50;
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + 'vw';
+                particle.style.top = Math.random() * 100 + 'vh';
+                particle.style.animationDuration = (Math.random() * 20 + 10) + 's';
+                particle.style.animationDelay = (Math.random() * 5) + 's';
+                background.appendChild(particle);
+            }
+        }
     </script>
 </body>
 </html>
