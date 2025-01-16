@@ -8,14 +8,14 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
       rel="stylesheet"
     />
-    <link href="/css/chat3.css" rel="stylesheet"/>
+    <link href="/css/chat.css" rel="stylesheet"/>
     <script
       src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js">
     </script>
 </head>
 
 <body>
-<div class="splash-container character-loading hidden">
+<div class="splash-container character-loading">
     <div class="splash-content">
         <div class="loading-circle">
             <div class="circle circle-1"></div>
@@ -52,16 +52,14 @@
 <div class="main-container">
     <div class="video-wrapper">
         <div class="background image"></div>
-        <canvas id="idleCanvas"></canvas>
-        <canvas id="speakingCanvas"></canvas>
-        <video class="background video" id="idleVideo" loop muted playsinline disablePictureInPicture></video>
-        <video class="background video" id="speakingVideo" loop muted playsinline disablePictureInPicture></video>
+        <video class="background video" id="idleVideo"
+               loop muted playsinline disablePictureInPicture></video>
+        <video class="background video" id="speakingVideo"
+               loop muted playsinline disablePictureInPicture></video>
     </div>
 </div>
 
 <div class="main-action-container">
-    <div id="greenScreenRoot"></div>
-    <button class="green-screen-button">Background</button>
     <button id="startButton" class="main-button">Start Conversation</button>
     <button class="character-select-button">
         <div class="character-icon">
@@ -97,6 +95,6 @@
     </div>
 </div>
 
-<script type="module" src="/js/chat3.js"></script>
+<script type="module" src="/js/chat.js"></script>
 </body>
 </html>
