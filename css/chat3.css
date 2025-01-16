@@ -95,16 +95,6 @@ body {
     z-index: 999;
 }
 
-#idleCanvas, #speakingCanvas {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    filter: drop-shadow(0 0 10px rgba(0,0,0,0.3));
-    z-index: 2;
-}
-
 .back-button {
     width: 40px; height: 40px;
     display: flex;
@@ -244,8 +234,7 @@ body {
 
 .video-wrapper {
     position: relative;
-    width: 100%;
-    height: 100%;
+    width: 100%; height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -255,16 +244,12 @@ body {
 
 .background {
     position: absolute;
-    width: 100%;
-    height: 100%;
+    width: 100%; height: 100%;
     object-fit: contain;
 }
 
 .background.video {
     opacity: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
 }
 
 .background.video.active {
@@ -286,35 +271,9 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 1rem;
+    gap: 1rem; /* Space between buttons */
     padding: 1rem;
     z-index: 10;
-}
-
-.green-screen-button {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background: var(--secondary-bg);
-    border: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    margin-right: 1rem;
-}
-
-.green-screen-button:hover {
-    transform: translateY(-2px);
-    background: white;
-    box-shadow: 0 4px 12px var(--shadow);
-}
-
-.green-screen-button svg {
-    width: 24px;
-    height: 24px;
-    stroke: var(--text-color);
 }
 
 .main-button {
@@ -330,11 +289,28 @@ body {
     box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
     position: relative;
     overflow: hidden;
+    margin-left: 70px;
+}
+
+.main-button::before {
+    content: '';
+    position: absolute;
+    inset: -50%;
+    width: 200%; height: 200%;
+    background: linear-gradient(45deg, 
+      transparent, rgba(255,255,255,0.1), transparent
+    );
+    transform: translateX(-100%) rotate(45deg);
+    animation: buttonShine 3s infinite;
+}
+
+.main-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(108, 92, 231, 0.3);
 }
 
 .main-button.active {
-    width: 48px;
-    height: 48px;
+    width: 48px; height: 48px;
     padding: 0;
     border-radius: 50%;
     background: #808080;
@@ -569,6 +545,26 @@ body {
     border: 2px solid var(--accent-color);
 }
 
+.particle {
+    position: absolute;
+    pointer-events: none;
+    opacity: 0;
+}
+
+@keyframes float {
+    0% { 
+        transform: translate(0, 0) rotate(0deg); 
+        opacity: 0; 
+    }
+    20% { 
+        opacity: 0.8; 
+    }
+    100% { 
+        transform: translate(var(--tx), var(--ty)) rotate(360deg); 
+        opacity: 0; 
+    }
+}
+
 @keyframes buttonShine {
     to { transform: translateX(100%) rotate(45deg); }
 }
@@ -580,36 +576,40 @@ body {
 }
 
 @media (max-width: 768px) {
-    .video-wrapper {
-        max-height: calc(100vh - 140px);
-    }
-    
-    .background.video,
-    .background.image {
-        object-fit: contain;
-        width: 100%;
-        height: 100%;
+    .background {
+        width: 100%; height: auto;
         max-height: none;
+        object-fit: cover;
     }
-
+    .controls-container {
+        padding-bottom: env(safe-area-inset-bottom);
+    }
+    .main-button {
+        padding: 1rem 2rem;
+    }
     .main-action-container {
         bottom: calc(70px + env(safe-area-inset-bottom));
-        padding: 0.75rem;
-        gap: 0.75rem;
+        gap: 0.75rem; /* Adjusted gap for smaller screens */
     }
-
-    .green-screen-button {
-        width: 40px;
-        height: 40px;
-        margin-right: 0.5rem;
+    .character-select-button {
+        width: 50px; /* Slightly smaller on mobile */
+        height: 50px;
     }
-
-    .main-button {
-        padding: 0.75rem 1.5rem;
+    .character-select-button::after {
+        font-size: 18px;
     }
+    .character-menu {
+        width: 240px; /* Adjust width for mobile */
+    }
+}
 
-    .main-button.active {
-        width: 40px;
-        height: 40px;
+@media (min-width: 769px) {
+    .main-container {
+        padding: 70px max(1.5rem,
+          calc((100vw - var(--max-content-width)) / 2)
+        );
+    }
+    .video-wrapper {
+        max-height: calc(100vh - 140px);
     }
 }
