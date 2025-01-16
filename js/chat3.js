@@ -444,7 +444,7 @@ const characters = {
   shaky: {
     id: 'shaky',
     name: 'Professor Shaky',
-    agentId: 'CfE9AbfQUFEUQ6rMHxh6',
+    agentId: 'hLrXLAr2PcpwmWbY24Q9',
     assets: {
       idle: '/assets/shaky-idle.mp4',
       talking: '/assets/shaky-talk.mp4',
