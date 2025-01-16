@@ -449,7 +449,7 @@ const characters = {
       idle: '/assets/shaky-idle.mp4',
       talking: '/assets/shaky-talk.mp4',
       preview: '/assets/monkey.jpg',
-      icon: '/assets/monkey-icon.jpg'
+      icon: '/assets/shaky-icon.jpg'
     }
   },
   cupcake: {
