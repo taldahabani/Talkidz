@@ -251,6 +251,37 @@ const firstMessages = {
     uk: "Привіт, я мавпочка Бонго! Радий тебе бачити!",
     ru: "Привет, я обезьянка Бонго! Рад тебя видеть!"
   },
+    shaky: {
+    en: "Hey it's Bongo the monkey! Nice to see you!",
+    ja: "やあ、ボンゴという猿だよ！会えて嬉しいな！",
+    zh: "嘿，我是猴子Bongo！很高兴见到你！",
+    de: "Hey, ich bin Bongo der Affe! Schön dich zu sehen!",
+    hi: "अरे, मैं बंदर बोंगो हूं! आपसे मिलकर अच्छा लगा!",
+    fr: "Salut, c'est Bongo le singe ! Content de te voir !",
+    ko: "안녕, 난 원숭이 봉고야! 만나서 반가워!",
+    pt: "Oi, sou o Bongo, o macaco! Prazer em te ver!",
+    it: "Ciao, sono Bongo la scimmia! Bello vederti!",
+    es: "¡Hola, soy Bongo el mono! ¡Qué gusto verte!",
+    id: "Hai, aku Bongo si monyet! Senang bertemu denganmu!",
+    nl: "Hé, ik ben Bongo de aap! Leuk je te zien!",
+    tr: "Merhaba, ben maymun Bongo! Seni görmek güzel!",
+    fil: "Hello, ako si Bongo ang unggoy! Masaya kitang makita!",
+    pl: "Cześć, jestem Bongo, małpka! Miło cię widzieć!",
+    sv: "Hej, jag är Bongo apan! Kul att se dig!",
+    bg: "Здрасти, аз съм маймунката Бонго! Радвам се да те видя!",
+    ro: "Bună, sunt Bongo maimuța! Mă bucur să te văd!",
+    ar: "مرحباً، أنا بونغو القرد! سعيد برؤيتك!",
+    cs: "Ahoj, já jsem opička Bongo! Rád tě vidím!",
+    el: "Γεια, είμαι ο Μπόνγκο το μαϊμουδάκι! Χαίρομαι που σε βλέπω!",
+    fi: "Hei, olen Bongo-apina! Kiva nähdä sinua!",
+    hr: "Bok, ja sam majmun Bongo! Drago mi je što te vidim!",
+    ms: "Hai, saya Bongo si monyet! Seronok berjumpa dengan anda!",
+    sk: "Ahoj, ja som opička Bongo! Rád ťa vidím!",
+    da: "Hej, jeg er Bongo aben! Dejligt at se dig!",
+    ta: "வணக்கம், நான் குரங்கு பொங்கோ! உங்களை பார்த்தது மகிழ்ச்சி!",
+    uk: "Привіт, я мавпочка Бонго! Радий тебе бачити!",
+    ru: "Привет, я обезьянка Бонго! Рад тебя видеть!"
+  },
   cupcake: {
     en: "Hey It's Cupcake! nice to see you",
     ja: "やあ、カップケーキだよ！会えて嬉しい！",
@@ -406,6 +437,17 @@ const characters = {
     assets: {
       idle: '/assets/monkey-idle.mp4',
       talking: '/assets/monkey-talk.mp4',
+      preview: '/assets/monkey.jpg',
+      icon: '/assets/monkey-icon.jpg'
+    }
+  },
+  shaky: {
+    id: 'shaky',
+    name: 'Professor Shaky',
+    agentId: 'CfE9AbfQUFEUQ6rMHxh6',
+    assets: {
+      idle: '/assets/shaky-idle.mp4',
+      talking: '/assets/shaky-talk.mp4',
       preview: '/assets/monkey.jpg',
       icon: '/assets/monkey-icon.jpg'
     }
