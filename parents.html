@@ -3,10 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Child's New Best Friend | Talkidz</title>
+    <title>Talkidz - Your Child's New Best Friend</title>
+    
+    <!-- Normalize CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" rel="stylesheet">
+    
+    <!-- AOS CSS for Animations -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
     
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Pacifico&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Custom CSS -->
     <style>
         :root {
             --primary-color: #FF4B6E;
@@ -16,8 +27,9 @@
             --text-color: #1A1A1A;
             --shadow-color: rgba(0, 0, 0, 0.08);
             --spacing-unit: 1rem;
-            --star-color: #6C5CE7;
             --golden-ratio: 1.618;
+            --font-primary: 'Roboto', sans-serif;
+            --font-accent: 'Pacifico', cursive;
         }
 
         * {
@@ -27,26 +39,22 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            margin: 0;
+            font-family: var(--font-primary);
             background: linear-gradient(180deg, var(--background-color) 0%, var(--secondary-background) 100%);
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            overflow-x: hidden;
             color: var(--text-color);
-            line-height: 1.5;
+            line-height: 1.6;
+            overflow-x: hidden;
         }
 
         /* Header Styles */
         .header {
             position: sticky;
             top: 0;
-            z-index: 100;
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            padding: var(--spacing-unit);
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: var(--spacing-unit) 1rem;
             box-shadow: 0 2px 10px var(--shadow-color);
         }
 
@@ -62,45 +70,79 @@
             display: flex;
             flex-direction: column;
             align-items: flex-start;
-            margin-right: auto;
         }
 
         .logo {
-            font-size: 2rem;
-            font-weight: 800;
+            font-family: var(--font-accent);
+            font-size: 2.5rem;
+            font-weight: 700;
             background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
             text-decoration: none;
-            letter-spacing: -0.5px;
         }
 
         .logo-byline {
             font-size: 0.75rem;
             font-weight: 500;
             color: #666;
-            margin-top: -0.25rem;
-            margin-left: 0.125rem;
+            margin-top: -0.3rem;
             letter-spacing: 0.5px;
         }
 
-        .share-button {
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        .nav-link {
+            color: #666;
+            text-decoration: none;
+            font-weight: 500;
+            position: relative;
+            padding: 0.5rem 0;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--primary-color);
+        }
+
+        .nav-link:hover::after {
+            transform: scaleX(1);
+        }
+
+        .share-button, .cta-button {
             background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
             color: white;
             border: none;
-            padding: 0.6rem 1.2rem;
+            padding: 0.8rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
             border-radius: 999px;
             cursor: pointer;
-            font-weight: 600;
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
             gap: 0.5rem;
-            transition: all 0.3s ease;
+            text-decoration: none;
             box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
         }
 
-        .share-button:hover {
+        .share-button:hover, .cta-button:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 16px rgba(108, 92, 231, 0.3);
         }
@@ -109,20 +151,34 @@
         .hero {
             text-align: center;
             padding: calc(2rem * var(--golden-ratio)) 1rem;
-            position: relative;
-            min-height: 80vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             gap: calc(1rem * var(--golden-ratio));
+            position: relative;
+            background-image: url('hero-background.png'); /* Add a relevant background image */
+            background-size: cover;
+            background-position: center;
+            color: white;
         }
 
-        .hero-image {
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            max-width: 600px; /* Added max-width for better responsiveness */
-            border-radius: 20px;
-            margin-bottom: 2rem;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5); /* Overlay for better text visibility */
+            z-index: 0;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            width: 100%;
         }
 
         .title {
@@ -132,31 +188,27 @@
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            margin: 0;
+            margin-bottom: 1rem;
             line-height: 1.2;
-            max-width: 800px;
-        }
-
-        /* Fallback color for title */
-        .title::after {
-            content: attr(data-text);
-            position: absolute;
-            left: 0;
-            top: 0;
-            color: var(--text-color);
-            background: none;
-            -webkit-background-clip: none;
-            background-clip: none;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
         }
 
         .subtitle {
             font-size: clamp(1.2rem, 4vw, 1.8rem);
-            color: #666;
-            max-width: 600px;
-            margin: 0 auto;
+            color: #F0F0F0;
+            margin-bottom: 2rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        /* Features Section */
+        .features {
+            padding: 4rem 1rem;
+            background: var(--secondary-background);
         }
 
         .features-grid {
@@ -164,7 +216,7 @@
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 2rem;
             max-width: 1200px;
-            margin: 2rem auto;
+            margin: 0 auto;
             padding: 0 1rem;
         }
 
@@ -173,49 +225,33 @@
             padding: 2rem;
             border-radius: 20px;
             box-shadow: 0 8px 32px rgba(108, 92, 231, 0.1);
-            transition: transform 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
             text-align: left;
+            position: relative;
+            overflow: hidden;
         }
 
         .feature-card:hover {
             transform: translateY(-5px);
+            box-shadow: 0 12px 40px rgba(108, 92, 231, 0.2);
         }
 
         .feature-icon {
-            font-size: 2.5rem;
+            font-size: 3rem;
             margin-bottom: 1rem;
+            color: var(--accent-color);
         }
 
         .feature-title {
-            font-size: 1.4rem;
+            font-size: 1.6rem;
             font-weight: 700;
             margin-bottom: 1rem;
-            color: var(--accent-color);
+            color: var(--text-color);
         }
 
         .feature-description {
             color: #666;
             line-height: 1.6;
-        }
-
-        .cta-button {
-            background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
-            color: white;
-            border: none;
-            padding: 1.2rem 2rem;
-            font-size: 1.2rem;
-            font-weight: 600;
-            border-radius: 999px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            margin-top: 2rem;
-            display: inline-block;
-        }
-
-        .cta-button:hover {
-            transform: scale(1.05) rotate(2deg);
-            box-shadow: 0 8px 32px rgba(108, 92, 231, 0.2);
         }
 
         /* Testimonials Section */
@@ -226,36 +262,131 @@
         }
 
         .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            color: var(--text-color);
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            width: 50px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+            position: absolute;
+            left: 50%;
+            bottom: -10px;
+            transform: translateX(-50%);
+        }
+
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        .testimonial-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+        }
+
+        .testimonial-text {
+            font-size: 1.1rem;
+            color: #555;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .testimonial-text::before, .testimonial-text::after {
+            content: '"';
             font-size: 2rem;
-            margin-bottom: 2rem;
+            color: var(--accent-color);
+            position: absolute;
+        }
+
+        .testimonial-text::before {
+            top: -10px;
+            left: -10px;
+        }
+
+        .testimonial-text::after {
+            bottom: -10px;
+            right: -10px;
+        }
+
+        .testimonial-author {
+            font-weight: 600;
             color: var(--text-color);
         }
 
-        .testimonial {
-            margin-bottom: 2rem;
+        /* CTA Section */
+        .cta-section {
+            padding: 4rem 1rem;
+            background: var(--primary-color);
+            text-align: center;
+            color: white;
         }
 
-        .testimonial p {
+        .cta-section h2 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .cta-section p {
             font-size: 1.2rem;
-            line-height: 1.5;
-            color: #666;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
-        .testimonial span {
-            font-weight: bold;
-            color: var(--text-color);
+        .cta-section .cta-button {
+            background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
         }
+
+        .cta-section .cta-button:hover {
+            transform: scale(1.05) rotate(2deg);
+            box-shadow: 0 8px 32px rgba(108, 92, 231, 0.3);
+        }
+
+        /* Blog Section (Optional) */
+        <style>
+            /* Add styles for blog section if needed */
+        </style>
 
         /* Footer Styles */
-        .talkidz-footer {
+        .footer {
             background: linear-gradient(180deg, 
                 rgba(255,255,255,0) 0%,
                 rgba(245,245,245,0.5) 20%,
                 var(--secondary-background) 100%);
             padding: 4rem 1rem 2rem;
-            margin-top: 4rem;
-            overflow: hidden;
             position: relative;
+            overflow: hidden;
         }
 
         .footer-content {
@@ -266,14 +397,14 @@
         }
 
         .footer-logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             margin-bottom: 2rem;
-            position: relative;
-            display: flex;      
-            flex-direction: column; 
-            align-items: center;    
         }
 
         .footer-logo {
+            font-family: var(--font-accent);
             font-size: 3.5rem;
             font-weight: 800;
             background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
@@ -282,38 +413,14 @@
             color: transparent;
             text-decoration: none;
             letter-spacing: -1px;
-            display: inline-block;
-            margin-bottom: 1rem;
-            position: relative;
-            z-index: 1;
+            margin-bottom: 0.5rem;
         }
 
-        .logo-byline {
+        .footer-byline {
             font-size: 0.75rem;
             font-weight: 500;
             color: #666;
-            margin-top: -0.25rem;
-            margin-left: 0.125rem;
             letter-spacing: 0.5px;
-        }
-
-        .logo-shine {
-            position: absolute;
-            top: -20%;
-            left: -20%;
-            right: -20%;
-            bottom: -20%;
-            background: radial-gradient(circle at 50% 50%, 
-                rgba(255,255,255,0.8) 0%,
-                rgba(255,255,255,0) 70%);
-            opacity: 0;
-            animation: shine-effect 5s infinite;
-            pointer-events: none;
-        }
-
-        @keyframes shine-effect {
-            0%, 100% { opacity: 0; transform: scale(0.8); }
-            50% { opacity: 0.5; transform: scale(1); }
         }
 
         .footer-slogan {
@@ -321,8 +428,8 @@
             font-weight: 700;
             margin: 2rem 0;
             padding: 0 1rem;
-            position: relative;
             display: inline-block;
+            color: var(--text-color);
         }
 
         .slogan-primary {
@@ -330,7 +437,6 @@
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            margin-bottom: 0.5rem;
             display: block;
         }
 
@@ -339,26 +445,6 @@
             color: #666;
             display: block;
             margin-top: 0.5rem;
-        }
-
-        .footer-decoration {
-            position: absolute;
-            width: 140%;
-            height: 140%;
-            top: -20%;
-            left: -20%;
-            background: radial-gradient(circle at center,
-                rgba(108, 92, 231, 0.1) 0%,
-                rgba(255, 75, 110, 0.1) 50%,
-                transparent 70%);
-            border-radius: 50%;
-            animation: rotate 20s linear infinite;
-            pointer-events: none;
-        }
-
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
         }
 
         .footer-navigation {
@@ -373,7 +459,7 @@
             color: #666;
             text-decoration: none;
             font-weight: 500;
-            transition: all 0.3s ease;
+            transition: color 0.3s ease;
             position: relative;
             padding: 0.5rem 1rem;
         }
@@ -396,15 +482,6 @@
 
         .footer-nav-item:hover::after {
             transform: scaleX(1);
-        }
-
-        .footer-bottom {
-            margin-top: 3rem;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(0,0,0,0.1);
-            color: #666;
-            font-size: 0.9rem;
-            text-align: center;
         }
 
         .footer-social {
@@ -443,17 +520,47 @@
             color: white;
         }
 
+        .footer-bottom {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(0,0,0,0.1);
+            color: #666;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        /* Responsive Styles */
         @media (max-width: 768px) {
-            .footer-logo {
-                font-size: 2.5rem;
+            .nav-links {
+                display: none; /* Implement a hamburger menu for mobile */
             }
 
-            .footer-slogan {
-                font-size: 2rem;
+            .hamburger {
+                display: block;
+                cursor: pointer;
+                font-size: 1.5rem;
+                color: #666;
             }
 
-            .slogan-secondary {
-                font-size: 1.4rem;
+            .hero {
+                padding: calc(1.5rem * var(--golden-ratio)) 1rem;
+            }
+
+            .title {
+                font-size: clamp(2rem, 8vw, 3rem);
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .testimonial-grid {
+                grid-template-columns: 1fr;
             }
 
             .footer-navigation {
@@ -473,80 +580,167 @@
     </style>
 </head>
 <body>
+    <!-- Header -->
     <header class="header">
         <nav class="nav">
             <div class="logo-container">
                 <a href="#" class="logo">Talkidz</a>
                 <span class="logo-byline">by Playbox</span>
             </div>
+            <div class="nav-links">
+                <a href="#features" class="nav-link">Features</a>
+                <a href="#testimonials" class="nav-link">Testimonials</a>
+                <a href="#blog" class="nav-link">Blog</a>
+                <a href="#contact" class="nav-link">Contact</a>
+            </div>
             <button class="share-button" onclick="shareApp()">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
-                    <polyline points="16 6 12 2 8 6"></polyline>
-                    <line x1="12" y1="2" x2="12" y2="15"></line>
-                </svg>
-                Share
+                <i class="fas fa-share-alt"></i> Share
             </button>
+            <!-- Hamburger Menu (Placeholder) -->
+            <!-- Implement a hamburger menu for mobile devices -->
+            <div class="hamburger" style="display: none;">
+                <i class="fas fa-bars"></i>
+            </div>
         </nav>
     </header>
 
     <!-- Hero Section -->
-    <main class="hero">
-        <img src="child.png" alt="Happy child using Talkidz" class="hero-image" data-aos="fade-up">
-        <h1 class="title" data-aos="fade-up" data-text="Empowering Your Child’s Emotional and Learning Journey">
-            Empowering Your Child’s Emotional and Learning Journey
-        </h1>
-        <p class="subtitle" data-aos="fade-up" data-aos-delay="200">
-            Discover a safe and engaging AI companion that listens, teaches, and grows with your child.
-        </p>
-        <a href="#start" class="cta-button" data-aos="fade-up" data-aos-delay="400">Get Started with Talkidz</a>
+    <main class="hero" id="hero">
+        <div class="hero-content" data-aos="fade-up">
+            <h1 class="title">Empowering Your Child’s Emotional and Learning Journey</h1>
+            <p class="subtitle">
+                Discover a safe and engaging AI companion that listens, teaches, and grows with your child.
+            </p>
+            <div class="cta-buttons">
+                <a href="#signup" class="cta-button" data-aos="fade-up" data-aos-delay="400">Get Started with Talkidz</a>
+                <a href="#demo" class="cta-button" data-aos="fade-up" data-aos-delay="600">Watch Demo</a>
+            </div>
+        </div>
     </main>
 
     <!-- Features Section -->
-    <section class="features-grid">
-        <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
-            <div class="feature-icon">🤗</div>
-            <h2 class="feature-title">Emotional Support</h2>
-            <p class="feature-description">A caring AI companion that helps your child navigate their emotions with kindness and understanding.</p>
+    <section class="features" id="features">
+        <h2 class="section-title" data-aos="fade-up">Features</h2>
+        <div class="features-grid">
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="200">
+                <div class="feature-icon"><i class="fas fa-heart"></i></div>
+                <h3 class="feature-title">Emotional Support</h3>
+                <p class="feature-description">
+                    A caring AI companion that helps your child navigate their emotions with kindness and understanding.
+                </p>
+            </div>
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+                <div class="feature-icon"><i class="fas fa-book-open"></i></div>
+                <h3 class="feature-title">Interactive Learning</h3>
+                <p class="feature-description">
+                    Fun and personalized lessons to keep your child engaged and curious every step of the way.
+                </p>
+            </div>
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="400">
+                <div class="feature-icon"><i class="fas fa-seedling"></i></div>
+                <h3 class="feature-title">Personal Growth</h3>
+                <p class="feature-description">
+                    Build confidence, creativity, and social skills in a safe and nurturing environment.
+                </p>
+            </div>
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="500">
+                <div class="feature-icon"><i class="fas fa-shield-alt"></i></div>
+                <h3 class="feature-title">Safety and Privacy</h3>
+                <p class="feature-description">
+                    Our top priority is your child's safety. We ensure all interactions are secure and private.
+                </p>
+            </div>
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="600">
+                <div class="feature-icon"><i class="fas fa-users"></i></div>
+                <h3 class="feature-title">Community Engagement</h3>
+                <p class="feature-description">
+                    Join a community of parents and children who are growing together with Talkidz.
+                </p>
+            </div>
         </div>
-        <div class="feature-card" data-aos="fade-up" data-aos-delay="400">
-            <div class="feature-icon">📚</div>
-            <h2 class="feature-title">Interactive Learning</h2>
-            <p class="feature-description">Fun and personalized lessons to keep your child engaged and curious every step of the way.</p>
-        </div>
-        <div class="feature-card" data-aos="fade-up" data-aos-delay="500">
-            <div class="feature-icon">🌱</div>
-            <h2 class="feature-title">Personal Growth</h2>
-            <p class="feature-description">Build confidence, creativity, and social skills in a safe and nurturing environment.</p>
+    </section>
+
+    <!-- Video Demo Section -->
+    <section class="video-demo" id="demo" style="padding: 4rem 1rem; text-align: center; background: var(--secondary-background);">
+        <h2 class="section-title" data-aos="fade-up">See Talkidz in Action</h2>
+        <div class="video-container" data-aos="fade-up" data-aos-delay="200">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/your-demo-video" 
+                title="Talkidz Demo" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowfullscreen></iframe>
         </div>
     </section>
 
     <!-- Testimonials Section -->
-    <section class="testimonials" style="background: var(--background-color); padding: 4rem 1rem; text-align: center;">
-        <h2 class="section-title" style="font-size: 2rem; margin-bottom: 2rem; color: var(--text-color);">What Parents Are Saying</h2>
-        <div class="testimonial" data-aos="fade-up" data-aos-delay="200" style="margin-bottom: 2rem;">
-            <p style="font-size: 1.2rem; line-height: 1.5; color: #666;">
-                "Talkidz has been a lifesaver for us! My daughter loves talking to her AI friend and has become more confident expressing her emotions."  
-                <br><span>- Sarah, Mom of 8-year-old</span>
-            </p>
+    <section class="testimonials" id="testimonials">
+        <h2 class="section-title" data-aos="fade-up">What Parents Are Saying</h2>
+        <div class="testimonial-grid">
+            <div class="testimonial-card" data-aos="fade-up" data-aos-delay="200">
+                <p class="testimonial-text">
+                    "Talkidz has been a lifesaver for us! My daughter loves talking to her AI friend and has become more confident expressing her emotions."
+                </p>
+                <p class="testimonial-author">- Sarah, Mom of 8-year-old</p>
+            </div>
+            <div class="testimonial-card" data-aos="fade-up" data-aos-delay="400">
+                <p class="testimonial-text">
+                    "It’s like having a fun tutor and therapist all in one! My son’s language skills and confidence have improved so much."
+                </p>
+                <p class="testimonial-author">- Daniel, Dad of 7-year-old</p>
+            </div>
+            <!-- Add more testimonials as needed -->
         </div>
-        <div class="testimonial" data-aos="fade-up" data-aos-delay="400">
-            <p style="font-size: 1.2rem; line-height: 1.5; color: #666;">
-                "It’s like having a fun tutor and therapist all in one! My son’s language skills and confidence have improved so much."  
-                <br><span>- Daniel, Dad of 7-year-old</span>
-            </p>
-        </div>
-        <!-- New CTA Button -->
         <a href="#signup" class="cta-button" data-aos="fade-up" data-aos-delay="600">Join the Talkidz Community</a>
     </section>
 
+    <!-- Blog Section (Optional) -->
+    <section class="blog" id="blog" style="padding: 4rem 1rem; background: var(--secondary-background);">
+        <h2 class="section-title" data-aos="fade-up">Latest from Our Blog</h2>
+        <div class="blog-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; max-width: 1200px; margin: 0 auto; padding: 0 1rem;">
+            <article class="blog-post" data-aos="fade-up" data-aos-delay="200">
+                <img src="blog1.jpg" alt="Blog Post 1" style="width: 100%; border-radius: 10px; margin-bottom: 1rem;">
+                <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem;">Understanding Your Child’s Emotions</h3>
+                <p style="color: #666;">Learn how Talkidz helps your child navigate and express their emotions effectively.</p>
+                <a href="#" style="color: var(--accent-color); text-decoration: none; font-weight: 600;">Read More</a>
+            </article>
+            <article class="blog-post" data-aos="fade-up" data-aos-delay="300">
+                <img src="blog2.jpg" alt="Blog Post 2" style="width: 100%; border-radius: 10px; margin-bottom: 1rem;">
+                <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem;">Boosting Language Skills with AI</h3>
+                <p style="color: #666;">Discover how interactive AI can enhance your child’s language development.</p>
+                <a href="#" style="color: var(--accent-color); text-decoration: none; font-weight: 600;">Read More</a>
+            </article>
+            <article class="blog-post" data-aos="fade-up" data-aos-delay="400">
+                <img src="blog3.jpg" alt="Blog Post 3" style="width: 100%; border-radius: 10px; margin-bottom: 1rem;">
+                <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem;">Creating a Safe Digital Environment</h3>
+                <p style="color: #666;">Tips and strategies for ensuring your child’s online interactions are secure.</p>
+                <a href="#" style="color: var(--accent-color); text-decoration: none; font-weight: 600;">Read More</a>
+            </article>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section" id="signup">
+        <h2 data-aos="fade-up">Ready to Empower Your Child?</h2>
+        <p data-aos="fade-up" data-aos-delay="200">
+            Join thousands of parents who are enhancing their children's emotional and educational journey with Talkidz.
+        </p>
+        <a href="#signup-form" class="cta-button" data-aos="fade-up" data-aos-delay="400">Sign Up Now</a>
+    </section>
+
+    <!-- Signup Form Section (Placeholder) -->
+    <section class="signup-form" id="signup-form" style="padding: 4rem 1rem; background: var(--secondary-background); text-align: center;">
+        <h2 class="section-title" data-aos="fade-up">Get Started with Talkidz</h2>
+        <form action="#" method="POST" style="max-width: 600px; margin: 0 auto;" data-aos="fade-up" data-aos-delay="200">
+            <input type="text" name="name" placeholder="Your Name" required style="width: 100%; padding: 0.8rem; margin-bottom: 1rem; border: 1px solid #ccc; border-radius: 5px;">
+            <input type="email" name="email" placeholder="Your Email" required style="width: 100%; padding: 0.8rem; margin-bottom: 1rem; border: 1px solid #ccc; border-radius: 5px;">
+            <button type="submit" class="cta-button" style="width: 100%; padding: 0.8rem; font-size: 1rem;">Create Account</button>
+        </form>
+    </section>
+
     <!-- Footer Section -->
-    <footer class="talkidz-footer">
+    <footer class="footer" id="contact">
         <div class="footer-content">
             <div class="footer-logo-container">
                 <a href="#" class="footer-logo">Talkidz</a>
-                <span class="logo-byline">by Playbox</span>
-                <div class="logo-shine"></div>
+                <span class="footer-byline">by Playbox</span>
             </div>
 
             <div class="footer-slogan">
@@ -554,99 +748,119 @@
                 <span class="slogan-secondary">Endless discovery</span>
             </div>
 
-            <div class="footer-decoration"></div>
-
             <nav class="footer-navigation">
-                <a href="#" class="footer-nav-item">About</a>
-                <a href="#" class="footer-nav-item">Safety</a>
-                <a href="#" class="footer-nav-item">Parents Guide</a>
-                <a href="#" class="footer-nav-item">Support</a>
-                <a href="#" class="footer-nav-item">Privacy</a>
+                <a href="#features" class="footer-nav-item">Features</a>
+                <a href="#testimonials" class="footer-nav-item">Testimonials</a>
+                <a href="#blog" class="footer-nav-item">Blog</a>
+                <a href="#contact" class="footer-nav-item">Contact</a>
+                <a href="#privacy" class="footer-nav-item">Privacy</a>
             </nav>
 
             <div class="footer-social">
                 <a href="#" class="social-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
-                    </svg>
+                    <i class="fab fa-facebook-f"></i>
                 </a>
                 <a href="#" class="social-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-                    </svg>
+                    <i class="fab fa-twitter"></i>
                 </a>
                 <a href="#" class="social-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
-                    </svg>
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="#" class="social-icon">
+                    <i class="fab fa-linkedin-in"></i>
                 </a>
             </div>
 
             <div class="footer-bottom">
                 <p>&copy; 2024 Talkidz. All rights reserved.</p>
+                <p>Designed with ❤️ by Playbox Team.</p>
             </div>
         </div>
     </footer>
 
+    <!-- Back to Top Button -->
+    <button id="backToTop" style="
+        position: fixed;
+        bottom: 40px;
+        right: 40px;
+        background: var(--primary-color);
+        color: white;
+        border: none;
+        padding: 0.8rem;
+        border-radius: 50%;
+        cursor: pointer;
+        display: none;
+        z-index: 1000;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    ">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
     <!-- AOS JavaScript Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
     
+    <!-- Font Awesome JavaScript for Icons -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    
+    <!-- Custom JavaScript -->
     <script>
-    // Initialize AOS
-    AOS.init({
-        duration: 800,
-        easing: 'ease-in-out',
-        once: true,
-    });
+        // Initialize AOS
+        AOS.init({
+            duration: 800,
+            easing: 'ease-in-out',
+            once: true,
+        });
 
-    // Handle share button
-    function shareApp() {
-        if (navigator.share) {
-            navigator.share({
-                title: 'Talkidz - AI Friends to Chat With',
-                text: 'Check out Talkidz, where you can chat with AI friends!',
-                url: window.location.href
-            })
-            .catch(console.error);
-        } else {
-            // Fallback for browsers that do not support the Share API
-            alert('Share functionality is not supported in your browser.');
+        // Share Button Functionality
+        function shareApp() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'Talkidz - AI Friends to Chat With',
+                    text: 'Check out Talkidz, where your child can chat with AI friends!',
+                    url: window.location.href
+                })
+                .catch(error => console.error('Error sharing:', error));
+            } else {
+                // Fallback for browsers that do not support the Share API
+                prompt('Copy the link below to share:', window.location.href);
+            }
         }
-    }
 
-    // Particle creation code
-    function createParticles() {
-        const background = document.createElement('div');
-        background.className = 'particle-background';
-        document.body.appendChild(background);
+        // Back to Top Button Functionality
+        const backToTopButton = document.getElementById('backToTop');
 
-        const particleCount = 50;
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                backToTopButton.style.display = 'block';
+            } else {
+                backToTopButton.style.display = 'none';
+            }
+        });
 
-        for (let i = 0; i < particleCount; i++) {
-            const particle = document.createElement('div');
-            particle.className = 'particle';
-            
-            // Random starting position
-            particle.style.left = Math.random() * 100 + 'vw';
-            particle.style.top = Math.random() * 100 + 'vh';
-            
-            // Random size
-            const size = Math.random() * 4 + 2;
-            particle.style.width = size + 'px';
-            particle.style.height = size + 'px';
-            
-            // Random animation duration and delay
-            particle.style.animationDuration = (Math.random() * 20 + 10) + 's';
-            particle.style.animationDelay = (Math.random() * 5) + 's';
-            
-            background.appendChild(particle);
+        backToTopButton.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Particle Background (Optional - Placeholder for Advanced Feature)
+        // Implement particle animations using a library like particles.js or similar
+        /*
+        function createParticles() {
+            // Particle creation logic or initialization of particles.js
         }
-    }
+        document.addEventListener('DOMContentLoaded', createParticles);
+        */
 
-    // Initialize particles when the page loads
-    document.addEventListener('DOMContentLoaded', createParticles);
+        // Placeholder for Live Chat Integration
+        // Integrate a live chat service like Intercom, Drift, or Tawk.to
+        /*
+        function initializeLiveChat() {
+            // Live chat initialization code
+        }
+        document.addEventListener('DOMContentLoaded', initializeLiveChat);
+        */
     </script>
 </body>
 </html>
