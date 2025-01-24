@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Child's New Best Friend | Talkidz</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #FF4B6E;
+            --accent-color: #6C5CE7;
+            --background-color: #FFF5F7;
+            --secondary-background: #FFFFFF;
+            --text-color: #1A1A1A;
+            --shadow-color: rgba(0, 0, 0, 0.08);
+            --spacing-unit: 1rem;
+            --star-color: #6C5CE7;
+            --golden-ratio: 1.618;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            background: linear-gradient(180deg, var(--background-color) 0%, var(--secondary-background) 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            color: var(--text-color);
+            line-height: 1.5;
+        }
+
+        /* Header Styles */
+        .header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            padding: var(--spacing-unit);
+            box-shadow: 0 2px 10px var(--shadow-color);
+        }
+
+        .nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin-right: auto;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-decoration: none;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-byline {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #666;
+            margin-top: -0.25rem;
+            margin-left: 0.125rem;
+            letter-spacing: 0.5px;
+        }
+
+        .share-button {
+            background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
+            color: white;
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 999px;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
+        }
+
+        .share-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(108, 92, 231, 0.3);
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: calc(2rem * var(--golden-ratio)) 1rem;
+            position: relative;
+            min-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: calc(1rem * var(--golden-ratio));
+        }
+
+        .title {
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin: 0;
+            line-height: 1.2;
+            max-width: 800px;
+        }
+
+        .subtitle {
+            font-size: clamp(1.2rem, 4vw, 1.8rem);
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(108, 92, 231, 0.1);
+            transition: transform 0.3s ease;
+            text-align: left;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--accent-color);
+        }
+
+        .feature-description {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .cta-button {
+            background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
+            color: white;
+            border: none;
+            padding: 1.2rem 2rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+            border-radius: 999px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            margin-top: 2rem;
+            display: inline-block;
+        }
+
+        .cta-button:hover {
+            transform: scale(1.05) rotate(2deg);
+            box-shadow: 0 8px 32px rgba(108, 92, 231, 0.2);
+        }
+
+        /* Footer Styles */
+        .talkidz-footer {
+            background: linear-gradient(180deg, 
+                rgba(255,255,255,0) 0%,
+                rgba(245,245,245,0.5) 20%,
+                var(--secondary-background) 100%);
+            padding: 4rem 1rem 2rem;
+            margin-top: 4rem;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+            position: relative;
+        }
+
+        .footer-logo-container {
+            margin-bottom: 2rem;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .footer-logo {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-decoration: none;
+            letter-spacing: -1px;
+            display: inline-block;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .footer-decoration {
+            position: absolute;
+            width: 140%;
+            height: 140%;
+            top: -20%;
+            left: -20%;
+            background: radial-gradient(circle at center,
+                rgba(108, 92, 231, 0.1) 0%,
+                rgba(255, 75, 110, 0.1) 50%,
+                transparent 70%);
+            border-radius: 50%;
+            animation: rotate 20s linear infinite;
+            pointer-events: none;
+        }
+
+        .footer-slogan {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 2rem 0;
+            padding: 0 1rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .slogan-primary {
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .slogan-secondary {
+            font-size: 1.8rem;
+            color: #666;
+            display: block;
+            margin-top: 0.5rem;
+        }
+
+        .footer-navigation {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+            margin: 3rem 0;
+        }
+
+        .footer-nav-item {
+            color: #666;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 0.5rem 1rem;
+        }
+
+        .footer-nav-item:hover {
+            color: var(--primary-color);
+        }
+
+        .footer-social {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .social-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px var(--shadow-color);
+        }
+
+        .social-icon:hover {
+            transform: translateY(-5px) scale(1.1);
+            box-shadow: 0 8px 24px var(--shadow-color);
+            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+        }
+
+        .social-icon svg {
+            width: 24px;
+            height: 24px;
+            color: #666;
+            transition: color 0.3s ease;
+        }
+
+        .social-icon:hover svg {
+            color: white;
+        }
+
+        .footer-bottom {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(0,0,0,0.1);
+            color: #666;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                padding: 4rem 1rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-logo {
+                font-size: 2.5rem;
+            }
+
+            .footer-slogan {
+                font-size: 2rem;
+            }
+
+            .slogan-secondary {
+                font-size: 1.4rem;
+            }
+
+            .footer-navigation {
+                gap: 1.5rem;
+            }
+
+            .social-icon {
+                width: 40px;
+                height: 40px;
+            }
+
+            .social-icon svg {
+                width: 20px;
+                height: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <nav class="nav">
+            <div class="logo-container">
+                <a href="#" class="logo">Talkidz</a>
+                <span class="logo-byline">by Playbox</span>
+            </div>
+            <button class="share-button" onclick="shareApp()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                    <polyline points="16 6 12 2 8 6"></polyline>
+                    <line x1="12" y1="2" x2="12" y2="15"></line>
+                </svg>
+                Share
+            </button>
+        </nav>
+    </header>
+
+    <main class="hero">
+        <h1 class="title" data-aos="fade-up">Your Child's New Best Friend</h1>
+        <p class="subtitle" data-aos="fade-up" data-aos-delay="200">
+            Emotional Support, Learning, and Growth in One Place
+        </p>
+        <div class="features-grid">
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="300">
+                <div class="feature-icon">🤗</div>
+                <h2 class="feature-title">Emotional Support</h2>
+                <p class="feature-description">A caring friend who listens, understands, and helps your child navigate their emotions safely and positively.</p>
+            </div>
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="400">
+                <div class="feature-icon">📚</div>
+                <h2 class="feature-title">Learning Companion</h2>
+                <p class="feature-description">Makes learning fun through interactive conversations, stories, and educational games tailored to your child's interests.</p>
+            </div>
+            <div class="feature-card" data-aos="fade-up" data-aos-delay="500">
+                <div class="feature-icon">🌱</div>
+                <h2 class="feature-title">Personal Growth</h2>
+                <p class="feature-description">Encourages curiosity, creativity, and critical thinking while building confidence and social skills.</p>
+            </div>
+        </div>
+        <a href="#start" class="cta-button" data-aos="fade-up" data-aos-delay="600">
+            Meet Your Child's New Friend</a>
+        </main>
+
+        <footer class="talkidz-footer">
+            <div class="footer-content">
+                <div class="footer-logo-container">
+                    <a href="#" class="footer-logo">Talkidz</a>
+                    <span class="logo-byline">by Playbox</span>
+                    <div class="logo-shine"></div>
+                </div>
+                <div class="footer-decoration"></div>
+
+                <div class="footer-slogan">
+                    <span class="slogan-primary">AI-Powered Playtime</span>
+                    <span class="slogan-secondary">Endless discovery</span>
+                </div>
+
+                <nav class="footer-navigation">
+                    <a href="#" class="footer-nav-item">About</a>
+                    <a href="#" class="footer-nav-item">Safety</a>
+                    <a href="#" class="footer-nav-item">Parents Guide</a>
+                    <a href="#" class="footer-nav-item">Support</a>
+                    <a href="#" class="footer-nav-item">Privacy</a>
+                </nav>
+
+                <div class="footer-social">
+                    <a href="#" class="social-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                        </svg>
+                    </a>
+                    <a href="#" class="social-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                        </svg>
+                    </a>
+                    <a href="#" class="social-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+                        </svg>
+                    </a>
+                </div>
+
+                <div class="footer-bottom">
+                    <p>&copy; 2024 Talkidz. All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+        <script>
+            AOS.init({
+                duration: 1000,
+                once: true
+            });
+
+            function shareApp() {
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'Talkidz - AI Friends to Chat With',
+                        text: 'Check out Talkidz, where you can chat with AI friends!',
+                        url: window.location.href
+                    })
+                    .catch(console.error);
+                }
+            }
+        </script>
+    </body>
+</html>
