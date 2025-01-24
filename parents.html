@@ -195,195 +195,6 @@
             transform: scale(1.05) rotate(2deg);
             box-shadow: 0 8px 32px rgba(108, 92, 231, 0.2);
         }
-
-        /* Footer Styles */
-        .talkidz-footer {
-            background: linear-gradient(180deg, 
-                rgba(255,255,255,0) 0%,
-                rgba(245,245,245,0.5) 20%,
-                var(--secondary-background) 100%);
-            padding: 4rem 1rem 2rem;
-            margin-top: 4rem;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            text-align: center;
-            position: relative;
-        }
-
-        .footer-logo-container {
-            margin-bottom: 2rem;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .footer-logo {
-            font-size: 3.5rem;
-            font-weight: 800;
-            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-decoration: none;
-            letter-spacing: -1px;
-            display: inline-block;
-            margin-bottom: 1rem;
-            position: relative;
-            z-index: 1;
-        }
-
-        .footer-decoration {
-            position: absolute;
-            width: 140%;
-            height: 140%;
-            top: -20%;
-            left: -20%;
-            background: radial-gradient(circle at center,
-                rgba(108, 92, 231, 0.1) 0%,
-                rgba(255, 75, 110, 0.1) 50%,
-                transparent 70%);
-            border-radius: 50%;
-            animation: rotate 20s linear infinite;
-            pointer-events: none;
-        }
-
-        .footer-slogan {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin: 2rem 0;
-            padding: 0 1rem;
-            position: relative;
-            display: inline-block;
-        }
-
-        .slogan-primary {
-            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            margin-bottom: 0.5rem;
-            display: block;
-        }
-
-        .slogan-secondary {
-            font-size: 1.8rem;
-            color: #666;
-            display: block;
-            margin-top: 0.5rem;
-        }
-
-        .footer-navigation {
-            display: flex;
-            justify-content: center;
-            gap: 3rem;
-            flex-wrap: wrap;
-            margin: 3rem 0;
-        }
-
-        .footer-nav-item {
-            color: #666;
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            position: relative;
-            padding: 0.5rem 1rem;
-        }
-
-        .footer-nav-item:hover {
-            color: var(--primary-color);
-        }
-
-        .footer-social {
-            display: flex;
-            justify-content: center;
-            gap: 1.5rem;
-            margin: 2rem 0;
-        }
-
-        .social-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 12px var(--shadow-color);
-        }
-
-        .social-icon:hover {
-            transform: translateY(-5px) scale(1.1);
-            box-shadow: 0 8px 24px var(--shadow-color);
-            background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
-        }
-
-        .social-icon svg {
-            width: 24px;
-            height: 24px;
-            color: #666;
-            transition: color 0.3s ease;
-        }
-
-        .social-icon:hover svg {
-            color: white;
-        }
-
-        .footer-bottom {
-            margin-top: 3rem;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(0,0,0,0.1);
-            color: #666;
-            font-size: 0.9rem;
-            text-align: center;
-        }
-
-        @keyframes rotate {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        @media (max-width: 768px) {
-            .hero {
-                padding: 4rem 1rem;
-            }
-
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .footer-logo {
-                font-size: 2.5rem;
-            }
-
-            .footer-slogan {
-                font-size: 2rem;
-            }
-
-            .slogan-secondary {
-                font-size: 1.4rem;
-            }
-
-            .footer-navigation {
-                gap: 1.5rem;
-            }
-
-            .social-icon {
-                width: 40px;
-                height: 40px;
-            }
-
-            .social-icon svg {
-                width: 20px;
-                height: 20px;
-            }
-        }
     </style>
 </head>
 <body>
@@ -451,71 +262,341 @@
     </section>
 
 
-        <footer class="talkidz-footer">
-            <div class="footer-content">
-                <div class="footer-logo-container">
-                    <a href="#" class="footer-logo">Talkidz</a>
-                    <span class="logo-byline">by Playbox</span>
-                    <div class="logo-shine"></div>
-                </div>
-                <div class="footer-decoration"></div>
+<style>
+    .talkidz-footer {
+        background: linear-gradient(180deg, 
+            rgba(255,255,255,0) 0%,
+            rgba(245,245,245,0.5) 20%,
+            var(--secondary-background) 100%);
+        padding: 4rem 1rem 2rem;
+        margin-top: 4rem;
+        overflow: hidden;
+        position: relative;
+    }
 
-                <div class="footer-slogan">
-                    <span class="slogan-primary">AI-Powered Playtime</span>
-                    <span class="slogan-secondary">Endless discovery</span>
-                </div>
+    .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        text-align: center;
+        position: relative;
+    }
 
-                <nav class="footer-navigation">
-                    <a href="#" class="footer-nav-item">About</a>
-                    <a href="#" class="footer-nav-item">Safety</a>
-                    <a href="#" class="footer-nav-item">Parents Guide</a>
-                    <a href="#" class="footer-nav-item">Support</a>
-                    <a href="#" class="footer-nav-item">Privacy</a>
-                </nav>
+    .footer-logo-container {
+        margin-bottom: 2rem;
+        position: relative;
+        display: flex;      
+        flex-direction: column; 
+        align-items: center;    
+    }
 
-                <div class="footer-social">
-                    <a href="#" class="social-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
-                        </svg>
-                    </a>
-                    <a href="#" class="social-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-                        </svg>
-                    </a>
-                    <a href="#" class="social-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
-                        </svg>
-                    </a>
-                </div>
+    .footer-logo {
+        font-size: 3.5rem;
+        font-weight: 800;
+        background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        text-decoration: none;
+        letter-spacing: -1px;
+        display: inline-block;
+        margin-bottom: 1rem;
+        position: relative;
+        z-index: 1;
+    }
 
-                <div class="footer-bottom">
-                    <p>&copy; 2024 Talkidz. All rights reserved.</p>
-                </div>
-            </div>
-        </footer>
+    .logo-shine {
+        position: absolute;
+        top: -20%;
+        left: -20%;
+        right: -20%;
+        bottom: -20%;
+        background: radial-gradient(circle at 50% 50%, 
+            rgba(255,255,255,0.8) 0%,
+            rgba(255,255,255,0) 70%);
+        opacity: 0;
+        animation: shine-effect 5s infinite;
+        pointer-events: none;
+    }
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
-        <script>
-            AOS.init({
-                duration: 1000,
-                once: true
-            });
+    @keyframes shine-effect {
+        0%, 100% { opacity: 0; transform: scale(0.8); }
+        50% { opacity: 0.5; transform: scale(1); }
+    }
 
-            function shareApp() {
-                if (navigator.share) {
-                    navigator.share({
-                        title: 'Talkidz - AI Friends to Chat With',
-                        text: 'Check out Talkidz, where you can chat with AI friends!',
-                        url: window.location.href
-                    })
-                    .catch(console.error);
-                }
-            }
-        </script>
-    </body>
+    .footer-slogan {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin: 2rem 0;
+        padding: 0 1rem;
+        position: relative;
+        display: inline-block;
+    }
+
+    .slogan-primary {
+        background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        margin-bottom: 0.5rem;
+        display: block;
+    }
+
+    .slogan-secondary {
+        font-size: 1.8rem;
+        color: #666;
+        display: block;
+        margin-top: 0.5rem;
+    }
+
+    .footer-decoration {
+        position: absolute;
+        width: 140%;
+        height: 140%;
+        top: -20%;
+        left: -20%;
+        background: radial-gradient(circle at center,
+            rgba(108, 92, 231, 0.1) 0%,
+            rgba(255, 75, 110, 0.1) 50%,
+            transparent 70%);
+        border-radius: 50%;
+        animation: rotate 20s linear infinite;
+        pointer-events: none;
+    }
+
+    @keyframes rotate {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+    }
+
+    .footer-navigation {
+        display: flex;
+        justify-content: center;
+        gap: 3rem;
+        flex-wrap: wrap;
+        margin: 3rem 0;
+    }
+
+    .footer-nav-item {
+        color: #666;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        position: relative;
+        padding: 0.5rem 1rem;
+    }
+
+    .footer-nav-item::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 2px;
+        background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+    }
+
+    .footer-nav-item:hover {
+        color: var(--primary-color);
+    }
+
+    .footer-nav-item:hover::after {
+        transform: scaleX(1);
+    }
+
+    .footer-bottom {
+        margin-top: 3rem;
+        padding-top: 2rem;
+        border-top: 1px solid rgba(0,0,0,0.1);
+        color: #666;
+        font-size: 0.9rem;
+        text-align: center;
+    }
+
+    .footer-social {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+        margin: 2rem 0;
+    }
+
+    .social-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px var(--shadow-color);
+    }
+
+    .social-icon:hover {
+        transform: translateY(-5px) scale(1.1);
+        box-shadow: 0 8px 24px var(--shadow-color);
+        background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
+    }
+
+    .social-icon svg {
+        width: 24px;
+        height: 24px;
+        color: #666;
+        transition: color 0.3s ease;
+    }
+
+    .social-icon:hover svg {
+        color: white;
+    }
+
+    @media (max-width: 768px) {
+        .footer-logo {
+            font-size: 2.5rem;
+        }
+
+        .footer-slogan {
+            font-size: 2rem;
+        }
+
+        .slogan-secondary {
+            font-size: 1.4rem;
+        }
+
+        .footer-navigation {
+            gap: 1.5rem;
+        }
+
+        .social-icon {
+            width: 40px;
+            height: 40px;
+        }
+
+        .social-icon svg {
+            width: 20px;
+            height: 20px;
+        }
+    }
+</style>
+
+<footer class="talkidz-footer">
+    
+    <div class="footer-content">
+        <div class="footer-logo-container">
+            <a href="#" class="footer-logo">Talkidz</a>
+            <span class="logo-byline">by Playbox</span>
+            <div class="logo-shine"></div>
+        </div>
+
+        <div class="footer-slogan">
+            <span class="slogan-primary">AI-Powered Playtime</span>
+            <span class="slogan-secondary">Endless discovery</span>
+        </div>
+
+        <div class="footer-decoration"></div>
+
+        <nav class="footer-navigation">
+            <a href="#" class="footer-nav-item">About</a>
+            <a href="#" class="footer-nav-item">Safety</a>
+            <a href="#" class="footer-nav-item">Parents Guide</a>
+            <a href="#" class="footer-nav-item">Support</a>
+            <a href="#" class="footer-nav-item">Privacy</a>
+        </nav>
+
+        <div class="footer-social">
+            <a href="#" class="social-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                </svg>
+            </a>
+            <a href="#" class="social-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                </svg>
+            </a>
+            <a href="#" class="social-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+                </svg>
+            </a>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2024 Talkidz. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+<script>
+// Modify your particle creation code
+const particlesContainer = document.querySelector('.particles');
+for (let i = 0; i < 20; i++) {
+    const particle = document.createElement('div');
+    particle.className = 'splash-particle';
+    particle.style.left = Math.random() * 100 + 'vw';
+    particle.style.top = Math.random() * 100 + 'vh';
+    particle.style.animationDelay = (Math.random() * 2) + 's';
+    
+    // Add random size variation
+    const size = Math.random() * 3 + 3; // This will give sizes between 3-6px
+    particle.style.width = size + 'px';
+    particle.style.height = size + 'px';
+    
+    particlesContainer.appendChild(particle);
+}
+    
+    // Handle category pill selection
+    const pills = document.querySelectorAll('.category-pill');
+    pills.forEach(pill => {
+        pill.addEventListener('click', () => {
+            pills.forEach(p => p.classList.remove('active'));
+            pill.classList.add('active');
+        });
+    });
+
+    // Handle share button
+    function shareApp() {
+        if (navigator.share) {
+            navigator.share({
+                title: 'Talkidz - AI Friends to Chat With',
+                text: 'Check out Talkidz, where you can chat with AI friends!',
+                url: window.location.href
+            })
+            .catch(console.error);
+        }
+    }
+
+    // Particle creation code
+    function createParticles() {
+        const background = document.createElement('div');
+        background.className = 'particle-background';
+        document.body.appendChild(background);
+
+        const particleCount = 50;
+
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            
+            // Random starting position
+            particle.style.left = Math.random() * 100 + 'vw';
+            particle.style.top = Math.random() * 100 + 'vh';
+            
+            // Random size
+            const size = Math.random() * 4 + 2;
+            particle.style.width = size + 'px';
+            particle.style.height = size + 'px';
+            
+            // Random animation duration and delay
+            particle.style.animationDuration = (Math.random() * 20 + 10) + 's';
+            particle.style.animationDelay = (Math.random() * 5) + 's';
+            
+            background.appendChild(particle);
+        }
+    }
+
+    // Initialize particles when the page loads
+    document.addEventListener('DOMContentLoaded', createParticles);
+</script>
 </html>
