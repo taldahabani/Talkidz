@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Talkidz - Your Child's New Best Friend</title>
+    <title>Your Child's New Best Friend | Talkidz</title>
     
     <!-- Normalize CSS -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" rel="stylesheet">
@@ -54,6 +54,7 @@
             z-index: 1000;
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             padding: var(--spacing-unit) 1rem;
             box-shadow: 0 2px 10px var(--shadow-color);
         }
@@ -70,66 +71,35 @@
             display: flex;
             flex-direction: column;
             align-items: flex-start;
+            margin-right: auto;
         }
 
         .logo {
             font-family: var(--font-accent);
-            font-size: 2.5rem;
-            font-weight: 700;
+            font-size: 2rem;
+            font-weight: 800;
             background: linear-gradient(45deg, var(--primary-color), var(--accent-color));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
             text-decoration: none;
+            letter-spacing: -0.5px;
         }
 
         .logo-byline {
             font-size: 0.75rem;
             font-weight: 500;
             color: #666;
-            margin-top: -0.3rem;
+            margin-top: -0.25rem;
+            margin-left: 0.125rem;
             letter-spacing: 0.5px;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 1.5rem;
-        }
-
-        .nav-link {
-            color: #666;
-            text-decoration: none;
-            font-weight: 500;
-            position: relative;
-            padding: 0.5rem 0;
-            transition: color 0.3s ease;
-        }
-
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
-            transform: scaleX(0);
-            transition: transform 0.3s ease;
-        }
-
-        .nav-link:hover {
-            color: var(--primary-color);
-        }
-
-        .nav-link:hover::after {
-            transform: scaleX(1);
         }
 
         .share-button, .cta-button {
             background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
             color: white;
             border: none;
-            padding: 0.8rem 1.5rem;
+            padding: 0.6rem 1.2rem;
             font-size: 1rem;
             font-weight: 600;
             border-radius: 999px;
@@ -157,28 +127,18 @@
             justify-content: center;
             gap: calc(1rem * var(--golden-ratio));
             position: relative;
-            background-image: url('hero-background.png'); /* Add a relevant background image */
+            background-image: url('child.png'); /* Replace with a relevant background image if desired */
             background-size: cover;
             background-position: center;
-            color: white;
+            color: var(--text-color);
         }
 
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
+        .hero-image {
             width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5); /* Overlay for better text visibility */
-            z-index: 0;
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 1;
-            max-width: 800px;
-            width: 100%;
+            max-width: 600px;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            object-fit: cover;
         }
 
         .title {
@@ -190,12 +150,14 @@
             color: transparent;
             margin-bottom: 1rem;
             line-height: 1.2;
+            max-width: 800px;
         }
 
         .subtitle {
             font-size: clamp(1.2rem, 4vw, 1.8rem);
-            color: #F0F0F0;
-            margin-bottom: 2rem;
+            color: #666;
+            max-width: 600px;
+            margin: 0 auto 2rem;
         }
 
         .cta-buttons {
@@ -285,7 +247,7 @@
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 2rem;
             max-width: 1200px;
-            margin: 0 auto;
+            margin: 0 auto 2rem;
             padding: 0 1rem;
         }
 
@@ -373,20 +335,16 @@
             box-shadow: 0 8px 32px rgba(108, 92, 231, 0.3);
         }
 
-        /* Blog Section (Optional) */
-        <style>
-            /* Add styles for blog section if needed */
-        </style>
-
         /* Footer Styles */
-        .footer {
+        .talkidz-footer {
             background: linear-gradient(180deg, 
                 rgba(255,255,255,0) 0%,
                 rgba(245,245,245,0.5) 20%,
                 var(--secondary-background) 100%);
             padding: 4rem 1rem 2rem;
-            position: relative;
+            margin-top: 4rem;
             overflow: hidden;
+            position: relative;
         }
 
         .footer-content {
@@ -397,10 +355,11 @@
         }
 
         .footer-logo-container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
             margin-bottom: 2rem;
+            position: relative;
+            display: flex;      
+            flex-direction: column; 
+            align-items: center;    
         }
 
         .footer-logo {
@@ -413,14 +372,38 @@
             color: transparent;
             text-decoration: none;
             letter-spacing: -1px;
-            margin-bottom: 0.5rem;
+            display: inline-block;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
         }
 
-        .footer-byline {
+        .logo-byline {
             font-size: 0.75rem;
             font-weight: 500;
             color: #666;
+            margin-top: -0.25rem;
+            margin-left: 0.125rem;
             letter-spacing: 0.5px;
+        }
+
+        .logo-shine {
+            position: absolute;
+            top: -20%;
+            left: -20%;
+            right: -20%;
+            bottom: -20%;
+            background: radial-gradient(circle at 50% 50%, 
+                rgba(255,255,255,0.8) 0%,
+                rgba(255,255,255,0) 70%);
+            opacity: 0;
+            animation: shine-effect 5s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes shine-effect {
+            0%, 100% { opacity: 0; transform: scale(0.8); }
+            50% { opacity: 0.5; transform: scale(1); }
         }
 
         .footer-slogan {
@@ -428,6 +411,7 @@
             font-weight: 700;
             margin: 2rem 0;
             padding: 0 1rem;
+            position: relative;
             display: inline-block;
             color: var(--text-color);
         }
@@ -437,6 +421,7 @@
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
+            margin-bottom: 0.5rem;
             display: block;
         }
 
@@ -445,6 +430,26 @@
             color: #666;
             display: block;
             margin-top: 0.5rem;
+        }
+
+        .footer-decoration {
+            position: absolute;
+            width: 140%;
+            height: 140%;
+            top: -20%;
+            left: -20%;
+            background: radial-gradient(circle at center,
+                rgba(108, 92, 231, 0.1) 0%,
+                rgba(255, 75, 110, 0.1) 50%,
+                transparent 70%);
+            border-radius: 50%;
+            animation: rotate 20s linear infinite;
+            pointer-events: none;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
 
         .footer-navigation {
@@ -529,10 +534,32 @@
             text-align: center;
         }
 
+        /* Back to Top Button */
+        #backToTop {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.8rem;
+            border-radius: 50%;
+            cursor: pointer;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        #backToTop:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+        }
+
         /* Responsive Styles */
         @media (max-width: 768px) {
             .nav-links {
-                display: none; /* Implement a hamburger menu for mobile */
+                display: none; /* Implement a hamburger menu for mobile if desired */
             }
 
             .hamburger {
@@ -597,24 +624,23 @@
                 <i class="fas fa-share-alt"></i> Share
             </button>
             <!-- Hamburger Menu (Placeholder) -->
-            <!-- Implement a hamburger menu for mobile devices -->
-            <div class="hamburger" style="display: none;">
+            <!-- Implement a hamburger menu for mobile devices if desired -->
+            <!-- <div class="hamburger">
                 <i class="fas fa-bars"></i>
-            </div>
+            </div> -->
         </nav>
     </header>
 
     <!-- Hero Section -->
     <main class="hero" id="hero">
-        <div class="hero-content" data-aos="fade-up">
-            <h1 class="title">Empowering Your Child’s Emotional and Learning Journey</h1>
-            <p class="subtitle">
-                Discover a safe and engaging AI companion that listens, teaches, and grows with your child.
-            </p>
-            <div class="cta-buttons">
-                <a href="#signup" class="cta-button" data-aos="fade-up" data-aos-delay="400">Get Started with Talkidz</a>
-                <a href="#demo" class="cta-button" data-aos="fade-up" data-aos-delay="600">Watch Demo</a>
-            </div>
+        <img src="child.png" alt="Happy child using Talkidz" class="hero-image" data-aos="fade-up">
+        <h1 class="title" data-aos="fade-up">Empowering Your Child’s Emotional and Learning Journey</h1>
+        <p class="subtitle" data-aos="fade-up" data-aos-delay="200">
+            Discover a safe and engaging AI companion that listens, teaches, and grows with your child.
+        </p>
+        <div class="cta-buttons">
+            <a href="#signup" class="cta-button" data-aos="fade-up" data-aos-delay="400">Get Started with Talkidz</a>
+            <a href="#demo" class="cta-button" data-aos="fade-up" data-aos-delay="600">Watch Demo</a>
         </div>
     </main>
 
@@ -688,32 +714,8 @@
             </div>
             <!-- Add more testimonials as needed -->
         </div>
+        <!-- New CTA Button After Testimonials -->
         <a href="#signup" class="cta-button" data-aos="fade-up" data-aos-delay="600">Join the Talkidz Community</a>
-    </section>
-
-    <!-- Blog Section (Optional) -->
-    <section class="blog" id="blog" style="padding: 4rem 1rem; background: var(--secondary-background);">
-        <h2 class="section-title" data-aos="fade-up">Latest from Our Blog</h2>
-        <div class="blog-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; max-width: 1200px; margin: 0 auto; padding: 0 1rem;">
-            <article class="blog-post" data-aos="fade-up" data-aos-delay="200">
-                <img src="blog1.jpg" alt="Blog Post 1" style="width: 100%; border-radius: 10px; margin-bottom: 1rem;">
-                <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem;">Understanding Your Child’s Emotions</h3>
-                <p style="color: #666;">Learn how Talkidz helps your child navigate and express their emotions effectively.</p>
-                <a href="#" style="color: var(--accent-color); text-decoration: none; font-weight: 600;">Read More</a>
-            </article>
-            <article class="blog-post" data-aos="fade-up" data-aos-delay="300">
-                <img src="blog2.jpg" alt="Blog Post 2" style="width: 100%; border-radius: 10px; margin-bottom: 1rem;">
-                <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem;">Boosting Language Skills with AI</h3>
-                <p style="color: #666;">Discover how interactive AI can enhance your child’s language development.</p>
-                <a href="#" style="color: var(--accent-color); text-decoration: none; font-weight: 600;">Read More</a>
-            </article>
-            <article class="blog-post" data-aos="fade-up" data-aos-delay="400">
-                <img src="blog3.jpg" alt="Blog Post 3" style="width: 100%; border-radius: 10px; margin-bottom: 1rem;">
-                <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem;">Creating a Safe Digital Environment</h3>
-                <p style="color: #666;">Tips and strategies for ensuring your child’s online interactions are secure.</p>
-                <a href="#" style="color: var(--accent-color); text-decoration: none; font-weight: 600;">Read More</a>
-            </article>
-        </div>
     </section>
 
     <!-- CTA Section -->
@@ -736,11 +738,12 @@
     </section>
 
     <!-- Footer Section -->
-    <footer class="footer" id="contact">
+    <footer class="talkidz-footer" id="contact">
         <div class="footer-content">
             <div class="footer-logo-container">
                 <a href="#" class="footer-logo">Talkidz</a>
-                <span class="footer-byline">by Playbox</span>
+                <span class="logo-byline">by Playbox</span>
+                <div class="logo-shine"></div>
             </div>
 
             <div class="footer-slogan">
@@ -748,26 +751,33 @@
                 <span class="slogan-secondary">Endless discovery</span>
             </div>
 
+            <div class="footer-decoration"></div>
+
             <nav class="footer-navigation">
-                <a href="#features" class="footer-nav-item">Features</a>
-                <a href="#testimonials" class="footer-nav-item">Testimonials</a>
-                <a href="#blog" class="footer-nav-item">Blog</a>
-                <a href="#contact" class="footer-nav-item">Contact</a>
+                <a href="#features" class="footer-nav-item">About</a>
+                <a href="#testimonials" class="footer-nav-item">Safety</a>
+                <a href="#signup-form" class="footer-nav-item">Parents Guide</a>
+                <a href="#contact" class="footer-nav-item">Support</a>
                 <a href="#privacy" class="footer-nav-item">Privacy</a>
             </nav>
 
             <div class="footer-social">
                 <a href="#" class="social-icon">
-                    <i class="fab fa-facebook-f"></i>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                    </svg>
                 </a>
                 <a href="#" class="social-icon">
-                    <i class="fab fa-twitter"></i>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                    </svg>
                 </a>
                 <a href="#" class="social-icon">
-                    <i class="fab fa-instagram"></i>
-                </a>
-                <a href="#" class="social-icon">
-                    <i class="fab fa-linkedin-in"></i>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path>
+                    </svg>
                 </a>
             </div>
 
@@ -779,20 +789,7 @@
     </footer>
 
     <!-- Back to Top Button -->
-    <button id="backToTop" style="
-        position: fixed;
-        bottom: 40px;
-        right: 40px;
-        background: var(--primary-color);
-        color: white;
-        border: none;
-        padding: 0.8rem;
-        border-radius: 50%;
-        cursor: pointer;
-        display: none;
-        z-index: 1000;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    ">
+    <button id="backToTop" aria-label="Back to Top">
         <i class="fas fa-arrow-up"></i>
     </button>
 
@@ -832,8 +829,12 @@
         window.addEventListener('scroll', () => {
             if (window.pageYOffset > 300) {
                 backToTopButton.style.display = 'block';
+                backToTopButton.style.opacity = '1';
             } else {
-                backToTopButton.style.display = 'none';
+                backToTopButton.style.opacity = '0';
+                setTimeout(() => {
+                    backToTopButton.style.display = 'none';
+                }, 300);
             }
         });
 
@@ -844,23 +845,8 @@
             });
         });
 
-        // Particle Background (Optional - Placeholder for Advanced Feature)
-        // Implement particle animations using a library like particles.js or similar
-        /*
-        function createParticles() {
-            // Particle creation logic or initialization of particles.js
-        }
-        document.addEventListener('DOMContentLoaded', createParticles);
-        */
-
-        // Placeholder for Live Chat Integration
-        // Integrate a live chat service like Intercom, Drift, or Tawk.to
-        /*
-        function initializeLiveChat() {
-            // Live chat initialization code
-        }
-        document.addEventListener('DOMContentLoaded', initializeLiveChat);
-        */
+        // Optional: Particle Background or Other Interactive Features
+        // Placeholder for advanced features like live chat, particle animations, etc.
     </script>
 </body>
 </html>
