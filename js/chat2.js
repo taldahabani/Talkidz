@@ -434,7 +434,7 @@ class ChatController {
     // === Star and Leveling State ===
     this.currentStars = 0;
     this.currentLevel = 1;
-    this.starsPerLevel = 100; // Stars required to level up
+    this.starsPerLevel = 12; // Stars required to level up
     this.starInterval = null; // Interval ID for awarding stars
     this.levelInterval = null; // Interval ID for leveling up
 
