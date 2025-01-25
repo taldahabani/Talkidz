@@ -708,10 +708,10 @@ class ChatController {
 
   // === Star and Leveling System Methods ===
   startStarAccumulation() {
-    // Award a star every 5 seconds
+    // Award a star every 1 seconds
     this.starInterval = setInterval(() => {
       this.awardStar();
-    }, 5000); // 5000 ms = 5 seconds
+    }, 1000); // 1000 ms = 1 seconds
 
     // Level up every 60 seconds
     this.levelInterval = setInterval(() => {
