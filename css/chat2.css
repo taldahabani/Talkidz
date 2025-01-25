@@ -228,7 +228,7 @@ body {
 .star-level-container {
     position: fixed;
     top: 80px; /* Below the top bar (70px) with 10px spacing */
-    right: 20px;
+    left: 20px; /* Changed from right to left */
     display: flex;
     align-items: center;
     gap: 10px;
@@ -246,7 +246,7 @@ body {
 }
 
 .star-progress {
-    width: 0%;
+    width: 0%; /* Initialize at 0% */
     height: 100%;
     background: linear-gradient(90deg, var(--accent-color), var(--primary-color));
     transition: width 0.5s ease;
@@ -647,6 +647,7 @@ body {
 }
 /* ======== END STAR LEVEL ANIMATIONS ======== */
 
+/* ======== RESPONSIVE DESIGN ======== */
 @media (max-width: 768px) {
     .background {
         width: 100%; height: auto;
@@ -675,9 +676,9 @@ body {
     }
     .star-level-container {
         top: 80px; /* Adjust if necessary */
-        right: 10px; /* Adjust spacing for smaller screens */
+        left: 10px; /* Adjust spacing for smaller screens */
         flex-direction: column;
-        align-items: flex-end;
+        align-items: flex-start; /* Align to start for left side */
         gap: 5px;
     }
     .star-bar {
