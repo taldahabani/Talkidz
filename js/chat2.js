@@ -740,7 +740,7 @@ class ChatController {
 
   levelUp() {
     this.currentLevel += 1;
-    this.currentStars = 0; // Reset stars or carry over if desired
+    this.currentStars = 0; // Reset stars after leveling up
     this.updateStarProgress();
     this.updateLevelIndicator();
     this.triggerConfetti(); // Celebrate level up
