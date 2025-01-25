@@ -7,6 +7,7 @@
     --shadow: rgba(0, 0, 0, 0.08);
     --transition-duration: 0.5s;
     --max-content-width: 768px;
+    --star-color: #FFD700; /* Gold color for stars */
 }
 
 body {
@@ -222,6 +223,54 @@ body {
     font-size: 20px;
 }
 /* ======== END LANGUAGE DROPDOWN ======== */
+
+/* ======== STAR LEVEL STYLES ======== */
+.star-level-container {
+    position: fixed;
+    top: 80px; /* Below the top bar (70px) with 10px spacing */
+    right: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 1000;
+}
+
+.star-bar {
+    position: relative;
+    width: 150px;
+    height: 20px;
+    background: var(--secondary-bg);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
+}
+
+.star-progress {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-color), var(--primary-color));
+    transition: width 0.5s ease;
+}
+
+.star-icon {
+    position: absolute;
+    top: 50%;
+    right: 5px;
+    transform: translateY(-50%);
+    font-size: 16px;
+    pointer-events: none;
+}
+
+.level-indicator {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-color);
+    background: var(--secondary-bg);
+    padding: 5px 10px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+/* ======== END STAR LEVEL STYLES ======== */
 
 .main-container {
     position: fixed;
@@ -545,76 +594,23 @@ body {
     border: 2px solid var(--accent-color);
 }
 
-.chat-container {
+.particle {
     position: absolute;
-    right: 2rem;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 300px;
-    height: 70vh;
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: 16px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    z-index: 5;
+    pointer-events: none;
+    opacity: 0;
 }
 
-.messages-wrapper {
-    flex: 1;
-    overflow-y: auto;
-    padding: 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    scrollbar-width: thin;
-    scrollbar-color: var(--accent-color) transparent;
-}
-
-.messages-wrapper::-webkit-scrollbar {
-    width: 6px;
-}
-
-.messages-wrapper::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.messages-wrapper::-webkit-scrollbar-thumb {
-    background-color: var(--accent-color);
-    border-radius: 3px;
-}
-
-.message {
-    max-width: 85%;
-    padding: 0.75rem 1rem;
-    border-radius: 12px;
-    font-size: 0.875rem;
-    line-height: 1.4;
-    animation: messageAppear 0.3s ease-out;
-}
-
-.message.user {
-    background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
-    color: white;
-    align-self: flex-end;
-    border-bottom-right-radius: 4px;
-}
-
-.message.agent {
-    background: var(--secondary-bg);
-    color: var(--text-color);
-    align-self: flex-start;
-    border-bottom-left-radius: 4px;
-}
-
-@keyframes messageAppear {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
+@keyframes float {
+    0% { 
+        transform: translate(0, 0) rotate(0deg); 
+        opacity: 0; 
     }
-    to {
-        opacity: 1;
-        transform: translateY(0);
+    20% { 
+        opacity: 0.8; 
+    }
+    100% { 
+        transform: translate(var(--tx), var(--ty)) rotate(360deg); 
+        opacity: 0; 
     }
 }
 
@@ -628,21 +624,34 @@ body {
     100% { transform: scale(1);   opacity: 1; }
 }
 
+/* ======== STAR LEVEL ANIMATIONS ======== */
+@keyframes starMove {
+    from {
+        opacity: 1;
+        transform: translate(0, 0) scale(1);
+    }
+    to {
+        opacity: 0;
+        transform: translate(var(--move-x), var(--move-y)) scale(1.5);
+    }
+}
+
+.star-animation {
+    position: absolute;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    animation: starMove 1s forwards;
+    font-size: 16px;
+    color: var(--star-color);
+}
+/* ======== END STAR LEVEL ANIMATIONS ======== */
+
 @media (max-width: 768px) {
     .background {
         width: 100%; height: auto;
         max-height: none;
         object-fit: cover;
-    }
-    .chat-container {
-        position: fixed;
-        right: 1rem;
-        left: 1rem;
-        width: auto;
-        height: 50vh;
-        bottom: calc(140px + env(safe-area-inset-bottom));
-        top: auto;
-        transform: none;
     }
     .controls-container {
         padding-bottom: env(safe-area-inset-bottom);
@@ -663,6 +672,24 @@ body {
     }
     .character-menu {
         width: 240px; /* Adjust width for mobile */
+    }
+    .star-level-container {
+        top: 80px; /* Adjust if necessary */
+        right: 10px; /* Adjust spacing for smaller screens */
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 5px;
+    }
+    .star-bar {
+        width: 120px;
+        height: 16px;
+    }
+    .star-icon {
+        font-size: 14px;
+    }
+    .level-indicator {
+        font-size: 0.9rem;
+        padding: 4px 8px;
     }
 }
 
