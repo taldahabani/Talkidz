@@ -1,3 +1,4 @@
+Js:
 document.querySelector('.splash-container').classList.remove('hidden');
 
 import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
@@ -325,7 +326,7 @@ const characters = {
   jonny: {
     id: 'jonny',
     name: 'Jonny',
-    agentId: 'KkBaB9UtASTL2kD1BPA9',
+    agentId: 'xiC8L3SOeHwYyCLLnYxF',
     assets: {
       idle: '/characters/jonny/assets/jonny-idle.mp4',
       talking: '/characters/jonny/assets/jonny-talk.mp4',
@@ -430,12 +431,12 @@ class ChatController {
     this.conversation = null;
     this.videosLoaded = { idle: false, speaking: false };
 
-    // Star and Leveling State
+    // === Star and Leveling State ===
     this.currentStars = 0;
     this.currentLevel = 1;
-    this.starsPerLevel = 100; // Total stars needed per level
-    this.starInterval = null; // Interval for awarding stars
-    this.levelInterval = null; // Interval for leveling up
+    this.starsPerLevel = 100; // Stars required to level up
+    this.starInterval = null; // Interval ID for awarding stars
+    this.levelInterval = null; // Interval ID for leveling up
 
     this.setupElements();
     this.setupCharacter();
@@ -464,7 +465,7 @@ class ChatController {
     this.languageMenu = document.getElementById('languageMenu');
     this.languageMenuContent = document.getElementById('languageMenuContent');
 
-    // Star Level Elements
+    // === Star Level Elements ===
     this.starProgress = document.querySelector('.star-progress');
     this.levelIndicator = document.querySelector('.level-indicator');
     this.starLevelContainer = document.querySelector('.star-level-container');
@@ -677,35 +678,35 @@ class ChatController {
   createParticles() {
     const container = document.querySelector('.main-container');
     for (let i = 0; i < 20; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'particle';
-        particle.style.width = Math.random() * 10 + 'px';
-        particle.style.height = particle.style.width;
-        particle.style.background = `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.5)`;
-        particle.style.borderRadius = '50%';
-        particle.style.position = 'absolute';
-        this.restartParticle(particle);
-        container.appendChild(particle);
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      particle.style.width = Math.random() * 10 + 'px';
+      particle.style.height = particle.style.width;
+      particle.style.background = `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.5)`;
+      particle.style.borderRadius = '50%';
+      particle.style.position = 'absolute';
+      this.restartParticle(particle);
+      container.appendChild(particle);
     }
   }
 
   restartParticle(particle) {
-      const startX = Math.random() * window.innerWidth;
-      const startY = window.innerHeight + 10;
-      const endX = startX + (Math.random() - 0.5) * 200;
-      const endY = -10;
-      
-      particle.style.left = startX + 'px';
-      particle.style.top = startY + 'px';
-      particle.style.setProperty('--tx', (endX - startX) + 'px');
-      particle.style.setProperty('--ty', (endY - startY) + 'px');
-      
-      particle.style.animation = 'none';
-      particle.offsetHeight; // Force reflow
-      particle.style.animation = `float ${Math.random() * 2 + 3}s linear infinite`;
+    const startX = Math.random() * window.innerWidth;
+    const startY = window.innerHeight + 10;
+    const endX = startX + (Math.random() - 0.5) * 200;
+    const endY = -10;
+
+    particle.style.left = startX + 'px';
+    particle.style.top = startY + 'px';
+    particle.style.setProperty('--tx', (endX - startX) + 'px');
+    particle.style.setProperty('--ty', (endY - startY) + 'px');
+
+    particle.style.animation = 'none';
+    particle.offsetHeight; // Force reflow
+    particle.style.animation = `float ${Math.random() * 2 + 3}s linear infinite`;
   }
 
-  // ==== Star and Leveling System Methods ====
+  // === Star and Leveling System Methods ===
   startStarAccumulation() {
     // Award a star every 5 seconds
     this.starInterval = setInterval(() => {
@@ -788,6 +789,7 @@ class ChatController {
       star.remove();
     });
   }
+  // === End Star and Leveling System Methods ===
 
   async startConversation() {
     try {
@@ -883,4 +885,3 @@ const characterId = urlParams.get('character') || 'jonny';
 const languageCode = urlParams.get('language') || 'en';
 
 const chat = new ChatController(characterId, languageCode);
-
