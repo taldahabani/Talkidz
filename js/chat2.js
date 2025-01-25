@@ -713,20 +713,12 @@ class ChatController {
       this.awardStar();
     }, 1000); // 1000 ms = 1 seconds
 
-    // Level up every 60 seconds
-    this.levelInterval = setInterval(() => {
-      this.levelUp();
-    }, 60000); // 60000 ms = 60 seconds
   }
 
   stopStarAccumulation() {
     if (this.starInterval) {
       clearInterval(this.starInterval);
       this.starInterval = null;
-    }
-    if (this.levelInterval) {
-      clearInterval(this.levelInterval);
-      this.levelInterval = null;
     }
   }
 
