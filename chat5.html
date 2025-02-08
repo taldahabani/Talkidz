@@ -15,7 +15,6 @@
 </head>
 
 <body>
-<!-- Splash Screen for Loading -->
 <div class="splash-container character-loading">
     <div class="splash-content">
         <div class="loading-circle">
@@ -26,7 +25,6 @@
     </div>
 </div>
 
-<!-- Top Bar with Character Name & Language Selector -->
 <div class="top-bar">
     <a href="/" class="back-button">
         <svg width="24" height="24" viewBox="0 0 24 24"
@@ -39,17 +37,18 @@
     <!-- Language Selector -->
     <div class="language-select-container">
         <button class="language-select-button" id="languageSelectButton">
+            <!-- The active language flag is inserted here via JS -->
             <span class="language-flag" id="currentLanguageFlag"></span>
         </button>
         <div class="language-menu" id="languageMenu">
             <div class="language-menu-content" id="languageMenuContent">
-                <!-- Language options dynamically filled in chat.js -->
+                <!-- Dynamically filled in chat.js -->
             </div>
         </div>
     </div>
+    <!-- End Language Selector -->
 </div>
 
-<!-- Main Content: Video Backgrounds and Actions -->
 <div class="main-container">
     <div class="video-wrapper">
         <div class="background image"></div>
@@ -60,7 +59,6 @@
     </div>
 </div>
 
-<!-- Main Action Container with Buttons for Interaction -->
 <div class="main-action-container">
     <button id="startButton" class="main-button">Start Conversation</button>
     <button class="character-select-button">
@@ -73,20 +71,8 @@
     </div>
 </div>
 
-<!-- Food and Water Buttons (New for Interaction) -->
-<div class="main-action-container">
-    <button class="food-button">
-        🍰 <!-- Example: Cake Icon for throwing food -->
-    </button>
-    <button class="water-button">
-        💧 <!-- Water Icon -->
-    </button>
-</div>
-
-<!-- Confetti Canvas (For Fun and Rewards) -->
 <canvas id="confetti-canvas"></canvas>
 
-<!-- Bottom Controls with Logo and Status Indicators -->
 <div class="controls-container">
     <div class="logo-container">
         <a href="/" class="logo">Talkidz</a>
@@ -109,7 +95,6 @@
     </div>
 </div>
 
-<!-- Include JavaScript file -->
 <script type="module" src="/js/chat5.js"></script>
 </body>
 </html>
