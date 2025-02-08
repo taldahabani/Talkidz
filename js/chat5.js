@@ -429,6 +429,8 @@ class ChatController {
     this.currentLanguage = languageCode || 'en';
     this.conversation = null;
     this.videosLoaded = { idle: false, speaking: false };
+    this.waterLevel = 100; // Default water level at 100%
+    this.foodLevel = 100; // Food consumption level (optional)
 
     this.setupElements();
     this.setupCharacter();
@@ -437,6 +439,7 @@ class ChatController {
     this.updateBackground('idle');
     this.setupCharacterMenu();
     this.setupLanguageMenu();
+    this.setupFoodAndWater();
   }
 
   setupElements() {
@@ -451,18 +454,22 @@ class ChatController {
     this.characterMenuContent = document.querySelector('.character-menu-content');
     this.characterSelectButton = document.querySelector('.character-select-button');
     this.loadingScreen = document.querySelector('.character-loading');
-
+    
     this.languageSelectButton = document.getElementById('languageSelectButton');
     this.currentLanguageFlag = document.getElementById('currentLanguageFlag');
     this.languageMenu = document.getElementById('languageMenu');
     this.languageMenuContent = document.getElementById('languageMenuContent');
+
+    // Elements for Food and Water System
+    this.foodButton = document.querySelector('.food-button');
+    this.waterButton = document.querySelector('.water-button');
+    this.waterLevelIndicator = document.querySelector('.water-level-indicator');
   }
 
   setupCharacter() {
     document.title = `${this.character.name} - Talkidz`;
     this.characterName.textContent = this.character.name;
-    this.backgroundImage.style.background =
-      `url('${this.character.assets.preview}') center/contain no-repeat`;
+    this.backgroundImage.style.background = `url('${this.character.assets.preview}') center/contain no-repeat`;
     this.idleVideo.src = this.character.assets.idle;
     this.speakingVideo.src = this.character.assets.talking;
 
@@ -498,7 +505,6 @@ class ChatController {
 
   setupLanguageMenu() {
     this.languageMenuContent.innerHTML = '';
-
     languages.forEach(lang => {
       const option = document.createElement('div');
       option.className = 'language-option';
@@ -514,7 +520,6 @@ class ChatController {
     });
 
     this.updateLanguageFlag(this.currentLanguage);
-
     this.languageSelectButton.addEventListener('click', (e) => {
       e.stopPropagation();
       this.languageMenu.classList.toggle('active');
@@ -530,28 +535,12 @@ class ChatController {
   }
 
   updateLanguageFlag(langCode) {
-    const selectedLang = languages.find(l => l.code === langCode)
-                       || languages.find(l => l.code === 'en');
+    const selectedLang = languages.find(l => l.code === langCode) || languages.find(l => l.code === 'en');
     if (selectedLang) {
       this.currentLanguageFlag.textContent = selectedLang.flag;
     } else {
       this.currentLanguageFlag.textContent = '🇺🇸';
     }
-  }
-
-  markActiveLanguage(newCode) {
-    const allLangOptions = document.querySelectorAll('.language-option');
-    allLangOptions.forEach(opt => opt.classList.remove('active'));
-
-    const newActive = Array.from(allLangOptions).find(
-      opt => opt.innerText.includes(this.getLangName(newCode))
-    );
-    if (newActive) newActive.classList.add('active');
-  }
-
-  getLangName(code) {
-    const found = languages.find(l => l.code === code);
-    return found ? found.name : '';
   }
 
   async changeLanguage(newCode) {
@@ -564,31 +553,82 @@ class ChatController {
 
     this.currentLanguage = newCode;
     this.updateLanguageFlag(newCode);
-    this.markActiveLanguage(newCode);
     this.languageMenu.classList.remove('active');
   }
 
-  async changeCharacter(characterId) {
-    if (this.conversation) {
-      await this.endConversation();
+  setupFoodAndWater() {
+    // Setup event listeners for food and water buttons
+    this.foodButton.addEventListener('click', () => this.throwFood());
+    this.waterButton.addEventListener('click', () => this.giveWater());
+
+    this.updateWaterLevel();
+  }
+
+  throwFood() {
+    // Trigger food throw animation and reactions
+    this.character.reactToFood();  // Assuming character has this method for reaction
+    this.triggerConfetti();  // Trigger confetti for fun interaction
+  }
+
+  giveWater() {
+    if (this.waterLevel <= 0) {
+      this.startMonetizationFlow();
+    } else {
+      this.waterLevel -= 20;  // Reduce the water level by 20% each time
+      this.updateWaterLevel();
+      this.character.reactToWater();  // Assuming character reacts to water
     }
-    this.loadingScreen.classList.remove('hidden');
-    this.videosLoaded = { idle: false, speaking: false };
+  }
 
-    const url = new URL(window.location);
-    url.searchParams.set('character', characterId);
-    window.history.pushState({}, '', url);
+  updateWaterLevel() {
+    this.waterLevelIndicator.style.width = `${this.waterLevel}%`;
+    if (this.waterLevel <= 0) {
+      this.updateBackground('idle');
+    }
+  }
 
-    this.character = characters[characterId];
-    this.setupCharacter();
-    this.preloadVideos();
-    this.updateBackground('idle');
+  startMonetizationFlow() {
+    // Start the monetization flow, allowing user to watch an ad or buy water
+    this.showMonetizationOptions();
+  }
 
-    document.querySelectorAll('.character-option').forEach(option => {
-      option.classList.toggle('active', option.querySelector('img').src.includes(characterId));
-    });
+  showMonetizationOptions() {
+    const options = prompt("Your cat is thirsty! Watch an ad or buy more water to continue.");
+    if (options === "ad") {
+      this.watchAdForWater();
+    } else if (options === "buy") {
+      this.buyWater();
+    }
+  }
 
-    this.characterMenu.classList.remove('active');
+  watchAdForWater() {
+    setTimeout(() => {
+      this.waterLevel = 100; // Reset water level to 100% after watching ad
+      this.updateWaterLevel();
+    }, 5000);  // Simulate 5 seconds ad watching
+  }
+
+  buyWater() {
+    this.waterLevel = 100; // Reset water level to 100%
+    this.updateWaterLevel();
+  }
+
+  updateBackground(mode) {
+    if (mode === 'speaking' && this.videosLoaded.speaking) {
+      this.idleVideo.classList.remove('active');
+      this.speakingVideo.classList.add('active');
+      this.speakingVideo.play().catch(console.error);
+    } else if (this.videosLoaded.idle) {
+      this.speakingVideo.classList.remove('active');
+      this.idleVideo.classList.add('active');
+      this.idleVideo.play().catch(console.error);
+    } else {
+      this.backgroundImage.style.opacity = '1';
+      [this.idleVideo, this.speakingVideo].forEach(video =>
+        video.classList.remove('active')
+      );
+    }
+    this.updateStatus(mode);
   }
 
   updateStatus(mode) {
@@ -625,24 +665,6 @@ class ChatController {
     });
   }
 
-  updateBackground(mode) {
-    if (mode === 'speaking' && this.videosLoaded.speaking) {
-      this.idleVideo.classList.remove('active');
-      this.speakingVideo.classList.add('active');
-      this.speakingVideo.play().catch(console.error);
-    } else if (this.videosLoaded.idle) {
-      this.speakingVideo.classList.remove('active');
-      this.idleVideo.classList.add('active');
-      this.idleVideo.play().catch(console.error);
-    } else {
-      this.backgroundImage.style.opacity = '1';
-      [this.idleVideo, this.speakingVideo].forEach(video =>
-        video.classList.remove('active')
-      );
-    }
-    this.updateStatus(mode);
-  }
-
   triggerConfetti() {
     const options = { origin: { y: 0.7 } };
     const count = 200;
@@ -662,42 +684,10 @@ class ChatController {
     });
   }
 
-createParticles() {
-    const container = document.querySelector('.main-container');
-    for (let i = 0; i < 20; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'particle';
-        particle.style.width = Math.random() * 10 + 'px';
-        particle.style.height = particle.style.width;
-        particle.style.background = `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.5)`;
-        particle.style.borderRadius = '50%';
-        particle.style.position = 'absolute';
-        this.restartParticle(particle);
-        container.appendChild(particle);
-    }
-}
-
-restartParticle(particle) {
-    const startX = Math.random() * window.innerWidth;
-    const startY = window.innerHeight + 10;
-    const endX = startX + (Math.random() - 0.5) * 200;
-    const endY = -10;
-    
-    particle.style.left = startX + 'px';
-    particle.style.top = startY + 'px';
-    particle.style.setProperty('--tx', (endX - startX) + 'px');
-    particle.style.setProperty('--ty', (endY - startY) + 'px');
-    
-    particle.style.animation = 'none';
-    particle.offsetHeight; // Force reflow
-    particle.style.animation = `float ${Math.random() * 2 + 3}s linear infinite`;
-}
-
   async startConversation() {
     try {
       await navigator.mediaDevices.getUserMedia({ audio: true });
       this.triggerConfetti();
-      this.createParticles();
       this.startButton.classList.add('active');
       this.startButton.innerHTML = `
         <svg width="24" height="24" viewBox="0 0 24 24"
