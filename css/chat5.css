@@ -1,0 +1,253 @@
+:root {
+    --primary-color: #FF6B6B;
+    --secondary-color: #4ECDC4;
+    --accent-color: #6C5CE7;
+    --text-color: #2D3436;
+    --bg-color: #F8F9FA;
+}
+
+body {
+    margin: 0;
+    font-family: 'Comic Neue', cursive;
+    background: var(--bg-color);
+    overflow: hidden;
+}
+
+/* Splash Screen */
+.splash-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    transition: opacity 0.5s;
+}
+
+.loading-circle {
+    position: relative;
+    width: 100px;
+    height: 100px;
+}
+
+.circle {
+    position: absolute;
+    border: 3px solid var(--primary-color);
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: rotate 1.5s linear infinite;
+}
+
+.circle-1 { width: 100%; height: 100%; }
+.circle-2 { width: 70%; height: 70%; top: 15%; left: 15%; animation-delay: -0.5s; }
+.circle-3 { width: 40%; height: 40%; top: 30%; left: 30%; animation-delay: -1s; }
+
+@keyframes rotate {
+    to { transform: rotate(360deg); }
+}
+
+/* Main UI */
+.top-bar {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    display: flex;
+    justify-content: space-between;
+    z-index: 100;
+}
+
+.star-bar {
+    background: rgba(0, 0, 0, 0.8);
+    padding: 8px 16px;
+    border-radius: 20px;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.xp-progress {
+    width: 100px;
+    height: 6px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+}
+
+.xp-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    border-radius: 3px;
+    transition: width 0.3s ease;
+}
+
+/* Timer */
+.timer-container {
+    position: fixed;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+}
+
+.timer-progress {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    border-radius: 4px;
+    transition: width 1s linear;
+}
+
+/* Cat Container */
+.main-container {
+    position: fixed;
+    top: 120px;
+    bottom: 120px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.cat-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    max-width: 600px;
+}
+
+.cat-video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.cat-message {
+    position: absolute;
+    bottom: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.9);
+    padding: 12px 24px;
+    border-radius: 24px;
+    font-size: 1.2rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    max-width: 80%;
+    text-align: center;
+}
+
+/* Food Inventory */
+.food-inventory {
+    position: fixed;
+    bottom: 160px;
+    left: 20px;
+    display: flex;
+    gap: 12px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.food-item {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: grab;
+    transition: transform 0.2s ease;
+    user-select: none;
+}
+
+.food-item:active {
+    cursor: grabbing;
+    transform: scale(1.1);
+}
+
+/* Controls */
+.controls-container {
+    position: fixed;
+    bottom: 40px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.main-button {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: var(--accent-color);
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 8px 16px rgba(108, 92, 231, 0.3);
+    transition: transform 0.2s ease;
+}
+
+.main-button:active {
+    transform: scale(0.95);
+}
+
+/* Monetization Modal */
+.monetization-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    padding: 24px;
+    border-radius: 16px;
+    text-align: center;
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    max-width: 300px;
+}
+
+.water-drop {
+    font-size: 48px;
+    animation: drip 1.5s infinite;
+}
+
+.monetization-options {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.action-button {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    background: var(--primary-color);
+    color: white;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.action-button:hover {
+    transform: translateY(-2px);
+}
+
+@keyframes drip {
+    0% { transform: translateY(0); opacity: 1; }
+    50% { transform: translateY(20px); opacity: 0.5; }
+    100% { transform: translateY(40px); opacity: 0; }
+}
+
+.hidden {
+    display: none !important;
+}
