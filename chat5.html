@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Noodles the Cat - Virtual Pet</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+</head>
+<body>
+    <!-- Splash Screen -->
+    <div class="splash-container">
+        <div class="splash-content">
+            <div class="loading-circle">
+                <div class="circle circle-1"></div>
+                <div class="circle circle-2"></div>
+                <div class="circle circle-3"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main UI -->
+    <div class="top-bar">
+        <div class="star-bar">
+            <div class="xp-progress">
+                <div class="xp-fill"></div>
+            </div>
+            ⭐ Level <span id="level">1</span>
+        </div>
+        
+        <!-- Language Selector -->
+        <div class="language-select-container">
+            <button class="language-select-button" id="languageSelectButton">
+                <span class="language-flag" id="currentLanguageFlag">🇺🇸</span>
+            </button>
+            <div class="language-menu" id="languageMenu">
+                <div class="language-menu-content"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Timer -->
+    <div class="timer-container">
+        <div class="timer-progress"></div>
+    </div>
+
+    <!-- Cat Container -->
+    <div class="main-container">
+        <div class="cat-container">
+            <div class="cat-message"></div>
+            <video class="cat-video" id="idleVideo" loop muted playsinline></video>
+        </div>
+    </div>
+
+    <!-- Food Inventory -->
+    <div class="food-inventory">
+        <div class="food-item tomato" data-food="tomato">🍅</div>
+        <div class="food-item cake" data-food="cake">🎂</div>
+        <div class="food-item noodles" data-food="noodles">🍜</div>
+    </div>
+
+    <!-- Main Controls -->
+    <div class="controls-container">
+        <button id="micButton" class="main-button">
+            <span class="mic-icon">🎤</span>
+        </button>
+    </div>
+
+    <!-- Monetization Modal -->
+    <div class="monetization-modal hidden">
+        <div class="water-drop">💧</div>
+        <h3>Noodles is Thirsty!</h3>
+        <div class="monetization-options">
+            <button class="action-button watch-ad">Watch Ad (+1 min)</button>
+            <button class="action-button buy-water">Buy Water (+2 min)</button>
+            <button class="action-button invite-friend">Invite Friend (+3 min)</button>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
