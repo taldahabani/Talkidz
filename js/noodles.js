@@ -73,23 +73,20 @@ const languages = [
   { code: 'ru', flag: '🇷🇺', name: 'Russian', firstMessage: "Привет, рад тебя видеть!" }
 ];
 
-const characters = {
-  cat: {
-    id: 'cat',
-    name: 'Noodles',
-    agentId: '4gWkcgFThRtBuhM5akxT',
-    assets: {
-      idle: '/characters/cat/assets/cat-idle.mp4',
-      talking: '/characters/cat/assets/cat-talking.mp4',
-      preview: '/characters/cat/assets/cat.png',
-      icon: '/characters/cat/assets/cat.jpg'
-    }
+const character = {
+  id: 'cat',
+  name: 'Noodles',
+  agentId: '4gWkcgFThRtBuhM5akxT',
+  assets: {
+    idle: '/characters/cat/assets/cat-idle.mp4',
+    talking: '/characters/cat/assets/cat-talking.mp4',
+    preview: '/characters/cat/assets/cat.png',
+    icon: '/characters/cat/assets/cat.jpg'
   }
 };
 
 class ChatController {
-  constructor(characterId, languageCode) {
-    this.character = characters[characterId];
+  constructor(languageCode) {
     this.currentLanguage = languageCode || 'en';
     this.conversation = null;
     this.videosLoaded = { idle: false, speaking: false };
@@ -99,7 +96,6 @@ class ChatController {
     this.setupEventListeners();
     this.preloadVideos();
     this.updateBackground('idle');
-    this.setupCharacterMenu();
     this.setupLanguageMenu();
   }
 
@@ -111,9 +107,6 @@ class ChatController {
     this.statusDot = document.querySelector('.status-dot');
     this.statusText = document.querySelector('.status-text');
     this.characterName = document.querySelector('.character-name');
-    this.characterMenu = document.querySelector('.character-menu');
-    this.characterMenuContent = document.querySelector('.character-menu-content');
-    this.characterSelectButton = document.querySelector('.character-select-button');
     this.loadingScreen = document.querySelector('.character-loading');
 
     this.languageSelectButton = document.getElementById('languageSelectButton');
@@ -123,41 +116,12 @@ class ChatController {
   }
 
   setupCharacter() {
-    document.title = `${this.character.name} - Talkidz`;
-    this.characterName.textContent = this.character.name;
+    document.title = `${character.name} - Talkidz`;
+    this.characterName.textContent = character.name;
     this.backgroundImage.style.background =
-      `url('${this.character.assets.preview}') center/contain no-repeat`;
-    this.idleVideo.src = this.character.assets.idle;
-    this.speakingVideo.src = this.character.assets.talking;
-
-    this.characterSelectButton.innerHTML = `
-      <div class="character-icon">
-        <img src="${this.character.assets.icon}" alt="${this.character.name}">
-      </div>`;
-  }
-
-  setupCharacterMenu() {
-    this.characterMenuContent.innerHTML = '';
-    Object.values(characters).forEach(char => {
-      const option = document.createElement('div');
-      option.className = `character-option ${char.id === this.character.id ? 'active' : ''}`;
-      option.innerHTML = `<img src="${char.assets.icon}" alt="${char.name}">`;
-      option.addEventListener('click', () => this.changeCharacter(char.id));
-      this.characterMenuContent.appendChild(option);
-    });
-
-    this.characterSelectButton.addEventListener('click', (e) => {
-      e.stopPropagation();
-      this.characterMenu.classList.toggle('active');
-    });
-
-    document.addEventListener('click', (e) => {
-      const insideMenu = this.characterMenu.contains(e.target);
-      const clickedButton = this.characterSelectButton.contains(e.target);
-      if (!insideMenu && !clickedButton) {
-        this.characterMenu.classList.remove('active');
-      }
-    });
+      `url('${character.assets.preview}') center/contain no-repeat`;
+    this.idleVideo.src = character.assets.idle;
+    this.speakingVideo.src = character.assets.talking;
   }
 
   setupLanguageMenu() {
@@ -232,29 +196,6 @@ class ChatController {
     this.languageMenu.classList.remove('active');
   }
 
-  async changeCharacter(characterId) {
-    if (this.conversation) {
-      await this.endConversation();
-    }
-    this.loadingScreen.classList.remove('hidden');
-    this.videosLoaded = { idle: false, speaking: false };
-
-    const url = new URL(window.location);
-    url.searchParams.set('character', characterId);
-    window.history.pushState({}, '', url);
-
-    this.character = characters[characterId];
-    this.setupCharacter();
-    this.preloadVideos();
-    this.updateBackground('idle');
-
-    document.querySelectorAll('.character-option').forEach(option => {
-      option.classList.toggle('active', option.querySelector('img').src.includes(characterId));
-    });
-
-    this.characterMenu.classList.remove('active');
-  }
-
   updateStatus(mode) {
     this.statusDot.classList.remove('listening');
     switch (mode) {
@@ -326,22 +267,22 @@ class ChatController {
     });
   }
 
-createParticles() {
+  createParticles() {
     const container = document.querySelector('.main-container');
     for (let i = 0; i < 20; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'particle';
-        particle.style.width = Math.random() * 10 + 'px';
-        particle.style.height = particle.style.width;
-        particle.style.background = `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.5)`;
-        particle.style.borderRadius = '50%';
-        particle.style.position = 'absolute';
-        this.restartParticle(particle);
-        container.appendChild(particle);
+      const particle = document.createElement('div');
+      particle.className = 'particle';
+      particle.style.width = Math.random() * 10 + 'px';
+      particle.style.height = particle.style.width;
+      particle.style.background = `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.5)`;
+      particle.style.borderRadius = '50%';
+      particle.style.position = 'absolute';
+      this.restartParticle(particle);
+      container.appendChild(particle);
     }
-}
+  }
 
-restartParticle(particle) {
+  restartParticle(particle) {
     const startX = Math.random() * window.innerWidth;
     const startY = window.innerHeight + 10;
     const endX = startX + (Math.random() - 0.5) * 200;
@@ -355,7 +296,7 @@ restartParticle(particle) {
     particle.style.animation = 'none';
     particle.offsetHeight; // Force reflow
     particle.style.animation = `float ${Math.random() * 2 + 3}s linear infinite`;
-}
+  }
 
   async startConversation() {
     try {
@@ -371,11 +312,10 @@ restartParticle(particle) {
         </svg>
       `;
 
-      const charMessages = firstMessages[this.character.id] || {};
-      const selectedMsg = charMessages[this.currentLanguage] || "Hello!";
+      const selectedMsg = firstMessages.cat[this.currentLanguage] || "Hello!";
 
       this.conversation = await Conversation.startSession({
-        agentId: this.character.agentId,
+        agentId: character.agentId,
         overrides: {
           agent: {
             language: this.currentLanguage || 'en',
@@ -433,15 +373,14 @@ restartParticle(particle) {
 window.shareCharacter = () => {
   if (navigator.share) {
     navigator.share({
-      title: `Chat with ${chat.character.name} on Talkidz`,
-      text: `Come chat with ${chat.character.name}, your new AI friend!`,
+      title: `Chat with ${character.name} on Talkidz`,
+      text: `Come chat with ${character.name}, your new AI friend!`,
       url: window.location.href
     }).catch(console.error);
   }
 };
 
 const urlParams = new URLSearchParams(window.location.search);
-const characterId = urlParams.get('character') || 'jonny';
 const languageCode = urlParams.get('language') || 'en';
 
-const chat = new ChatController(characterId, languageCode);
+const chat = new ChatController(languageCode);
