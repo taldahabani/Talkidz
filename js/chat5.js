@@ -3,6 +3,161 @@ document.querySelector('.splash-container').classList.remove('hidden');
 import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
 
 const firstMessages = {
+  jonny: {
+    en: "Hey it’s Jonny, Woof Woof!. Nice to see you",
+    ja: "やあ、ジョニーだよ、ワンワン！お会いできて嬉しいよ",
+    zh: "嘿，我是乔尼，汪汪！很高兴见到你",
+    de: "Hey, ich bin Jonny, Wau Wau! Schön dich zu sehen",
+    hi: "अरे, मैं जॉनी हूँ, वूफ वूफ! आपको देखकर अच्छा लगा",
+    fr: "Salut, c'est Jonny, Wouf Wouf ! Ravi de te voir",
+    ko: "안녕, 나는 조니야, 멍멍! 만나서 반가워",
+    pt: "Ei, sou o Jonny, au au! Bom te ver",
+    it: "Ehi, sono Jonny, bau bau! Bello vederti",
+    es: "¡Hola, soy Jonny, guau guau! Encantado de verte",
+    id: "Hai, ini Jonny, guk guk! Senang bertemu denganmu",
+    nl: "Hé, ik ben Jonny, woef woef! Leuk je te zien",
+    tr: "Hey, ben Jonny, hav hav! Seni gördüğüme sevindim",
+    fil: "Hoy, ako si Jonny, aw aw! Ikinagagalak kitang makita",
+    pl: "Hej, jestem Jonny, hau hau! Miło cię widzieć",
+    sv: "Hej, jag är Jonny, voff voff! Kul att se dig",
+    bg: "Хей, аз съм Джони, бау бау! Радвам се да те видя",
+    ro: "Hei, sunt Jonny, ham ham! Mă bucur să te văd",
+    ar: "مرحباً، أنا جوني، هوف هوف! سعيد برؤيتك",
+    cs: "Ahoj, tady Jonny, haf haf! Rád tě vidím",
+    el: "Γεια, είμαι ο Jonny, γουφ γουφ! Χαίρομαι που σε βλέπω",
+    fi: "Hei, olen Jonny, hau hau! Kiva nähdä sinua",
+    hr: "Bok, ja sam Jonny, vau vau! Drago mi je što te vidim",
+    ms: "Hai, saya Jonny, gong gong! Gembira bertemu kamu",
+    sk: "Ahoj, tu je Jonny, haf haf! Rád ťa vidím",
+    da: "Hej, jeg er Jonny, vuf vuf! Rart at se dig",
+    ta: "ஹே, நான் ஜொன்னி, வூஃ வூஃ! உங்களை சந்தித்ததில் மகிழ்ச்சி",
+    uk: "Гей, я Джонні, гав гав! Радий тебе бачити",
+    ru: "Привет, я Джонни, гав-гав! Рад тебя видеть"
+  },
+  duck: {
+    en: "Hey it's quack quack! Nice to see you!",
+    ja: "やあ、ガーガーだよ！会えて嬉しい！",
+    zh: "嘿，是嘎嘎！很高兴见到你！",
+    de: "Hey, hier ist Quack Quack! Schön dich zu sehen!",
+    hi: "अरे, ये क्वैक क्वैक है! आपको देखकर अच्छा लगा!",
+    fr: "Hey, c'est Quack Quack ! Ravi de te voir !",
+    ko: "안녕, 꽥꽥이야! 만나서 반가워!",
+    pt: "Ei, é o Quack Quack! Bom te ver!",
+    it: "Ehi, è Quack Quack! Bello vederti!",
+    es: "¡Hola, es Quack Quack! ¡Encantado de verte!",
+    id: "Hai, ini Quack Quack! Senang bertemu denganmu!",
+    nl: "Hé, dit is Quack Quack! Leuk je te zien!",
+    tr: "Hey, bu Quack Quack! Seni gördüğüme sevindim!",
+    fil: "Hoy, si Quack Quack ito! Ikinagagalak kitang makita!",
+    pl: "Hej, to Quack Quack! Miło cię widzieć!",
+    sv: "Hej, det är Quack Quack! Kul att se dig!",
+    bg: "Хей, това е Куак Куак! Радвам се да те видя!",
+    ro: "Hei, e Quack Quack! Mă bucur să te văd!",
+    ar: "مرحباً، إنه كواك كواك! سعيد برؤيتك!",
+    cs: "Ahoj, to je Quack Quack! Rád tě vidím!",
+    el: "Γεια, είναι ο Quack Quack! Χαίρομαι που σε βλέπω!",
+    fi: "Hei, se on Quack Quack! Kiva nähdä sinua!",
+    hr: "Bok, ovo je Quack Quack! Drago mi je što te vidim!",
+    ms: "Hai, ini Quack Quack! Seronok dapat jumpa kamu!",
+    sk: "Ahoj, to je Quack Quack! Rád ťa vidím!",
+    da: "Hej, det er Quack Quack! Rart at se dig!",
+    ta: "ஹே, இது க்வாக் க்வாக்! உங்களை சந்தித்ததில் சந்தோஷம்!",
+    uk: "Гей, це Квак Квак! Радий тебе бачити!",
+    ru: "Привет, это Квак Квак! Рад тебя видеть!"
+  },
+  eva: {
+    en: "Hey it's Eva! Nice to see you!",
+    ja: "やあ、エヴァです！会えて嬉しい！",
+    zh: "嘿，我是Eva！很高兴见到你！",
+    de: "Hey, hier ist Eva! Schön dich zu sehen!",
+    hi: "अरे, ये ईवा हैं! आपको देखकर अच्छा लगा!",
+    fr: "Hey, c'est Eva ! Ravi de te voir !",
+    ko: "안녕, 에바야! 만나서 반가워!",
+    pt: "Ei, sou a Eva! Bom te ver!",
+    it: "Ehi, sono Eva! Bello vederti!",
+    es: "¡Hola, soy Eva! ¡Encantado de verte!",
+    id: "Hai, ini Eva! Senang bertemu denganmu!",
+    nl: "Hé, ik ben Eva! Leuk je te zien!",
+    tr: "Hey, ben Eva! Seni gördüğüme sevindim!",
+    fil: "Hoy, ako si Eva! Ikinagagalak kitang makita!",
+    pl: "Hej, tu Eva! Miło cię widzieć!",
+    sv: "Hej, det är Eva! Kul att se dig!",
+    bg: "Хей, аз съм Ева! Радвам се да те видя!",
+    ro: "Hei, sunt Eva! Mă bucur să te văd!",
+    ar: "مرحباً، أنا إيفا! سعيد برؤيتك!",
+    cs: "Ahoj, tady Eva! Rád tě vidím!",
+    el: "Γεια, είμαι η Εύα! Χαίρομαι που σε βλέπω!",
+    fi: "Hei, olen Eva! Kiva nähdä sinua!",
+    hr: "Bok, ja sam Eva! Drago mi je što te vidim!",
+    ms: "Hai, saya Eva! Seronok berjumpa kamu!",
+    sk: "Ahoj, tu je Eva! Rád ťa vidím!",
+    da: "Hej, det er Eva! Rart at se dig!",
+    ta: "ஹே, நான் ஈவா! உங்களைப் பார்க்க மகிழ்ச்சி!",
+    uk: "Гей, я Ева! Радий тебе бачити!",
+    ru: "Привет, это Ева! Рад тебя видеть!"
+  },
+  fox: {
+    en: "Hello! It’s Foxxy, here to spark your creativity!",
+    ja: "こんにちは！フォクシーです。あなたの創造力を刺激しに来ました！",
+    zh: "你好！我是Foxxy，来激发你的创造力！",
+    de: "Hallo! Ich bin Foxxy, hier um deine Kreativität anzuregen!",
+    hi: "नमस्ते! मैं फॉक्सी हूँ, आपकी रचनात्मकता को जगाने के लिए!",
+    fr: "Bonjour ! C’est Foxxy, ici pour stimuler ta créativité !",
+    ko: "안녕! 폭씨예요, 당신의 창의력을 자극하러 왔어요!",
+    pt: "Olá! Sou a Foxxy, aqui para estimular sua criatividade!",
+    it: "Ciao! Sono Foxxy, qui per stuzzicare la tua creatività!",
+    es: "¡Hola! Soy Foxxy, aquí para estimular tu creatividad!",
+    id: "Halo! Ini Foxxy, siap memicu kreativitasmu!",
+    nl: "Hallo! Ik ben Foxxy, hier om je creativiteit te prikkelen!",
+    tr: "Merhaba! Ben Foxxy, yaratıcılığını ateşlemeye geldim!",
+    fil: "Kumusta! Ako si Foxxy, narito upang pukawin ang iyong pagkamalikhain!",
+    pl: "Cześć! Jestem Foxxy, by pobudzić twoją kreatywność!",
+    sv: "Hej! Jag är Foxxy, här för att stimulera din kreativitet!",
+    bg: "Здравей! Аз съм Фокси, тук съм да ти вдъхновя креативността!",
+    ro: "Salut! Sunt Foxxy, aici să-ți stârnesc creativitatea!",
+    ar: "مرحباً! أنا فوكسّي، جئت لأحفّز إبداعك!",
+    cs: "Ahoj! Tady Foxxy, přišel jsem podnítit tvou kreativitu!",
+    el: "Γεια σου! Είμαι η Foxxy, εδώ για να ενθαρρύνω τη δημιουργικότητά σου!",
+    fi: "Hei! Olen Foxxy, täällä herättämässä luovuuttasi!",
+    hr: "Bok! Ja sam Foxxy, tu sam da potaknem tvoju kreativnost!",
+    ms: "Hai! Saya Foxxy, datang untuk mencetuskan kreativiti anda!",
+    sk: "Ahoj! Tu je Foxxy, aby som rozprúdil tvoju kreativitu!",
+    da: "Hej! Jeg er Foxxy, her for at vække din kreativitet!",
+    ta: "வணக்கம்! இது Foxxy, உங்களின் படைப்பாற்றலைத் தூண்ட வந்துள்ளேன்!",
+    uk: "Привіт! Я Foxxy, тут щоб надихнути твою креативність!",
+    ru: "Привет! Я Фокси, чтобы пробудить твоё творчество!"
+  },
+  whimsy: {
+    en: "Hey it's Whimsy, nice to see you!",
+    ja: "やあ、ウィ姆ジーだよ、会えて嬉しい！",
+    zh: "嘿，我是Whimsy，很高兴见到你！",
+    de: "Hey, hier ist Whimsy, schön dich zu sehen!",
+    hi: "अरे, यह Whimsy है, आपको देखकर अच्छा लगा!",
+    fr: "Hey, c'est Whimsy, ravi de te voir !",
+    ko: "안녕, 나 윔지야, 만나서 반가워!",
+    pt: "Ei, é o Whimsy, bom te ver!",
+    it: "Ehi, sono Whimsy, bello vederti!",
+    es: "¡Hola, soy Whimsy, encantado de verte!",
+    id: "Hai, ini Whimsy, senang bertemu denganmu!",
+    nl: "Hé, hier is Whimsy, leuk je te zien!",
+    tr: "Hey, ben Whimsy, seni gördüğüme sevindim!",
+    fil: "Hoy, ako si Whimsy, ikinagagalak kitang makita!",
+    pl: "Hej, tu Whimsy, miło cię widzieć!",
+    sv: "Hej, det är Whimsy, kul att se dig!",
+    bg: "Хей, аз съм Уимзи, радвам се да те видя!",
+    ro: "Hei, eu sunt Whimsy, mă bucur să te văd!",
+    ar: "مرحباً، أنا ويمزي، سعيد برؤيتك!",
+    cs: "Ahoj, tady Whimsy, rád tě vidím!",
+    el: "Γεια, είμαι ο Whimsy, χαίρομαι που σε βλέπω!",
+    fi: "Hei, olen Whimsy, kiva nähdä sinua!",
+    hr: "Bok, ja sam Whimsy, drago mi je što te vidim!",
+    ms: "Hai, saya Whimsy, seronok bertemu kamu!",
+    sk: "Ahoj, tu je Whimsy, rád ťa vidím!",
+    da: "Hej, det er Whimsy, rart at se dig!",
+    ta: "ஹே, நான் விம்சி, உங்களைச் சந்தித்ததில் சந்தோஷம்!",
+    uk: "Гей, я Whimsy, радий тебе бачити!",
+    ru: "Привет, это Уимзи, рад тебя видеть!"
+  },
   cat: {
     en: "Hey it's noodles! nice to see you!",
     ja: "やあ、ヌードルズだよ！会えて嬉しい！",
@@ -33,6 +188,99 @@ const firstMessages = {
     ta: "ஹே, இது நூடுல்ஸ்! உங்களைச் சந்தித்ததில் மகிழ்ச்சி!",
     uk: "Гей, це Noodles! Радий тебе бачити!",
     ru: "Привет, это Noodles! Рад тебя видеть!"
+  },
+  emma: {
+    en: "Hey It's Emma, I missed you!",
+    ja: "やあ、エマだよ、会えて嬉しい！",
+    zh: "嘿，我是Emma，我想你了！",
+    de: "Hey, hier ist Emma, ich habe dich vermisst!",
+    hi: "अरे, ये एम्मा हैं, मुझे आपकी याद आ रही थी!",
+    fr: "Hey, c'est Emma, tu m'as manqué !",
+    ko: "안녕, 나 에마야, 보고 싶었어!",
+    pt: "Ei, sou a Emma, senti sua falta!",
+    it: "Ehi, sono Emma, mi sei mancato!",
+    es: "¡Hola, soy Emma, te extrañé!",
+    id: "Hai, ini Emma, aku merindukanmu!",
+    nl: "Hé, ik ben Emma, ik heb je gemist!",
+    tr: "Hey, ben Emma, seni özledim!",
+    fil: "Hoy, ako si Emma, namiss kita!",
+    pl: "Hej, tu Emma, tęskniłam za tobą!",
+    sv: "Hej, det är Emma, jag har saknat dig!",
+    bg: "Хей, аз съм Ема, липсваше ми!",
+    ro: "Hei, sunt Emma, mi-a fost dor de tine!",
+    ar: "مرحباً، أنا إيما، لقد اشتقت إليك!",
+    cs: "Ahoj, tady Emma, chyběl jsi mi!",
+    el: "Γεια, είμαι η Emma, μου έλειψες!",
+    fi: "Hei, olen Emma, minulla oli ikävä sinua!",
+    hr: "Bok, ja sam Emma, nedostajao si mi!",
+    ms: "Hai, saya Emma, saya rindu padamu!",
+    sk: "Ahoj, tu je Emma, chýbal si mi!",
+    da: "Hej, det er Emma, jeg har savnet dig!",
+    ta: "ஹே, நான் எம்ம், உங்களைப் பிரிந்திருந்தேன்!",
+    uk: "Гей, я Емма, я сумувала за тобою!",
+    ru: "Привет, я Эмма, я скучала по тебе!"
+  },
+  monkey: {
+    en: "Hey it's Bongo the monkey! Nice to see you!",
+    ja: "やあ、ボンゴという猿だよ！会えて嬉しいな！",
+    zh: "嘿，我是猴子Bongo！很高兴见到你！",
+    de: "Hey, ich bin Bongo der Affe! Schön dich zu sehen!",
+    hi: "अरे, मैं बंदर बोंगो हूं! आपसे मिलकर अच्छा लगा!",
+    fr: "Salut, c'est Bongo le singe ! Content de te voir !",
+    ko: "안녕, 난 원숭이 봉고야! 만나서 반가워!",
+    pt: "Oi, sou o Bongo, o macaco! Prazer em te ver!",
+    it: "Ciao, sono Bongo la scimmia! Bello vederti!",
+    es: "¡Hola, soy Bongo el mono! ¡Qué gusto verte!",
+    id: "Hai, aku Bongo si monyet! Senang bertemu denganmu!",
+    nl: "Hé, ik ben Bongo de aap! Leuk je te zien!",
+    tr: "Merhaba, ben maymun Bongo! Seni görmek güzel!",
+    fil: "Hello, ako si Bongo ang unggoy! Masaya kitang makita!",
+    pl: "Cześć, jestem Bongo, małpka! Miło cię widzieć!",
+    sv: "Hej, jag är Bongo apan! Kul att se dig!",
+    bg: "Здрасти, аз съм маймунката Бонго! Радвам се да те видя!",
+    ro: "Bună, sunt Bongo maimuța! Mă bucur să te văd!",
+    ar: "مرحباً، أنا بونغو القرد! سعيد برؤيتك!",
+    cs: "Ahoj, já jsem opička Bongo! Rád tě vidím!",
+    el: "Γεια, είμαι ο Μπόνγκο το μαϊμουδάκι! Χαίρομαι που σε βλέπω!",
+    fi: "Hei, olen Bongo-apina! Kiva nähdä sinua!",
+    hr: "Bok, ja sam majmun Bongo! Drago mi je što te vidim!",
+    ms: "Hai, saya Bongo si monyet! Seronok berjumpa dengan anda!",
+    sk: "Ahoj, ja som opička Bongo! Rád ťa vidím!",
+    da: "Hej, jeg er Bongo aben! Dejligt at se dig!",
+    ta: "வணக்கம், நான் குரங்கு பொங்கோ! உங்களை பார்த்தது மகிழ்ச்சி!",
+    uk: "Привіт, я мавпочка Бонго! Радий тебе бачити!",
+    ru: "Привет, я обезьянка Бонго! Рад тебя видеть!"
+  },
+  cupcake: {
+    en: "Hey It's Cupcake! nice to see you",
+    ja: "やあ、カップケーキだよ！会えて嬉しい！",
+    zh: "嘿，我是Cupcake！很高兴见到你",
+    de: "Hey, hier ist Cupcake! Schön dich zu sehen",
+    hi: "अरे, ये कपकेक है! आपको देखकर अच्छा लगा",
+    fr: "Hey, c'est Cupcake ! Ravi de te voir",
+    ko: "안녕, 컵케이크야! 만나서 반가워",
+    pt: "Ei, é a Cupcake! Bom te ver",
+    it: "Ehi, è Cupcake! Bello vederti",
+    es: "¡Hola, soy Cupcake! Encantado de verte",
+    id: "Hai, ini Cupcake! Senang bertemu denganmu",
+    nl: "Hé, dit is Cupcake! Leuk je te zien",
+    tr: "Hey, bu Cupcake! Seni gördüğüme sevindim",
+    fil: "Hoy, ako si Cupcake! Ikinagagalak kitang makita",
+    pl: "Hej, to Cupcake! Miło cię widzieć",
+    sv: "Hej, det är Cupcake! Kul att se dig",
+    bg: "Хей, това е Къпкейк! Радвам се да те видя",
+    ro: "Hei, e Cupcake! Mă bucur să te văd",
+    ar: "مرحباً، إنه كب كيك! سعيد برؤيتك",
+    cs: "Ahoj, to je Cupcake! Rád tě vidím",
+    el: "Γεια, είμαι η Cupcake! Χαίρομαι που σε βλέπω",
+    fi: "Hei, tässä on Cupcake! Kiva nähdä sinua",
+    hr: "Bok, ovo je Cupcake! Drago mi je što te vidim",
+    ms: "Hai, ini Cupcake! Seronok berjumpa kamu",
+    sk: "Ahoj, tu je Cupcake! Rád ťa vidím",
+    da: "Hej, det er Cupcake! Rart at se dig",
+    ta: "ஹே, இது கப் கேக்! உங்களைச் சந்தித்ததில் மகிழ்ச்சி",
+    uk: "Гей, це Cupcake! Радий тебе бачити",
+    ru: "Привет, это Cupcake! Рад тебя видеть"
   }
 };
 
@@ -74,6 +322,61 @@ const languages = [
 ];
 
 const characters = {
+  jonny: {
+    id: 'jonny',
+    name: 'Jonny',
+    agentId: 'xiC8L3SOeHwYyCLLnYxF',
+    assets: {
+      idle: '/characters/jonny/assets/jonny-idle.mp4',
+      talking: '/characters/jonny/assets/jonny-talk.mp4',
+      preview: '/characters/jonny/assets/jonny.jpg',
+      icon: '/characters/jonny/assets/jonny-icon.jpg'
+    }
+  },
+  duck: {
+    id: 'duck',
+    name: 'Quacky Duck',
+    agentId: '2AnipCyOETtlieJLCfsr',
+    assets: {
+      idle: '/assets/duck-idle.mp4',
+      talking: '/assets/duck-talk.mp4',
+      preview: '/assets/duck.jpg',
+      icon: '/assets/duck-icon.jpg'
+    }
+  },
+  eva: {
+    id: 'eva',
+    name: 'Eva',
+    agentId: 'UWxUKTTWxyHwoEfDDic2',
+    assets: {
+      idle: '/characters/robo/assets/eva-idle.mp4',
+      talking: '/characters/robo/assets/eva-talking.mp4',
+      preview: '/characters/robo/assets/eva.jpg',
+      icon: '/characters/robo/assets/eva-icon.jpg'
+    }
+  },
+  fox: {
+    id: 'fox',
+    name: 'Foxxy',
+    agentId: 'XJ3eFR10myzK01A10BlN',
+    assets: {
+      idle: '/characters/fox/assets/fox-idle.mp4',
+      talking: '/characters/fox/assets/fox-talking.mp4',
+      preview: '/characters/fox/assets/foxxy.jpg',
+      icon: '/characters/fox/assets/fox.jpg'
+    }
+  },
+  whimsy: {
+    id: 'whimsy',
+    name: 'Clumsy Whimsy',
+    agentId: 'jvbiMPIQOUiUs5GkepcA',
+    assets: {
+      idle: '/characters/whimsy/assets/idle-whimsy.mp4',
+      talking: '/characters/whimsy/assets/speaking-whimsy.mp4',
+      preview: '/characters/whimsy/assets/whimsy.jpg',
+      icon: '/characters/whimsy/assets/whimsy.png'
+    }
+  },
   cat: {
     id: 'cat',
     name: 'Noodles',
@@ -83,6 +386,39 @@ const characters = {
       talking: '/characters/cat/assets/cat-talking.mp4',
       preview: '/characters/cat/assets/cat.png',
       icon: '/characters/cat/assets/cat.jpg'
+    }
+  },
+  emma: {
+    id: 'emma',
+    name: 'Emma',
+    agentId: 'UFCiWykxf7I8pgANcBuJ',
+    assets: {
+      idle: '/characters/emma/assets/idle.mp4',
+      talking: '/characters/emma/assets/speaking.mp4',
+      preview: '/characters/emma/assets/emma.png',
+      icon: '/characters/emma/assets/emma.jpg'
+    }
+  },
+  monkey: {
+    id: 'monkey',
+    name: 'Bongo The Monkey',
+    agentId: 'CfE9AbfQUFEUQ6rMHxh6',
+    assets: {
+      idle: '/assets/monkey-idle.mp4',
+      talking: '/assets/monkey-talk.mp4',
+      preview: '/assets/monkey.jpg',
+      icon: '/assets/monkey-icon.jpg'
+    }
+  },
+  cupcake: {
+    id: 'cupcake',
+    name: 'Cupcake',
+    agentId: 'iogofk9qnqvE98RwV1Kk',
+    assets: {
+      idle: '/characters/cupcake/assets/cupcake-blinking.mp4',
+      talking: '/characters/cupcake/assets/cupcake-talk.mp4',
+      preview: '/characters/cupcake/assets/cupcake.png',
+      icon: '/characters/cupcake/assets/cupcake.jpg'
     }
   }
 };
@@ -441,7 +777,7 @@ window.shareCharacter = () => {
 };
 
 const urlParams = new URLSearchParams(window.location.search);
-const characterId = urlParams.get('character') || 'cat';
+const characterId = urlParams.get('character') || 'jonny';
 const languageCode = urlParams.get('language') || 'en';
 
 const chat = new ChatController(characterId, languageCode);
