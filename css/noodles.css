@@ -17,6 +17,7 @@ body {
     overflow: hidden;
 }
 
+/* Loading Screen */
 .splash-container {
     position: fixed;
     top: 0; left: 0;
@@ -74,11 +75,7 @@ body {
     top: 20%; left: 20%;
 }
 
-@keyframes rotate {
-    from { transform: rotate(0deg); }
-    to   { transform: rotate(360deg); }
-}
-
+/* Top Bar */
 .top-bar {
     position: fixed;
     top: 0; left: 0; right: 0;
@@ -129,7 +126,7 @@ body {
     letter-spacing: -0.5px;
 }
 
-/* ======== LANGUAGE DROPDOWN ======== */
+/* Language Selector */
 .language-select-container {
     position: relative;
     display: flex;
@@ -192,17 +189,6 @@ body {
     scrollbar-color: var(--accent-color) transparent;
 }
 
-.language-menu-content::-webkit-scrollbar {
-    width: 6px;
-}
-.language-menu-content::-webkit-scrollbar-track {
-    background: transparent;
-}
-.language-menu-content::-webkit-scrollbar-thumb {
-    background-color: var(--accent-color);
-    border-radius: 3px;
-}
-
 .language-option {
     display: flex;
     align-items: center;
@@ -211,18 +197,21 @@ body {
     cursor: pointer;
     transition: background 0.2s ease;
 }
+
 .language-option:hover {
     background: #f0f0f0;
 }
+
 .language-option.active {
     background: var(--secondary-bg);
     font-weight: 600;
 }
+
 .language-option-flag {
     font-size: 20px;
 }
-/* ======== END LANGUAGE DROPDOWN ======== */
 
+/* Main Container */
 .main-container {
     position: fixed;
     inset: 0;
@@ -263,6 +252,7 @@ body {
     opacity: 1;
 }
 
+/* Main Action Container */
 .main-action-container {
     position: fixed;
     bottom: 70px;
@@ -271,7 +261,6 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 1rem; /* Space between buttons */
     padding: 1rem;
     z-index: 10;
 }
@@ -289,7 +278,6 @@ body {
     box-shadow: 0 4px 12px rgba(108, 92, 231, 0.2);
     position: relative;
     overflow: hidden;
-    margin-left: 70px;
 }
 
 .main-button::before {
@@ -316,6 +304,7 @@ body {
     background: #808080;
 }
 
+/* Controls Container */
 .controls-container {
     position: fixed;
     bottom: 0; left: 0; right: 0;
@@ -327,13 +316,6 @@ body {
     justify-content: space-between;
     z-index: 10;
     border-top: 1px solid rgba(108, 92, 231, 0.1);
-}
-
-.controls-right {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    position: relative;
 }
 
 .logo-container {
@@ -365,7 +347,7 @@ body {
 .status-indicator {
     position: absolute;
     left: 50%;
-    transform: translateX(-50%) translateX(0px);
+    transform: translateX(-50%);
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -384,68 +366,9 @@ body {
     animation: pulse 1.5s infinite;
 }
 
-.character-select-button {
-    position: relative;
-    width: 60px; /* Increased size */
-    height: 60px; /* Increased size */
-    min-width: 60px;
-    min-height: 60px;
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex; 
-    align-items: center; 
-    justify-content: center;
-    overflow: hidden;
-    flex-shrink: 0;
-    padding: 0;
-    box-sizing: border-box;
-    background: var(--secondary-bg);
-    color: var(--text-color);
-}
-
-.character-select-button .character-icon {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    overflow: hidden;
-    display: flex; 
-    align-items: center; 
-    justify-content: center;
-}
-
-.character-select-button .character-icon img {
-    width: 100%; 
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
-}
-
-.character-select-button::after {
-    content: '✨';
-    position: absolute;
-    top: -2px; 
-    right: -2px;
-    font-size: 20px; /* Increased for larger button */
-    background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    filter: drop-shadow(0 1px 1px rgba(0,0,0,0.2));
-}
-
-.character-select-button:hover {
-    transform: translateY(-2px);
-    background: white;
-    box-shadow: 0 4px 12px var(--shadow);
-}
-
 .share-button {
     width: 48px; 
     height: 48px;
-    min-width: 48px; 
-    min-height: 48px;
     border: none;
     border-radius: 50%;
     cursor: pointer;
@@ -453,18 +376,8 @@ body {
     display: flex; 
     align-items: center; 
     justify-content: center;
-    overflow: hidden;
-    flex-shrink: 0;
-    position: relative;
-    padding: 0;
-    box-sizing: border-box;
     background: var(--secondary-bg);
     color: var(--text-color);
-}
-
-.share-button svg {
-    width: 24px;
-    height: 24px;
 }
 
 .share-button:hover {
@@ -473,82 +386,17 @@ body {
     box-shadow: 0 4px 12px var(--shadow);
 }
 
-/* ======== CHARACTER DROPDOWN ======== */
-.character-menu {
-    position: absolute;
-    bottom: calc(100% - 20px);
-    left: calc(50% + 80px);
-    transform: translateX(-50%) translateY(10px); /* Center horizontally and add spacing */
-    width: 280px;
-    background: white;
-    border-radius: 16px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    opacity: 0; 
-    visibility: hidden;
-    transition: all 0.3s ease;
-    max-height: 400px;
-    overflow: hidden;
-    margin-bottom: 1rem;
-    z-index: 1000;
-}
-
-.character-menu.active {
-    opacity: 1; 
-    visibility: visible;
-    transform: translateX(-50%) translateY(0); /* Remove Y translation when active */
-}
-
-.character-menu-content {
-    padding: 0.5rem;
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 0.5rem;
-    max-height: 360px;
-    overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: var(--accent-color) transparent;
-}
-
-.character-menu-content::-webkit-scrollbar {
-    width: 6px;
-}
-.character-menu-content::-webkit-scrollbar-track {
-    background: transparent;
-}
-.character-menu-content::-webkit-scrollbar-thumb {
-    background-color: var(--accent-color);
-    border-radius: 3px;
-}
-
-.character-option {
-    width: 100%;
-    aspect-ratio: 1;
-    border-radius: 50%;
-    overflow: hidden;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    position: relative;
-}
-
-.character-option img {
-    width: 100%; 
-    height: 100%;
-    object-fit: cover;
-}
-
-.character-option:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.character-option.active {
-    border: 2px solid var(--accent-color);
-}
-
+/* Particles */
 .particle {
     position: absolute;
     pointer-events: none;
     opacity: 0;
+}
+
+/* Animations */
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to   { transform: rotate(360deg); }
 }
 
 @keyframes float {
@@ -575,6 +423,7 @@ body {
     100% { transform: scale(1);   opacity: 1; }
 }
 
+/* Media Queries */
 @media (max-width: 768px) {
     .background {
         width: 100%; height: auto;
@@ -589,17 +438,6 @@ body {
     }
     .main-action-container {
         bottom: calc(70px + env(safe-area-inset-bottom));
-        gap: 0.75rem; /* Adjusted gap for smaller screens */
-    }
-    .character-select-button {
-        width: 50px; /* Slightly smaller on mobile */
-        height: 50px;
-    }
-    .character-select-button::after {
-        font-size: 18px;
-    }
-    .character-menu {
-        width: 240px; /* Adjust width for mobile */
     }
 }
 
