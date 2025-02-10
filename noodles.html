@@ -13,7 +13,6 @@
       src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js">
     </script>
 </head>
-
 <body>
 <div class="splash-container character-loading">
     <div class="splash-content">
@@ -24,7 +23,6 @@
         </div>
     </div>
 </div>
-
 <div class="top-bar">
     <a href="/" class="back-button">
         <svg width="24" height="24" viewBox="0 0 24 24"
@@ -33,11 +31,9 @@
         </svg>
     </a>
     <div class="character-name"></div>
-
     <!-- Language Selector -->
     <div class="language-select-container">
         <button class="language-select-button" id="languageSelectButton">
-            <!-- The active language flag is inserted here via JS -->
             <span class="language-flag" id="currentLanguageFlag"></span>
         </button>
         <div class="language-menu" id="languageMenu">
@@ -48,7 +44,6 @@
     </div>
     <!-- End Language Selector -->
 </div>
-
 <div class="main-container">
     <div class="video-wrapper">
         <div class="background image"></div>
@@ -58,21 +53,10 @@
                loop muted playsinline disablePictureInPicture></video>
     </div>
 </div>
-
 <div class="main-action-container">
     <button id="startButton" class="main-button">Start Conversation</button>
-    <button class="character-select-button">
-        <div class="character-icon">
-            <img src="" alt="Selected character"/>
-        </div>
-    </button>
-    <div class="character-menu">
-        <div class="character-menu-content"></div>
-    </div>
 </div>
-
 <canvas id="confetti-canvas"></canvas>
-
 <div class="controls-container">
     <div class="logo-container">
         <a href="/" class="logo">Talkidz</a>
@@ -94,7 +78,6 @@
         </button>
     </div>
 </div>
-
 <script type="module" src="/js/noodles.js"></script>
 </body>
 </html>
