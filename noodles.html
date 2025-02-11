@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Character Chat - Talkidz</title>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" rel="stylesheet"/>
-  <link href="/css/noodles.css" rel="stylesheet"/>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" rel="stylesheet" />
+  <link href="/css/noodles.css" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 </head>
 <body>
@@ -18,37 +18,52 @@
       </div>
     </div>
   </div>
+
   <div class="bg-container">
-    <img src="/assets/rainbow-bg.jpg" alt="background">
+    <img src="/assets/rainbow-bg.jpg" alt="background" />
   </div>
+
   <div class="main-container">
     <div class="video-wrapper">
       <div class="background image"></div>
       <video class="background video" id="idleVideo" loop muted playsinline disablePictureInPicture></video>
       <video class="background video" id="speakingVideo" loop muted playsinline disablePictureInPicture></video>
-      <!-- Cake video: sound enabled -->
       <video class="background video" id="cakeVideo" playsinline disablePictureInPicture></video>
-      <!-- Overlay controls: language select and share buttons -->
-      <div class="overlay-controls">
-        <button class="language-select-button" id="languageSelectButton">
-          <span class="language-flag" id="currentLanguageFlag"></span>
-        </button>
-        <button class="share-button" id="shareButton" onclick="shareCharacter()">
+      
+      <!-- Overlay: Language Selection Button (Top Right) -->
+      <div class="overlay top-right">
+        <div class="language-select-container">
+          <button class="language-select-button" id="languageSelectButton">
+            <span class="language-flag" id="currentLanguageFlag"></span>
+          </button>
+          <div class="language-menu" id="languageMenu">
+            <div class="language-menu-content" id="languageMenuContent">
+              <!-- Dynamically filled in by noodles.js -->
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Overlay: Share Button (Bottom Right) -->
+      <div class="overlay bottom-right">
+        <button class="share-button" onclick="shareCharacter()">
           <svg width="24" height="24" viewBox="0 0 24 24"
                fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+            <path d="M4 12v8a2 2 0 0 0 2 2h12
+                     a2 2 0 0 0 2-2v-8"/>
             <polyline points="16 6 12 2 8 6"/>
             <line x1="12" y1="2" x2="12" y2="15"/>
           </svg>
         </button>
       </div>
     </div>
+    
+    <div class="main-action-container">
+      <button id="startButton" class="main-button">Start Conversation</button>
+      <button id="cakeButton" class="cake-button">🍰</button>
+    </div>
   </div>
-  <!-- Main action buttons (start conversation and cake button) -->
-  <div class="main-action-container">
-    <button id="startButton" class="main-button">Start Conversation</button>
-    <button id="cakeButton" class="cake-button">🍰</button>
-  </div>
+
   <script type="module" src="/js/noodles.js"></script>
 </body>
 </html>
