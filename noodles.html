@@ -9,7 +9,9 @@
     rel="stylesheet"
   />
   <link href="/css/noodles.css" rel="stylesheet"/>
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js">
+  </script>
 </head>
 <body>
   <div class="splash-container character-loading">
@@ -36,7 +38,7 @@
       </button>
       <div class="language-menu" id="languageMenu">
         <div class="language-menu-content" id="languageMenuContent">
-          <!-- Dynamically filled in JS -->
+          <!-- Dynamically filled in chat.js -->
         </div>
       </div>
     </div>
@@ -52,14 +54,14 @@
              loop muted playsinline disablePictureInPicture></video>
       <video class="background video" id="speakingVideo"
              loop muted playsinline disablePictureInPicture></video>
-      <!-- Cake Video (with sound enabled) -->
+      <!-- New Cake Video (sound enabled) -->
       <video class="background video" id="cakeVideo"
              playsinline disablePictureInPicture></video>
     </div>
   </div>
   <div class="main-action-container">
     <button id="startButton" class="main-button">Start Conversation</button>
-    <!-- Cake Button -->
+    <!-- New Cake Button -->
     <button id="cakeButton" class="cake-button">🍰</button>
   </div>
   <canvas id="confetti-canvas"></canvas>
