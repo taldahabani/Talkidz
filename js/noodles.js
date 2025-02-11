@@ -265,7 +265,6 @@ class ChatController {
   triggerConfetti() {
     const options = { origin: { y: 0.7 } };
     const count = 200;
-
     [
       { spread: 26, startVelocity: 55, particleRatio: 0.25 },
       { spread: 60, particleRatio: 0.2 },
@@ -301,22 +300,26 @@ class ChatController {
     const startY = window.innerHeight + 10;
     const endX = startX + (Math.random() - 0.5) * 200;
     const endY = -10;
-    
     particle.style.left = startX + 'px';
     particle.style.top = startY + 'px';
     particle.style.setProperty('--tx', (endX - startX) + 'px');
     particle.style.setProperty('--ty', (endY - startY) + 'px');
-    
     particle.style.animation = 'none';
     particle.offsetHeight; // Force reflow
     particle.style.animation = `float ${Math.random() * 2 + 3}s linear infinite`;
   }
 
   async startConversation() {
-    // Start getUserMedia immediately (do not wait before triggering UI effects)
-    const mediaPromise = navigator.mediaDevices.getUserMedia({ audio: true });
-    this.triggerConfetti();
-    this.createParticles();
+    // Wait for microphone permission before updating UI
+    let mediaStream;
+    try {
+      mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    } catch (error) {
+      console.error('Error starting conversation:', error);
+      this.updateBackground('idle');
+      return;
+    }
+    // Now that permission is granted, update the Start button to an "X"
     this.startButton.classList.add('active');
     this.startButton.innerHTML = `
       <svg width="24" height="24" viewBox="0 0 24 24"
@@ -325,16 +328,8 @@ class ChatController {
         <line x1="6" y1="6" x2="18" y2="18"></line>
       </svg>
     `;
-    try {
-      await mediaPromise;
-    } catch (error) {
-      console.error('Error starting conversation:', error);
-      this.updateBackground('idle');
-      this.startButton.classList.remove('active');
-      this.startButton.textContent = 'Start Conversation';
-      return;
-    }
-
+    this.triggerConfetti();
+    this.createParticles();
     const selectedMsg = firstMessages.cat[this.currentLanguage] || "Hello!";
     this.conversation = await Conversation.startSession({
       agentId: character.agentId,
@@ -375,9 +370,7 @@ class ChatController {
     }
   }
 
-  // Updated playCake:
-  // Do not end or change the conversation. Simply overlay the cake video.
-  // When the cake video ends, restore the proper current mode (e.g., speaking or listening).
+  // playCake() overlays the cake video without affecting the conversation.
   async playCake() {
     this.cakeVideo.classList.add('active');
     try {
