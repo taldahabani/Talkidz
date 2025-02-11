@@ -394,32 +394,20 @@ body {
 }
 
 
-.rainbow-background {
-    position: absolute;
+.bg-container {
+    position: fixed;
     top: 0;
     left: 0;
     width: 100%;
+    height: 100vh;
+    overflow: hidden;
+    z-index: -1;
+}
+
+.bg-container img {
+    width: 100%;
     height: 100%;
-    background-image: url('/assets/rainbow-bg.jpg');
-    background-size: cover;
-    background-position: center center;
-    z-index: -1; /* Ensure it stays behind the videos */
-}
-
-/* For portrait orientation */
-@media (orientation: portrait) {
-    .rainbow-background {
-        background-size: auto 100%;
-        background-position: center center;
-    }
-}
-
-/* For landscape orientation */
-@media (orientation: landscape) {
-    .rainbow-background {
-        background-size: 100% auto;
-        background-position: center center;
-    }
+    object-fit: cover;
 }
 
 
