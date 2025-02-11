@@ -369,24 +369,22 @@ class ChatController {
     }
   }
 
-  // New method to play the cake video.
+  // Updated playCake method:
+  // • If a conversation is active, it ends it.
+  // • It does NOT update the status to "Listening" (so if no conversation, the status remains "Ready to chat").
+  // • It stops the idle and speaking videos and plays the cake video (with sound).
   async playCake() {
-    // If there is an active conversation, end it.
     if (this.conversation) {
       await this.endConversation();
     }
-    // Set status to listening and stop idle/speaking videos.
-    this.updateStatus('listening');
     this.idleVideo.classList.remove('active');
     this.speakingVideo.classList.remove('active');
-    // Activate and play the cake video.
     this.cakeVideo.classList.add('active');
     try {
       await this.cakeVideo.play();
     } catch (error) {
       console.error('Error playing cake video:', error);
     }
-    // When the cake video finishes, return to idle.
     this.cakeVideo.onended = () => {
       this.cakeVideo.classList.remove('active');
       this.cakeVideo.currentTime = 0;
