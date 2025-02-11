@@ -471,11 +471,7 @@ body {
 
 /* Media Queries */
 @media (max-width: 768px) {
-  .background {
-    width: 100%; height: auto;
-    max-height: none;
-    object-fit: cover;
-  }
+  /* Removed video resizing to prevent videos from becoming larger */
   .controls-container {
     padding-bottom: env(safe-area-inset-bottom);
   }
