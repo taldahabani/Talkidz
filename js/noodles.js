@@ -8,8 +8,8 @@ const character = {
   name: 'Noodles',
   agentId: '4gWkcgFThRtBuhM5akxT',
   assets: {
-    idle: '/characters/cat/assets/cat-idle.mp4',
-    talking: '/characters/cat/assets/cat-talking.mp4',
+    idle: '/assets/cat-idle-rainbow.mp4',
+    talking: '/assets/cat-talk-rainbow.mp4',
     cake: '/characters/cat/assets/cake.mp4',
     preview: '/characters/cat/assets/cat.png',
     icon: '/characters/cat/assets/cat.jpg'
