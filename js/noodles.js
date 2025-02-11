@@ -80,6 +80,7 @@ const character = {
   assets: {
     idle: '/characters/cat/assets/cat-idle.mp4',
     talking: '/characters/cat/assets/cat-talking.mp4',
+    cake: '/characters/cat/assets/cake.mp4',
     preview: '/characters/cat/assets/cat.png',
     icon: '/characters/cat/assets/cat.jpg'
   }
@@ -104,6 +105,8 @@ class ChatController {
     this.idleVideo = document.getElementById('idleVideo');
     this.speakingVideo = document.getElementById('speakingVideo');
     this.startButton = document.getElementById('startButton');
+    this.cakeVideo = document.getElementById('cakeVideo');
+    this.cakeButton = document.getElementById('cakeButton');
     this.statusDot = document.querySelector('.status-dot');
     this.statusText = document.querySelector('.status-text');
     this.characterName = document.querySelector('.character-name');
@@ -122,6 +125,7 @@ class ChatController {
       `url('${character.assets.preview}') center/contain no-repeat`;
     this.idleVideo.src = character.assets.idle;
     this.speakingVideo.src = character.assets.talking;
+    this.cakeVideo.src = character.assets.cake;
   }
 
   setupLanguageMenu() {
@@ -228,7 +232,13 @@ class ChatController {
     this.speakingVideo.addEventListener('loadeddata', () => {
       this.videosLoaded.speaking = true;
     });
+    
+    this.cakeVideo.load();
+    this.cakeVideo.addEventListener('loadeddata', () => {
+    this.videosLoaded.cake = true;
+    });
   }
+
 
   updateBackground(mode) {
     if (mode === 'speaking' && this.videosLoaded.speaking) {
@@ -344,6 +354,23 @@ class ChatController {
     }
   }
 
+  async playCakeAnimation() {
+    if (this.videosLoaded.cake) {
+        [this.idleVideo, this.speakingVideo].forEach(video => 
+            video.classList.remove('active')
+        );
+        this.cakeVideo.classList.add('active');
+        this.cakeVideo.currentTime = 0;
+        await this.cakeVideo.play();
+        
+        // When animation ends, return to idle
+        this.cakeVideo.onended = () => {
+            this.cakeVideo.classList.remove('active');
+            this.updateBackground('idle');
+        };
+    }
+}
+
   async endConversation() {
     if (this.conversation) {
       try {
@@ -366,6 +393,8 @@ class ChatController {
       } else {
         await this.startConversation();
       }
+          this.cakeButton.addEventListener('click', () => {
+        this.playCakeAnimation();
     });
   }
 }
