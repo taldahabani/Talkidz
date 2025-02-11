@@ -6,6 +6,7 @@
   --secondary-bg: #F5F5F5;
   --shadow: rgba(0, 0, 0, 0.08);
   --transition-duration: 0.5s;
+  --max-content-width: 768px;
 }
 
 body {
@@ -88,7 +89,7 @@ body {
     rgba(255, 255, 255, 0.98)
   );
   backdrop-filter: blur(10px);
-  z-index: 100;
+  z-index: 999;
 }
 
 .back-button {
@@ -130,7 +131,7 @@ body {
   position: relative;
   display: flex;
   align-items: center;
-  z-index: 100;
+  z-index: 999;
 }
 
 .language-select-button {
@@ -172,7 +173,7 @@ body {
   transition: all 0.3s ease;
   max-height: 300px;
   overflow: hidden;
-  z-index: 1000;
+  z-index: 9999;
 }
 
 .language-menu.active {
@@ -210,36 +211,48 @@ body {
   font-size: 20px;
 }
 
-/* Main Container & Video Wrapper */
+/* Main Container */
 .main-container {
   position: fixed;
   inset: 0;
-  z-index: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 70px 0;
 }
 
 .video-wrapper {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+  position: relative;
+  width: 100%; height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: var(--max-content-width);
+  margin: 0 auto;
 }
 
 .background {
   position: absolute;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  width: 100%; height: 100%;
+  object-fit: contain;
+}
+
+.background.video {
+  opacity: 0;
+}
+
+.background.video.active {
+  opacity: 1;
 }
 
 .background.image {
-  /* For the preview image */
-  background-size: cover;
+  background-size: contain;
   background-position: center;
   background-repeat: no-repeat;
+  opacity: 1;
 }
 
-/* Main Action Container (above the video) */
+/* Main Action Container */
 .main-action-container {
   position: fixed;
   bottom: 70px;
@@ -249,7 +262,7 @@ body {
   justify-content: center;
   align-items: center;
   padding: 1rem;
-  z-index: 200;
+  z-index: 10;
 }
 
 /* Start Conversation Button */
@@ -292,7 +305,7 @@ body {
   background: #808080;
 }
 
-/* Cake Button */
+/* New Cake Button */
 .cake-button {
   background: var(--secondary-bg);
   border: 1px solid rgba(108, 92, 231, 0.15);
@@ -323,7 +336,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  z-index: 300;
+  z-index: 10;
   border-top: 1px solid rgba(108, 92, 231, 0.1);
 }
 
@@ -451,7 +464,32 @@ body {
 }
 
 @keyframes pulse {
-  0%   { transform: scale(1); opacity: 1; }
+  0%   { transform: scale(1);   opacity: 1; }
   50%  { transform: scale(1.2); opacity: 0.7; }
-  100% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1);   opacity: 1; }
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+  /* Removed video resizing to prevent videos from becoming larger */
+  .controls-container {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .main-button {
+    padding: 1rem 2rem;
+  }
+  .main-action-container {
+    bottom: calc(70px + env(safe-area-inset-bottom));
+  }
+}
+
+@media (min-width: 769px) {
+  .main-container {
+    padding: 70px max(1.5rem,
+      calc((100vw - var(--max-content-width)) / 2)
+    );
+  }
+  .video-wrapper {
+    max-height: calc(100vh - 140px);
+  }
 }
