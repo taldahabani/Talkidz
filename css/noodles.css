@@ -397,26 +397,24 @@ body {
 .bg-container {
     position: fixed;
     top: 0;
-    left: 50%;
-    transform: translateX(-50%);
+    left: 0;
+    width: 100%;
     height: 100vh;
-    width: min(100vw, 2732px); 
     z-index: -1;
-    background-color: white;   
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    overflow: hidden;
 }
 
 .bg-container img {
-    height: 100%;
-    max-width: 2732px;         
-    min-width: 100%;      
-    object-fit: cover;
-    object-position: center;   
-}
-
-@media screen and (min-width: 2733px) {
-    .bg-container img {
-        width: 2732px;
-    }
+    height: auto;
+    width: auto;
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: contain;
+    object-position: center;
 }
 
 
