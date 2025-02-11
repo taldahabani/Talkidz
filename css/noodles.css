@@ -400,14 +400,23 @@ body {
     left: 50%;
     transform: translateX(-50%);
     height: 100vh;
-    overflow: hidden;
+    width: min(100vw, 2732px); 
     z-index: -1;
+    background-color: white;   
 }
 
 .bg-container img {
     height: 100%;
-    width: 2732px;
+    max-width: 2732px;         
+    min-width: 100%;      
     object-fit: cover;
+    object-position: center;   
+}
+
+@media screen and (min-width: 2733px) {
+    .bg-container img {
+        width: 2732px;
+    }
 }
 
 
