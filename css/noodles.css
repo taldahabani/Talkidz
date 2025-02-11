@@ -410,6 +410,7 @@ body {
 
 .bg-container img {
     height: auto;
+    min-width: 2732px;
     width: auto;
     max-height: 100%;
     max-width: 100%;
