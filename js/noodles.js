@@ -92,8 +92,9 @@ class ChatController {
     this.currentLanguage = languageCode || 'en';
     this.conversation = null;
     this.videosLoaded = { idle: false, speaking: false, cake: false };
-    // Store the current conversation mode (e.g. 'idle', 'listening', or 'speaking')
+    // Store the current conversation mode and any pending update while cake video is active.
     this.currentMode = 'idle';
+    this.pendingMode = null;
 
     this.setupElements();
     this.setupCharacter();
@@ -112,7 +113,7 @@ class ChatController {
     this.cakeButton = document.getElementById('cakeButton');
     this.statusDot = document.querySelector('.status-dot');
     this.statusText = document.querySelector('.status-text');
-    this.characterName = document.querySelector('.character-name'); // (unused now)
+    this.characterName = document.querySelector('.character-name');
     this.loadingScreen = document.querySelector('.character-loading');
 
     this.languageSelectButton = document.getElementById('languageSelectButton');
@@ -123,7 +124,7 @@ class ChatController {
 
   setupCharacter() {
     document.title = `${character.name} - Talkidz`;
-    // Set preview image as the background image
+    this.characterName.textContent = character.name;
     this.backgroundImage.style.background =
       `url('${character.assets.preview}') center/contain no-repeat`;
     this.idleVideo.src = character.assets.idle;
@@ -242,22 +243,24 @@ class ChatController {
     });
   }
 
-  // Update background and store the current mode.
+  // When updating the background we check whether the cake video is active.
+  // If it is, we only update the status and store the new mode in pendingMode.
   updateBackground(mode) {
+    if (this.cakeVideo.classList.contains('active')) {
+      this.pendingMode = mode;
+      this.updateStatus(mode);
+      return;
+    }
     this.currentMode = mode;
     if (mode === 'speaking' && this.videosLoaded.speaking) {
       this.idleVideo.classList.remove('active');
       this.speakingVideo.classList.add('active');
       this.speakingVideo.play().catch(console.error);
-    } else if (this.videosLoaded.idle) {
+    } else {
+      // For 'listening' or 'idle', use the idle video.
       this.speakingVideo.classList.remove('active');
       this.idleVideo.classList.add('active');
       this.idleVideo.play().catch(console.error);
-    } else {
-      this.backgroundImage.style.opacity = '1';
-      [this.idleVideo, this.speakingVideo].forEach(video =>
-        video.classList.remove('active')
-      );
     }
     this.updateStatus(mode);
   }
@@ -313,51 +316,49 @@ class ChatController {
   }
 
   async startConversation() {
-    // Begin getUserMedia immediately; the conversation starts only when the user allows the microphone.
-    const mediaPromise = navigator.mediaDevices.getUserMedia({ audio: true });
-    this.triggerConfetti();
-    this.createParticles();
-    this.startButton.classList.add('active');
-    this.startButton.innerHTML = `
-      <svg width="24" height="24" viewBox="0 0 24 24"
-           fill="none" stroke="white" stroke-width="2">
-        <line x1="18" y1="6" x2="6" y2="18"></line>
-        <line x1="6" y1="6" x2="18" y2="18"></line>
-      </svg>
-    `;
     try {
-      await mediaPromise; // Wait until the user allows the microphone.
+      await navigator.mediaDevices.getUserMedia({ audio: true });
+      this.triggerConfetti();
+      this.createParticles();
+      this.startButton.classList.add('active');
+      this.startButton.innerHTML = `
+        <svg width="24" height="24" viewBox="0 0 24 24"
+             fill="none" stroke="white" stroke-width="2">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      `;
+
+      const selectedMsg = firstMessages.cat[this.currentLanguage] || "Hello!";
+
+      this.conversation = await Conversation.startSession({
+        agentId: character.agentId,
+        overrides: {
+          agent: {
+            language: this.currentLanguage || 'en',
+            firstMessage: selectedMsg
+          }
+        },
+        onModeChange: (mode) => this.updateBackground(mode.mode),
+        onConnect: () => this.updateBackground('listening'),
+        onDisconnect: () => {
+          this.updateBackground('idle');
+          this.startButton.classList.remove('active');
+          this.startButton.textContent = 'Start Conversation';
+        },
+        onError: (error) => {
+          console.error('Conversation error:', error);
+          this.updateBackground('idle');
+          this.startButton.classList.remove('active');
+          this.startButton.textContent = 'Start Conversation';
+        }
+      });
     } catch (error) {
-      console.error('Microphone permission denied:', error);
+      console.error('Error starting conversation:', error);
       this.updateBackground('idle');
       this.startButton.classList.remove('active');
       this.startButton.textContent = 'Start Conversation';
-      return;
     }
-
-    const selectedMsg = firstMessages.cat[this.currentLanguage] || "Hello!";
-    this.conversation = await Conversation.startSession({
-      agentId: character.agentId,
-      overrides: {
-        agent: {
-          language: this.currentLanguage || 'en',
-          firstMessage: selectedMsg
-        }
-      },
-      onModeChange: (mode) => this.updateBackground(mode.mode),
-      onConnect: () => this.updateBackground('listening'),
-      onDisconnect: () => {
-        this.updateBackground('idle');
-        this.startButton.classList.remove('active');
-        this.startButton.textContent = 'Start Conversation';
-      },
-      onError: (error) => {
-        console.error('Conversation error:', error);
-        this.updateBackground('idle');
-        this.startButton.classList.remove('active');
-        this.startButton.textContent = 'Start Conversation';
-      }
-    });
   }
 
   async endConversation() {
@@ -375,9 +376,10 @@ class ChatController {
     }
   }
 
-  // playCake overlays the cake video without altering the ongoing conversation.
-  // When the cake video finishes, it restores the current conversation mode (or idle if none).
+  // When the cake video is played, we do not alter the conversation.
+  // Instead, we overlay the cake video while keeping track of any new conversation mode.
   async playCake() {
+    // Do not end the conversation.
     this.cakeVideo.classList.add('active');
     try {
       await this.cakeVideo.play();
@@ -387,7 +389,10 @@ class ChatController {
     this.cakeVideo.onended = () => {
       this.cakeVideo.classList.remove('active');
       this.cakeVideo.currentTime = 0;
-      const modeToRestore = this.conversation ? this.currentMode : 'idle';
+      // When cake finishes, restore the _current_ conversation state,
+      // using pendingMode if any change occurred while the cake video was playing.
+      const modeToRestore = this.pendingMode || this.currentMode;
+      this.pendingMode = null;
       this.updateBackground(modeToRestore);
       this.cakeVideo.onended = null;
     };
@@ -401,7 +406,7 @@ class ChatController {
         await this.startConversation();
       }
     });
-    // Event listener for the cake button.
+    // Cake button plays the cake video without affecting the conversation.
     this.cakeButton.addEventListener('click', async () => {
       await this.playCake();
     });
