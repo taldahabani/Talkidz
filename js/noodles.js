@@ -90,7 +90,7 @@ class ChatController {
   constructor(languageCode) {
     this.currentLanguage = languageCode || 'en';
     this.conversation = null;
-    this.videosLoaded = { idle: false, speaking: false };
+    this.videosLoaded = { idle: false, speaking: false, cake: false };
 
     this.setupElements();
     this.setupCharacter();
@@ -388,17 +388,18 @@ class ChatController {
 
   setupEventListeners() {
     this.startButton.addEventListener('click', async () => {
-      if (this.conversation) {
-        await this.endConversation();
-      } else {
-        await this.startConversation();
-      }
-          this.cakeButton.addEventListener('click', () => {
+        if (this.conversation) {
+            await this.endConversation();
+        } else {
+            await this.startConversation();
+        }
+    });
+    
+    this.cakeButton.addEventListener('click', () => {
         this.playCakeAnimation();
     });
-  }
 }
-
+                                      
 window.shareCharacter = () => {
   if (navigator.share) {
     navigator.share({
