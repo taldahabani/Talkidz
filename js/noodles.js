@@ -377,7 +377,7 @@ class ChatController {
 
   // Updated playCake:
   // Do not end or change the conversation. Simply overlay the cake video.
-  // When the cake video ends, restore the current conversation mode (or idle if no conversation).
+  // When the cake video ends, restore the proper current mode (e.g., speaking or listening).
   async playCake() {
     this.cakeVideo.classList.add('active');
     try {
