@@ -92,10 +92,8 @@ class ChatController {
     this.currentLanguage = languageCode || 'en';
     this.conversation = null;
     this.videosLoaded = { idle: false, speaking: false, cake: false };
-    // This will track the current conversation mode (e.g. 'idle', 'listening', 'speaking')
-    this.currentMode = 'idle';
-    // Flag to freeze underlying video updates while the cake overlay is active.
-    this.overlayActive = false;
+    // Store the last conversation mode (e.g. 'idle', 'listening', 'speaking')
+    this.lastConversationMode = 'idle';
 
     this.setupElements();
     this.setupCharacter();
@@ -127,7 +125,7 @@ class ChatController {
     document.title = `${character.name} - Talkidz`;
     this.characterName.textContent = character.name;
     this.backgroundImage.style.background =
-      `url('${character.assets.preview}') center/contain no-repeat`;
+      `url('${character.assets.preview}') center/cover no-repeat`;
     this.idleVideo.src = character.assets.idle;
     this.speakingVideo.src = character.assets.talking;
     this.cakeVideo.src = character.assets.cake;
@@ -135,7 +133,6 @@ class ChatController {
 
   setupLanguageMenu() {
     this.languageMenuContent.innerHTML = '';
-
     languages.forEach(lang => {
       const option = document.createElement('div');
       option.className = 'language-option';
@@ -149,38 +146,26 @@ class ChatController {
       option.addEventListener('click', () => this.changeLanguage(lang.code));
       this.languageMenuContent.appendChild(option);
     });
-
     this.updateLanguageFlag(this.currentLanguage);
-
     this.languageSelectButton.addEventListener('click', (e) => {
       e.stopPropagation();
       this.languageMenu.classList.toggle('active');
     });
-
     document.addEventListener('click', (e) => {
-      const insideMenu = this.languageMenu.contains(e.target);
-      const clickedButton = this.languageSelectButton.contains(e.target);
-      if (!insideMenu && !clickedButton) {
+      if (!this.languageMenu.contains(e.target) && !this.languageSelectButton.contains(e.target)) {
         this.languageMenu.classList.remove('active');
       }
     });
   }
 
   updateLanguageFlag(langCode) {
-    const selectedLang = languages.find(l => l.code === langCode)
-                         || languages.find(l => l.code === 'en');
-    if (selectedLang) {
-      this.currentLanguageFlag.textContent = selectedLang.flag;
-    } else {
-      this.currentLanguageFlag.textContent = '🇺🇸';
-    }
+    const selectedLang = languages.find(l => l.code === langCode) || languages.find(l => l.code === 'en');
+    this.currentLanguageFlag.textContent = selectedLang ? selectedLang.flag : '🇺🇸';
   }
 
   markActiveLanguage(newCode) {
-    const allLangOptions = document.querySelectorAll('.language-option');
-    allLangOptions.forEach(opt => opt.classList.remove('active'));
-
-    const newActive = Array.from(allLangOptions).find(
+    document.querySelectorAll('.language-option').forEach(opt => opt.classList.remove('active'));
+    const newActive = Array.from(document.querySelectorAll('.language-option')).find(
       opt => opt.innerText.includes(this.getLangName(newCode))
     );
     if (newActive) newActive.classList.add('active');
@@ -198,7 +183,6 @@ class ChatController {
     const url = new URL(window.location);
     url.searchParams.set('language', newCode);
     window.history.pushState({}, '', url);
-
     this.currentLanguage = newCode;
     this.updateLanguageFlag(newCode);
     this.markActiveLanguage(newCode);
@@ -232,25 +216,20 @@ class ChatController {
       this.idleVideo.play().catch(console.error);
       this.loadingScreen.classList.add('hidden');
     });
-
     this.speakingVideo.load();
     this.speakingVideo.addEventListener('loadeddata', () => {
       this.videosLoaded.speaking = true;
     });
-
     this.cakeVideo.load();
     this.cakeVideo.addEventListener('loadeddata', () => {
       this.videosLoaded.cake = true;
     });
   }
 
-  // When updating the background, if a cake overlay is active we only update the status.
+  // Update the background and store the current conversation mode.
   updateBackground(mode) {
-    this.currentMode = mode;
-    if (this.overlayActive) {
-      this.updateStatus(mode);
-      return;
-    }
+    // If a cake overlay isn’t active, update the mode
+    this.lastConversationMode = mode;
     if (mode === 'speaking' && this.videosLoaded.speaking) {
       this.idleVideo.classList.remove('active');
       this.speakingVideo.classList.add('active');
@@ -261,9 +240,7 @@ class ChatController {
       this.idleVideo.play().catch(console.error);
     } else {
       this.backgroundImage.style.opacity = '1';
-      [this.idleVideo, this.speakingVideo].forEach(video =>
-        video.classList.remove('active')
-      );
+      [this.idleVideo, this.speakingVideo].forEach(video => video.classList.remove('active'));
     }
     this.updateStatus(mode);
   }
@@ -271,7 +248,6 @@ class ChatController {
   triggerConfetti() {
     const options = { origin: { y: 0.7 } };
     const count = 200;
-
     [
       { spread: 26, startVelocity: 55, particleRatio: 0.25 },
       { spread: 60, particleRatio: 0.2 },
@@ -307,12 +283,10 @@ class ChatController {
     const startY = window.innerHeight + 10;
     const endX = startX + (Math.random() - 0.5) * 200;
     const endY = -10;
-    
     particle.style.left = startX + 'px';
     particle.style.top = startY + 'px';
     particle.style.setProperty('--tx', (endX - startX) + 'px');
     particle.style.setProperty('--ty', (endY - startY) + 'px');
-    
     particle.style.animation = 'none';
     particle.offsetHeight; // Force reflow
     particle.style.animation = `float ${Math.random() * 2 + 3}s linear infinite`;
@@ -320,7 +294,13 @@ class ChatController {
 
   async startConversation() {
     try {
-      await navigator.mediaDevices.getUserMedia({ audio: true });
+      // Request audio and immediately resume the AudioContext (for Safari)
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (AudioContext) {
+        const audioCtx = new AudioContext();
+        await audioCtx.resume();
+      }
       this.triggerConfetti();
       this.createParticles();
       this.startButton.classList.add('active');
@@ -331,9 +311,7 @@ class ChatController {
           <line x1="6" y1="6" x2="18" y2="18"></line>
         </svg>
       `;
-
       const selectedMsg = firstMessages.cat[this.currentLanguage] || "Hello!";
-
       this.conversation = await Conversation.startSession({
         agentId: character.agentId,
         overrides: {
@@ -379,12 +357,11 @@ class ChatController {
     }
   }
 
-  // When the cake video is played, we overlay it without ending the conversation.
-  // We store the current conversation mode (preCakeMode) and set a flag (overlayActive)
-  // so that conversation events do not update the video while the cake video is playing.
+  // Updated playCake:
+  // Instead of ending the conversation, we simply overlay the cake video.
+  // When the cake video finishes, we restore the current conversation mode using lastConversationMode.
   async playCake() {
-    const preCakeMode = this.currentMode || 'idle';
-    this.overlayActive = true;
+    // Do not change the conversation; simply overlay the cake video.
     this.idleVideo.classList.remove('active');
     this.speakingVideo.classList.remove('active');
     this.cakeVideo.classList.add('active');
@@ -396,13 +373,9 @@ class ChatController {
     this.cakeVideo.onended = () => {
       this.cakeVideo.classList.remove('active');
       this.cakeVideo.currentTime = 0;
-      this.overlayActive = false;
-      if (this.conversation) {
-        // Restore the underlying conversation state.
-        this.updateBackground(preCakeMode);
-      } else {
-        this.updateBackground('idle');
-      }
+      // Restore the current conversation mode (using lastConversationMode)
+      const modeToRestore = this.conversation ? this.lastConversationMode : 'idle';
+      this.updateBackground(modeToRestore);
       this.cakeVideo.onended = null;
     };
   }
@@ -434,5 +407,4 @@ window.shareCharacter = () => {
 
 const urlParams = new URLSearchParams(window.location.search);
 const languageCode = urlParams.get('language') || 'en';
-
 const chat = new ChatController(languageCode);
