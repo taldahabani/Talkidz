@@ -92,6 +92,8 @@ class ChatController {
     this.currentLanguage = languageCode || 'en';
     this.conversation = null;
     this.videosLoaded = { idle: false, speaking: false, cake: false };
+    // We'll store the current conversation mode here (e.g. 'idle', 'listening', or 'speaking')
+    this.currentMode = 'idle';
 
     this.setupElements();
     this.setupCharacter();
@@ -240,7 +242,9 @@ class ChatController {
     });
   }
 
+  // Update background and store the current mode.
   updateBackground(mode) {
+    this.currentMode = mode;
     if (mode === 'speaking' && this.videosLoaded.speaking) {
       this.idleVideo.classList.remove('active');
       this.speakingVideo.classList.add('active');
@@ -369,14 +373,12 @@ class ChatController {
     }
   }
 
-  // Updated playCake method:
-  // • If a conversation is active, it ends it.
-  // • It does NOT update the status to "Listening" (so if no conversation, the status remains "Ready to chat").
-  // • It stops the idle and speaking videos and plays the cake video (with sound).
+  // Updated playCake:
+  // Instead of ending the conversation, we simply store the current mode,
+  // overlay the cake video, and when it ends, restore the previous state.
   async playCake() {
-    if (this.conversation) {
-      await this.endConversation();
-    }
+    const oldMode = this.currentMode || 'idle';
+    // Do not end the conversation; just overlay the cake video.
     this.idleVideo.classList.remove('active');
     this.speakingVideo.classList.remove('active');
     this.cakeVideo.classList.add('active');
@@ -388,7 +390,8 @@ class ChatController {
     this.cakeVideo.onended = () => {
       this.cakeVideo.classList.remove('active');
       this.cakeVideo.currentTime = 0;
-      this.updateBackground('idle');
+      // Restore the conversation state (e.g. speaking or listening)
+      this.updateBackground(oldMode);
       this.cakeVideo.onended = null;
     };
   }
