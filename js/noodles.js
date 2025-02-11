@@ -34,7 +34,7 @@ const firstMessages = {
     fil: "Hoy, Noodles ito! Ikinagagalak kitang makita!",
     pl: "Hej, to Noodles! Miło cię widzieć!",
     sv: "Hej, det är Noodles! Kul att se dig!",
-    bg: "Хей, това са Noodles! Радвам се да те видя!",
+    bg: "Хей, това са Нудълс! Радвам се да те видя!",
     ro: "Hei, sunt Noodles! Mă bucur să te văd!",
     ar: "مرحباً، إنه نودلز! سعيد برؤيتك!",
     cs: "Ahoj, tady Noodles! Rád tě vidím!",
@@ -69,10 +69,10 @@ const languages = [
   { code: 'nl', flag: '🇳🇱', name: 'Dutch', firstMessage: "Hé, leuk je te zien!" },
   { code: 'tr', flag: '🇹🇷', name: 'Turkish', firstMessage: "Hey, seni gördüğüme sevindim!" },
   { code: 'fil', flag: '🇵🇭', name: 'Filipino', firstMessage: "Hey, ikinagagalak kitang makita!" },
-  { code: 'pl', flag: '🇵🇱', name: 'Polish', firstMessage: "Hej, to Noodles! Miło cię widzieć!" },
-  { code: 'sv', flag: '🇸🇪', name: 'Swedish', firstMessage: "Hej, det är Noodles! Kul att se dig!" },
-  { code: 'bg', flag: '🇧🇬', name: 'Bulgarian', firstMessage: "Хей, това са Noodles! Радвам се да те видя!" },
-  { code: 'ro', flag: '🇷🇴', name: 'Romanian', firstMessage: "Hei, sunt Noodles! Mă bucur să te văd!" },
+  { code: 'pl', flag: '🇵🇱', name: 'Polish', firstMessage: "Hej, miło cię widzieć!" },
+  { code: 'sv', flag: '🇸🇪', name: 'Swedish', firstMessage: "Hej, kul att se dig!" },
+  { code: 'bg', flag: '🇧🇬', name: 'Bulgarian', firstMessage: "Хей, радвам се да те видя!" },
+  { code: 'ro', flag: '🇷🇴', name: 'Romanian', firstMessage: "Hei, mă bucur să te văd!" },
   { code: 'ar', flag: '🇸🇦', name: 'Arabic (Saudi Arabia)', firstMessage: "مرحباً، سعيد برؤيتك!" },
   { code: 'ar', flag: '🇦🇪', name: 'Arabic (UAE)', firstMessage: "مرحباً، سعيد برؤيتك!" },
   { code: 'cs', flag: '🇨🇿', name: 'Czech', firstMessage: "Ahoj, rád tě vidím!" },
@@ -92,6 +92,7 @@ class ChatController {
     this.currentLanguage = languageCode || 'en';
     this.conversation = null;
     this.videosLoaded = { idle: false, speaking: false, cake: false };
+    // Store the current conversation mode (e.g. 'idle', 'listening', or 'speaking')
     this.currentMode = 'idle';
 
     this.setupElements();
@@ -109,21 +110,29 @@ class ChatController {
     this.cakeVideo = document.getElementById('cakeVideo');
     this.startButton = document.getElementById('startButton');
     this.cakeButton = document.getElementById('cakeButton');
+    this.statusDot = document.querySelector('.status-dot');
+    this.statusText = document.querySelector('.status-text');
+    this.characterName = document.querySelector('.character-name'); // (unused now)
+    this.loadingScreen = document.querySelector('.character-loading');
+
     this.languageSelectButton = document.getElementById('languageSelectButton');
     this.currentLanguageFlag = document.getElementById('currentLanguageFlag');
+    this.languageMenu = document.getElementById('languageMenu');
+    this.languageMenuContent = document.getElementById('languageMenuContent');
   }
 
   setupCharacter() {
     document.title = `${character.name} - Talkidz`;
-    this.backgroundImage.style.background = `url('${character.assets.preview}') center/contain no-repeat`;
+    // Set preview image as the background image
+    this.backgroundImage.style.background =
+      `url('${character.assets.preview}') center/contain no-repeat`;
     this.idleVideo.src = character.assets.idle;
     this.speakingVideo.src = character.assets.talking;
     this.cakeVideo.src = character.assets.cake;
   }
 
   setupLanguageMenu() {
-    const languageMenuContent = document.getElementById('languageMenuContent');
-    languageMenuContent.innerHTML = '';
+    this.languageMenuContent.innerHTML = '';
 
     languages.forEach(lang => {
       const option = document.createElement('div');
@@ -131,36 +140,47 @@ class ChatController {
       if (lang.code === this.currentLanguage) {
         option.classList.add('active');
       }
-      option.innerHTML = `<span class="language-option-flag">${lang.flag}</span><span>${lang.name}</span>`;
+      option.innerHTML = `
+          <span class="language-option-flag">${lang.flag}</span>
+          <span>${lang.name}</span>
+      `;
       option.addEventListener('click', () => this.changeLanguage(lang.code));
-      languageMenuContent.appendChild(option);
+      this.languageMenuContent.appendChild(option);
     });
 
     this.updateLanguageFlag(this.currentLanguage);
 
     this.languageSelectButton.addEventListener('click', (e) => {
       e.stopPropagation();
-      const menu = document.getElementById('languageMenu');
-      menu.classList.toggle('active');
+      this.languageMenu.classList.toggle('active');
     });
 
     document.addEventListener('click', (e) => {
-      const menu = document.getElementById('languageMenu');
-      if (!menu.contains(e.target)) {
-        menu.classList.remove('active');
+      const insideMenu = this.languageMenu.contains(e.target);
+      const clickedButton = this.languageSelectButton.contains(e.target);
+      if (!insideMenu && !clickedButton) {
+        this.languageMenu.classList.remove('active');
       }
     });
   }
 
   updateLanguageFlag(langCode) {
-    const selectedLang = languages.find(l => l.code === langCode) || languages.find(l => l.code === 'en');
-    this.currentLanguageFlag.textContent = selectedLang ? selectedLang.flag : '🇺🇸';
+    const selectedLang = languages.find(l => l.code === langCode)
+                         || languages.find(l => l.code === 'en');
+    if (selectedLang) {
+      this.currentLanguageFlag.textContent = selectedLang.flag;
+    } else {
+      this.currentLanguageFlag.textContent = '🇺🇸';
+    }
   }
 
   markActiveLanguage(newCode) {
     const allLangOptions = document.querySelectorAll('.language-option');
     allLangOptions.forEach(opt => opt.classList.remove('active'));
-    const newActive = Array.from(allLangOptions).find(opt => opt.innerText.includes(this.getLangName(newCode)));
+
+    const newActive = Array.from(allLangOptions).find(
+      opt => opt.innerText.includes(this.getLangName(newCode))
+    );
     if (newActive) newActive.classList.add('active');
   }
 
@@ -176,11 +196,29 @@ class ChatController {
     const url = new URL(window.location);
     url.searchParams.set('language', newCode);
     window.history.pushState({}, '', url);
+
     this.currentLanguage = newCode;
     this.updateLanguageFlag(newCode);
     this.markActiveLanguage(newCode);
-    const menu = document.getElementById('languageMenu');
-    menu.classList.remove('active');
+    this.languageMenu.classList.remove('active');
+  }
+
+  updateStatus(mode) {
+    this.statusDot.classList.remove('listening');
+    switch (mode) {
+      case 'listening':
+        this.statusText.textContent = 'Listening...';
+        this.statusDot.classList.add('listening');
+        this.statusDot.style.background = '#22c55e';
+        break;
+      case 'speaking':
+        this.statusText.textContent = 'Speaking...';
+        this.statusDot.style.background = '#3b82f6';
+        break;
+      default:
+        this.statusText.textContent = 'Ready to chat';
+        this.statusDot.style.background = '#22c55e';
+    }
   }
 
   preloadVideos() {
@@ -190,7 +228,7 @@ class ChatController {
       this.backgroundImage.style.opacity = '0';
       this.idleVideo.classList.add('active');
       this.idleVideo.play().catch(console.error);
-      document.querySelector('.character-loading').classList.add('hidden');
+      this.loadingScreen.classList.add('hidden');
     });
 
     this.speakingVideo.load();
@@ -204,6 +242,7 @@ class ChatController {
     });
   }
 
+  // Update background and store the current mode.
   updateBackground(mode) {
     this.currentMode = mode;
     if (mode === 'speaking' && this.videosLoaded.speaking) {
@@ -216,13 +255,17 @@ class ChatController {
       this.idleVideo.play().catch(console.error);
     } else {
       this.backgroundImage.style.opacity = '1';
-      [this.idleVideo, this.speakingVideo].forEach(video => video.classList.remove('active'));
+      [this.idleVideo, this.speakingVideo].forEach(video =>
+        video.classList.remove('active')
+      );
     }
+    this.updateStatus(mode);
   }
 
   triggerConfetti() {
     const options = { origin: { y: 0.7 } };
     const count = 200;
+
     [
       { spread: 26, startVelocity: 55, particleRatio: 0.25 },
       { spread: 60, particleRatio: 0.2 },
@@ -230,7 +273,11 @@ class ChatController {
       { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2, particleRatio: 0.1 },
       { spread: 120, startVelocity: 45, particleRatio: 0.1 }
     ].forEach(opts => {
-      confetti({ ...options, ...opts, particleCount: Math.floor(count * opts.particleRatio) });
+      confetti({
+        ...options,
+        ...opts,
+        particleCount: Math.floor(count * opts.particleRatio)
+      });
     });
   }
 
@@ -241,7 +288,7 @@ class ChatController {
       particle.className = 'particle';
       particle.style.width = Math.random() * 10 + 'px';
       particle.style.height = particle.style.width;
-      particle.style.background = `rgba(${Math.random()*255}, ${Math.random()*255}, ${Math.random()*255}, 0.5)`;
+      particle.style.background = `rgba(${Math.random() * 255}, ${Math.random() * 255}, ${Math.random() * 255}, 0.5)`;
       particle.style.borderRadius = '50%';
       particle.style.position = 'absolute';
       this.restartParticle(particle);
@@ -254,24 +301,20 @@ class ChatController {
     const startY = window.innerHeight + 10;
     const endX = startX + (Math.random() - 0.5) * 200;
     const endY = -10;
+    
     particle.style.left = startX + 'px';
     particle.style.top = startY + 'px';
     particle.style.setProperty('--tx', (endX - startX) + 'px');
     particle.style.setProperty('--ty', (endY - startY) + 'px');
+    
     particle.style.animation = 'none';
-    particle.offsetHeight;
+    particle.offsetHeight; // Force reflow
     particle.style.animation = `float ${Math.random() * 2 + 3}s linear infinite`;
   }
 
   async startConversation() {
-    // Request microphone permission first; only proceed if allowed.
-    let stream;
-    try {
-      stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    } catch (error) {
-      console.error('Microphone permission denied or error:', error);
-      return;
-    }
+    // Begin getUserMedia immediately; the conversation starts only when the user allows the microphone.
+    const mediaPromise = navigator.mediaDevices.getUserMedia({ audio: true });
     this.triggerConfetti();
     this.createParticles();
     this.startButton.classList.add('active');
@@ -282,6 +325,16 @@ class ChatController {
         <line x1="6" y1="6" x2="18" y2="18"></line>
       </svg>
     `;
+    try {
+      await mediaPromise; // Wait until the user allows the microphone.
+    } catch (error) {
+      console.error('Microphone permission denied:', error);
+      this.updateBackground('idle');
+      this.startButton.classList.remove('active');
+      this.startButton.textContent = 'Start Conversation';
+      return;
+    }
+
     const selectedMsg = firstMessages.cat[this.currentLanguage] || "Hello!";
     this.conversation = await Conversation.startSession({
       agentId: character.agentId,
@@ -322,6 +375,8 @@ class ChatController {
     }
   }
 
+  // playCake overlays the cake video without altering the ongoing conversation.
+  // When the cake video finishes, it restores the current conversation mode (or idle if none).
   async playCake() {
     this.cakeVideo.classList.add('active');
     try {
@@ -346,6 +401,7 @@ class ChatController {
         await this.startConversation();
       }
     });
+    // Event listener for the cake button.
     this.cakeButton.addEventListener('click', async () => {
       await this.playCake();
     });
