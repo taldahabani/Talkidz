@@ -2,7 +2,7 @@ document.querySelector('.splash-container').classList.remove('hidden');
 
 import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
 
-// Updated character object with a new "cake" asset
+// Updated character object with cake asset
 const character = {
   id: 'cat',
   name: 'Noodles',
@@ -92,8 +92,10 @@ class ChatController {
     this.currentLanguage = languageCode || 'en';
     this.conversation = null;
     this.videosLoaded = { idle: false, speaking: false, cake: false };
-    // We'll store the current conversation mode here (e.g. 'idle', 'listening', or 'speaking')
     this.currentMode = 'idle';
+    this.level = 1;
+    this.elapsedTime = 0; // in seconds
+    this.progressInterval = null;
 
     this.setupElements();
     this.setupCharacter();
@@ -119,13 +121,17 @@ class ChatController {
     this.currentLanguageFlag = document.getElementById('currentLanguageFlag');
     this.languageMenu = document.getElementById('languageMenu');
     this.languageMenuContent = document.getElementById('languageMenuContent');
+
+    // Star progress elements
+    this.levelNumberEl = document.querySelector('.level-number');
+    this.progressFillEl = document.querySelector('.progress-fill');
   }
 
   setupCharacter() {
     document.title = `${character.name} - Talkidz`;
     this.characterName.textContent = character.name;
     this.backgroundImage.style.background =
-      `url('${character.assets.preview}') center/contain no-repeat`;
+      `url('${character.assets.preview}') center/cover no-repeat`;
     this.idleVideo.src = character.assets.idle;
     this.speakingVideo.src = character.assets.talking;
     this.cakeVideo.src = character.assets.cake;
@@ -242,7 +248,6 @@ class ChatController {
     });
   }
 
-  // Update background and store the current mode.
   updateBackground(mode) {
     this.currentMode = mode;
     if (mode === 'speaking' && this.videosLoaded.speaking) {
@@ -265,7 +270,6 @@ class ChatController {
   triggerConfetti() {
     const options = { origin: { y: 0.7 } };
     const count = 200;
-
     [
       { spread: 26, startVelocity: 55, particleRatio: 0.25 },
       { spread: 60, particleRatio: 0.2 },
@@ -301,15 +305,39 @@ class ChatController {
     const startY = window.innerHeight + 10;
     const endX = startX + (Math.random() - 0.5) * 200;
     const endY = -10;
-    
     particle.style.left = startX + 'px';
     particle.style.top = startY + 'px';
     particle.style.setProperty('--tx', (endX - startX) + 'px');
     particle.style.setProperty('--ty', (endY - startY) + 'px');
-    
     particle.style.animation = 'none';
     particle.offsetHeight; // Force reflow
     particle.style.animation = `float ${Math.random() * 2 + 3}s linear infinite`;
+  }
+
+  // Star progress methods
+  startProgressTimer() {
+    this.elapsedTime = 0;
+    this.progressInterval = setInterval(() => {
+      this.elapsedTime++;
+      if (this.elapsedTime >= 120) {
+        this.level++;
+        this.elapsedTime = 0;
+      }
+      this.updateProgressBar();
+    }, 1000);
+  }
+
+  stopProgressTimer() {
+    clearInterval(this.progressInterval);
+    this.progressInterval = null;
+    this.elapsedTime = 0;
+    this.updateProgressBar();
+  }
+
+  updateProgressBar() {
+    const percentage = (this.elapsedTime / 120) * 100;
+    this.progressFillEl.style.width = `${percentage}%`;
+    this.levelNumberEl.textContent = this.level;
   }
 
   async startConversation() {
@@ -318,13 +346,7 @@ class ChatController {
       this.triggerConfetti();
       this.createParticles();
       this.startButton.classList.add('active');
-      this.startButton.innerHTML = `
-        <svg width="24" height="24" viewBox="0 0 24 24"
-             fill="none" stroke="white" stroke-width="2">
-          <line x1="18" y1="6" x2="6" y2="18"></line>
-          <line x1="6" y1="6" x2="18" y2="18"></line>
-        </svg>
-      `;
+      // Conversation starts without changing the mic button content
 
       const selectedMsg = firstMessages.cat[this.currentLanguage] || "Hello!";
 
@@ -341,20 +363,20 @@ class ChatController {
         onDisconnect: () => {
           this.updateBackground('idle');
           this.startButton.classList.remove('active');
-          this.startButton.textContent = 'Start Conversation';
+          this.stopProgressTimer();
         },
         onError: (error) => {
           console.error('Conversation error:', error);
           this.updateBackground('idle');
           this.startButton.classList.remove('active');
-          this.startButton.textContent = 'Start Conversation';
+          this.stopProgressTimer();
         }
       });
+      this.startProgressTimer();
     } catch (error) {
       console.error('Error starting conversation:', error);
       this.updateBackground('idle');
       this.startButton.classList.remove('active');
-      this.startButton.textContent = 'Start Conversation';
     }
   }
 
@@ -368,17 +390,14 @@ class ChatController {
         this.conversation = null;
         this.updateBackground('idle');
         this.startButton.classList.remove('active');
-        this.startButton.textContent = 'Start Conversation';
+        this.stopProgressTimer();
       }
     }
   }
 
-  // Updated playCake:
-  // Instead of ending the conversation, we simply store the current mode,
-  // overlay the cake video, and when it ends, restore the previous state.
+  // playCake overlays the cake video without ending the conversation.
   async playCake() {
-    const oldMode = this.currentMode || 'idle';
-    // Do not end the conversation; just overlay the cake video.
+    // Do not end conversation; overlay the cake video.
     this.idleVideo.classList.remove('active');
     this.speakingVideo.classList.remove('active');
     this.cakeVideo.classList.add('active');
@@ -390,8 +409,8 @@ class ChatController {
     this.cakeVideo.onended = () => {
       this.cakeVideo.classList.remove('active');
       this.cakeVideo.currentTime = 0;
-      // Restore the conversation state (e.g. speaking or listening)
-      this.updateBackground(oldMode);
+      // Restore the current conversation state (whatever is in this.currentMode now)
+      this.updateBackground(this.currentMode);
       this.cakeVideo.onended = null;
     };
   }
@@ -404,7 +423,6 @@ class ChatController {
         await this.startConversation();
       }
     });
-    // Event listener for the cake button.
     this.cakeButton.addEventListener('click', async () => {
       await this.playCake();
     });
