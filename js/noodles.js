@@ -2,6 +2,20 @@ document.querySelector('.splash-container').classList.remove('hidden');
 
 import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
 
+// Updated character object with a new "cake" asset
+const character = {
+  id: 'cat',
+  name: 'Noodles',
+  agentId: '4gWkcgFThRtBuhM5akxT',
+  assets: {
+    idle: '/characters/cat/assets/cat-idle.mp4',
+    talking: '/characters/cat/assets/cat-talking.mp4',
+    cake: '/characters/cat/assets/cake.mp4',
+    preview: '/characters/cat/assets/cat.png',
+    icon: '/characters/cat/assets/cat.jpg'
+  }
+};
+
 const firstMessages = {
   cat: {
     en: "Hey it's noodles! nice to see you!",
@@ -73,23 +87,11 @@ const languages = [
   { code: 'ru', flag: '🇷🇺', name: 'Russian', firstMessage: "Привет, рад тебя видеть!" }
 ];
 
-const character = {
-  id: 'cat',
-  name: 'Noodles',
-  agentId: '4gWkcgFThRtBuhM5akxT',
-  assets: {
-    idle: '/characters/cat/assets/cat-idle.mp4',
-    talking: '/characters/cat/assets/cat-talking.mp4',
-    preview: '/characters/cat/assets/cat.png',
-    icon: '/characters/cat/assets/cat.jpg'
-  }
-};
-
 class ChatController {
   constructor(languageCode) {
     this.currentLanguage = languageCode || 'en';
     this.conversation = null;
-    this.videosLoaded = { idle: false, speaking: false };
+    this.videosLoaded = { idle: false, speaking: false, cake: false };
 
     this.setupElements();
     this.setupCharacter();
@@ -103,7 +105,9 @@ class ChatController {
     this.backgroundImage = document.querySelector('.background.image');
     this.idleVideo = document.getElementById('idleVideo');
     this.speakingVideo = document.getElementById('speakingVideo');
+    this.cakeVideo = document.getElementById('cakeVideo');
     this.startButton = document.getElementById('startButton');
+    this.cakeButton = document.getElementById('cakeButton');
     this.statusDot = document.querySelector('.status-dot');
     this.statusText = document.querySelector('.status-text');
     this.characterName = document.querySelector('.character-name');
@@ -122,6 +126,7 @@ class ChatController {
       `url('${character.assets.preview}') center/contain no-repeat`;
     this.idleVideo.src = character.assets.idle;
     this.speakingVideo.src = character.assets.talking;
+    this.cakeVideo.src = character.assets.cake;
   }
 
   setupLanguageMenu() {
@@ -159,7 +164,7 @@ class ChatController {
 
   updateLanguageFlag(langCode) {
     const selectedLang = languages.find(l => l.code === langCode)
-                       || languages.find(l => l.code === 'en');
+                         || languages.find(l => l.code === 'en');
     if (selectedLang) {
       this.currentLanguageFlag.textContent = selectedLang.flag;
     } else {
@@ -227,6 +232,11 @@ class ChatController {
     this.speakingVideo.load();
     this.speakingVideo.addEventListener('loadeddata', () => {
       this.videosLoaded.speaking = true;
+    });
+
+    this.cakeVideo.load();
+    this.cakeVideo.addEventListener('loadeddata', () => {
+      this.videosLoaded.cake = true;
     });
   }
 
@@ -359,6 +369,32 @@ class ChatController {
     }
   }
 
+  // New method to play the cake video.
+  async playCake() {
+    // If there is an active conversation, end it.
+    if (this.conversation) {
+      await this.endConversation();
+    }
+    // Set status to listening and stop idle/speaking videos.
+    this.updateStatus('listening');
+    this.idleVideo.classList.remove('active');
+    this.speakingVideo.classList.remove('active');
+    // Activate and play the cake video.
+    this.cakeVideo.classList.add('active');
+    try {
+      await this.cakeVideo.play();
+    } catch (error) {
+      console.error('Error playing cake video:', error);
+    }
+    // When the cake video finishes, return to idle.
+    this.cakeVideo.onended = () => {
+      this.cakeVideo.classList.remove('active');
+      this.cakeVideo.currentTime = 0;
+      this.updateBackground('idle');
+      this.cakeVideo.onended = null;
+    };
+  }
+
   setupEventListeners() {
     this.startButton.addEventListener('click', async () => {
       if (this.conversation) {
@@ -366,6 +402,10 @@ class ChatController {
       } else {
         await this.startConversation();
       }
+    });
+    // Event listener for the cake button.
+    this.cakeButton.addEventListener('click', async () => {
+      await this.playCake();
     });
   }
 }
