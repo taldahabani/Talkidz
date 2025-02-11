@@ -397,16 +397,16 @@ body {
 .bg-container {
     position: fixed;
     top: 0;
-    left: 0;
-    width: 100%;
+    left: 50%;
+    transform: translateX(-50%);
     height: 100vh;
     overflow: hidden;
     z-index: -1;
 }
 
 .bg-container img {
-    width: 100%;
     height: 100%;
+    width: 2732px;
     object-fit: cover;
 }
 
