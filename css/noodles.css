@@ -472,27 +472,3 @@ body {
   50%  { transform: scale(1.2); opacity: 0.7; }
   100% { transform: scale(1);   opacity: 1; }
 }
-
-/* Media Queries */
-@media (max-width: 768px) {
-  /* Removed video resizing to prevent videos from becoming larger */
-  .controls-container {
-    padding-bottom: env(safe-area-inset-bottom);
-  }
-  .main-button {
-    padding: 1rem 2rem;
-  }
-  .main-action-container {
-    bottom: calc(70px + env(safe-area-inset-bottom));
-  }
-}
-
-@media (min-width: 769px) {
-  .main-container {
-    padding: 70px max(1.5rem, calc((100vw - var(--max-content-width)) / 2));
-  }
-  /* Remove the max-height limit so videos fill the container like the background */
-  .video-wrapper {
-    max-height: none;
-  }
-}
