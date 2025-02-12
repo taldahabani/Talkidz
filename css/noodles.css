@@ -228,9 +228,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  max-width: var(--max-content-width);
   margin: 0 auto;
-  /* Videos will fill the container like the bg image */
 }
 
 .background {
