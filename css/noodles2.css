@@ -311,8 +311,8 @@ body {
   position: absolute;
   top: 30%;       /* Adjust as needed */
   left: 45%;      /* Adjust as needed */
-  width: 10%;     /* Adjust as needed */
-  height: 15%;    /* Adjust as needed */
+  width: 50%;     /* Adjust as needed */
+  height: 20%;    /* Adjust as needed */
   cursor: pointer;
   z-index: 10;    /* Make sure it's above the videos */
   border: 2px dashed red; 
