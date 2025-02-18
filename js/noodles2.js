@@ -2,7 +2,7 @@ document.querySelector('.splash-container').classList.remove('hidden');
 
 import { Conversation } from 'https://cdn.skypack.dev/@11labs/client';
 
-// Updated character object with a new "cake" asset
+// Updated character object with a new "slap" asset
 const character = {
   id: 'cat',
   name: 'Noodles',
@@ -11,6 +11,8 @@ const character = {
     idle: '/assets/idle-cat.mp4',
     talking: '/assets/talk-cat.mp4',
     cake: '/assets/cat-cake.mp4',
+    // New slap video
+    slap: '/assets/slap-cat.mp4',
     preview: '/characters/cat/assets/cat.png',
     icon: '/characters/cat/assets/cat.jpg'
   }
@@ -91,8 +93,9 @@ class ChatController {
   constructor(languageCode) {
     this.currentLanguage = languageCode || 'en';
     this.conversation = null;
-    this.videosLoaded = { idle: false, speaking: false, cake: false };
-    // Store the current conversation mode and any pending update while cake video is active.
+    // Added 'slap' to track preload status
+    this.videosLoaded = { idle: false, speaking: false, cake: false, slap: false };
+    // Store the current conversation mode and any pending update while cake or slap video is active.
     this.currentMode = 'idle';
     this.pendingMode = null;
 
@@ -109,17 +112,23 @@ class ChatController {
     this.idleVideo = document.getElementById('idleVideo');
     this.speakingVideo = document.getElementById('speakingVideo');
     this.cakeVideo = document.getElementById('cakeVideo');
+    // New slap video element
+    this.slapVideo = document.getElementById('slapVideo');
+
     this.startButton = document.getElementById('startButton');
     this.cakeButton = document.getElementById('cakeButton');
     this.statusDot = document.querySelector('.status-dot');
     this.statusText = document.querySelector('.status-text');
     this.characterName = document.querySelector('.character-name');
     this.loadingScreen = document.querySelector('.character-loading');
+
     this.languageSelectButton = document.getElementById('languageSelectButton');
     this.currentLanguageFlag = document.getElementById('currentLanguageFlag');
     this.languageMenu = document.getElementById('languageMenu');
     this.languageMenuContent = document.getElementById('languageMenuContent');
-    this.chatHistory = document.getElementById('chatHistory');
+
+    // Clickable overlay for cat's head
+    this.catHeadClickable = document.getElementById('catHeadClickable');
   }
 
   setupCharacter() {
@@ -130,6 +139,8 @@ class ChatController {
     this.idleVideo.src = character.assets.idle;
     this.speakingVideo.src = character.assets.talking;
     this.cakeVideo.src = character.assets.cake;
+    // Set the new slap video source
+    this.slapVideo.src = character.assets.slap;
   }
 
   setupLanguageMenu() {
@@ -223,6 +234,7 @@ class ChatController {
   }
 
   preloadVideos() {
+    // Idle
     this.idleVideo.load();
     this.idleVideo.addEventListener('loadeddata', () => {
       this.videosLoaded.idle = true;
@@ -232,32 +244,43 @@ class ChatController {
       this.loadingScreen.classList.add('hidden');
     });
 
+    // Speaking
     this.speakingVideo.load();
     this.speakingVideo.addEventListener('loadeddata', () => {
       this.videosLoaded.speaking = true;
     });
 
+    // Cake
     this.cakeVideo.load();
     this.cakeVideo.addEventListener('loadeddata', () => {
       this.videosLoaded.cake = true;
     });
+
+    // Slap
+    this.slapVideo.load();
+    this.slapVideo.addEventListener('loadeddata', () => {
+      this.videosLoaded.slap = true;
+    });
   }
 
-  // When updating the background we check whether the cake video is active.
-  // If it is, we only update the status and store the new mode in pendingMode.
+  // Switch background video based on mode (idle, speaking, listening)
   updateBackground(mode) {
-    if (this.cakeVideo.classList.contains('active')) {
+    // If a special video (cake/slap) is active, store the pending mode
+    // and only switch after the special video ends.
+    if (this.cakeVideo.classList.contains('active') ||
+        this.slapVideo.classList.contains('active')) {
       this.pendingMode = mode;
       this.updateStatus(mode);
       return;
     }
+
     this.currentMode = mode;
     if (mode === 'speaking' && this.videosLoaded.speaking) {
       this.idleVideo.classList.remove('active');
       this.speakingVideo.classList.add('active');
       this.speakingVideo.play().catch(console.error);
     } else {
-      // For 'listening' or 'idle', use the idle video.
+      // For 'listening' or 'idle', use the idle video
       this.speakingVideo.classList.remove('active');
       this.idleVideo.classList.add('active');
       this.idleVideo.play().catch(console.error);
@@ -315,18 +338,6 @@ class ChatController {
     particle.style.animation = `float ${Math.random() * 2 + 3}s linear infinite`;
   }
 
-  // This method appends new messages to the chat history container.
-  addMessageToChat(message, isUser = false) {
-    if (!this.chatHistory) return;
-    const messageDiv = document.createElement('div');
-    messageDiv.style.margin = '5px 0';
-    messageDiv.style.padding = '5px';
-    messageDiv.style.backgroundColor = isUser ? '#e3f2fd' : '#f5f5f5';
-    messageDiv.textContent = `${isUser ? 'User' : 'Agent'}: ${message}`;
-    this.chatHistory.appendChild(messageDiv);
-    this.chatHistory.scrollTop = this.chatHistory.scrollHeight;
-  }
-
   async startConversation() {
     try {
       await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -363,9 +374,7 @@ class ChatController {
           this.updateBackground('idle');
           this.startButton.classList.remove('active');
           this.startButton.textContent = 'Start Conversation';
-        },
-        onMessage: (message) => this.addMessageToChat(message),
-        onUserMessage: (message) => this.addMessageToChat(message, true)
+        }
       });
     } catch (error) {
       console.error('Error starting conversation:', error);
@@ -390,10 +399,8 @@ class ChatController {
     }
   }
 
-  // When the cake video is played, we do not alter the conversation.
-  // Instead, we overlay the cake video while keeping track of any new conversation mode.
+  // Plays the cake video (with sound) without ending conversation
   async playCake() {
-    // Do not end the conversation.
     this.cakeVideo.classList.add('active');
     try {
       await this.cakeVideo.play();
@@ -403,8 +410,6 @@ class ChatController {
     this.cakeVideo.onended = () => {
       this.cakeVideo.classList.remove('active');
       this.cakeVideo.currentTime = 0;
-      // When cake finishes, restore the _current_ conversation state,
-      // using pendingMode if any change occurred while the cake video was playing.
       const modeToRestore = this.pendingMode || this.currentMode;
       this.pendingMode = null;
       this.updateBackground(modeToRestore);
@@ -412,7 +417,26 @@ class ChatController {
     };
   }
 
+  // NEW: Plays the slap video (with sound) on head click
+  async playSlap() {
+    this.slapVideo.classList.add('active');
+    try {
+      await this.slapVideo.play();
+    } catch (error) {
+      console.error('Error playing slap video:', error);
+    }
+    this.slapVideo.onended = () => {
+      this.slapVideo.classList.remove('active');
+      this.slapVideo.currentTime = 0;
+      const modeToRestore = this.pendingMode || this.currentMode;
+      this.pendingMode = null;
+      this.updateBackground(modeToRestore);
+      this.slapVideo.onended = null;
+    };
+  }
+
   setupEventListeners() {
+    // Start / End conversation
     this.startButton.addEventListener('click', async () => {
       if (this.conversation) {
         await this.endConversation();
@@ -420,13 +444,20 @@ class ChatController {
         await this.startConversation();
       }
     });
-    // Cake button plays the cake video without affecting the conversation.
+
+    // Cake button plays the cake video
     this.cakeButton.addEventListener('click', async () => {
       await this.playCake();
+    });
+
+    // Click on cat's head => slap video
+    this.catHeadClickable.addEventListener('click', async () => {
+      await this.playSlap();
     });
   }
 }
 
+// Sharing feature
 window.shareCharacter = () => {
   if (navigator.share) {
     navigator.share({
