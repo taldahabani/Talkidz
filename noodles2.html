@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Character Chat - Talkidz</title>
+  <title>Talking Noodles</title>
   <link
     href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
     rel="stylesheet"
@@ -24,8 +24,9 @@
     </div>
   </div>
   
+  <!-- Top Bar (transparent, with only the language selector) -->
   <div class="top-bar">
-    <!-- Language Selector -->
+    <!-- Back button and character title removed -->
     <div class="language-select-container">
       <button class="language-select-button" id="languageSelectButton">
         <span class="language-flag" id="currentLanguageFlag"></span>
@@ -36,7 +37,6 @@
         </div>
       </div>
     </div>
-    <!-- End Language Selector -->
   </div>
   
   <div class="bg-container">
@@ -55,7 +55,7 @@
       <!-- Cake video -->
       <video class="background video" id="cakeVideo"
              playsinline disablePictureInPicture></video>
-      <!-- Slap video (new) -->
+      <!-- Slap video -->
       <video class="background video" id="slapVideo"
              playsinline disablePictureInPicture></video>
       <!-- Clickable overlay on the cat's head -->
@@ -72,7 +72,9 @@
   
   <canvas id="confetti-canvas"></canvas>
   
+  <!-- Bottom Controls Bar (transparent, without logo/byline) -->
   <div class="controls-container">
+    <!-- Logo container removed -->
     <div class="status-indicator">
       <div class="status-dot"></div>
       <span class="status-text">Ready to chat</span>
@@ -89,7 +91,6 @@
     </div>
   </div>
   
-  <!-- Main JS -->
   <script type="module" src="/js/noodles2.js"></script>
 </body>
 </html>
