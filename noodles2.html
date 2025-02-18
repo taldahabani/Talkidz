@@ -8,7 +8,7 @@
     href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css"
     rel="stylesheet"
   />
-  <link href="/css/noodles.css" rel="stylesheet"/>
+  <link href="/css/noodles2.css" rel="stylesheet"/>
   <script
     src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js">
   </script>
@@ -38,36 +38,48 @@
       </button>
       <div class="language-menu" id="languageMenu">
         <div class="language-menu-content" id="languageMenuContent">
-          <!-- Dynamically filled in noodles.js -->
+          <!-- Dynamically filled in chat.js -->
         </div>
       </div>
     </div>
     <!-- End Language Selector -->
   </div>
+
   <div class="bg-container">
     <img src="/assets/rainbow-bg.jpg" alt="background">
   </div>
+
   <div class="main-container">
     <div class="video-wrapper">
       <div class="background image"></div>
+
+      <!-- Idle video -->
       <video class="background video" id="idleVideo"
              loop muted playsinline disablePictureInPicture></video>
+      <!-- Speaking video -->
       <video class="background video" id="speakingVideo"
              loop muted playsinline disablePictureInPicture></video>
-      <!-- Cake video plays with sound -->
+      <!-- Cake video -->
       <video class="background video" id="cakeVideo"
              playsinline disablePictureInPicture></video>
+      <!-- Slap video (new) -->
+      <video class="background video" id="slapVideo"
+             playsinline disablePictureInPicture></video>
+
+      <!-- Clickable overlay on the cat's head -->
+      <div class="cat-head-clickable" id="catHeadClickable"
+           title="Click cat's head"></div>
     </div>
   </div>
+
   <div class="main-action-container">
     <button id="startButton" class="main-button">Start Conversation</button>
-    <!-- New Cake Button -->
+    <!-- Cake Button -->
     <button id="cakeButton" class="cake-button">🍰</button>
   </div>
-  <!-- Chat History Container Added -->
-  <div id="chatHistory" style="width: 80%; margin: 20px auto; height: 300px; overflow-y: auto; border: 1px solid #ccc; padding: 10px; text-align: left;">
-  </div>
+
   <canvas id="confetti-canvas"></canvas>
+
   <div class="controls-container">
     <div class="logo-container">
       <a href="/" class="logo">Talkidz</a>
@@ -89,6 +101,8 @@
       </button>
     </div>
   </div>
+
+  <!-- Main JS (updated) -->
   <script type="module" src="/js/noodles2.js"></script>
 </body>
 </html>
