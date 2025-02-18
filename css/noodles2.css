@@ -223,23 +223,13 @@ body {
 
 .video-wrapper {
   position: relative;
-  width: 100%;
-  height: 100%;
+  width: 100%; 
+  height: 100vh; /* fills the viewport height */
   display: flex;
   align-items: center;
   justify-content: center;
   max-width: var(--max-content-width);
   margin: 0 auto;
-  overflow: hidden; /* Hide any horizontal overflow */
-}
-
-.video-wrapper video {
-  position: absolute;
-  height: 100%;   /* Make video as tall as container */
-  width: auto;    /* Maintain aspect ratio */
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%); /* Center horizontally */
 }
 
 .background {
