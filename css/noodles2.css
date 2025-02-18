@@ -83,7 +83,7 @@ body {
   display: flex;
   align-items: center;
   gap: 20px;
-  z-index: 1000;
+  z-index: 999;
 }
 
 /* Language Selector */
@@ -177,7 +177,7 @@ body {
   gap: 0.5rem;
   font-size: 0.875rem;
   color: var(--text-color);
-  background: white;
+  background: rgba(255, 255, 255, 0.9);
   padding: 8px 16px;
   border-radius: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
@@ -197,14 +197,14 @@ body {
 
 /* Share Button */
 .share-button {
-  width: 40px;
-  height: 40px;
+  width: 48px; 
+  height: 48px;
   border: none;
-  border-radius: 12px;
+  border-radius: 50%;
   cursor: pointer;
   transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
+  display: flex; 
+  align-items: center; 
   justify-content: center;
   background: var(--secondary-bg);
   color: var(--text-color);
@@ -216,7 +216,7 @@ body {
   box-shadow: 0 4px 12px var(--shadow);
 }
 
-/* Main Container and Video Elements */
+/* Main Container and Other Elements */
 .main-container {
   position: fixed;
   inset: 0;
@@ -228,7 +228,7 @@ body {
 
 .video-wrapper {
   position: relative;
-  width: 100%;
+  width: 100%; 
   height: 100vh;
   display: flex;
   align-items: center;
@@ -239,7 +239,7 @@ body {
 
 .background {
   position: absolute;
-  width: 100%;
+  width: 100%; 
   height: 100%;
   object-fit: contain;
 }
@@ -272,7 +272,7 @@ body {
   z-index: 10;
 }
 
-/* Start Conversation Button */
+/* Buttons */
 .main-button {
   background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
   color: white;
@@ -292,7 +292,7 @@ body {
   content: '';
   position: absolute;
   inset: -50%;
-  width: 200%;
+  width: 200%; 
   height: 200%;
   background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
   transform: translateX(-100%) rotate(45deg);
@@ -305,14 +305,13 @@ body {
 }
 
 .main-button.active {
-  width: 48px;
+  width: 48px; 
   height: 48px;
   padding: 0;
   border-radius: 50%;
   background: #808080;
 }
 
-/* Cake Button */
 .cake-button {
   background: var(--secondary-bg);
   border: 1px solid rgba(108, 92, 231, 0.15);
@@ -335,13 +334,13 @@ body {
 
 .cat-head-clickable {
   position: absolute;
-  top: 30%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 250px;
-  height: 200px;
+  top: 30%;    
+  left: 50%;   
+  transform: translateX(-50%); 
+  width: 250px;  
+  height: 200px; 
   cursor: pointer;
-  z-index: 10;
+  z-index: 10;   
 }
 
 /* Background Container */
@@ -375,6 +374,26 @@ body {
   to   { transform: rotate(360deg); }
 }
 
+@keyframes float {
+  0% { 
+    transform: translate(0, 0) rotate(0deg); 
+    opacity: 0; 
+  }
+  20% { 
+    opacity: 0.8; 
+  }
+  100% { 
+    transform: translate(var(--tx), var(--ty)) rotate(360deg); 
+    opacity: 0; 
+  }
+}
+
 @keyframes buttonShine {
   to { transform: translateX(100%) rotate(45deg); }
+}
+
+@keyframes pulse {
+  0%   { transform: scale(1);   opacity: 1; }
+  50%  { transform: scale(1.2); opacity: 0.7; }
+  100% { transform: scale(1);   opacity: 1; }
 }
