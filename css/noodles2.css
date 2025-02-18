@@ -75,15 +75,22 @@ body {
   top: 20%; left: 20%;
 }
 
-/* Floating Controls */
-.floating-controls {
+/* Top Bar - Modified to be transparent */
+.top-bar {
   position: fixed;
-  top: 20px;
-  right: 20px;
+  top: 0; left: 0; right: 0;
+  height: 70px;
+  padding: 0 1.5rem;
   display: flex;
   align-items: center;
-  gap: 20px;
+  justify-content: flex-end;
+  background: transparent;
   z-index: 999;
+}
+
+/* Hide back button, character name, and logo elements */
+.back-button, .character-name, .logo-container, .logo-byline {
+  display: none;
 }
 
 /* Language Selector */
@@ -91,6 +98,7 @@ body {
   position: relative;
   display: flex;
   align-items: center;
+  z-index: 999;
 }
 
 .language-select-button {
@@ -170,53 +178,7 @@ body {
   font-size: 20px;
 }
 
-/* Status Indicator */
-.status-indicator {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.875rem;
-  color: var(--text-color);
-  background: rgba(255, 255, 255, 0.9);
-  padding: 8px 16px;
-  border-radius: 20px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.status-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #22c55e;
-  transition: background-color 0.3s ease;
-}
-
-.status-dot.listening {
-  animation: pulse 1.5s infinite;
-}
-
-/* Share Button */
-.share-button {
-  width: 48px; 
-  height: 48px;
-  border: none;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  display: flex; 
-  align-items: center; 
-  justify-content: center;
-  background: var(--secondary-bg);
-  color: var(--text-color);
-}
-
-.share-button:hover {
-  transform: translateY(-2px);
-  background: white;
-  box-shadow: 0 4px 12px var(--shadow);
-}
-
-/* Main Container and Other Elements */
+/* Main Container */
 .main-container {
   position: fixed;
   inset: 0;
@@ -272,7 +234,7 @@ body {
   z-index: 10;
 }
 
-/* Buttons */
+/* Start Conversation Button */
 .main-button {
   background: linear-gradient(45deg, var(--accent-color), var(--primary-color));
   color: white;
@@ -312,6 +274,18 @@ body {
   background: #808080;
 }
 
+.cat-head-clickable {
+  position: absolute;
+  top: 30%;    
+  left: 50%;   
+  transform: translateX(-50%); 
+  width: 250px;  
+  height: 200px; 
+  cursor: pointer;
+  z-index: 10;   
+}
+
+/* Cake Button */
 .cake-button {
   background: var(--secondary-bg);
   border: 1px solid rgba(108, 92, 231, 0.15);
@@ -332,18 +306,68 @@ body {
   box-shadow: 0 4px 12px var(--shadow);
 }
 
-.cat-head-clickable {
-  position: absolute;
-  top: 30%;    
-  left: 50%;   
-  transform: translateX(-50%); 
-  width: 250px;  
-  height: 200px; 
-  cursor: pointer;
-  z-index: 10;   
+/* Controls Container - Modified to be transparent */
+.controls-container {
+  position: fixed;
+  bottom: 0; 
+  left: 0; 
+  right: 0;
+  height: 70px;
+  padding: 0 1.5rem;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
 }
 
-/* Background Container */
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.875rem;
+  color: var(--text-color);
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #22c55e;
+  transition: background-color 0.3s ease;
+}
+
+.status-dot.listening {
+  animation: pulse 1.5s infinite;
+}
+
+.share-button {
+  width: 48px; 
+  height: 48px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex; 
+  align-items: center; 
+  justify-content: center;
+  background: var(--secondary-bg);
+  color: var(--text-color);
+}
+
+.share-button:hover {
+  transform: translateY(-2px);
+  background: white;
+  box-shadow: 0 4px 12px var(--shadow);
+}
+
+/* Particles */
+.particle {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0;
+}
+
 .bg-container {
   position: fixed;
   top: 0;
