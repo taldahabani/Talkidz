@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8"/>
@@ -23,10 +23,15 @@
       </div>
     </div>
   </div>
-  
-  <!-- Top Bar (transparent, with only the language selector) -->
   <div class="top-bar">
-    <!-- Back button and character title removed -->
+    <a href="/" class="back-button">
+      <svg width="24" height="24" viewBox="0 0 24 24"
+           fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M19 12H5M12 19l-7-7 7-7"/>
+      </svg>
+    </a>
+    <div class="character-name"></div>
+    <!-- Language Selector -->
     <div class="language-select-container">
       <button class="language-select-button" id="languageSelectButton">
         <span class="language-flag" id="currentLanguageFlag"></span>
@@ -37,12 +42,11 @@
         </div>
       </div>
     </div>
+    <!-- End Language Selector -->
   </div>
-  
   <div class="bg-container">
     <img src="/assets/rainbow-bg.jpg" alt="background">
   </div>
-  
   <div class="main-container">
     <div class="video-wrapper">
       <div class="background image"></div>
@@ -55,7 +59,7 @@
       <!-- Cake video -->
       <video class="background video" id="cakeVideo"
              playsinline disablePictureInPicture></video>
-      <!-- Slap video -->
+      <!-- Slap video (new) -->
       <video class="background video" id="slapVideo"
              playsinline disablePictureInPicture></video>
       <!-- Clickable overlay on the cat's head -->
@@ -63,18 +67,17 @@
            title="Click cat's head"></div>
     </div>
   </div>
-  
   <div class="main-action-container">
     <button id="startButton" class="main-button">Start Conversation</button>
     <!-- Cake Button -->
     <button id="cakeButton" class="cake-button">🍰</button>
   </div>
-  
   <canvas id="confetti-canvas"></canvas>
-  
-  <!-- Bottom Controls Bar (transparent, without logo/byline) -->
   <div class="controls-container">
-    <!-- Logo container removed -->
+    <div class="logo-container">
+      <a href="/" class="logo">Talkidz</a>
+      <span class="logo-byline">by Playbox</span>
+    </div>
     <div class="status-indicator">
       <div class="status-dot"></div>
       <span class="status-text">Ready to chat</span>
@@ -83,14 +86,15 @@
       <button class="share-button" onclick="shareCharacter()">
         <svg width="24" height="24" viewBox="0 0 24 24"
              fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+          <path d="M4 12v8a2 2 0 0 0 2 2h12
+                   a2 2 0 0 0 2-2v-8"/>
           <polyline points="16 6 12 2 8 6"/>
           <line x1="12" y1="2" x2="12" y2="15"/>
         </svg>
       </button>
     </div>
   </div>
-  
+  <!-- Main JS (updated) -->
   <script type="module" src="/js/noodles2.js"></script>
 </body>
 </html>
